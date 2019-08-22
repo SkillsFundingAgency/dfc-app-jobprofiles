@@ -61,17 +61,52 @@
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Content)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.Raw(Model.Content)
-            </dd>
-
-            <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.LastReviewed)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.LastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OverviewBannerSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.OverviewBannerSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OverviewBannerSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.OverviewBannerSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.CurrentOpportunitiesSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CurrentOpportunitiesSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.RelatedCareersSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.RelatedCareersSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.RelatedCareersSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.RelatedCareersSegmentLastReviewed)
             </dd>
 
             <dt class="col-sm-2">
@@ -86,6 +121,34 @@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.CareerPathSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HowToBecomeSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.HowToBecomeSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HowToBecomeSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.HowToBecomeSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.WhatItTakesSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.WhatItTakesSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.WhatItTakesSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.WhatItTakesSegmentLastReviewed)
             </dd>
 
             @if (Model.AlternativeNames?.Count() > 0)

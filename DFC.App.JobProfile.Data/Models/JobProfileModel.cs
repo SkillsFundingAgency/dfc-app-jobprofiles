@@ -13,19 +13,14 @@ namespace DFC.App.JobProfile.Data.Models
         [Required]
         public string CanonicalName { get; set; }
 
-        [Display(Name = "Breadcrumb Title")]
         public string BreadcrumbTitle { get; set; }
 
-        [Display(Name = "Include In SiteMap")]
         public bool IncludeInSitemap { get; set; }
 
         public MetaTagsModel MetaTags { get; set; }
 
         public SegmentsModel Segments { get; set; }
 
-        public string Content { get; set; }
-
-        [Display(Name = "Last Reviewed")]
         public DateTime LastReviewed { get; set; }
 
         public string[] AlternativeNames { get; set; }

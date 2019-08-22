@@ -18,7 +18,7 @@ namespace DFC.App.JobProfile
 {
     public class Startup
     {
-        public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfileSegment";
+        public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
 
         private readonly IConfiguration configuration;
 

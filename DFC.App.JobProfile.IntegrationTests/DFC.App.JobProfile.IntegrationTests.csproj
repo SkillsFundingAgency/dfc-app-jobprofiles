@@ -8,12 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="5.1.1" />
+    <Content Include="appsettings.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
       <PrivateAssets>all</PrivateAssets>
@@ -29,6 +40,16 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DFC.App.JobProfile\DFC.App.JobProfile.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings-template.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

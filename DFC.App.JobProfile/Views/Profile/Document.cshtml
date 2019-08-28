@@ -1,0 +1,174 @@
+﻿@model DocumentViewModel
+
+<html>
+<head>
+    @if (!string.IsNullOrWhiteSpace(Model.BreadcrumbTitle))
+    {
+        ViewData["Title"] = Model.BreadcrumbTitle;
+
+        <title>@ViewData["Title"]</title>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <meta name="description" content="@Model.Description">
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <meta name="keywords" content="@Model.Keywords">
+    }
+</head>
+<body>
+    <partial name="Breadcrumb" model="@Model.Breadcrumb" />
+
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DocumentId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DocumentId)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CanonicalName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CanonicalName)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BreadcrumbTitle)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.BreadcrumbTitle)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.IncludeInSitemap)
+            </dt>
+
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IncludeInSitemap)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.LastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OverviewBannerSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.OverviewBannerSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OverviewBannerSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.OverviewBannerSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.CurrentOpportunitiesSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CurrentOpportunitiesSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.RelatedCareersSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.RelatedCareersSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.RelatedCareersSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.RelatedCareersSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CareerPathSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.CareerPathSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CareerPathSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CareerPathSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HowToBecomeSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.HowToBecomeSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HowToBecomeSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.HowToBecomeSegmentLastReviewed)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.WhatItTakesSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.WhatItTakesSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.WhatItTakesSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.WhatItTakesSegmentLastReviewed)
+            </dd>
+
+            @if (Model.AlternativeNames?.Count() > 0)
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.AlternativeNames)
+                </dt>
+                <dd class="col-sm-10">
+                    <ol>
+                        @foreach (var alternativeName in Model.AlternativeNames)
+                        {
+                            <li><a href="/profile/@alternativeName">@alternativeName</a></li>
+                        }
+                    </ol>
+                </dd>
+            }
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</body>
+</html>

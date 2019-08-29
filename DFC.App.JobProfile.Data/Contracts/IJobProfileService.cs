@@ -14,5 +14,7 @@ namespace DFC.App.JobProfile.Data.Contracts
         Task<JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false);
 
         Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
+
+        Task<bool> DeleteAsync(Guid documentId);
     }
 }

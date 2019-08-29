@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.ProfileService
@@ -48,6 +49,13 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return await repository.GetAsync(d => d.AlternativeNames.Contains(alternativeName.ToLowerInvariant())).ConfigureAwait(false);
+        }
+
+        public async Task<bool> DeleteAsync(Guid documentId)
+        {
+            var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
+
+            return result == HttpStatusCode.NoContent;
         }
     }
 }

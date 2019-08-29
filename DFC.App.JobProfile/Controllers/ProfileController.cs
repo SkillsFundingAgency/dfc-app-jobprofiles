@@ -4,6 +4,7 @@ using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,6 +72,22 @@ namespace DFC.App.JobProfile.Controllers
             logger.LogWarning($"{nameof(Document)} has returned no content for: {article}");
 
             return NoContent();
+        }
+
+        [HttpDelete]
+        [Route("pages/{documentId}")]
+        public async Task<IActionResult> Delete(Guid documentId)
+        {
+            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
+
+            if (jobProfileModel == null)
+            {
+                return NotFound();
+            }
+
+            await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
+
+            return Ok();
         }
 
         [HttpGet]

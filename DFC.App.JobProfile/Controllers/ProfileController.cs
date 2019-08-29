@@ -74,8 +74,39 @@ namespace DFC.App.JobProfile.Controllers
             return NoContent();
         }
 
+        [HttpPut]
+        [HttpPost]
+        [Route("profile")]
+        public async Task<IActionResult> CreateOrUpdate([FromBody]CreateOrUpdateJobProfileModel jobProfileModel)
+        {
+            if (jobProfileModel == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingHJobProfileModel = await jobProfileService.GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
+
+            if (existingHJobProfileModel == null)
+            {
+                var createdResponse = await jobProfileService.CreateAsync(jobProfileModel).ConfigureAwait(false);
+
+                return new CreatedAtActionResult(nameof(Document), "Profile", new { article = createdResponse.CanonicalName }, createdResponse);
+            }
+            else
+            {
+                var updatedResponse = await jobProfileService.ReplaceAsync(jobProfileModel, existingHJobProfileModel).ConfigureAwait(false);
+
+                return new OkObjectResult(updatedResponse);
+            }
+        }
+
         [HttpDelete]
-        [Route("pages/{documentId}")]
+        [Route("profile/{documentId}")]
         public async Task<IActionResult> Delete(Guid documentId)
         {
             var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);

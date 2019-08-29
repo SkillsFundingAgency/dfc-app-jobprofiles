@@ -1,7 +1,10 @@
-﻿using FluentAssertions;
+﻿using DFC.App.JobProfile.Data.Models;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,10 +91,59 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
+        public async Task PostHelpEndpointsReturnCreated()
+        {
+            // Arrange
+            const string url = "/profile";
+            var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
+            {
+                DocumentId = Guid.NewGuid(),
+                CanonicalName = Guid.NewGuid().ToString().ToLowerInvariant(),
+                RefreshAllSegments = true,
+            };
+            var client = factory.CreateClient();
+
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            // Act
+            var response = await client.PostAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+        }
+
+        [Fact]
+        public async Task PuttHelpEndpointsReturnOk()
+        {
+            // Arrange
+            const string url = "/profile";
+            var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
+            {
+                DocumentId = Guid.NewGuid(),
+                CanonicalName = Guid.NewGuid().ToString().ToLowerInvariant(),
+                RefreshOverviewBannerSegment = true,
+                RefreshRelatedCareersSegment = true,
+            };
+            var client = factory.CreateClient();
+
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            _ = await client.PostAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+
+            // Act
+            var response = await client.PutAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
         public async Task DeleteHelpEndpointsReturnNotFound()
         {
             // Arrange
-            var uri = new Uri($"/pages/{Guid.NewGuid()}", UriKind.Relative);
+            var uri = new Uri($"/profile/{Guid.NewGuid()}", UriKind.Relative);
             var client = factory.CreateClient();
 
             client.DefaultRequestHeaders.Accept.Clear();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.Segments;
 using DFC.App.JobProfile.DraftProfileService;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.Repository.CosmosDb;
@@ -45,6 +46,15 @@ namespace DFC.App.JobProfile
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<IDraftJobProfileService, DraftJobProfileService>();
+            services.AddScoped<ISegmentService, SegmentService>();
+
+            services.AddScoped<ISegmentLoadService<CareerPathSegmentModel>, SegmentLoadService<CareerPathSegmentModel>>();
+            services.AddScoped<ISegmentLoadService<CurrentOpportunitiesSegmentModel>, SegmentLoadService<CurrentOpportunitiesSegmentModel>>();
+            services.AddScoped<ISegmentLoadService<HowToBecomeSegmentModel>, SegmentLoadService<HowToBecomeSegmentModel>>();
+            services.AddScoped<ISegmentLoadService<OverviewBannerSegmentModel>, SegmentLoadService<OverviewBannerSegmentModel>>();
+            services.AddScoped<ISegmentLoadService<RelatedCareersSegmentModel>, SegmentLoadService<RelatedCareersSegmentModel>>();
+            services.AddScoped<ISegmentLoadService<WhatItTakesSegmentModel>, SegmentLoadService<WhatItTakesSegmentModel>>();
+
             services.AddAutoMapper(typeof(Startup).Assembly);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

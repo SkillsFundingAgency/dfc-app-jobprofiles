@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.Segments;
 using DFC.App.JobProfile.ViewModels;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles

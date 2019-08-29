@@ -46,6 +46,22 @@ namespace DFC.App.JobProfile.Repository.CosmosDb
             return models.Any() ? models : null;
         }
 
+        public async Task<HttpStatusCode> CreateAsync(T model)
+        {
+            var result = await documentClient.CreateDocumentAsync(DocumentCollectionUri, model).ConfigureAwait(false);
+
+            return result.StatusCode;
+        }
+
+        public async Task<HttpStatusCode> UpdateAsync(Guid documentId, T model)
+        {
+            var documentUri = CreateDocumentUri(documentId);
+
+            var result = await documentClient.ReplaceDocumentAsync(documentUri, model).ConfigureAwait(false);
+
+            return result.StatusCode;
+        }
+
         public async Task<HttpStatusCode> DeleteAsync(Guid documentId)
         {
             var documentUri = CreateDocumentUri(documentId);

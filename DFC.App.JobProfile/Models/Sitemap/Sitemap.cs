@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace DFC.App.JobProfile.Models.Sitemap
+namespace DFC.App.JobProfile.Models
 {
     [XmlRoot("urlset", Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")]
     public class Sitemap

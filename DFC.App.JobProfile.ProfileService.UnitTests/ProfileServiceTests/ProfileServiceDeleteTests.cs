@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.DraftProfileService;
 using FakeItEasy;
 using System;
 using System.Net;
@@ -10,17 +11,27 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "Delete Tests")]
     public class ProfileServiceDeleteTests
     {
+        private readonly ICosmosRepository<JobProfileModel> repository;
+        private readonly IDraftJobProfileService draftJobProfileService;
+        private readonly SegmentService segmentService;
+        private readonly IJobProfileService jobProfileService;
+
+        public ProfileServiceDeleteTests()
+        {
+            repository = A.Fake<ICosmosRepository<JobProfileModel>>();
+            draftJobProfileService = A.Fake<DraftJobProfileService>();
+            segmentService = A.Fake<SegmentService>();
+            jobProfileService = new JobProfileService(repository, draftJobProfileService, segmentService);
+        }
+
         [Fact]
         public void JobProfileServiceDeleteReturnsSuccessWhenHelpPageDeleted()
         {
             // arrange
             Guid documentId = Guid.NewGuid();
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var expectedResult = true;
 
             A.CallTo(() => repository.DeleteAsync(documentId)).Returns(HttpStatusCode.NoContent);
-
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>());
 
             // act
             var result = jobProfileService.DeleteAsync(documentId).Result;
@@ -35,12 +46,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             Guid documentId = Guid.NewGuid();
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var expectedResult = false;
 
             A.CallTo(() => repository.DeleteAsync(documentId)).Returns(HttpStatusCode.BadRequest);
-
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>());
 
             // act
             var result = jobProfileService.DeleteAsync(documentId).Result;
@@ -55,13 +63,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             Guid documentId = Guid.NewGuid();
-            var repository = A.Dummy<ICosmosRepository<JobProfileModel>>();
             var jobProfileModel = A.Fake<JobProfileModel>();
             var expectedResult = false;
 
             A.CallTo(() => repository.DeleteAsync(documentId)).Returns(HttpStatusCode.FailedDependency);
-
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>());
 
             // act
             var result = jobProfileService.DeleteAsync(documentId).Result;

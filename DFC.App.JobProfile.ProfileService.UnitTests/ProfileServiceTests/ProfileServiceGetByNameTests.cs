@@ -14,13 +14,15 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     {
         private readonly ICosmosRepository<JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
+        private readonly SegmentService segmentService;
         private readonly IJobProfileService jobProfileService;
 
         public ProfileServiceGetByNameTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             draftJobProfileService = A.Fake<DraftJobProfileService>();
-            jobProfileService = new JobProfileService(repository, draftJobProfileService);
+            segmentService = A.Fake<SegmentService>();
+            jobProfileService = new JobProfileService(repository, draftJobProfileService, segmentService);
         }
 
         [Fact]

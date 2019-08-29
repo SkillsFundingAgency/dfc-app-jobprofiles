@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.ProfileService
@@ -37,6 +38,16 @@ namespace DFC.App.JobProfile.ProfileService
             return isDraft
                 ? await draftJobProfileService.GetSitefinityData(canonicalName.ToLowerInvariant()).ConfigureAwait(false)
                 : await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+        }
+
+        public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
+        {
+            if (string.IsNullOrWhiteSpace(alternativeName))
+            {
+                throw new ArgumentNullException(nameof(alternativeName));
+            }
+
+            return await repository.GetAsync(d => d.AlternativeNames.Contains(alternativeName.ToLowerInvariant())).ConfigureAwait(false);
         }
     }
 }

@@ -9,6 +9,9 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public JobProfileModelProfile()
         {
+            CreateMap<JobProfileModel, BodyViewModel>()
+                ;
+
             CreateMap<JobProfileModel, DocumentViewModel>()
                 .ForMember(d => d.Breadcrumb, s => s.Ignore())
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.MetaTags.Title))
@@ -26,6 +29,13 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.HowToBecomeSegmentLastReviewed, s => s.MapFrom(a => a.Segments.HowToBecome.LastReviewed))
                 .ForMember(d => d.WhatItTakesSegmentContent, s => s.MapFrom(a => new HtmlString(a.Segments.WhatItTakes.Content)))
                 .ForMember(d => d.WhatItTakesSegmentLastReviewed, s => s.MapFrom(a => a.Segments.WhatItTakes.LastReviewed))
+                ;
+
+            CreateMap<JobProfileModel, HeadViewModel>()
+                .ForMember(d => d.CanonicalUrl, s => s.Ignore())
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.MetaTags.Title))
+                .ForMember(d => d.Description, s => s.MapFrom(a => a.MetaTags.Description))
+                .ForMember(d => d.Keywords, s => s.MapFrom(a => a.MetaTags.Keywords))
                 ;
 
             CreateMap<JobProfileModel, IndexDocumentViewModel>()

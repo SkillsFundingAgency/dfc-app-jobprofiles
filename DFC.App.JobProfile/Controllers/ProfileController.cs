@@ -46,7 +46,7 @@ namespace DFC.App.JobProfile.Controllers
                 logger.LogWarning($"{nameof(Index)} has returned with no results");
             }
 
-            return View(viewModel);
+            return this.NegotiateContentResult(viewModel);
         }
 
         [HttpGet]
@@ -65,12 +65,64 @@ namespace DFC.App.JobProfile.Controllers
 
                 logger.LogInformation($"{nameof(Document)} has succeeded for: {article}");
 
-                return View(viewModel);
+                return this.NegotiateContentResult(viewModel);
             }
 
             logger.LogWarning($"{nameof(Document)} has returned no content for: {article}");
 
             return NoContent();
+        }
+
+        [HttpGet]
+        [Route("profile/{article}/htmlhead")]
+        public async Task<IActionResult> Head(string article)
+        {
+            var viewModel = new HeadViewModel();
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+
+                viewModel.CanonicalUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
+            }
+
+            return this.NegotiateContentResult(viewModel);
+        }
+
+        [Route("profile/{article}/breadcrumb")]
+        public async Task<IActionResult> Breadcrumb(string article)
+        {
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+            var viewModel = BuildBreadcrumb(jobProfileModel);
+
+            return this.NegotiateContentResult(viewModel);
+        }
+
+        [HttpGet]
+        [Route("profile/{article}/contents")]
+        public async Task<IActionResult> Body(string article)
+        {
+            var viewModel = new BodyViewModel();
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+            }
+            else
+            {
+                var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
+
+                if (alternateJobProfileModel != null)
+                {
+                    var alternateUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+
+                    return RedirectPermanentPreserveMethod(alternateUrl);
+                }
+            }
+
+            return this.NegotiateContentResult(viewModel);
         }
 
         #region Define helper methods
@@ -91,13 +143,19 @@ namespace DFC.App.JobProfile.Controllers
                         Route = $"/{ProfilePathRoot}",
                         Title = "Job Profiles",
                     },
-                    new BreadcrumbPathViewModel
-                    {
-                        Route = $"/{ProfilePathRoot}/{jobProfileModel.CanonicalName}",
-                        Title = jobProfileModel.BreadcrumbTitle,
-                    },
                 },
             };
+
+            if (jobProfileModel != null)
+            {
+                var breadcrumbPathViewModel = new BreadcrumbPathViewModel
+                {
+                    Route = $"/{ProfilePathRoot}/{jobProfileModel.CanonicalName}",
+                    Title = jobProfileModel.BreadcrumbTitle,
+                };
+
+                viewModel.Paths.Add(breadcrumbPathViewModel);
+            }
 
             viewModel.Paths.Last().AddHyperlink = false;
 

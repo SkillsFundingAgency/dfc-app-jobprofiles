@@ -1,0 +1,43 @@
+﻿@model BodyViewModel
+
+@if (Model.Segments?.OverviewBanner != null)
+{
+    <div class="govuk-width-container">
+        @Html.Raw(Model.Segments?.OverviewBanner.Content)
+    </div>
+}
+
+@if (Model.Segments?.CurrentOpportunities != null)
+{
+    <div class="govuk-width-container">
+        @Html.Raw(Model.Segments?.CurrentOpportunities.Content)
+    </div>
+}
+
+@if (Model.Segments?.RelatedCareers != null)
+{
+    <div class="govuk-width-container">
+        @Html.Raw(Model.Segments?.RelatedCareers.Content)
+    </div>
+}
+
+@if (Model.Segments?.CareerPath != null)
+{
+    <div class="govuk-width-container">
+        @Html.Raw(Model.Segments?.CareerPath.Content)
+    </div>
+}
+
+@if (Model.Segments?.HowToBecome != null)
+{
+    <div class="govuk-width-container">
+        @Html.Raw(Model.Segments?.HowToBecome.Content)
+    </div>
+}
+
+@if (Model.Segments?.WhatItTakes != null)
+{
+    <div class="govuk-width-container">
+        @Html.Raw(Model.Segments?.WhatItTakes.Content)
+    </div>
+}

@@ -4,19 +4,18 @@ using DFC.App.JobProfile.DraftProfileService;
 using FakeItEasy;
 using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 {
     [Trait("Profile Service", "GetByName Tests")]
-    public class ProfileServiceGetByNameTests
+    public class ProfileServiceGetByAlternativeNameTests
     {
         private readonly ICosmosRepository<JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
         private readonly IJobProfileService jobProfileService;
 
-        public ProfileServiceGetByNameTests()
+        public ProfileServiceGetByAlternativeNameTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             draftJobProfileService = A.Fake<DraftJobProfileService>();
@@ -24,16 +23,16 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public async Task JobProfileServiceGetByNameReturnsSuccess()
+        public void HelpPageServiceGetByAlternativeNameReturnsSuccess()
         {
             // arrange
-            Guid documentId = Guid.NewGuid();
+            const string alternativeName = "name1";
             var expectedResult = A.Fake<JobProfileModel>();
 
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
 
             // act
-            var result = await jobProfileService.GetByNameAsync("article-name").ConfigureAwait(false);
+            var result = jobProfileService.GetByAlternativeNameAsync(alternativeName).Result;
 
             // assert
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
@@ -41,27 +40,28 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public async Task JobProfileServiceGetByNameReturnsArgumentNullExceptionWhenNullIsUsed()
+        public async System.Threading.Tasks.Task HelpPageServiceGetByAlternativeNameReturnsArgumentNullExceptionWhenNullIsUsed()
         {
             // arrange
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.GetByNameAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.GetByAlternativeNameAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
-            Assert.Equal("Value cannot be null.\r\nParameter name: canonicalName", exceptionResult.Message);
+            Assert.Equal("Value cannot be null.\r\nParameter name: alternativeName", exceptionResult.Message);
         }
 
         [Fact]
-        public async Task JobProfileServiceGetByNameReturnsNullWhenMissingInRepository()
+        public void HelpPageServiceGetByAlternativeNameReturnsNullWhenMissingRepository()
         {
             // arrange
+            const string alternativeName = "name1";
             JobProfileModel expectedResult = null;
 
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
 
             // act
-            var result = await jobProfileService.GetByNameAsync("article-name").ConfigureAwait(false);
+            var result = jobProfileService.GetByAlternativeNameAsync(alternativeName).Result;
 
             // assert
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();

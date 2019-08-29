@@ -16,6 +16,20 @@ namespace DFC.App.JobProfile.IntegrationTests.AutoMapperTests
         }
 
         [Fact]
+        public void AutoMapperProfileConfigurationForDefaultSegmentModelProfileReturnSuccess()
+        {
+            // Arrange
+            _ = factory.CreateClient();
+            var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
+
+            // Act
+            mapper.ConfigurationProvider.AssertConfigurationIsValid<DefaultSegmentModelProfile>();
+
+            // Assert
+            Assert.True(true);
+        }
+
+        [Fact]
         public void AutoMapperProfileConfigurationForJobProfileModelProfileReturnSuccess()
         {
             // Arrange
@@ -24,6 +38,20 @@ namespace DFC.App.JobProfile.IntegrationTests.AutoMapperTests
 
             // Act
             mapper.ConfigurationProvider.AssertConfigurationIsValid<JobProfileModelProfile>();
+
+            // Assert
+            Assert.True(true);
+        }
+
+        [Fact]
+        public void AutoMapperProfileConfigurationForSegmentsModelProfileReturnSuccess()
+        {
+            // Arrange
+            _ = factory.CreateClient();
+            var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
+
+            // Act
+            mapper.ConfigurationProvider.AssertConfigurationIsValid<SegmentsModelProfile>();
 
             // Assert
             Assert.True(true);

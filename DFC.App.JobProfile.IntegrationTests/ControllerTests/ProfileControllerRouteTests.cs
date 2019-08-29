@@ -24,6 +24,9 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             new object[] { "/profile" },
             new object[] { $"/profile/{DefaultArticleName}" },
+            new object[] { $"/profile/{DefaultArticleName}/htmlhead" },
+            new object[] { $"/profile/{DefaultArticleName}/breadcrumb" },
+            new object[] { $"/profile/{DefaultArticleName}/contents" },
         };
 
         public static IEnumerable<object[]> MissingprofileContentRouteData => new List<object[]>
@@ -33,12 +36,13 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
         [Theory]
         [MemberData(nameof(ProfileContentRouteData))]
-        public async Task GetprofileHtmlContentEndpointsReturnSuccessAndCorrectContentType(string url)
+        public async Task GetProfileHtmlContentEndpointsReturnSuccessAndCorrectContentType(string url)
         {
             // Arrange
             var uri = new Uri(url, UriKind.Relative);
             var client = factory.CreateClient();
             client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
 
             // Act
             var response = await client.GetAsync(uri).ConfigureAwait(false);
@@ -49,8 +53,26 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Theory]
+        [MemberData(nameof(ProfileContentRouteData))]
+        public async Task GetProfileJsonContentEndpointsReturnSuccessAndCorrectContentType(string url)
+        {
+            // Arrange
+            var uri = new Uri(url, UriKind.Relative);
+            var client = factory.CreateClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+
+            // Act
+            var response = await client.GetAsync(uri).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal($"{MediaTypeNames.Application.Json}; charset={Encoding.UTF8.WebName}", response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
         [MemberData(nameof(MissingprofileContentRouteData))]
-        public async Task GetprofileHtmlContentEndpointsReturnNoContent(string url)
+        public async Task GetProfileHtmlContentEndpointsReturnNoContent(string url)
         {
             // Arrange
             var uri = new Uri(url, UriKind.Relative);

@@ -12,5 +12,7 @@ namespace DFC.App.JobProfile.Data.Contracts
         Task<JobProfileModel> GetByIdAsync(Guid documentId);
 
         Task<JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false);
+
+        Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
     }
 }

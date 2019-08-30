@@ -19,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{     \n\t\"Path\": \"jobprofile\",\n    \"TopNavigationText\": \"Job Profiles\",\n    \"TopNavigationOrder\": 400,\n    \"Layout\": \"FullWidth\",\n    \"OfflineHtml\": \"<H2>Job Profile Service Unavailable</H2>\",\n    \"SitemapUrl\": \"https://localhost:44314//sitemap.xml\",\n    \"robotsURL\": \"https://localhost:44314//Robots.txt\"\n}"
+					"raw": "{     \n\t\"Path\": \"jobprofile\",\n    \"TopNavigationText\": \"Job Profiles\",\n    \"TopNavigationOrder\": 400,\n    \"Layout\": \"FullWidth\",\n    \"OfflineHtml\": \"<H2>Job Profile Service Unavailable</H2>\",\n    \"SitemapUrl\": \"https://localhost:44314/sitemap.xml\",\n    \"robotsURL\": \"https://localhost:44314/robots.txt\"\n}"
 				},
 				"url": {
 					"raw": "{{PathRootUrl}}paths",

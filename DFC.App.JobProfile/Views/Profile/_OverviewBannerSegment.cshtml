@@ -1,0 +1,10 @@
+﻿@model DefaultSegmentViewModel
+
+@if (Model != null)
+{
+    <div class="govuk-width-container">
+        <a id="OverviewBannerSegment" />
+
+        @Html.Raw(Model.Content)
+    </div>
+}

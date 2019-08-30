@@ -1,43 +1,32 @@
 ﻿@model BodyViewModel
 
-@if (Model.Segments?.OverviewBanner != null)
-{
-    <div class="govuk-width-container">
-        @Html.Raw(Model.Segments?.OverviewBanner.Content)
+<div class="govuk-width-container">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <partial name="_OverviewBannerSegment" model=Model.Segments.OverviewBanner />
+        </div>
     </div>
-}
 
-@if (Model.Segments?.CurrentOpportunities != null)
-{
-    <div class="govuk-width-container">
-        @Html.Raw(Model.Segments?.CurrentOpportunities.Content)
-    </div>
-}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_SegmentLinks" />
+        </div>
 
-@if (Model.Segments?.RelatedCareers != null)
-{
-    <div class="govuk-width-container">
-        @Html.Raw(Model.Segments?.RelatedCareers.Content)
+        <div class="govuk-grid-column-one-third">
+            <partial name="_Search" />
+        </div>
     </div>
-}
 
-@if (Model.Segments?.CareerPath != null)
-{
-    <div class="govuk-width-container">
-        @Html.Raw(Model.Segments?.CareerPath.Content)
-    </div>
-}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_HowToBecomeSegment" model=Model.Segments.HowToBecome />
+            <partial name="_WhatItTakesSegment" model=Model.Segments.WhatItTakes />
+            <partial name="_CareerPathSegment" model=Model.Segments.CareerPath />
+            <partial name="_CurrentOpportunitiesSegment" model=Model.Segments.CurrentOpportunities />
+        </div>
 
-@if (Model.Segments?.HowToBecome != null)
-{
-    <div class="govuk-width-container">
-        @Html.Raw(Model.Segments?.HowToBecome.Content)
+        <div class="govuk-grid-column-one-third">
+            <partial name="_RelatedCareersSegment" model=Model.Segments.RelatedCareers />
+        </div>
     </div>
-}
-
-@if (Model.Segments?.WhatItTakes != null)
-{
-    <div class="govuk-width-container">
-        @Html.Raw(Model.Segments?.WhatItTakes.Content)
-    </div>
-}
+</div>

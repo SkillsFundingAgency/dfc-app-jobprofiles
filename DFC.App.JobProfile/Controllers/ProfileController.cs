@@ -79,6 +79,8 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile")]
         public async Task<IActionResult> CreateOrUpdate([FromBody]CreateOrUpdateJobProfileModel jobProfileModel)
         {
+            logger.LogInformation($"{nameof(CreateOrUpdate)} has been called");
+
             if (jobProfileModel == null)
             {
                 return BadRequest();
@@ -95,11 +97,15 @@ namespace DFC.App.JobProfile.Controllers
             {
                 var createdResponse = await jobProfileService.CreateAsync(jobProfileModel).ConfigureAwait(false);
 
+                logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {jobProfileModel.CanonicalName}");
+
                 return new CreatedAtActionResult(nameof(Document), "Profile", new { article = createdResponse.CanonicalName }, createdResponse);
             }
             else
             {
                 var updatedResponse = await jobProfileService.ReplaceAsync(jobProfileModel, existingHJobProfileModel).ConfigureAwait(false);
+
+                logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {jobProfileModel.CanonicalName}");
 
                 return new OkObjectResult(updatedResponse);
             }
@@ -109,14 +115,20 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{documentId}")]
         public async Task<IActionResult> Delete(Guid documentId)
         {
+            logger.LogInformation($"{nameof(Delete)} has been called");
+
             var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
 
             if (jobProfileModel == null)
             {
+                logger.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
+
                 return NotFound();
             }
 
             await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
+
+            logger.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
 
             return Ok();
         }
@@ -125,6 +137,8 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{article}/htmlhead")]
         public async Task<IActionResult> Head(string article)
         {
+            logger.LogInformation($"{nameof(Head)} has been called");
+
             var viewModel = new HeadViewModel();
             var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
 
@@ -135,14 +149,20 @@ namespace DFC.App.JobProfile.Controllers
                 viewModel.CanonicalUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
 
+            logger.LogInformation($"{nameof(Head)} has returned content for: {article}");
+
             return this.NegotiateContentResult(viewModel);
         }
 
         [Route("profile/{article}/breadcrumb")]
         public async Task<IActionResult> Breadcrumb(string article)
         {
+            logger.LogInformation($"{nameof(Breadcrumb)} has been called");
+
             var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
             var viewModel = BuildBreadcrumb(jobProfileModel);
+
+            logger.LogInformation($"{nameof(Breadcrumb)} has returned content for: {article}");
 
             return this.NegotiateContentResult(viewModel);
         }
@@ -151,6 +171,8 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{article}/contents")]
         public async Task<IActionResult> Body(string article)
         {
+            logger.LogInformation($"{nameof(Body)} has been called");
+
             var viewModel = new BodyViewModel();
             var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
 
@@ -166,9 +188,13 @@ namespace DFC.App.JobProfile.Controllers
                 {
                     var alternateUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
 
+                    logger.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
+
                     return RedirectPermanentPreserveMethod(alternateUrl);
                 }
             }
+
+            logger.LogInformation($"{nameof(Body)} has returned content for: {article}");
 
             return this.NegotiateContentResult(viewModel);
         }

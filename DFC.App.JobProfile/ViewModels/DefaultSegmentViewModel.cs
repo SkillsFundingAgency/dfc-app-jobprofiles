@@ -4,6 +4,6 @@ namespace DFC.App.JobProfile.ViewModels
 {
     public class DefaultSegmentViewModel
     {
-        public HtmlString Content { get; set; } = new HtmlString("Unknown Help content");
+        public HtmlString Content { get; set; }
     }
 }

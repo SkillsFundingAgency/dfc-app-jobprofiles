@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="5.1.1" />
+    <PackageReference Include="FakeItEasy" Version="5.1.2" />
+    <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,6 +33,12 @@
   <ItemGroup>
     <ProjectReference Include="..\DFC.App.JobProfile.DraftProfileService\DFC.App.JobProfile.DraftProfileService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.ProfileService\DFC.App.JobProfile.ProfileService.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.abstractions\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

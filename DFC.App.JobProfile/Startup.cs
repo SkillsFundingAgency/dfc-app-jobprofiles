@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segments;
 using DFC.App.JobProfile.DraftProfileService;
+using DFC.App.JobProfile.Extensions;
+using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.Repository.CosmosDb;
 using Microsoft.AspNetCore.Builder;
@@ -48,12 +51,40 @@ namespace DFC.App.JobProfile
             services.AddScoped<IDraftJobProfileService, DraftJobProfileService>();
             services.AddScoped<ISegmentService, SegmentService>();
 
-            services.AddScoped<ISegmentLoadService<CareerPathSegmentModel>, SegmentLoadService<CareerPathSegmentModel>>();
-            services.AddScoped<ISegmentLoadService<CurrentOpportunitiesSegmentModel>, SegmentLoadService<CurrentOpportunitiesSegmentModel>>();
-            services.AddScoped<ISegmentLoadService<HowToBecomeSegmentModel>, SegmentLoadService<HowToBecomeSegmentModel>>();
-            services.AddScoped<ISegmentLoadService<OverviewBannerSegmentModel>, SegmentLoadService<OverviewBannerSegmentModel>>();
-            services.AddScoped<ISegmentLoadService<RelatedCareersSegmentModel>, SegmentLoadService<RelatedCareersSegmentModel>>();
-            services.AddScoped<ISegmentLoadService<WhatItTakesSegmentModel>, SegmentLoadService<WhatItTakesSegmentModel>>();
+            services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
+            services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());
+            services.AddSingleton(configuration.GetSection(nameof(HowToBecomeSegmentClientOptions)).Get<HowToBecomeSegmentClientOptions>());
+            services.AddSingleton(configuration.GetSection(nameof(OverviewBannerSegmentClientOptions)).Get<OverviewBannerSegmentClientOptions>());
+            services.AddSingleton(configuration.GetSection(nameof(RelatedCareersSegmentClientOptions)).Get<RelatedCareersSegmentClientOptions>());
+            services.AddSingleton(configuration.GetSection(nameof(WhatItTakesSegmentClientOptions)).Get<WhatItTakesSegmentClientOptions>());
+
+            const string AppSettingsPolicies = "Policies";
+            var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
+            var policyRegistry = services.AddPolicyRegistry();
+
+            services
+                .AddPolicies(policyRegistry, nameof(CareerPathSegmentClientOptions), policyOptions)
+                .AddHttpClient<ICareerPathSegmentService, CareerPathSegmentService, CareerPathSegmentClientOptions>(configuration, nameof(CareerPathSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            services
+                .AddPolicies(policyRegistry, nameof(CurrentOpportunitiesSegmentClientOptions), policyOptions)
+                .AddHttpClient<ICurrentOpportunitiesSegmentService, CurrentOpportunitiesSegmentService, CurrentOpportunitiesSegmentClientOptions>(configuration, nameof(CurrentOpportunitiesSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            services
+                .AddPolicies(policyRegistry, nameof(HowToBecomeSegmentClientOptions), policyOptions)
+                .AddHttpClient<IHowToBecomeSegmentService, HowToBecomeSegmentService, HowToBecomeSegmentClientOptions>(configuration, nameof(HowToBecomeSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            services
+                .AddPolicies(policyRegistry, nameof(OverviewBannerSegmentClientOptions), policyOptions)
+                .AddHttpClient<IOverviewBannerSegmentService, OverviewBannerSegmentService, OverviewBannerSegmentClientOptions>(configuration, nameof(OverviewBannerSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            services
+                .AddPolicies(policyRegistry, nameof(RelatedCareersSegmentClientOptions), policyOptions)
+                .AddHttpClient<IRelatedCareersSegmentService, RelatedCareersSegmentService, RelatedCareersSegmentClientOptions>(configuration, nameof(RelatedCareersSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            services
+                .AddPolicies(policyRegistry, nameof(WhatItTakesSegmentClientOptions), policyOptions)
+                .AddHttpClient<IWhatItTakesSegmentService, WhatItTakesSegmentService, WhatItTakesSegmentClientOptions>(configuration, nameof(WhatItTakesSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
 
             services.AddAutoMapper(typeof(Startup).Assembly);
 

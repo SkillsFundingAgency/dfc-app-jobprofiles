@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Html;
-
-namespace DFC.App.JobProfile.ViewModels
+﻿namespace DFC.App.JobProfile.ViewModels
 {
     public class SegmentsViewModel
     {

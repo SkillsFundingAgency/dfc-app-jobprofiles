@@ -1,6 +1,8 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segments;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,27 +10,27 @@ namespace DFC.App.JobProfile.ProfileService
 {
     public class SegmentService : ISegmentService
     {
-        private readonly ISegmentLoadService<CareerPathSegmentModel> careerPathSegmentLoadService;
-        private readonly ISegmentLoadService<CurrentOpportunitiesSegmentModel> currentOpportunitiesSegmentLoadService;
-        private readonly ISegmentLoadService<HowToBecomeSegmentModel> howToBecomeSegmentLoadService;
-        private readonly ISegmentLoadService<OverviewBannerSegmentModel> overviewBannerSegmentLoadService;
-        private readonly ISegmentLoadService<RelatedCareersSegmentModel> relatedCareersSegmentLoadService;
-        private readonly ISegmentLoadService<WhatItTakesSegmentModel> whatItTakesSegmentLoadService;
+        private readonly ICareerPathSegmentService careerPathSegmentService;
+        private readonly ICurrentOpportunitiesSegmentService currentOpportunitiesSegmentService;
+        private readonly IHowToBecomeSegmentService howToBecomeSegmentService;
+        private readonly IOverviewBannerSegmentService overviewBannerSegmentService;
+        private readonly IRelatedCareersSegmentService relatedCareersSegmentService;
+        private readonly IWhatItTakesSegmentService whatItTakesSegmentService;
 
         public SegmentService(
-            ISegmentLoadService<CareerPathSegmentModel> careerPathSegmentLoadService,
-            ISegmentLoadService<CurrentOpportunitiesSegmentModel> currentOpportunitiesSegmentLoadService,
-            ISegmentLoadService<HowToBecomeSegmentModel> howToBecomeSegmentLoadService,
-            ISegmentLoadService<OverviewBannerSegmentModel> overviewBannerSegmentLoadService,
-            ISegmentLoadService<RelatedCareersSegmentModel> relatedCareersSegmentLoadService,
-            ISegmentLoadService<WhatItTakesSegmentModel> whatItTakesSegmentLoadService)
+            ICareerPathSegmentService careerPathSegmentService,
+            ICurrentOpportunitiesSegmentService currentOpportunitiesSegmentService,
+            IHowToBecomeSegmentService howToBecomeSegmentService,
+            IOverviewBannerSegmentService overviewBannerSegmentService,
+            IRelatedCareersSegmentService relatedCareersSegmentService,
+            IWhatItTakesSegmentService whatItTakesSegmentService)
         {
-            this.careerPathSegmentLoadService = careerPathSegmentLoadService;
-            this.currentOpportunitiesSegmentLoadService = currentOpportunitiesSegmentLoadService;
-            this.howToBecomeSegmentLoadService = howToBecomeSegmentLoadService;
-            this.overviewBannerSegmentLoadService = overviewBannerSegmentLoadService;
-            this.relatedCareersSegmentLoadService = relatedCareersSegmentLoadService;
-            this.whatItTakesSegmentLoadService = whatItTakesSegmentLoadService;
+            this.careerPathSegmentService = careerPathSegmentService;
+            this.currentOpportunitiesSegmentService = currentOpportunitiesSegmentService;
+            this.howToBecomeSegmentService = howToBecomeSegmentService;
+            this.overviewBannerSegmentService = overviewBannerSegmentService;
+            this.relatedCareersSegmentService = relatedCareersSegmentService;
+            this.whatItTakesSegmentService = whatItTakesSegmentService;
         }
 
         public CreateOrUpdateJobProfileModel CreateOrUpdateJobProfileModel { get; set; }
@@ -48,126 +50,68 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshCareerPathSegment)
             {
-                careerPathSegmnentTask = careerPathSegmentLoadService.LoadAsync();
+                careerPathSegmnentTask = careerPathSegmentService.LoadAsync(CreateOrUpdateJobProfileModel.CanonicalName);
                 tasks.Add(careerPathSegmnentTask);
             }
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshCurrentOpportunitiesSegment)
             {
-                currentOpportunitiesSegmnentTask = currentOpportunitiesSegmentLoadService.LoadAsync();
+                currentOpportunitiesSegmnentTask = currentOpportunitiesSegmentService.LoadAsync(CreateOrUpdateJobProfileModel.CanonicalName);
                 tasks.Add(currentOpportunitiesSegmnentTask);
             }
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshHowToBecomeSegment)
             {
-                howToBecomeSegmnentTask = howToBecomeSegmentLoadService.LoadAsync();
+                howToBecomeSegmnentTask = howToBecomeSegmentService.LoadAsync(CreateOrUpdateJobProfileModel.CanonicalName);
                 tasks.Add(howToBecomeSegmnentTask);
             }
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshOverviewBannerSegment)
             {
-                overviewBannerSegmnentTask = overviewBannerSegmentLoadService.LoadAsync();
+                overviewBannerSegmnentTask = overviewBannerSegmentService.LoadAsync(CreateOrUpdateJobProfileModel.CanonicalName);
                 tasks.Add(overviewBannerSegmnentTask);
             }
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshRelatedCareersSegment)
             {
-                relatedCareersSegmnentTask = relatedCareersSegmentLoadService.LoadAsync();
+                relatedCareersSegmnentTask = relatedCareersSegmentService.LoadAsync(CreateOrUpdateJobProfileModel.CanonicalName);
                 tasks.Add(relatedCareersSegmnentTask);
             }
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshWhatItTakesSegment)
             {
-                whatItTakesSegmnentTask = whatItTakesSegmentLoadService.LoadAsync();
+                whatItTakesSegmnentTask = whatItTakesSegmentService.LoadAsync(CreateOrUpdateJobProfileModel.CanonicalName);
                 tasks.Add(whatItTakesSegmnentTask);
             }
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
-            JobProfileModel.Segments.CareerPath = GetResult(careerPathSegmnentTask);
-            JobProfileModel.Segments.CurrentOpportunities = GetResult(currentOpportunitiesSegmnentTask);
-            JobProfileModel.Segments.HowToBecome = GetResult(howToBecomeSegmnentTask);
-            JobProfileModel.Segments.OverviewBanner = GetResult(overviewBannerSegmnentTask);
-            JobProfileModel.Segments.RelatedCareers = GetResult(relatedCareersSegmnentTask);
-            JobProfileModel.Segments.WhatItTakes = GetResult(whatItTakesSegmnentTask);
+            JobProfileModel.Segments.CareerPath = GetResult(careerPathSegmnentTask, careerPathSegmentService.SegmentClientOptions);
+            JobProfileModel.Segments.CurrentOpportunities = GetResult(currentOpportunitiesSegmnentTask, currentOpportunitiesSegmentService.SegmentClientOptions);
+            JobProfileModel.Segments.HowToBecome = GetResult(howToBecomeSegmnentTask, howToBecomeSegmentService.SegmentClientOptions);
+            JobProfileModel.Segments.OverviewBanner = GetResult(overviewBannerSegmnentTask, overviewBannerSegmentService.SegmentClientOptions);
+            JobProfileModel.Segments.RelatedCareers = GetResult(relatedCareersSegmnentTask, relatedCareersSegmentService.SegmentClientOptions);
+            JobProfileModel.Segments.WhatItTakes = GetResult(whatItTakesSegmnentTask, whatItTakesSegmentService.SegmentClientOptions);
         }
 
-        private CareerPathSegmentModel GetResult(Task<CareerPathSegmentModel> task)
+        private TModel GetResult<TModel>(Task<TModel> task, SegmentClientOptions segmentClientOptions)
+            where TModel : BaseSegmentModel, new()
         {
             if (task != null)
             {
-                if (task.IsCompletedSuccessfully)
+                if (task.IsCompletedSuccessfully && task.Result != null)
                 {
                     return task.Result;
                 }
             }
 
-            return null;
-        }
-
-        private CurrentOpportunitiesSegmentModel GetResult(Task<CurrentOpportunitiesSegmentModel> task)
-        {
-            if (task != null)
+            var noResultsmodel = new TModel
             {
-                if (task.IsCompletedSuccessfully)
-                {
-                    return task.Result;
-                }
-            }
+                Content = segmentClientOptions.OfflineHtml,
+                LastReviewed = DateTime.UtcNow,
+            };
 
-            return null;
-        }
-
-        private HowToBecomeSegmentModel GetResult(Task<HowToBecomeSegmentModel> task)
-        {
-            if (task != null)
-            {
-                if (task.IsCompletedSuccessfully)
-                {
-                    return task.Result;
-                }
-            }
-
-            return null;
-        }
-
-        private OverviewBannerSegmentModel GetResult(Task<OverviewBannerSegmentModel> task)
-        {
-            if (task != null)
-            {
-                if (task.IsCompletedSuccessfully)
-                {
-                    return task.Result;
-                }
-            }
-
-            return null;
-        }
-
-        private RelatedCareersSegmentModel GetResult(Task<RelatedCareersSegmentModel> task)
-        {
-            if (task != null)
-            {
-                if (task.IsCompletedSuccessfully)
-                {
-                    return task.Result;
-                }
-            }
-
-            return null;
-        }
-
-        private WhatItTakesSegmentModel GetResult(Task<WhatItTakesSegmentModel> task)
-        {
-            if (task != null)
-            {
-                if (task.IsCompletedSuccessfully)
-                {
-                    return task.Result;
-                }
-            }
-
-            return null;
+            return noResultsmodel;
         }
     }
 }

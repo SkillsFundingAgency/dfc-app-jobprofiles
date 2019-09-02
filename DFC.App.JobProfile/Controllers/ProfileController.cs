@@ -27,7 +27,6 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile")]
         public async Task<IActionResult> Index()
         {
             logger.LogInformation($"{nameof(Index)} has been called");

@@ -12,16 +12,19 @@ using Xunit;
 
 namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 {
-    [Trait("Integration Tests", "profile Controller Tests")]
+    [Trait("Integration Tests", "Profile Controller Tests")]
     public class ProfileControllerRouteTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private const string DefaultArticleName = "profile-article";
+        private readonly Guid defaultArticleGuid = Guid.Parse("63DEA97E-B61C-4C14-15DC-1BD08EA20DC8");
 
         private readonly CustomWebApplicationFactory<Startup> factory;
 
         public ProfileControllerRouteTests(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
+
+            DataSeeding.SeedDefaultArticle(factory, defaultArticleGuid, DefaultArticleName);
         }
 
         public static IEnumerable<object[]> ProfileContentRouteData => new List<object[]>
@@ -91,14 +94,38 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task PostHelpEndpointsReturnCreated()
+        public async Task PostProfileEndpointsForDefaultArticleRefreshAllReturnOk()
         {
             // Arrange
             const string url = "/profile";
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
             {
-                DocumentId = Guid.NewGuid(),
-                CanonicalName = Guid.NewGuid().ToString().ToLowerInvariant(),
+                DocumentId = defaultArticleGuid,
+                CanonicalName = DefaultArticleName,
+                RefreshAllSegments = true,
+            };
+            var client = factory.CreateClient();
+
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            // Act
+            var response = await client.PostAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task PostProfileEndpointsReturnCreated()
+        {
+            // Arrange
+            const string url = "/profile";
+            var documentId = Guid.NewGuid();
+            var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
+            {
+                DocumentId = documentId,
+                CanonicalName = documentId.ToString().ToLowerInvariant(),
                 RefreshAllSegments = true,
             };
             var client = factory.CreateClient();
@@ -114,14 +141,15 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task PuttHelpEndpointsReturnOk()
+        public async Task PuttProfileEndpointsReturnOk()
         {
             // Arrange
             const string url = "/profile";
+            var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
             {
-                DocumentId = Guid.NewGuid(),
-                CanonicalName = Guid.NewGuid().ToString().ToLowerInvariant(),
+                DocumentId = documentId,
+                CanonicalName = documentId.ToString().ToLowerInvariant(),
                 RefreshOverviewBannerSegment = true,
                 RefreshRelatedCareersSegment = true,
             };
@@ -140,7 +168,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task DeleteHelpEndpointsReturnNotFound()
+        public async Task DeleteProfileEndpointsReturnNotFound()
         {
             // Arrange
             var uri = new Uri($"/profile/{Guid.NewGuid()}", UriKind.Relative);

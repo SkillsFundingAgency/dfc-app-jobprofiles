@@ -11,7 +11,7 @@ using Xunit;
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 {
     [Trait("Profile Service", "Create Tests")]
-   public class ProfileServiceCreateTests
+    public class ProfileServiceCreateTests
     {
         private readonly ICosmosRepository<JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;

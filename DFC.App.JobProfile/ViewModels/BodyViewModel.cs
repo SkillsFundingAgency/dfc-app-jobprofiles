@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace DFC.App.JobProfile.ViewModels
+﻿namespace DFC.App.JobProfile.ViewModels
 {
     public class BodyViewModel
     {

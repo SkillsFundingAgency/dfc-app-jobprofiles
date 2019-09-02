@@ -6,7 +6,7 @@ using Xunit;
 
 namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 {
-    [Trait("Category", "Integration")]
+    [Trait("Category", "Robot Controller Tests")]
     public class RobotControllerRouteTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly CustomWebApplicationFactory<Startup> factory;

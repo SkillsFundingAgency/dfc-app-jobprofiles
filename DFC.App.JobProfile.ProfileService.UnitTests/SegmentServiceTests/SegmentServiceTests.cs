@@ -57,7 +57,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             LastReviewed = DateTime.UtcNow.AddDays(-6),
             Content = "<p>WhatItTakes data</p>",
         };
-        
+
         public SegmentServiceTests()
         {
             logger = A.Fake<ILogger<SegmentService>>();

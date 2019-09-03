@@ -8,11 +8,11 @@ using Xunit;
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 {
     [Trait("Profile Controller", "Create or Update Tests")]
-    public class ProfileControllerHelpCreateOrUpdateTests : BaseProfileController
+    public class ProfileControllerCreateOrUpdateTests : BaseProfileController
     {
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void PagesControllerHelpCreateOrUpdateReturnsSuccessForCreate(string mediaTypeName)
+        public async void ProfileControllerCreateOrUpdateReturnsSuccessForCreate(string mediaTypeName)
         {
             // Arrange
             var jobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();
@@ -39,7 +39,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void PagesControllerHelpCreateOrUpdateReturnsSuccessForUpdate(string mediaTypeName)
+        public async void ProfileControllerCreateOrUpdateReturnsSuccessForUpdate(string mediaTypeName)
         {
             // Arrange
             var jobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();
@@ -66,7 +66,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void PagesControllerHelpCreateOrUpdateReturnsBadResultWhenModelIsNull(string mediaTypeName)
+        public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsNull(string mediaTypeName)
         {
             // Arrange
             CreateOrUpdateJobProfileModel jobProfileModel = null;
@@ -85,7 +85,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void PagesControllerHelpCreateOrUpdateReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
+        public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
         {
             // Arrange
             var jobProfileModel = new CreateOrUpdateJobProfileModel();

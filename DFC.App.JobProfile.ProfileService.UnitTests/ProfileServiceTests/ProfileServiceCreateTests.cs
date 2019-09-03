@@ -27,7 +27,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public void JobProfileServiceCreateReturnsSuccessWhenHelpPageCreated()
+        public void JobProfileServiceCreateReturnsSuccessWhenProfileCreated()
         {
             // arrange
             var createOrUdateJobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();
@@ -58,7 +58,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public void JobProfileServiceCreateReturnsNullWhenHelpPageNotCreated()
+        public void JobProfileServiceCreateReturnsNullWhenProfileNotCreated()
         {
             // arrange
             var createOrUdateJobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();

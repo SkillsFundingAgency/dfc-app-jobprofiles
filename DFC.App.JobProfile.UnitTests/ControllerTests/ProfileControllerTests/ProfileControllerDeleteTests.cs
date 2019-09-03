@@ -12,7 +12,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void PagesControllerHelpDeleteReturnsSuccess(string mediaTypeName)
+        public async void ProfileControllerDeleteReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
@@ -36,7 +36,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void PagesControllerHelpDeleteReturnsNotFound(string mediaTypeName)
+        public async void ProfileControllerDeleteReturnsNotFound(string mediaTypeName)
         {
             // Arrange
             Guid documentId = Guid.NewGuid();

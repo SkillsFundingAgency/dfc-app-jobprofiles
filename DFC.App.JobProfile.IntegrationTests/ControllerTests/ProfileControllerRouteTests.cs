@@ -141,7 +141,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task PuttProfileEndpointsReturnOk()
+        public async Task PutProfileEndpointsReturnOk()
         {
             // Arrange
             const string url = "/profile";

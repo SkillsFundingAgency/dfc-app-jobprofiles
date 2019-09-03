@@ -13,17 +13,17 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
     [Trait("Profile Service", "What It Takes Segment Service Tests")]
     public class WhatItTakesSegmentServiceTests
     {
-        private const string ExpecedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
         private static readonly WhatItTakesSegmentModel ExpectedResult = new WhatItTakesSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpecedLastReviewed),
+            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
             Content = "some content",
         };
 
         private readonly ILogger<WhatItTakesSegmentService> logger;
         private readonly WhatItTakesSegmentClientOptions whatItTakesSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpecedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
 
         public WhatItTakesSegmentServiceTests()
         {

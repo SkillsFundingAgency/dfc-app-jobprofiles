@@ -13,17 +13,17 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
     [Trait("Profile Service", "Overview Banner Segment Service Tests")]
     public class OverviewBannerSegmentServiceTests
     {
-        private const string ExpecedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
         private static readonly OverviewBannerSegmentModel ExpectedResult = new OverviewBannerSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpecedLastReviewed),
+            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
             Content = "some content",
         };
 
         private readonly ILogger<OverviewBannerSegmentService> logger;
         private readonly OverviewBannerSegmentClientOptions overviewBannerSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpecedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
 
         public OverviewBannerSegmentServiceTests()
         {

@@ -20,7 +20,7 @@ namespace DFC.App.JobProfile.ProfileService
 
         public SegmentClientOptions SegmentClientOptions { get; set; }
 
-        public async Task<TModel> LoadAsync(string article)
+        public virtual async Task<TModel> LoadAsync(string article)
         {
             var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", article, System.StringComparison.OrdinalIgnoreCase);
             var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";

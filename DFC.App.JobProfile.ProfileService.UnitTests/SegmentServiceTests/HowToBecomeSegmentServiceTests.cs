@@ -13,17 +13,17 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
     [Trait("Profile Service", "How To Become Segment Service Tests")]
     public class HowToBecomeSegmentServiceTests
     {
-        private const string ExpecedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
         private static readonly HowToBecomeSegmentModel ExpectedResult = new HowToBecomeSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpecedLastReviewed),
+            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
             Content = "some content",
         };
 
         private readonly ILogger<HowToBecomeSegmentService> logger;
         private readonly HowToBecomeSegmentClientOptions howToBecomeSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpecedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
 
         public HowToBecomeSegmentServiceTests()
         {

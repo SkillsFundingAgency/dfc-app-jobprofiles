@@ -76,11 +76,11 @@ namespace DFC.App.JobProfile.Controllers
         [HttpPut]
         [HttpPost]
         [Route("profile")]
-        public async Task<IActionResult> CreateOrUpdate([FromBody]CreateOrUpdateJobProfileModel jobProfileModel)
+        public async Task<IActionResult> CreateOrUpdate([FromBody]CreateOrUpdateJobProfileModel createOrUpdateJobProfileModel)
         {
             logger.LogInformation($"{nameof(CreateOrUpdate)} has been called");
 
-            if (jobProfileModel == null)
+            if (createOrUpdateJobProfileModel == null)
             {
                 return BadRequest();
             }
@@ -90,21 +90,21 @@ namespace DFC.App.JobProfile.Controllers
                 return BadRequest(ModelState);
             }
 
-            var existingHJobProfileModel = await jobProfileService.GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
+            var existingJobProfileModel = await jobProfileService.GetByIdAsync(createOrUpdateJobProfileModel.DocumentId).ConfigureAwait(false);
 
-            if (existingHJobProfileModel == null)
+            if (existingJobProfileModel == null)
             {
-                var createdResponse = await jobProfileService.CreateAsync(jobProfileModel).ConfigureAwait(false);
+                var createdResponse = await jobProfileService.CreateAsync(createOrUpdateJobProfileModel).ConfigureAwait(false);
 
-                logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {jobProfileModel.CanonicalName}");
+                logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {createOrUpdateJobProfileModel.CanonicalName}");
 
                 return new CreatedAtActionResult(nameof(Document), "Profile", new { article = createdResponse.CanonicalName }, createdResponse);
             }
             else
             {
-                var updatedResponse = await jobProfileService.ReplaceAsync(jobProfileModel, existingHJobProfileModel).ConfigureAwait(false);
+                var updatedResponse = await jobProfileService.ReplaceAsync(createOrUpdateJobProfileModel, existingJobProfileModel).ConfigureAwait(false);
 
-                logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {jobProfileModel.CanonicalName}");
+                logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {createOrUpdateJobProfileModel.CanonicalName}");
 
                 return new OkObjectResult(updatedResponse);
             }

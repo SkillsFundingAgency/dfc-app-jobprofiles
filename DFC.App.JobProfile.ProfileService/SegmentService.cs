@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segments;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace DFC.App.JobProfile.ProfileService
 {
     public class SegmentService : ISegmentService
     {
+        private readonly ILogger<SegmentService> logger;
         private readonly ICareerPathSegmentService careerPathSegmentService;
         private readonly ICurrentOpportunitiesSegmentService currentOpportunitiesSegmentService;
         private readonly IHowToBecomeSegmentService howToBecomeSegmentService;
@@ -18,6 +20,7 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly IWhatItTakesSegmentService whatItTakesSegmentService;
 
         public SegmentService(
+            ILogger<SegmentService> logger,
             ICareerPathSegmentService careerPathSegmentService,
             ICurrentOpportunitiesSegmentService currentOpportunitiesSegmentService,
             IHowToBecomeSegmentService howToBecomeSegmentService,
@@ -25,6 +28,7 @@ namespace DFC.App.JobProfile.ProfileService
             IRelatedCareersSegmentService relatedCareersSegmentService,
             IWhatItTakesSegmentService whatItTakesSegmentService)
         {
+            this.logger = logger;
             this.careerPathSegmentService = careerPathSegmentService;
             this.currentOpportunitiesSegmentService = currentOpportunitiesSegmentService;
             this.howToBecomeSegmentService = howToBecomeSegmentService;
@@ -39,6 +43,8 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task LoadAsync()
         {
+            logger.LogInformation($"{nameof(LoadAsync)}: Loading segments for {CreateOrUpdateJobProfileModel.CanonicalName}");
+
             var tasks = new List<Task>();
 
             Task<CareerPathSegmentModel> careerPathSegmnentTask = null;
@@ -92,6 +98,8 @@ namespace DFC.App.JobProfile.ProfileService
             JobProfileModel.Segments.OverviewBanner = GetResult(overviewBannerSegmnentTask, overviewBannerSegmentService.SegmentClientOptions);
             JobProfileModel.Segments.RelatedCareers = GetResult(relatedCareersSegmnentTask, relatedCareersSegmentService.SegmentClientOptions);
             JobProfileModel.Segments.WhatItTakes = GetResult(whatItTakesSegmnentTask, whatItTakesSegmentService.SegmentClientOptions);
+
+            logger.LogInformation($"{nameof(LoadAsync)}: Loaded segments for {CreateOrUpdateJobProfileModel.CanonicalName}");
         }
 
         private TModel GetResult<TModel>(Task<TModel> task, SegmentClientOptions segmentClientOptions)

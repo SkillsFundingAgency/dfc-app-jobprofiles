@@ -180,37 +180,37 @@
 			},
 			"response": []
 		},
-		{
-			"name": "help post",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"CanonicalName\": \"accessibility\",\r\n    \"BreadcrumbTitle\": \"Accessibility\",\r\n    \"IncludeInSitemap\": true,\r\n    \"Content\": \"<div class=\\\"govuk-grid-row\\\"><div class=\\\"govuk-grid-column-full\\\"><h1 class=\\\"govuk-heading-xl\\\">Accessibility</h1><p class=\\\"govuk-body-l\\\">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae urna eget nibh laoreet venenatis. Sed suscipit magna ac augue sagittis, quis volutpat nisi dapibus. Donec ullamcorper leo ut velit faucibus, non congue massa porta. Curabitur sed tincidunt erat, pellentesque congue turpis. Praesent porttitor ante nec ex facilisis, ut consequat diam elementum. Proin convallis efficitur leo, efficitur euismod ligula elementum eu. Nulla facilisi. Sed elementum velit id leo bibendum lobortis. Nulla accumsan nulla non ex gravida tincidunt.</p><p class=\\\"govuk-body\\\">Morbi ut turpis sit amet lectus tristique pulvinar nec ultricies erat. Nulla facilisi. Duis imperdiet laoreet quam, at rhoncus nunc sagittis at. Proin pulvinar quam sit amet lorem maximus, eget luctus mauris imperdiet. Maecenas vel mauris dui. Aenean mollis finibus leo, in luctus orci ullamcorper maximus. Nunc ac elementum ante, eget volutpat orci. Nulla molestie augue id sem aliquet tristique. Sed sagittis dignissim erat eget dictum. Donec blandit suscipit molestie. Morbi ac felis ut nisi placerat facilisis vitae a nisl. Fusce nunc tortor, tristique ut elit eu, hendrerit auctor lorem. Sed vel metus pulvinar, venenatis mauris ac, lobortis libero. Nulla posuere bibendum sapien, quis porta nibh venenatis et. Praesent in mattis tellus.</p></div></div>\",\r\n    \"LastReviewed\": \"2019-06-20T08:00:00\"}"
-				},
-				"url": {
-					"raw": "https://localhost:44329/pages/help",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "44329",
-					"path": [
-						"pages",
-						"help"
-					]
-				}
-			},
-			"response": []
-		},
+    {
+      "name": "JobProfile post",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"CanonicalName\": \"accessibility\",\r\n    \"BreadcrumbTitle\": \"Accessibility\",\r\n    \"IncludeInSitemap\": true,\r\n    \"Content\": \"<div class=\\\"govuk-grid-row\\\"><div class=\\\"govuk-grid-column-full\\\"><h1 class=\\\"govuk-heading-xl\\\">Accessibility</h1><p class=\\\"govuk-body-l\\\">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae urna eget nibh laoreet venenatis. Sed suscipit magna ac augue sagittis, quis volutpat nisi dapibus. Donec ullamcorper leo ut velit faucibus, non congue massa porta. Curabitur sed tincidunt erat, pellentesque congue turpis. Praesent porttitor ante nec ex facilisis, ut consequat diam elementum. Proin convallis efficitur leo, efficitur euismod ligula elementum eu. Nulla facilisi. Sed elementum velit id leo bibendum lobortis. Nulla accumsan nulla non ex gravida tincidunt.</p><p class=\\\"govuk-body\\\">Morbi ut turpis sit amet lectus tristique pulvinar nec ultricies erat. Nulla facilisi. Duis imperdiet laoreet quam, at rhoncus nunc sagittis at. Proin pulvinar quam sit amet lorem maximus, eget luctus mauris imperdiet. Maecenas vel mauris dui. Aenean mollis finibus leo, in luctus orci ullamcorper maximus. Nunc ac elementum ante, eget volutpat orci. Nulla molestie augue id sem aliquet tristique. Sed sagittis dignissim erat eget dictum. Donec blandit suscipit molestie. Morbi ac felis ut nisi placerat facilisis vitae a nisl. Fusce nunc tortor, tristique ut elit eu, hendrerit auctor lorem. Sed vel metus pulvinar, venenatis mauris ac, lobortis libero. Nulla posuere bibendum sapien, quis porta nibh venenatis et. Praesent in mattis tellus.</p></div></div>\",\r\n    \"LastReviewed\": \"2019-06-20T08:00:00\"}"
+        },
+        "url": {
+          "raw": "https://localhost:44329/profile/profile-article",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "44329",
+          "path": [
+            "pages",
+            "help"
+          ]
+        }
+      },
+      "response": []
+    },
 		{
 			"name": "JobProfile health status get",
 			"request": {

@@ -25,7 +25,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public void JobProfileServiceDeleteReturnsSuccessWhenHelpPageDeleted()
+        public void JobProfileServiceDeleteReturnsSuccessWhenProfileDeleted()
         {
             // arrange
             Guid documentId = Guid.NewGuid();
@@ -42,7 +42,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public void JobProfileServiceDeleteReturnsNullWhenHelpPageNotDeleted()
+        public void JobProfileServiceDeleteReturnsNullWhenProfileNotDeleted()
         {
             // arrange
             Guid documentId = Guid.NewGuid();

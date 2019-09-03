@@ -13,17 +13,17 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
     [Trait("Profile Service", "Related Careers Segment Service Tests")]
     public class RelatedCareersSegmentServiceTests
     {
-        private const string ExpecedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
         private static readonly RelatedCareersSegmentModel ExpectedResult = new RelatedCareersSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpecedLastReviewed),
+            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
             Content = "some content",
         };
 
         private readonly ILogger<RelatedCareersSegmentService> logger;
         private readonly RelatedCareersSegmentClientOptions relatedCareersSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpecedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
 
         public RelatedCareersSegmentServiceTests()
         {

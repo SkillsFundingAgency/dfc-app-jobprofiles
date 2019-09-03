@@ -25,7 +25,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public void HelpPageServiceGetByAlternativeNameReturnsSuccess()
+        public void ProfileServiceGetByAlternativeNameReturnsSuccess()
         {
             // arrange
             const string alternativeName = "name1";
@@ -42,7 +42,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task HelpPageServiceGetByAlternativeNameReturnsArgumentNullExceptionWhenNullIsUsed()
+        public async System.Threading.Tasks.Task ProfileServiceGetByAlternativeNameReturnsArgumentNullExceptionWhenNullIsUsed()
         {
             // arrange
 
@@ -54,7 +54,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public void HelpPageServiceGetByAlternativeNameReturnsNullWhenMissingRepository()
+        public void ProfileServiceGetByAlternativeNameReturnsNullWhenMissingRepository()
         {
             // arrange
             const string alternativeName = "name1";

@@ -33,6 +33,10 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<WhatItTakesSegmentModel, DefaultSegmentViewModel>()
                 .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
             ;
+
+            CreateMap<WhatYouWillDoSegmentModel, DefaultSegmentViewModel>()
+                .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
+            ;
         }
     }
 }

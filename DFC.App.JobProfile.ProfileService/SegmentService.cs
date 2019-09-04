@@ -18,6 +18,7 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly IOverviewBannerSegmentService overviewBannerSegmentService;
         private readonly IRelatedCareersSegmentService relatedCareersSegmentService;
         private readonly IWhatItTakesSegmentService whatItTakesSegmentService;
+        private readonly IWhatYouWillDoSegmentService whatYouWillDoSegmentService;
 
         public SegmentService(
             ILogger<SegmentService> logger,
@@ -26,7 +27,8 @@ namespace DFC.App.JobProfile.ProfileService
             IHowToBecomeSegmentService howToBecomeSegmentService,
             IOverviewBannerSegmentService overviewBannerSegmentService,
             IRelatedCareersSegmentService relatedCareersSegmentService,
-            IWhatItTakesSegmentService whatItTakesSegmentService)
+            IWhatItTakesSegmentService whatItTakesSegmentService,
+            IWhatYouWillDoSegmentService whatYouWillDoSegmentService)
         {
             this.logger = logger;
             this.careerPathSegmentService = careerPathSegmentService;
@@ -35,6 +37,7 @@ namespace DFC.App.JobProfile.ProfileService
             this.overviewBannerSegmentService = overviewBannerSegmentService;
             this.relatedCareersSegmentService = relatedCareersSegmentService;
             this.whatItTakesSegmentService = whatItTakesSegmentService;
+            this.whatYouWillDoSegmentService = whatYouWillDoSegmentService;
         }
 
         public CreateOrUpdateJobProfileModel CreateOrUpdateJobProfileModel { get; set; }
@@ -53,6 +56,7 @@ namespace DFC.App.JobProfile.ProfileService
             Task<OverviewBannerSegmentModel> overviewBannerSegmnentTask = null;
             Task<RelatedCareersSegmentModel> relatedCareersSegmnentTask = null;
             Task<WhatItTakesSegmentModel> whatItTakesSegmnentTask = null;
+            Task<WhatYouWillDoSegmentModel> whatYouWillDoSegmnentTask = null;
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshCareerPathSegment)
             {
@@ -90,6 +94,12 @@ namespace DFC.App.JobProfile.ProfileService
                 tasks.Add(whatItTakesSegmnentTask);
             }
 
+            if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshWhatYouWillDoSegment)
+            {
+                whatYouWillDoSegmnentTask = whatYouWillDoSegmentService.LoadAsync(CreateOrUpdateJobProfileModel.CanonicalName);
+                tasks.Add(whatYouWillDoSegmnentTask);
+            }
+
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
             JobProfileModel.Segments.CareerPath = GetResult(careerPathSegmnentTask, careerPathSegmentService.SegmentClientOptions);
@@ -98,6 +108,7 @@ namespace DFC.App.JobProfile.ProfileService
             JobProfileModel.Segments.OverviewBanner = GetResult(overviewBannerSegmnentTask, overviewBannerSegmentService.SegmentClientOptions);
             JobProfileModel.Segments.RelatedCareers = GetResult(relatedCareersSegmnentTask, relatedCareersSegmentService.SegmentClientOptions);
             JobProfileModel.Segments.WhatItTakes = GetResult(whatItTakesSegmnentTask, whatItTakesSegmentService.SegmentClientOptions);
+            JobProfileModel.Segments.WhatYouWillDo = GetResult(whatYouWillDoSegmnentTask, whatYouWillDoSegmentService.SegmentClientOptions);
 
             logger.LogInformation($"{nameof(LoadAsync)}: Loaded segments for {CreateOrUpdateJobProfileModel.CanonicalName}");
         }

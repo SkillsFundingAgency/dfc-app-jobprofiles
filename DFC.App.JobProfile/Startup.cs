@@ -2,7 +2,6 @@
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.Segments;
 using DFC.App.JobProfile.DraftProfileService;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.HttpClientPolicies;
@@ -57,6 +56,7 @@ namespace DFC.App.JobProfile
             services.AddSingleton(configuration.GetSection(nameof(OverviewBannerSegmentClientOptions)).Get<OverviewBannerSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(RelatedCareersSegmentClientOptions)).Get<RelatedCareersSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(WhatItTakesSegmentClientOptions)).Get<WhatItTakesSegmentClientOptions>());
+            services.AddSingleton(configuration.GetSection(nameof(WhatYouWillDoSegmentClientOptions)).Get<WhatYouWillDoSegmentClientOptions>());
 
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
@@ -85,6 +85,10 @@ namespace DFC.App.JobProfile
             services
                 .AddPolicies(policyRegistry, nameof(WhatItTakesSegmentClientOptions), policyOptions)
                 .AddHttpClient<IWhatItTakesSegmentService, WhatItTakesSegmentService, WhatItTakesSegmentClientOptions>(configuration, nameof(WhatItTakesSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            services
+                .AddPolicies(policyRegistry, nameof(WhatYouWillDoSegmentClientOptions), policyOptions)
+                .AddHttpClient<IWhatYouWillDoSegmentService, WhatYouWillDoSegmentService, WhatYouWillDoSegmentClientOptions>(configuration, nameof(WhatYouWillDoSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
 
             services.AddAutoMapper(typeof(Startup).Assembly);
 

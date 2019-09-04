@@ -29,6 +29,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.HowToBecomeSegmentLastReviewed, s => s.MapFrom(a => a.Segments.HowToBecome.LastReviewed))
                 .ForMember(d => d.WhatItTakesSegmentContent, s => s.MapFrom(a => new HtmlString(a.Segments.WhatItTakes.Content)))
                 .ForMember(d => d.WhatItTakesSegmentLastReviewed, s => s.MapFrom(a => a.Segments.WhatItTakes.LastReviewed))
+                .ForMember(d => d.WhatYouWillDoSegmentContent, s => s.MapFrom(a => new HtmlString(a.Segments.WhatYouWillDo.Content)))
+                .ForMember(d => d.WhatYouWillDoSegmentLastReviewed, s => s.MapFrom(a => a.Segments.WhatYouWillDo.LastReviewed))
                 ;
 
             CreateMap<JobProfileModel, HeadViewModel>()

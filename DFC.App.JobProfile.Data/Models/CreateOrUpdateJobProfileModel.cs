@@ -27,5 +27,7 @@ namespace DFC.App.JobProfile.Data.Models
         public bool RefreshHowToBecomeSegment { get; set; }
 
         public bool RefreshWhatItTakesSegment { get; set; }
+
+        public bool RefreshWhatYouWillDoSegment { get; set; }
     }
 }

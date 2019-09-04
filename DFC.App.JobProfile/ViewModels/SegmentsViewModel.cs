@@ -13,5 +13,7 @@
         public DefaultSegmentViewModel HowToBecome { get; set; }
 
         public DefaultSegmentViewModel WhatItTakes { get; set; }
+
+        public DefaultSegmentViewModel WhatYouWillDo { get; set; }
     }
 }

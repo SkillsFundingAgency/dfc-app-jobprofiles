@@ -13,5 +13,7 @@
         public RelatedCareersSegmentModel RelatedCareers { get; set; }
 
         public WhatItTakesSegmentModel WhatItTakes { get; set; }
+
+        public WhatYouWillDoSegmentModel WhatYouWillDo { get; set; }
     }
 }

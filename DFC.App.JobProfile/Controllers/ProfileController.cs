@@ -4,6 +4,7 @@ using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class ProfileController : Controller
     {
-        public const string ProfilePathRoot = "profile";
+        public const string ProfilePathRoot = "jobprofile";
 
         private readonly ILogger<ProfileController> logger;
         private readonly IJobProfileService jobProfileService;
@@ -26,7 +27,6 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile")]
         public async Task<IActionResult> Index()
         {
             logger.LogInformation($"{nameof(Index)} has been called");
@@ -46,7 +46,7 @@ namespace DFC.App.JobProfile.Controllers
                 logger.LogWarning($"{nameof(Index)} has returned with no results");
             }
 
-            return View(viewModel);
+            return this.NegotiateContentResult(viewModel);
         }
 
         [HttpGet]
@@ -65,12 +65,137 @@ namespace DFC.App.JobProfile.Controllers
 
                 logger.LogInformation($"{nameof(Document)} has succeeded for: {article}");
 
-                return View(viewModel);
+                return this.NegotiateContentResult(viewModel);
             }
 
             logger.LogWarning($"{nameof(Document)} has returned no content for: {article}");
 
             return NoContent();
+        }
+
+        [HttpPut]
+        [HttpPost]
+        [Route("profile")]
+        public async Task<IActionResult> CreateOrUpdate([FromBody]CreateOrUpdateJobProfileModel createOrUpdateJobProfileModel)
+        {
+            logger.LogInformation($"{nameof(CreateOrUpdate)} has been called");
+
+            if (createOrUpdateJobProfileModel == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingJobProfileModel = await jobProfileService.GetByIdAsync(createOrUpdateJobProfileModel.DocumentId).ConfigureAwait(false);
+
+            if (existingJobProfileModel == null)
+            {
+                var createdResponse = await jobProfileService.CreateAsync(createOrUpdateJobProfileModel).ConfigureAwait(false);
+
+                logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {createOrUpdateJobProfileModel.CanonicalName}");
+
+                return new CreatedAtActionResult(nameof(Document), "Profile", new { article = createdResponse.CanonicalName }, createdResponse);
+            }
+            else
+            {
+                var updatedResponse = await jobProfileService.ReplaceAsync(createOrUpdateJobProfileModel, existingJobProfileModel).ConfigureAwait(false);
+
+                logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {createOrUpdateJobProfileModel.CanonicalName}");
+
+                return new OkObjectResult(updatedResponse);
+            }
+        }
+
+        [HttpDelete]
+        [Route("profile/{documentId}")]
+        public async Task<IActionResult> Delete(Guid documentId)
+        {
+            logger.LogInformation($"{nameof(Delete)} has been called");
+
+            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
+
+            if (jobProfileModel == null)
+            {
+                logger.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
+
+                return NotFound();
+            }
+
+            await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
+
+            logger.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("profile/{article}/htmlhead")]
+        public async Task<IActionResult> Head(string article)
+        {
+            logger.LogInformation($"{nameof(Head)} has been called");
+
+            var viewModel = new HeadViewModel();
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+
+                viewModel.CanonicalUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
+            }
+
+            logger.LogInformation($"{nameof(Head)} has returned content for: {article}");
+
+            return this.NegotiateContentResult(viewModel);
+        }
+
+        [Route("profile/{article}/breadcrumb")]
+        public async Task<IActionResult> Breadcrumb(string article)
+        {
+            logger.LogInformation($"{nameof(Breadcrumb)} has been called");
+
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+            var viewModel = BuildBreadcrumb(jobProfileModel);
+
+            logger.LogInformation($"{nameof(Breadcrumb)} has returned content for: {article}");
+
+            return this.NegotiateContentResult(viewModel);
+        }
+
+        [HttpGet]
+        [Route("profile/{article}/contents")]
+        public async Task<IActionResult> Body(string article)
+        {
+            logger.LogInformation($"{nameof(Body)} has been called");
+
+            var viewModel = new BodyViewModel();
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+            }
+            else
+            {
+                var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
+
+                if (alternateJobProfileModel != null)
+                {
+                    var alternateUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+
+                    logger.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
+
+                    return RedirectPermanentPreserveMethod(alternateUrl);
+                }
+            }
+
+            logger.LogInformation($"{nameof(Body)} has returned content for: {article}");
+
+            return this.NegotiateContentResult(viewModel);
         }
 
         #region Define helper methods
@@ -91,13 +216,19 @@ namespace DFC.App.JobProfile.Controllers
                         Route = $"/{ProfilePathRoot}",
                         Title = "Job Profiles",
                     },
-                    new BreadcrumbPathViewModel
-                    {
-                        Route = $"/{ProfilePathRoot}/{jobProfileModel.CanonicalName}",
-                        Title = jobProfileModel.BreadcrumbTitle,
-                    },
                 },
             };
+
+            if (jobProfileModel != null)
+            {
+                var breadcrumbPathViewModel = new BreadcrumbPathViewModel
+                {
+                    Route = $"/{ProfilePathRoot}/{jobProfileModel.CanonicalName}",
+                    Title = jobProfileModel.BreadcrumbTitle,
+                };
+
+                viewModel.Paths.Add(breadcrumbPathViewModel);
+            }
 
             viewModel.Paths.Last().AddHyperlink = false;
 

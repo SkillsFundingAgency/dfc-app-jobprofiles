@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DFC.App.JobProfile.Models.Sitemap
+namespace DFC.App.JobProfile.Models
 {
     [XmlType(Namespace = "http://www.google.com/schemas/sitemap-image/1.1")]
     public class SitemapImage

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace DFC.App.JobProfile.Models.Sitemap
+namespace DFC.App.JobProfile.Models
 {
     public class SitemapLocation
     {

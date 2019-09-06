@@ -37,6 +37,7 @@ jobs:
       BuildPlatform: $(BuildPlatform)
       BuildConfiguration: $(BuildConfiguration)
       PublishWebApp: true
+      TestSuffix: UnitTests
 
 
 

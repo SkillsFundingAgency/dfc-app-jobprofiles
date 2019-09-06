@@ -15,6 +15,12 @@ resources:
 
 jobs:
 
+#Build and test resources
+- template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
+  parameters:
+    ArmTemplateRoot: $(ArmTemplateRoot)
+
+#Build and test application
 - job: BuildDotNetCore
   displayName: Build-DotNetCore
   pool:
@@ -24,9 +30,6 @@ jobs:
     - visualstudio
 
   steps:
-  - template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
-    parameters:
-      ArmTemplateRoot: $(ArmTemplateRoot)
   # Build DFC.App.JobProfile
   - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
     parameters:

@@ -38,33 +38,3 @@ jobs:
       BuildConfiguration: $(BuildConfiguration)
       PublishWebApp: true
       TestSuffix: UnitTests
-  # Build DFC.App.JobProfile.DraftProfileService
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).DraftProfileService
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration)
-      TestSuffix: UnitTests
-  # Build DFC.App.JobProfile.ProfileService
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).ProfileService
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration)
-      TestSuffix: UnitTests      
-  # Build DFC.App.JobProfile.Data
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).Data
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration)   
-  # Build DFC.App.JobProfile.Repository.CosmosDb
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).Repository.CosmosDb
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration)       
-
-
-
-

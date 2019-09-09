@@ -10,7 +10,7 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/heads/NCSD-1480-AlterBuildTemplateForUnitTests
+    ref: refs/tags/v1.6.1
     endpoint: 'GitHub (ESFA)'
 
 jobs:

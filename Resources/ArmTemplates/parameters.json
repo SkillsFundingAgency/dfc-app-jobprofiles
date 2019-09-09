@@ -17,6 +17,12 @@
         "appSharedStorageAccountName": {
             "value": "__appSharedStorageAccountName__"
         },
+        "cosmosDbEndpoint": {
+            "value": "__appSharedCosmosEndpointUrl__"
+        },
+        "cosmosDbKey": {
+            "value": "__appSharedCosmosPrimaryKey__"
+        },
         "environment": {
             "value": "__ReleaseEnvironmentName__",
             "metadata": {

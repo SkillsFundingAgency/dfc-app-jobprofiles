@@ -2,10 +2,154 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "aseHostingEnvironmentName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "aseResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "aspInstances": {
+            "type": "int",
+            "defaultValue": 2
+        },
+        "aspSize": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "aspTier": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "appSharedResourceGroup": {
+            "type": "string"
+        },
+        "appSharedStorageAccountName": {
+            "type": "string"
+        },
+        "environment": {
+            "type": "string"
+        },
+        "sharedAppServicePlanName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "sharedAppServicePlanResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        }
     },
     "variables": {
+        "appServiceAppInsightsName": "[concat(variables('ResourcePrefix'), '-ai')]",
+        "appServicePlanName": "[if(greater(length(parameters('sharedAppServicePlanName')), 0), parameters('sharedAppServicePlanName'), concat(variables('resourcePrefix'), '-asp'))]",
+        "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
+        "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
+        "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
+        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-compui-shell'))]"
     },
     "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('AppServiceAppInsightsName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('AppServiceAppInsightsName')]"
+                    },
+                    "attachedService": {
+                        "value": ""
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('appServicePlanName')]",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[not(equals(parameters('sharedAppServicePlanName'), variables('appServicePlanName')))]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('appServicePlanName')]"
+                    },
+                    "aseHostingEnvironmentName": {
+                        "value": "[parameters('aseHostingEnvironmentName')]"
+                    },
+                    "aseResourceGroup": {
+                        "value": "[parameters('aseResourceGroup')]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('aspSize')]"
+                    },
+                    "aspInstances": {
+                        "value": "[parameters('aspInstances')]"
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('aspTier')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('WebAppName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('webAppName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[variables('appServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[variables('appServicePlanResourceGroup')]"
+                    },
+                    "appServiceType": {
+                        "value": "app"
+                    },
+                    "deployStagingSlot": {
+                        "value": false
+                    },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "MSDEPLOY_RENAME_LOCKED_FILES",
+                                "value": "1"
+                            },
+                            {
+                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference(variables('AppServiceAppInsightsName')).outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "AzureWebJobsStorage",
+                                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('appSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('appSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                            }
+                        ]
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('AppServiceAppInsightsName')]"
+            ]
+        }
     ],
-    "outputs": {}
-}
+        "outputs": {}
+    }

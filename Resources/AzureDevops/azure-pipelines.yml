@@ -38,3 +38,4 @@ jobs:
       BuildConfiguration: $(BuildConfiguration)
       PublishWebApp: true
       TestSuffix: UnitTests
+##TO DO: add build steps back in (needed to run tests even though artifacts won't be consumed)

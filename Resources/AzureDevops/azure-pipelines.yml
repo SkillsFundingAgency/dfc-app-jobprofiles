@@ -10,11 +10,17 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/tags/v1.4.0
+    ref: refs/tags/v1.6.1
     endpoint: 'GitHub (ESFA)'
 
 jobs:
 
+#Build and test resources
+- template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
+  parameters:
+    ArmTemplateRoot: $(ArmTemplateRoot)
+
+#Build and test application
 - job: BuildDotNetCore
   displayName: Build-DotNetCore
   pool:
@@ -24,16 +30,37 @@ jobs:
     - visualstudio
 
   steps:
-  - template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
-    parameters:
-      ArmTemplateRoot: $(ArmTemplateRoot)
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
+  # Build DFC.App.JobProfile
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
     parameters:
       SolutionBaseName: $(SolutionBaseName)
       BuildPlatform: $(BuildPlatform)
       BuildConfiguration: $(BuildConfiguration)
       PublishWebApp: true
-
-
-
-
+      TestSuffix: UnitTests
+  # Test DFC.App.JobProfile.DraftProfileService (an artifact will be built but isn't consumed in the release) 
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
+    parameters:
+      SolutionBaseName: $(SolutionBaseName).DraftProfileService
+      BuildPlatform: $(BuildPlatform)
+      BuildConfiguration: $(BuildConfiguration)
+      TestSuffix: UnitTests
+  # Test DFC.App.JobProfile.ProfileService (an artifact will be built but isn't consumed in the release) 
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
+    parameters:
+      SolutionBaseName: $(SolutionBaseName).ProfileService
+      BuildPlatform: $(BuildPlatform)
+      BuildConfiguration: $(BuildConfiguration)
+      TestSuffix: UnitTests      
+  # Test DFC.App.JobProfile.Data (an artifact will be built but isn't consumed in the release) 
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
+    parameters:
+      SolutionBaseName: $(SolutionBaseName).Data
+      BuildPlatform: $(BuildPlatform)
+      BuildConfiguration: $(BuildConfiguration)   
+  # Test DFC.App.JobProfile.Repository.CosmosDb (an artifact will be built but isn't consumed in the release) 
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
+    parameters:
+      SolutionBaseName: $(SolutionBaseName).Repository.CosmosDb
+      BuildPlatform: $(BuildPlatform)
+      BuildConfiguration: $(BuildConfiguration) 

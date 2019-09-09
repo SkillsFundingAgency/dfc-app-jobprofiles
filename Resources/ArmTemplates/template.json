@@ -2,6 +2,15 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "appServiceDomain": {
+            "type": "string"
+        },
+        "appSharedResourceGroup": {
+            "type": "string"
+        },
+        "appSharedStorageAccountName": {
+            "type": "string"
+        },
         "aseHostingEnvironmentName": {
             "type": "string",
             "defaultValue": ""
@@ -21,12 +30,6 @@
         "aspTier": {
             "type": "string",
             "defaultValue": ""
-        },
-        "appSharedResourceGroup": {
-            "type": "string"
-        },
-        "appSharedStorageAccountName": {
-            "type": "string"
         },
         "cosmosDbEndpoint": {
             "type": "string"
@@ -52,13 +55,13 @@
         "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
-        "urlJobprofileOverviewApp": "tbc",
-        "urlJobprofileCurrentopportunitiesApp": "tbc",
-        "urlCareerpathApp": "tbc",
-        "urlJobprofileHowtobecomeApp": "tbc",
-        "urlRelatedcareersApp": "tbc",
-        "urlJobprofileSkillsApp": "tbc",
-        "urlJobprofileTasksApp": "tbc",
+        "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlCareerpathApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlJobprofileHowtobecomeApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlRelatedcareersApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlJobprofileSkillsApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlJobprofileTasksApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]"
     },
     "resources": [

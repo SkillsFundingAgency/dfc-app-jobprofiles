@@ -2,6 +2,15 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "appServiceDomain": {
+            "value": "__appServiceDomain__"
+        },
+        "appSharedResourceGroup": {
+            "value": "__appSharedResourceGroup__"
+        },
+        "appSharedStorageAccountName": {
+            "value": "__appSharedStorageAccountName__"
+        },
         "aseHostingEnvironmentName": {
             "value": "__aseHostingEnvironmentName__"
         },
@@ -10,12 +19,6 @@
         },
         "aspTier": {
             "value": "__aspTier__"
-        },
-        "appSharedResourceGroup": {
-            "value": "__appSharedResourceGroup__"
-        },
-        "appSharedStorageAccountName": {
-            "value": "__appSharedStorageAccountName__"
         },
         "cosmosDbEndpoint": {
             "value": "__appSharedCosmosEndpointUrl__"

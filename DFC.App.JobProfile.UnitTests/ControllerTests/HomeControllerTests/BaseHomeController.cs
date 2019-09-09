@@ -16,13 +16,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HomeControllerTests
             FakeLogger = A.Fake<ILogger<HomeController>>();
         }
 
-        protected ILogger<HomeController> FakeLogger { get; }
-
         public static IEnumerable<object[]> HtmlMediaTypes => new List<object[]>
         {
             new string[] { "*/*" },
             new string[] { MediaTypeNames.Text.Html },
         };
+
+        protected ILogger<HomeController> FakeLogger { get; }
 
         protected HomeController BuildHomeController(string mediaTypeName)
         {

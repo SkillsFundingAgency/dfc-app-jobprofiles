@@ -1,5 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Models.Sitemap;
+using DFC.App.JobProfile.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;

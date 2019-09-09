@@ -67,5 +67,11 @@ namespace DFC.App.JobProfile.ViewModels
 
         [Display(Name = "What It Takes Last Reviewed")]
         public DateTime WhatItTakesSegmentLastReviewed { get; set; }
+
+        [Display(Name = "What You Will Do Content")]
+        public HtmlString WhatYouWillDoSegmentContent { get; set; }
+
+        [Display(Name = "What You Will Do Last Reviewed")]
+        public DateTime WhatYouWillDoSegmentLastReviewed { get; set; }
     }
 }

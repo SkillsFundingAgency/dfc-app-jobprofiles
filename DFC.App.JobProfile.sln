@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solutio
 		DFC.Digital.CodeAnalysis.ruleset = DFC.Digital.CodeAnalysis.ruleset
 		LICENSE = LICENSE
 		README.md = README.md
+		SetUpJobProfiles.postman_collection.json = SetUpJobProfiles.postman_collection.json
 		stylecop.json = stylecop.json
 		UnitTests.CodeAnalysis.ruleset = UnitTests.CodeAnalysis.ruleset
 	EndProjectSection
@@ -41,13 +42,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.Reposito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.Data", "DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj", "{391DB827-7C35-405B-9635-07543266A21D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.IntegrationTests", "DFC.App.JobProfile.IntegrationTests\DFC.App.JobProfile.IntegrationTests.csproj", "{A57874A4-94C2-4E46-9B04-7CF7C5835C7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.IntegrationTests", "DFC.App.JobProfile.IntegrationTests\DFC.App.JobProfile.IntegrationTests.csproj", "{A57874A4-94C2-4E46-9B04-7CF7C5835C7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.ProfileService.UnitTests", "DFC.App.JobProfile.ProfileService.UnitTests\DFC.App.JobProfile.ProfileService.UnitTests.csproj", "{1AD7A648-8815-4D89-B8D5-470AFEC2F07E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.ProfileService.UnitTests", "DFC.App.JobProfile.ProfileService.UnitTests\DFC.App.JobProfile.ProfileService.UnitTests.csproj", "{1AD7A648-8815-4D89-B8D5-470AFEC2F07E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.DraftProfileService.UnitTests", "DFC.App.JobProfile.DraftProfileService.UnitTests\DFC.App.JobProfile.DraftProfileService.UnitTests.csproj", "{751AEF18-04A9-4A5B-A053-99D64E43960B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.DraftProfileService.UnitTests", "DFC.App.JobProfile.DraftProfileService.UnitTests\DFC.App.JobProfile.DraftProfileService.UnitTests.csproj", "{751AEF18-04A9-4A5B-A053-99D64E43960B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.UnitTests", "DFC.App.JobProfile.UnitTests\DFC.App.JobProfile.UnitTests.csproj", "{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.UnitTests", "DFC.App.JobProfile.UnitTests\DFC.App.JobProfile.UnitTests.csproj", "{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

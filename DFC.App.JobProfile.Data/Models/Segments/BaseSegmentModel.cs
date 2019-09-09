@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace DFC.App.JobProfile.Data.Models
+namespace DFC.App.JobProfile.Data.Models.Segments
 {
-    public class DefaultSegmentModel
+    public abstract class BaseSegmentModel
     {
         public DateTime LastReviewed { get; set; }
 

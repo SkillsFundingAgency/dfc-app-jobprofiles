@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Models.Segments;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;

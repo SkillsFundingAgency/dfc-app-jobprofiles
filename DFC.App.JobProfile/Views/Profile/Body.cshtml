@@ -1,0 +1,33 @@
+﻿@model BodyViewModel
+
+<div class="govuk-width-container">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <partial name="_OverviewBannerSegment" model=Model.Segments.OverviewBanner />
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_SegmentLinks" />
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <partial name="_Search" />
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_HowToBecomeSegment" model=Model.Segments.HowToBecome />
+            <partial name="_WhatItTakesSegment" model=Model.Segments.WhatItTakes />
+            <partial name="_WhatYouWillDoSegment" model=Model.Segments.WhatYouWillDo />
+            <partial name="_CareerPathSegment" model=Model.Segments.CareerPath />
+            <partial name="_CurrentOpportunitiesSegment" model=Model.Segments.CurrentOpportunities />
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <partial name="_RelatedCareersSegment" model=Model.Segments.RelatedCareers />
+        </div>
+    </div>
+</div>

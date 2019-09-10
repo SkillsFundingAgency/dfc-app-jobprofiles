@@ -8,10 +8,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceDataTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceMarkupTests
 {
-    [Trait("Profile Service", "Overview Banner Segment Service Data Tests")]
-    public class OverviewBannerSegmentServiceDataTests
+    [Trait("Profile Service", "Overview Banner Segment Service Markup Tests")]
+    public class OverviewBannerSegmentServiceMarkupTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly OverviewBannerSegmentModel ExpectedResult = new OverviewBannerSegmentModel
@@ -22,9 +22,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         private readonly ILogger<OverviewBannerSegmentService> logger;
         private readonly OverviewBannerSegmentClientOptions overviewBannerSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"Updated\": \"{ExpectedUpdated}\"}}";
+        private readonly string responseHtml = $"<div><h1>{nameof(OverviewBannerSegmentServiceMarkupTests)}</h1><p>Lorum ipsum ...</p></div>";
 
-        public OverviewBannerSegmentServiceDataTests()
+        public OverviewBannerSegmentServiceMarkupTests()
         {
             logger = A.Fake<ILogger<OverviewBannerSegmentService>>();
             overviewBannerSegmentClientOptions = A.Fake<OverviewBannerSegmentClientOptions>();
@@ -37,7 +37,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task OverviewBannerSegmentServiceReturnsSuccessWhenOK()
         {
             // arrange
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.OK))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.OK))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
@@ -47,10 +47,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                     };
 
                     // act
-                    var results = await overviewBannerSegmentService.LoadDataAsync().ConfigureAwait(false);
+                    var results = await overviewBannerSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.Updated, ExpectedResult.Updated);
+                    A.Equals(results, ExpectedResult.Updated);
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
             // arrange
             OverviewBannerSegmentModel expectedResult = null;
 
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.NotFound))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
@@ -71,7 +71,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                     };
 
                     // act
-                    var results = await overviewBannerSegmentService.LoadDataAsync().ConfigureAwait(false);
+                    var results = await overviewBannerSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

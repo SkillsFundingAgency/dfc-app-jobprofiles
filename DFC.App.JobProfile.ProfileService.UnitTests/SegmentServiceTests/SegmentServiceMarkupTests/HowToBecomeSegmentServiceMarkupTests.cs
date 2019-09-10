@@ -10,44 +10,44 @@ using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceMarkupTests
 {
-    [Trait("Profile Service", "Career Path Segment Service Markup Tests")]
-    public class CareerPathSegmentServiceMarkupTests
+    [Trait("Profile Service", "How To Become Segment Service Markup Tests")]
+    public class HowToBecomeSegmentServiceMarkupTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
-        private static readonly CareerPathSegmentModel ExpectedResult = new CareerPathSegmentModel
+        private static readonly HowToBecomeSegmentModel ExpectedResult = new HowToBecomeSegmentModel
         {
             Updated = DateTime.Parse(ExpectedUpdated),
         };
 
-        private readonly ILogger<CareerPathSegmentService> logger;
-        private readonly CareerPathSegmentClientOptions careerPathSegmentClientOptions;
+        private readonly ILogger<HowToBecomeSegmentService> logger;
+        private readonly HowToBecomeSegmentClientOptions howToBecomeSegmentClientOptions;
 
-        private readonly string responseHtml = $"<div><h1>{nameof(CareerPathSegmentServiceMarkupTests)}</h1><p>Lorum ipsum ...</p></div>";
+        private readonly string responseHtml = $"<div><h1>{nameof(HowToBecomeSegmentServiceMarkupTests)}</h1><p>Lorum ipsum ...</p></div>";
 
-        public CareerPathSegmentServiceMarkupTests()
+        public HowToBecomeSegmentServiceMarkupTests()
         {
-            logger = A.Fake<ILogger<CareerPathSegmentService>>();
-            careerPathSegmentClientOptions = A.Fake<CareerPathSegmentClientOptions>();
+            logger = A.Fake<ILogger<HowToBecomeSegmentService>>();
+            howToBecomeSegmentClientOptions = A.Fake<HowToBecomeSegmentClientOptions>();
 
-            careerPathSegmentClientOptions.BaseAddress = new Uri("https://nowhere.com");
-            careerPathSegmentClientOptions.Endpoint = "segment/{0}/contents";
+            howToBecomeSegmentClientOptions.BaseAddress = new Uri("https://nowhere.com");
+            howToBecomeSegmentClientOptions.Endpoint = "segment/{0}/contents";
         }
 
         [Fact]
-        public async Task CareerPathSegmentServiceReturnsSuccessWhenOK()
+        public async Task HowToBecomeSegmentServiceReturnsSuccessWhenOK()
         {
             // arrange
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.OK))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var careerPathSegmentService = new CareerPathSegmentService(httpClient, logger, careerPathSegmentClientOptions)
+                    var howToBecomeSegmentService = new HowToBecomeSegmentService(httpClient, logger, howToBecomeSegmentClientOptions)
                     {
                         CanonicalName = "article-name",
                     };
 
                     // act
-                    var results = await careerPathSegmentService.LoadMarkupAsync().ConfigureAwait(false);
+                    var results = await howToBecomeSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, ExpectedResult.Updated);
@@ -56,22 +56,22 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         }
 
         [Fact]
-        public async Task CareerPathSegmentServiceReturnsNullWhenNotFound()
+        public async Task HowToBecomeSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            CareerPathSegmentModel expectedResult = null;
+            HowToBecomeSegmentModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.NotFound))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var careerPathSegmentService = new CareerPathSegmentService(httpClient, logger, careerPathSegmentClientOptions)
+                    var howToBecomeSegmentService = new HowToBecomeSegmentService(httpClient, logger, howToBecomeSegmentClientOptions)
                     {
                         CanonicalName = "article-name",
                     };
 
                     // act
-                    var results = await careerPathSegmentService.LoadMarkupAsync().ConfigureAwait(false);
+                    var results = await howToBecomeSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

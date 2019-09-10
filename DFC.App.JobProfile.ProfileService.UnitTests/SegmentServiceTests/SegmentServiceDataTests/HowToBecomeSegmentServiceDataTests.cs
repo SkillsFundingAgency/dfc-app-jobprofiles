@@ -59,7 +59,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task HowToBecomeSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            const string responseJson = "{\"notValid\": true}";
             HowToBecomeSegmentModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))

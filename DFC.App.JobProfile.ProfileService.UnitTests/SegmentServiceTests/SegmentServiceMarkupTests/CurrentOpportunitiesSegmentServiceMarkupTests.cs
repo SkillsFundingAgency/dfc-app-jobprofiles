@@ -8,10 +8,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceDataTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceMarkupTests
 {
-    [Trait("Profile Service", "Current Opportunities Segment Service Data Tests")]
-    public class CurrentOpportunitiesSegmentServiceDataTests
+    [Trait("Profile Service", "Current Opportunities Segment Service Markup Tests")]
+    public class CurrentOpportunitiesSegmentServiceMarkupTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly CurrentOpportunitiesSegmentModel ExpectedResult = new CurrentOpportunitiesSegmentModel
@@ -22,9 +22,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         private readonly ILogger<CurrentOpportunitiesSegmentService> logger;
         private readonly CurrentOpportunitiesSegmentClientOptions currentOpportunitiesSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"Updated\": \"{ExpectedUpdated}\"}}";
+        private readonly string responseHtml = $"<div><h1>{nameof(CurrentOpportunitiesSegmentServiceMarkupTests)}</h1><p>Lorum ipsum ...</p></div>";
 
-        public CurrentOpportunitiesSegmentServiceDataTests()
+        public CurrentOpportunitiesSegmentServiceMarkupTests()
         {
             logger = A.Fake<ILogger<CurrentOpportunitiesSegmentService>>();
             currentOpportunitiesSegmentClientOptions = A.Fake<CurrentOpportunitiesSegmentClientOptions>();
@@ -37,7 +37,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task CurrentOpportunitiesSegmentServiceReturnsSuccessWhenOK()
         {
             // arrange
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.OK))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.OK))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
@@ -47,10 +47,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                     };
 
                     // act
-                    var results = await currentOpportunitiesSegmentService.LoadDataAsync().ConfigureAwait(false);
+                    var results = await currentOpportunitiesSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.Updated, ExpectedResult.Updated);
+                    A.Equals(results, ExpectedResult.Updated);
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
             // arrange
             CurrentOpportunitiesSegmentModel expectedResult = null;
 
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.NotFound))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
@@ -71,7 +71,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                     };
 
                     // act
-                    var results = await currentOpportunitiesSegmentService.LoadDataAsync().ConfigureAwait(false);
+                    var results = await currentOpportunitiesSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

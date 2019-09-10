@@ -10,9 +10,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public SegmentsModelProfile()
         {
-            //CreateMap<SegmentsDataModel, SegmentsDataViewModel>()
-            //    ;
-
             CreateMap<SegmentsMarkupModel, SegmentsMarkupViewModel>()
                 .ForMember(d => d.OverviewBanner, s => s.MapFrom(a => new HtmlString(a.OverviewBanner)))
                 .ForMember(d => d.CurrentOpportunities, s => s.MapFrom(a => new HtmlString(a.CurrentOpportunities)))

@@ -59,7 +59,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task CareerPathSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            const string responseJson = "{\"notValid\": true}";
             CareerPathSegmentModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))

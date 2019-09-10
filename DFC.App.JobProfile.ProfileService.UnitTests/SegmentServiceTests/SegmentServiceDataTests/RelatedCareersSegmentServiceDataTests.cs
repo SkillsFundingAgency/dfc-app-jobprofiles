@@ -8,24 +8,23 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceDataTests
 {
-    [Trait("Profile Service", "Related Careers Segment Service Tests")]
-    public class RelatedCareersSegmentServiceTests
+    [Trait("Profile Service", "Related Careers Segment Service Data Tests")]
+    public class RelatedCareersSegmentServiceDataTests
     {
-        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly RelatedCareersSegmentModel ExpectedResult = new RelatedCareersSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
-            Content = "some content",
+            Updated = DateTime.Parse(ExpectedUpdated),
         };
 
         private readonly ILogger<RelatedCareersSegmentService> logger;
         private readonly RelatedCareersSegmentClientOptions relatedCareersSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = $"{{\"Updated\": \"{ExpectedUpdated}\"}}";
 
-        public RelatedCareersSegmentServiceTests()
+        public RelatedCareersSegmentServiceDataTests()
         {
             logger = A.Fake<ILogger<RelatedCareersSegmentService>>();
             relatedCareersSegmentClientOptions = A.Fake<RelatedCareersSegmentClientOptions>();
@@ -42,14 +41,16 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions);
+                    var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await relatedCareersSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await relatedCareersSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
-                    A.Equals(results.Content, ExpectedResult.Content);
+                    A.Equals(results.Updated, ExpectedResult.Updated);
                 }
             }
         }
@@ -65,10 +66,13 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions);
+                    var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await relatedCareersSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await relatedCareersSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

@@ -10,33 +10,26 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public SegmentModelsProfile()
         {
-            CreateMap<CareerPathSegmentModel, DefaultSegmentViewModel>()
-                .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
-            ;
+            //CreateMap<CareerPathSegmentModel, DefaultSegmentViewModel>()
+            //;
 
-            CreateMap<CurrentOpportunitiesSegmentModel, DefaultSegmentViewModel>()
-                .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
-            ;
+            //CreateMap<CurrentOpportunitiesSegmentModel, DefaultSegmentViewModel>()
+            //;
 
-            CreateMap<HowToBecomeSegmentModel, DefaultSegmentViewModel>()
-                .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
-            ;
+            //CreateMap<HowToBecomeSegmentModel, DefaultSegmentViewModel>()
+            //;
 
-            CreateMap<OverviewBannerSegmentModel, DefaultSegmentViewModel>()
-                .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
-            ;
+            //CreateMap<OverviewBannerSegmentModel, DefaultSegmentViewModel>()
+            //;
 
-            CreateMap<RelatedCareersSegmentModel, DefaultSegmentViewModel>()
-                .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
-            ;
+            //CreateMap<RelatedCareersSegmentModel, DefaultSegmentViewModel>()
+            //;
 
-            CreateMap<WhatItTakesSegmentModel, DefaultSegmentViewModel>()
-                .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
-            ;
+            //CreateMap<WhatItTakesSegmentModel, DefaultSegmentViewModel>()
+            //;
 
-            CreateMap<WhatYouWillDoSegmentModel, DefaultSegmentViewModel>()
-                .ForMember(d => d.Content, s => s.MapFrom(a => new HtmlString(a.Content)))
-            ;
+            //CreateMap<WhatYouWillDoSegmentModel, DefaultSegmentViewModel>()
+            //;
         }
     }
 }

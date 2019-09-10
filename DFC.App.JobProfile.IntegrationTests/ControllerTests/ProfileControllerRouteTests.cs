@@ -94,6 +94,30 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
+        public async Task PostProfileEndpointsReturnCreated()
+        {
+            // Arrange
+            const string url = "/profile";
+            var documentId = Guid.NewGuid();
+            var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
+            {
+                DocumentId = documentId,
+                CanonicalName = documentId.ToString().ToLowerInvariant(),
+                RefreshAllSegments = true,
+            };
+            var client = factory.CreateClient();
+
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            // Act
+            var response = await client.PostAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+        }
+
+        [Fact]
         public async Task PostProfileEndpointsForDefaultArticleRefreshAllReturnOk()
         {
             // Arrange
@@ -117,15 +141,14 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task PostProfileEndpointsReturnCreated()
+        public async Task PutProfileEndpointsForDefaultArticleRefreshAllReturnOk()
         {
             // Arrange
             const string url = "/profile";
-            var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
             {
-                DocumentId = documentId,
-                CanonicalName = documentId.ToString().ToLowerInvariant(),
+                DocumentId = defaultArticleGuid,
+                CanonicalName = DefaultArticleName,
                 RefreshAllSegments = true,
             };
             var client = factory.CreateClient();
@@ -133,11 +156,11 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             client.DefaultRequestHeaders.Accept.Clear();
 
             // Act
-            var response = await client.PostAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            var response = await client.PutAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]

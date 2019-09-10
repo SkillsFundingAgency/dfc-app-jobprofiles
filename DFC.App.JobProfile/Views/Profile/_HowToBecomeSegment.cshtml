@@ -1,10 +1,10 @@
-﻿@model DefaultSegmentViewModel
+﻿@model string
 
 @if (Model != null)
 {
     <div class="govuk-width-container">
         <a id="HowToBecome" />
 
-        @Html.Raw(Model.Content)
+        @Html.Raw(Model)
     </div>
 }

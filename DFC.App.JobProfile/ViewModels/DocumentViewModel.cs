@@ -26,52 +26,53 @@ namespace DFC.App.JobProfile.ViewModels
 
         public string Keywords { get; set; }
 
-        [Display(Name = "Last Reviewed")]
-        public DateTime LastReviewed { get; set; }
+        public DateTime Created { get; set; }
+
+        public DateTime Updated { get; set; }
 
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }
 
-        [Display(Name = "Overview Banner Content")]
-        public HtmlString OverviewBannerSegmentContent { get; set; }
+        [Display(Name = "Overview Banner Markup")]
+        public HtmlString OverviewBannerSegmentMarkup { get; set; }
 
-        [Display(Name = "Overview Banner Last Reviewed")]
-        public DateTime OverviewBannerSegmentLastReviewed { get; set; }
+        [Display(Name = "Overview Banner Updated")]
+        public DateTime OverviewBannerSegmentUpdated { get; set; }
 
-        [Display(Name = "Current Opportunities Content")]
-        public HtmlString CurrentOpportunitiesSegmentContent { get; set; }
+        [Display(Name = "Current Opportunities Markup")]
+        public HtmlString CurrentOpportunitiesSegmentMarkup { get; set; }
 
-        [Display(Name = "Current Opportunities Last Reviewed")]
-        public DateTime CurrentOpportunitiesSegmentLastReviewed { get; set; }
+        [Display(Name = "Current Opportunities Updated")]
+        public DateTime CurrentOpportunitiesSegmentUpdated { get; set; }
 
-        [Display(Name = "Related Careers Content")]
-        public HtmlString RelatedCareersSegmentContent { get; set; }
+        [Display(Name = "Related Careers Markup")]
+        public HtmlString RelatedCareersSegmentMarkup { get; set; }
 
-        [Display(Name = "Related Careers Last Reviewed")]
-        public DateTime RelatedCareersSegmentLastReviewed { get; set; }
+        [Display(Name = "Related Careers Updated")]
+        public DateTime RelatedCareersSegmentUpdated { get; set; }
 
-        [Display(Name = "Career Path Content")]
-        public HtmlString CareerPathSegmentContent { get; set; }
+        [Display(Name = "Career Path Markup")]
+        public HtmlString CareerPathSegmentMarkup { get; set; }
 
-        [Display(Name = "Career Path Last Reviewed")]
-        public DateTime CareerPathSegmentLastReviewed { get; set; }
+        [Display(Name = "Career Path Updated")]
+        public DateTime CareerPathSegmentUpdated { get; set; }
 
-        [Display(Name = "How To Become Content")]
-        public HtmlString HowToBecomeSegmentContent { get; set; }
+        [Display(Name = "How To Become Markup")]
+        public HtmlString HowToBecomeSegmentMarkup { get; set; }
 
-        [Display(Name = "How To Become Last Reviewed")]
-        public DateTime HowToBecomeSegmentLastReviewed { get; set; }
+        [Display(Name = "How To Become Updated")]
+        public DateTime HowToBecomeSegmentUpdated { get; set; }
 
-        [Display(Name = "What It Takes Content")]
-        public HtmlString WhatItTakesSegmentContent { get; set; }
+        [Display(Name = "What It Takes Markup")]
+        public HtmlString WhatItTakesSegmentMarkup { get; set; }
 
-        [Display(Name = "What It Takes Last Reviewed")]
-        public DateTime WhatItTakesSegmentLastReviewed { get; set; }
+        [Display(Name = "What It Takes Updated")]
+        public DateTime WhatItTakesSegmentUpdated { get; set; }
 
-        [Display(Name = "What You Will Do Content")]
-        public HtmlString WhatYouWillDoSegmentContent { get; set; }
+        [Display(Name = "What You Will Do Markup")]
+        public HtmlString WhatYouWillDoSegmentMarkup { get; set; }
 
-        [Display(Name = "What You Will Do Last Reviewed")]
-        public DateTime WhatYouWillDoSegmentLastReviewed { get; set; }
+        [Display(Name = "What You Will Do Updated")]
+        public DateTime WhatYouWillDoSegmentUpdated { get; set; }
     }
 }

@@ -11,12 +11,12 @@
 
     @if (!string.IsNullOrWhiteSpace(Model.Description))
     {
-        <meta name="description" content="@Model.Description">
+        <meta name="description" Markup="@Model.Description">
     }
 
     @if (!string.IsNullOrWhiteSpace(Model.Description))
     {
-        <meta name="keywords" content="@Model.Keywords">
+        <meta name="keywords" Markup="@Model.Keywords">
     }
 </head>
 <body>
@@ -61,108 +61,115 @@
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.LastReviewed)
+                @Html.DisplayNameFor(model => model.Created)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.LastReviewed)
+                @Html.DisplayFor(model => model.Created)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.OverviewBannerSegmentContent)
+                @Html.DisplayNameFor(model => model.Updated)
             </dt>
             <dd class="col-sm-10">
-                @Html.Raw(Model.OverviewBannerSegmentContent)
+                @Html.DisplayFor(model => model.Updated)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.OverviewBannerSegmentLastReviewed)
+                @Html.DisplayNameFor(model => model.OverviewBannerSegmentMarkup)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.OverviewBannerSegmentLastReviewed)
+                @Html.Raw(Model.OverviewBannerSegmentMarkup)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentContent)
+                @Html.DisplayNameFor(model => model.OverviewBannerSegmentUpdated)
             </dt>
             <dd class="col-sm-10">
-                @Html.Raw(Model.CurrentOpportunitiesSegmentContent)
+                @Html.DisplayFor(model => model.OverviewBannerSegmentUpdated)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentLastReviewed)
+                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentMarkup)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CurrentOpportunitiesSegmentLastReviewed)
+                @Html.Raw(Model.CurrentOpportunitiesSegmentMarkup)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.RelatedCareersSegmentContent)
+                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentUpdated)
             </dt>
             <dd class="col-sm-10">
-                @Html.Raw(Model.RelatedCareersSegmentContent)
+                @Html.DisplayFor(model => model.CurrentOpportunitiesSegmentUpdated)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.RelatedCareersSegmentLastReviewed)
+                @Html.DisplayNameFor(model => model.RelatedCareersSegmentMarkup)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.RelatedCareersSegmentLastReviewed)
+                @Html.Raw(Model.RelatedCareersSegmentMarkup)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CareerPathSegmentContent)
+                @Html.DisplayNameFor(model => model.RelatedCareersSegmentUpdated)
             </dt>
             <dd class="col-sm-10">
-                @Html.Raw(Model.CareerPathSegmentContent)
+                @Html.DisplayFor(model => model.RelatedCareersSegmentUpdated)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CareerPathSegmentLastReviewed)
+                @Html.DisplayNameFor(model => model.CareerPathSegmentMarkup)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CareerPathSegmentLastReviewed)
+                @Html.Raw(Model.CareerPathSegmentMarkup)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.HowToBecomeSegmentContent)
+                @Html.DisplayNameFor(model => model.CareerPathSegmentUpdated)
             </dt>
             <dd class="col-sm-10">
-                @Html.Raw(Model.HowToBecomeSegmentContent)
+                @Html.DisplayFor(model => model.CareerPathSegmentUpdated)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.HowToBecomeSegmentLastReviewed)
+                @Html.DisplayNameFor(model => model.HowToBecomeSegmentMarkup)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.HowToBecomeSegmentLastReviewed)
+                @Html.Raw(Model.HowToBecomeSegmentMarkup)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WhatItTakesSegmentContent)
+                @Html.DisplayNameFor(model => model.HowToBecomeSegmentUpdated)
             </dt>
             <dd class="col-sm-10">
-                @Html.Raw(Model.WhatItTakesSegmentContent)
+                @Html.DisplayFor(model => model.HowToBecomeSegmentUpdated)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WhatItTakesSegmentLastReviewed)
+                @Html.DisplayNameFor(model => model.WhatItTakesSegmentMarkup)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.WhatItTakesSegmentLastReviewed)
+                @Html.Raw(Model.WhatItTakesSegmentMarkup)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WhatYouWillDoSegmentContent)
+                @Html.DisplayNameFor(model => model.WhatItTakesSegmentUpdated)
             </dt>
             <dd class="col-sm-10">
-                @Html.Raw(Model.WhatYouWillDoSegmentContent)
+                @Html.DisplayFor(model => model.WhatItTakesSegmentUpdated)
             </dd>
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WhatYouWillDoSegmentLastReviewed)
+                @Html.DisplayNameFor(model => model.WhatYouWillDoSegmentMarkup)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.WhatYouWillDoSegmentLastReviewed)
+                @Html.Raw(Model.WhatYouWillDoSegmentMarkup)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.WhatYouWillDoSegmentUpdated)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.WhatYouWillDoSegmentUpdated)
             </dd>
 
             @if (Model.AlternativeNames?.Count() > 0)

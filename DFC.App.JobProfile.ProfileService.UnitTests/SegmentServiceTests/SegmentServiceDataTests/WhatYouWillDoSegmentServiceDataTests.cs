@@ -8,24 +8,23 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceDataTests
 {
-    [Trait("Profile Service", "What You WIll Do Segment Service Tests")]
-    public class WhatYouWillDoSegmentServiceTests
+    [Trait("Profile Service", "What You Will Do Segment Service Data Tests")]
+    public class WhatYouWillDoSegmentServiceDataTests
     {
-        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly WhatYouWillDoSegmentModel ExpectedResult = new WhatYouWillDoSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
-            Content = "some content",
+            Updated = DateTime.Parse(ExpectedUpdated),
         };
 
         private readonly ILogger<WhatYouWillDoSegmentService> logger;
         private readonly WhatYouWillDoSegmentClientOptions whatYouWillDoSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = $"{{\"Updated\": \"{ExpectedUpdated}\"}}";
 
-        public WhatYouWillDoSegmentServiceTests()
+        public WhatYouWillDoSegmentServiceDataTests()
         {
             logger = A.Fake<ILogger<WhatYouWillDoSegmentService>>();
             whatYouWillDoSegmentClientOptions = A.Fake<WhatYouWillDoSegmentClientOptions>();
@@ -42,14 +41,16 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var whatYouWillDoSegmentService = new WhatYouWillDoSegmentService(httpClient, logger, whatYouWillDoSegmentClientOptions);
+                    var whatYouWillDoSegmentService = new WhatYouWillDoSegmentService(httpClient, logger, whatYouWillDoSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await whatYouWillDoSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await whatYouWillDoSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
-                    A.Equals(results.Content, ExpectedResult.Content);
+                    A.Equals(results.Updated, ExpectedResult.Updated);
                 }
             }
         }
@@ -65,10 +66,13 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var whatYouWillDoSegmentService = new WhatYouWillDoSegmentService(httpClient, logger, whatYouWillDoSegmentClientOptions);
+                    var whatYouWillDoSegmentService = new WhatYouWillDoSegmentService(httpClient, logger, whatYouWillDoSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await whatYouWillDoSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await whatYouWillDoSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

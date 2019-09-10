@@ -1,6 +1,6 @@
 ﻿namespace DFC.App.JobProfile.Data.Models.Segments
 {
-    public class SegmentsModel
+    public class SegmentsDataModel
     {
         public CareerPathSegmentModel CareerPath { get; set; }
 

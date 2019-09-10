@@ -25,44 +25,48 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
 
         private readonly CareerPathSegmentModel expectedResultForCareerPath = new CareerPathSegmentModel
         {
-            LastReviewed = DateTime.UtcNow.AddDays(-1),
-            Content = "<p>CareerPath data</p>",
+            Updated = DateTime.UtcNow.AddDays(-1),
         };
 
         private readonly CurrentOpportunitiesSegmentModel expectedResultForCurrentOpportunities = new CurrentOpportunitiesSegmentModel
         {
-            LastReviewed = DateTime.UtcNow.AddDays(-2),
-            Content = "<p> CurrentOpportunities data</p>",
+            Updated = DateTime.UtcNow.AddDays(-2),
         };
 
         private readonly HowToBecomeSegmentModel expectedResultForHowToBecome = new HowToBecomeSegmentModel
         {
-            LastReviewed = DateTime.UtcNow.AddDays(-3),
-            Content = "<p>HowToBecome data</p>",
+            Updated = DateTime.UtcNow.AddDays(-3),
         };
 
         private readonly OverviewBannerSegmentModel expectedResultForOverviewBanner = new OverviewBannerSegmentModel
         {
-            LastReviewed = DateTime.UtcNow.AddDays(-4),
-            Content = "<p>OverviewBanner data</p>",
+            Updated = DateTime.UtcNow.AddDays(-4),
         };
 
         private readonly RelatedCareersSegmentModel expectedResultForRelatedCareers = new RelatedCareersSegmentModel
         {
-            LastReviewed = DateTime.UtcNow.AddDays(-5),
-            Content = "<p>RelatedCareers data</p>",
+            Updated = DateTime.UtcNow.AddDays(-5),
         };
 
         private readonly WhatItTakesSegmentModel expectedResultForWhatItTakes = new WhatItTakesSegmentModel
         {
-            LastReviewed = DateTime.UtcNow.AddDays(-6),
-            Content = "<p>WhatItTakes data</p>",
+            Updated = DateTime.UtcNow.AddDays(-6),
         };
 
         private readonly WhatYouWillDoSegmentModel expectedResultForWhatYouWillDo = new WhatYouWillDoSegmentModel
         {
-            LastReviewed = DateTime.UtcNow.AddDays(-6),
-            Content = "<p>WhatYouWillDo data</p>",
+            Updated = DateTime.UtcNow.AddDays(-6),
+        };
+
+        private readonly SegmentsMarkupModel expectedResultForMarkup = new SegmentsMarkupModel
+        {
+            CareerPath = "<p>CareerPath data</p>",
+            CurrentOpportunities = "<p> CurrentOpportunities data</p>",
+            HowToBecome = "<p>HowToBecome data</p>",
+            OverviewBanner = "<p>OverviewBanner data</p>",
+            RelatedCareers = "<p>RelatedCareers data</p>",
+            WhatItTakes = "<p>WhatItTakes data</p>",
+            WhatYouWillDo = "<p>WhatYouWillDo data</p>",
         };
 
         public SegmentServiceTests()
@@ -127,7 +131,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public async Task SegmentServiceReturnsSuccessWhenNoRefreshRequired()
         {
             // arrange
-            DateTime expectedLastReviewed = DateTime.UtcNow;
+            DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel
             {
@@ -139,7 +143,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -159,28 +164,36 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustNotHaveHappened();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CareerPath.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.HowToBecome.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
         }
 
         [Fact]
@@ -198,7 +211,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -214,47 +228,63 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
             };
 
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForCareerPath));
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForCurrentOpportunities));
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForHowToBecome));
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForOverviewBanner));
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForRelatedCareers));
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForWhatItTakes));
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForWhatYouWillDo));
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCareerPath));
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCurrentOpportunities));
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForHowToBecome));
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForOverviewBanner));
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForRelatedCareers));
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForWhatItTakes));
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForWhatYouWillDo));
+
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.CareerPath));
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.CurrentOpportunities));
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.HowToBecome));
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.OverviewBanner));
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.RelatedCareers));
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.WhatItTakes));
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.WhatYouWillDo));
 
             // act
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().Be(expectedResultForCareerPath.LastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(expectedResultForCareerPath.Content);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().Be(expectedResultForCurrentOpportunities.LastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(expectedResultForCurrentOpportunities.Content);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().Be(expectedResultForHowToBecome.LastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(expectedResultForHowToBecome.Content);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().Be(expectedResultForOverviewBanner.LastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(expectedResultForOverviewBanner.Content);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().Be(expectedResultForRelatedCareers.LastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(expectedResultForRelatedCareers.Content);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().Be(expectedResultForWhatItTakes.LastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(expectedResultForWhatItTakes.Content);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().Be(expectedResultForWhatYouWillDo.LastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(expectedResultForWhatYouWillDo.Content);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().Be(expectedResultForCareerPath.Updated);
+            jobProfileModel.Markup.CareerPath.Should().Be(expectedResultForMarkup.CareerPath);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().Be(expectedResultForCurrentOpportunities.Updated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(expectedResultForMarkup.CurrentOpportunities);
+            jobProfileModel.Data.HowToBecome.Updated.Should().Be(expectedResultForHowToBecome.Updated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(expectedResultForMarkup.HowToBecome);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().Be(expectedResultForOverviewBanner.Updated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(expectedResultForMarkup.OverviewBanner);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().Be(expectedResultForRelatedCareers.Updated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(expectedResultForMarkup.RelatedCareers);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().Be(expectedResultForWhatItTakes.Updated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(expectedResultForMarkup.WhatItTakes);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().Be(expectedResultForWhatYouWillDo.Updated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(expectedResultForMarkup.WhatYouWillDo);
         }
 
         [Fact]
         public async Task SegmentServiceReturnsSuccessWhenCareerOathOnlyRefreshRequired()
         {
             // arrange
-            DateTime expectedLastReviewed = DateTime.UtcNow;
+            DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel
             {
@@ -266,7 +296,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -282,41 +313,50 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
             };
 
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForCareerPath));
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCareerPath));
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.CareerPath));
 
             // act
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustNotHaveHappened();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().Be(expectedResultForCareerPath.LastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(expectedResultForCareerPath.Content);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().Be(expectedResultForCareerPath.Updated);
+            jobProfileModel.Markup.CareerPath.Should().Be(expectedResultForMarkup.CareerPath);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.HowToBecome.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
         }
 
         [Fact]
         public async Task SegmentServiceReturnsSuccessWhenCurrentOpportunitiesOnlyRefreshRequired()
         {
             // arrange
-            DateTime expectedLastReviewed = DateTime.UtcNow;
+            DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel
             {
@@ -328,7 +368,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -344,41 +385,50 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
             };
 
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForCurrentOpportunities));
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCurrentOpportunities));
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.CurrentOpportunities));
 
             // act
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustNotHaveHappened();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().Be(expectedResultForCurrentOpportunities.LastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(expectedResultForCurrentOpportunities.Content);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CareerPath.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().Be(expectedResultForCurrentOpportunities.Updated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(expectedResultForMarkup.CurrentOpportunities);
+            jobProfileModel.Data.HowToBecome.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
         }
 
         [Fact]
         public async Task SegmentServiceReturnsSuccessWhenHowToBecomeOnlyRefreshRequired()
         {
             // arrange
-            DateTime expectedLastReviewed = DateTime.UtcNow;
+            DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel
             {
@@ -390,7 +440,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -406,41 +457,50 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
             };
 
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForHowToBecome));
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForHowToBecome));
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.HowToBecome));
 
             // act
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustNotHaveHappened();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().Be(expectedResultForHowToBecome.LastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(expectedResultForHowToBecome.Content);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CareerPath.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.HowToBecome.Updated.Should().Be(expectedResultForHowToBecome.Updated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(expectedResultForMarkup.HowToBecome);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
         }
 
         [Fact]
         public async Task SegmentServiceReturnsSuccessWhenOverviewBannerOnlyRefreshRequired()
         {
             // arrange
-            DateTime expectedLastReviewed = DateTime.UtcNow;
+            DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel
             {
@@ -452,7 +512,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -468,41 +529,50 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
             };
 
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForOverviewBanner));
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForOverviewBanner));
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.OverviewBanner));
 
             // act
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustNotHaveHappened();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().Be(expectedResultForOverviewBanner.LastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(expectedResultForOverviewBanner.Content);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CareerPath.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.HowToBecome.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().Be(expectedResultForOverviewBanner.Updated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(expectedResultForMarkup.OverviewBanner);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
         }
 
         [Fact]
         public async Task SegmentServiceReturnsSuccessWhenRelatedCareersOnlyRefreshRequired()
         {
             // arrange
-            DateTime expectedLastReviewed = DateTime.UtcNow;
+            DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel
             {
@@ -514,7 +584,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -530,41 +601,50 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
             };
 
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForRelatedCareers));
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForRelatedCareers));
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.RelatedCareers));
 
             // act
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustNotHaveHappened();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().Be(expectedResultForRelatedCareers.LastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(expectedResultForRelatedCareers.Content);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CareerPath.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.HowToBecome.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().Be(expectedResultForRelatedCareers.Updated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(expectedResultForMarkup.RelatedCareers);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
         }
 
         [Fact]
         public async Task SegmentServiceReturnsSuccessWhenWhatItTakesOnlyRefreshRequired()
         {
             // arrange
-            DateTime expectedLastReviewed = DateTime.UtcNow;
+            DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel
             {
@@ -576,7 +656,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -592,41 +673,50 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
             };
 
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForWhatItTakes));
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForWhatItTakes));
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.WhatItTakes));
 
             // act
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustNotHaveHappened();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().Be(expectedResultForWhatItTakes.LastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(expectedResultForWhatItTakes.Content);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CareerPath.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.HowToBecome.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().Be(expectedResultForWhatItTakes.Updated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(expectedResultForMarkup.WhatItTakes);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
         }
 
         [Fact]
         public async Task SegmentServiceReturnsSuccessWhenWhatYouWillDoOnlyRefreshRequired()
         {
             // arrange
-            DateTime expectedLastReviewed = DateTime.UtcNow;
+            DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel
             {
@@ -638,7 +728,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
             var segmentService = new SegmentService(
                                                         logger,
@@ -654,34 +745,43 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
             };
 
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).Returns(Task.FromResult(expectedResultForWhatYouWillDo));
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForWhatYouWillDo));
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).Returns(Task.FromResult(expectedResultForMarkup.WhatYouWillDo));
 
             // act
             await segmentService.LoadAsync().ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => careerPathSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => currentOpportunitiesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => howToBecomeSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => overviewBannerSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => relatedCareersSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatItTakesSegmentService.LoadAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => whatYouWillDoSegmentService.LoadAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => careerPathSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).MustHaveHappenedOnceExactly();
 
-            jobProfileModel.Segments.CareerPath.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CareerPath.Content.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.CurrentOpportunities.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.CurrentOpportunities.Content.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.HowToBecome.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.HowToBecome.Content.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.OverviewBanner.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.OverviewBanner.Content.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.RelatedCareers.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.RelatedCareers.Content.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatItTakes.LastReviewed.Should().BeAfter(expectedLastReviewed);
-            jobProfileModel.Segments.WhatItTakes.Content.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
-            jobProfileModel.Segments.WhatYouWillDo.LastReviewed.Should().Be(expectedResultForWhatYouWillDo.LastReviewed);
-            jobProfileModel.Segments.WhatYouWillDo.Content.Should().Be(expectedResultForWhatYouWillDo.Content);
+            A.CallTo(() => careerPathSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => currentOpportunitiesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => howToBecomeSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => overviewBannerSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => relatedCareersSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatItTakesSegmentService.LoadMarkupAsync()).MustNotHaveHappened();
+            A.CallTo(() => whatYouWillDoSegmentService.LoadMarkupAsync()).MustHaveHappenedOnceExactly();
+
+            jobProfileModel.Data.CareerPath.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CareerPath.Should().Be(careerPathSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.CurrentOpportunities.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.CurrentOpportunities.Should().Be(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.HowToBecome.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.HowToBecome.Should().Be(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.OverviewBanner.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.OverviewBanner.Should().Be(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.RelatedCareers.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.RelatedCareers.Should().Be(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatItTakes.Updated.Should().BeAfter(expectedUpdated);
+            jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
+            jobProfileModel.Data.WhatYouWillDo.Updated.Should().Be(expectedResultForWhatYouWillDo.Updated);
+            jobProfileModel.Markup.WhatYouWillDo.Should().Be(expectedResultForMarkup.WhatYouWillDo);
         }
     }
 }

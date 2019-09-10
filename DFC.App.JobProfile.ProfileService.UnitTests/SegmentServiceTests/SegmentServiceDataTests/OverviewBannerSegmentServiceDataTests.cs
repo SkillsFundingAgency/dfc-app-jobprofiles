@@ -8,24 +8,23 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceDataTests
 {
-    [Trait("Profile Service", "Overview Banner Segment Service Tests")]
-    public class OverviewBannerSegmentServiceTests
+    [Trait("Profile Service", "Overview Banner Segment Service Data Tests")]
+    public class OverviewBannerSegmentServiceDataTests
     {
-        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly OverviewBannerSegmentModel ExpectedResult = new OverviewBannerSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
-            Content = "some content",
+            Updated = DateTime.Parse(ExpectedUpdated),
         };
 
         private readonly ILogger<OverviewBannerSegmentService> logger;
         private readonly OverviewBannerSegmentClientOptions overviewBannerSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = $"{{\"Updated\": \"{ExpectedUpdated}\"}}";
 
-        public OverviewBannerSegmentServiceTests()
+        public OverviewBannerSegmentServiceDataTests()
         {
             logger = A.Fake<ILogger<OverviewBannerSegmentService>>();
             overviewBannerSegmentClientOptions = A.Fake<OverviewBannerSegmentClientOptions>();
@@ -42,14 +41,16 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions);
+                    var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await overviewBannerSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await overviewBannerSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
-                    A.Equals(results.Content, ExpectedResult.Content);
+                    A.Equals(results.Updated, ExpectedResult.Updated);
                 }
             }
         }
@@ -58,17 +59,19 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public async Task OverviewBannerSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            const string responseJson = "{\"notValid\": true}";
             OverviewBannerSegmentModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions);
+                    var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await overviewBannerSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await overviewBannerSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

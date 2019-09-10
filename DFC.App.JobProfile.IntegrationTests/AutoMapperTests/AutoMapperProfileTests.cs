@@ -16,20 +16,6 @@ namespace DFC.App.JobProfile.IntegrationTests.AutoMapperTests
         }
 
         [Fact]
-        public void AutoMapperProfileConfigurationForSegmentModelsProfileReturnSuccess()
-        {
-            // Arrange
-            _ = factory.CreateClient();
-            var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
-
-            // Act
-            mapper.ConfigurationProvider.AssertConfigurationIsValid<SegmentModelsProfile>();
-
-            // Assert
-            Assert.True(true);
-        }
-
-        [Fact]
         public void AutoMapperProfileConfigurationForJobProfileModelProfileReturnSuccess()
         {
             // Arrange

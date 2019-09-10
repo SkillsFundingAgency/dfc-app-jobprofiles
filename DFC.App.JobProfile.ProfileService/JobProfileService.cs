@@ -68,7 +68,8 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 DocumentId = createJobProfileModel.DocumentId,
                 CanonicalName = createJobProfileModel.CanonicalName,
-                Segments = new SegmentsModel(),
+                Markup = new SegmentsMarkupModel(),
+                Data = new SegmentsDataModel(),
             };
 
             segmentService.CreateOrUpdateJobProfileModel = createJobProfileModel;
@@ -95,9 +96,14 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(existingHJobProfileModel));
             }
 
-            if (existingHJobProfileModel.Segments == null)
+            if (existingHJobProfileModel.Markup == null)
             {
-                existingHJobProfileModel.Segments = new SegmentsModel();
+                existingHJobProfileModel.Markup = new SegmentsMarkupModel();
+            }
+
+            if (existingHJobProfileModel.Data == null)
+            {
+                existingHJobProfileModel.Data = new SegmentsDataModel();
             }
 
             segmentService.CreateOrUpdateJobProfileModel = replaceJobProfileModel;

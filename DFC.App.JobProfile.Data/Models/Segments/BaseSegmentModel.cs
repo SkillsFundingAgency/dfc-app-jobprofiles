@@ -4,8 +4,6 @@ namespace DFC.App.JobProfile.Data.Models.Segments
 {
     public abstract class BaseSegmentModel
     {
-        public DateTime LastReviewed { get; set; }
-
-        public string Content { get; set; }
+        public DateTime Updated { get; set; }
     }
 }

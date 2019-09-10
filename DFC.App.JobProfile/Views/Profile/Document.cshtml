@@ -172,6 +172,20 @@
                 @Html.DisplayFor(model => model.WhatYouWillDoSegmentUpdated)
             </dd>
 
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.WhatYouWillDoSegmentContent)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.WhatYouWillDoSegmentContent)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.WhatYouWillDoSegmentLastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.WhatYouWillDoSegmentLastReviewed)
+            </dd>
+
             @if (Model.AlternativeNames?.Count() > 0)
             {
                 <dt class="col-sm-2">

@@ -31,7 +31,7 @@
             "type": "string",
             "defaultValue": ""
         },
-        "cosmosDbEndpoint": {
+        "cosmosDbName": {
             "type": "string"
         },
         "cosmosDbKey": {
@@ -54,6 +54,10 @@
         "appServicePlanName": "[if(greater(length(parameters('sharedAppServicePlanName')), 0), parameters('sharedAppServicePlanName'), concat(variables('resourcePrefix'), '-asp'))]",
         "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
+        "cosmosDbCollectionName": "jobProfiles",
+        "cosmosDbCollectionPartitionKey": "/PartitionKey",
+        "cosmosDbDatabaseName": "dfc-app-jobprofiles",
+        "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
         "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
         "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
@@ -67,17 +71,17 @@
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "[variables('AppServiceAppInsightsName')]",
+            "name": "[variables('appServiceAppInsightsName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'application-insights.json')]",
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'application-insights.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "appInsightsName": {
-                        "value": "[variables('AppServiceAppInsightsName')]"
+                        "value": "[variables('appServiceAppInsightsName')]"
                     },
                     "attachedService": {
                         "value": ""
@@ -93,7 +97,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service-plan.json')]",
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service-plan.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -164,19 +168,19 @@
                             },
                             {
                                 "name": "Configuration__CosmosDbConnections__JobProfileSegment__EndpointUrl",
-                                "value": "[parameters('cosmosDbEndpoint')]"
+                                "value": "[variables('cosmosDbEndpoint')]"
                             },
                             {
                                 "name": "Configuration__CosmosDbConnections__JobProfileSegment__DatabaseId",
-                                "value": "dfc-app-jobprofiles"
+                                "value": "[variables('cosmosDbDatabaseName')]"
                             },
                             {
                                 "name": "Configuration__CosmosDbConnections__JobProfileSegment__CollectionId",
-                                "value": "jobProfiles"
+                                "value": "[variables('cosmosDbCollectionName')]"
                             },
                             {
                                 "name": "Configuration__CosmosDbConnections__JobProfileSegment__PartitionKey",
-                                "value": "/LastReviewed"
+                                "value": "[variables('cosmosDbCollectionPartitionKey')]"
                             },
                             {
                                 "name": "Policies__HttpCircuitBreaker__DurationOfBreak",
@@ -313,6 +317,35 @@
             "dependsOn": [
                 "[variables('AppServiceAppInsightsName')]"
             ]
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('cosmosDbCollectionName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'CosmosDb/cosmos-collection.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "accountName": {
+                        "value": "[parameters('cosmosDbName')]"
+                    },
+                    "databaseName": {
+                        "value": "[variables('cosmosDbDatabaseName')]"
+                    },
+                    "collectionName": {
+                        "value": "[variables('cosmosDbCollectionName')]"
+                    },
+                    "provisionRequestUnits": {
+                        "value": false
+                    },
+                    "partitionKey": {
+                        "value": "[variables('cosmosDbCollectionPartitionKey')]"
+                    }
+                }
+            }
         }
     ],
         "outputs": {}

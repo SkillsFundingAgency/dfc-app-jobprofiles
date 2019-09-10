@@ -11,8 +11,8 @@
         "appSharedStorageAccountName": {
             "value": "dfcdevappsharedstr"
         },
-        "cosmosDbEndpoint": {
-            "value": "https://dfc-foo-app-sharedresources-cdb.documents.azure.com:443/"
+        "cosmosDBName": {
+            "value": "dfc-foo-app-sharedresources-cdb"
         },
         "cosmosDbKey": {
             "value": "not-a-real-key"

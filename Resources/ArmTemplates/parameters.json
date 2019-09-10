@@ -20,8 +20,8 @@
         "aspTier": {
             "value": "__aspTier__"
         },
-        "cosmosDbEndpoint": {
-            "value": "__appSharedCosmosEndpointUrl__"
+        "cosmosDBName": {
+            "value": "__appSharedCosmosDBName__"
         },
         "cosmosDbKey": {
             "value": "__appSharedCosmosPrimaryKey__"

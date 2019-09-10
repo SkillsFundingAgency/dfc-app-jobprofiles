@@ -84,34 +84,34 @@ namespace DFC.App.JobProfile.ProfileService
                 : null;
         }
 
-        public async Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingHJobProfileModel)
+        public async Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingJobProfileModel)
         {
             if (replaceJobProfileModel == null)
             {
                 throw new ArgumentNullException(nameof(replaceJobProfileModel));
             }
 
-            if (existingHJobProfileModel == null)
+            if (existingJobProfileModel == null)
             {
-                throw new ArgumentNullException(nameof(existingHJobProfileModel));
+                throw new ArgumentNullException(nameof(existingJobProfileModel));
             }
 
-            if (existingHJobProfileModel.Markup == null)
+            if (existingJobProfileModel.Markup == null)
             {
-                existingHJobProfileModel.Markup = new SegmentsMarkupModel();
+                existingJobProfileModel.Markup = new SegmentsMarkupModel();
             }
 
-            if (existingHJobProfileModel.Data == null)
+            if (existingJobProfileModel.Data == null)
             {
-                existingHJobProfileModel.Data = new SegmentsDataModel();
+                existingJobProfileModel.Data = new SegmentsDataModel();
             }
 
             segmentService.CreateOrUpdateJobProfileModel = replaceJobProfileModel;
-            segmentService.JobProfileModel = existingHJobProfileModel;
+            segmentService.JobProfileModel = existingJobProfileModel;
 
             await segmentService.LoadAsync().ConfigureAwait(false);
 
-            var result = await repository.UpdateAsync(existingHJobProfileModel.DocumentId, existingHJobProfileModel).ConfigureAwait(false);
+            var result = await repository.UpdateAsync(existingJobProfileModel.DocumentId, existingJobProfileModel).ConfigureAwait(false);
 
             return result == HttpStatusCode.OK
                 ? await GetByIdAsync(replaceJobProfileModel.DocumentId).ConfigureAwait(false)

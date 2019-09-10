@@ -17,7 +17,7 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<JobProfileModel> CreateAsync(CreateOrUpdateJobProfileModel createJobProfileModel);
 
-        Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingHJobProfileModel);
+        Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingJobProfileModel);
 
         Task<bool> DeleteAsync(Guid documentId);
     }

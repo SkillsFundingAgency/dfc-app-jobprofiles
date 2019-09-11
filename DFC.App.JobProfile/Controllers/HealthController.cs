@@ -27,7 +27,7 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/health")]
         public async Task<IActionResult> Health()
         {
-            const string ResourceName = "Job Profile - Document store";
+            string resourceName = typeof(Program).Namespace;
             string message;
 
             logger.LogInformation($"{nameof(Health)} has been called");
@@ -38,20 +38,25 @@ namespace DFC.App.JobProfile.Controllers
 
                 if (isHealthy)
                 {
-                    message = $"{ResourceName} is available";
-                    logger.LogInformation($"{nameof(Health)} responded with: {message}");
+                    message = "Document store is available";
+                    logger.LogInformation($"{nameof(Health)} responded with: {resourceName} - {message}");
 
-                    var viewModel = CreateHealthViewModel(ResourceName, message);
+                    var viewModel = CreateHealthViewModel(resourceName, message);
+
+                    var segmentData = await jobProfileService.SegmentsHealthCheckAsync().ConfigureAwait(false);
+                    var segmentHealthItemViewModels = mapper.Map<List<HealthItemViewModel>>(segmentData);
+
+                    viewModel.HealthItems.AddRange(segmentHealthItemViewModels);
 
                     return this.NegotiateContentResult(viewModel);
                 }
 
-                message = $"Ping to {ResourceName} has failed";
+                message = $"Ping to {resourceName} has failed";
                 logger.LogError($"{nameof(Health)}: {message}");
             }
             catch (Exception ex)
             {
-                message = $"{ResourceName} exception: {ex.Message}";
+                message = $"{resourceName} exception: {ex.Message}";
                 logger.LogError(ex, $"{nameof(Health)}: {message}");
             }
 

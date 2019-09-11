@@ -1,7 +1,9 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
+using DFC.App.JobProfile.Data.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -76,6 +78,34 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return null;
+        }
+
+        public virtual async Task<IList<HealthCheckItem>> HealthCheckAsync()
+        {
+            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}/contents", "health", System.StringComparison.OrdinalIgnoreCase);
+            var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
+
+            logger.LogInformation($"{nameof(LoadDataAsync)}: Checking health for {url}");
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            request.Headers.Accept.Clear();
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+
+            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                var result = JsonConvert.DeserializeObject<HealthCheckItems>(responseString);
+
+                logger.LogInformation($"{nameof(LoadDataAsync)}: Checked health for {url}");
+
+                return result.HealthItems;
+            }
+
+            return default(List<HealthCheckItem>);
         }
     }
 }

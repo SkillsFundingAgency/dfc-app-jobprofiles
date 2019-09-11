@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Contracts
@@ -10,5 +11,7 @@ namespace DFC.App.JobProfile.Data.Contracts
         JobProfileModel JobProfileModel { get; set; }
 
         Task LoadAsync();
+
+        Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync();
     }
 }

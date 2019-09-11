@@ -68,7 +68,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.ReplaceAsync(createOrUdateJobProfileModel, null).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
-            Assert.Equal("Value cannot be null.\r\nParameter name: existingHJobProfileModel", exceptionResult.Message);
+            Assert.Equal("Value cannot be null.\r\nParameter name: existingJobProfileModel", exceptionResult.Message);
         }
 
         [Fact]

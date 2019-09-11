@@ -30,6 +30,11 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.PingAsync().ConfigureAwait(false);
         }
 
+        public async Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync()
+        {
+            return await segmentService.SegmentsHealthCheckAsync().ConfigureAwait(false);
+        }
+
         public async Task<IEnumerable<JobProfileModel>> GetAllAsync()
         {
             return await repository.GetAllAsync().ConfigureAwait(false);

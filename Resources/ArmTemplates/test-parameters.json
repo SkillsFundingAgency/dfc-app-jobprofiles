@@ -6,7 +6,7 @@
             "value": "azurewebsites.net"
         },
         "appSharedResourceGroup": {
-            "value": "dfc-dev-app-shared-rg"
+            "value": "dfc-dev-app-sharedresources-rg"
         },
         "appSharedStorageAccountName": {
             "value": "dfcdevappsharedstr"
@@ -18,7 +18,7 @@
             "value": "not-a-real-key"
         },
         "cosmosDbResourceGroup": {
-            "value": "dfc-dev-app-shared-rg"
+            "value": "dfc-dev-app-sharedresources-rg"
         },
         "Environment": {
             "value": "FOO"
@@ -27,7 +27,7 @@
             "value": "dfc-dev-app-shared-asp"
         },
         "sharedAppServicePlanResourceGroup": {
-            "value": "dfc-dev-app-shared-rg"
+            "value": "dfc-dev-app-sharedresources-rg"
         }
     }
 }

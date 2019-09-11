@@ -37,6 +37,9 @@
         "cosmosDbKey": {
             "type": "securestring"
         },
+        "cosmosDbResourceGroup": {
+            "type": "string"
+        },
         "environment": {
             "type": "string"
         },
@@ -322,6 +325,7 @@
             "apiVersion": "2017-05-10",
             "name": "[variables('cosmosDbCollectionName')]",
             "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('cosmosDbResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {

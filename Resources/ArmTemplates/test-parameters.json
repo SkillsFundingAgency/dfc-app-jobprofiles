@@ -17,6 +17,9 @@
         "cosmosDbKey": {
             "value": "not-a-real-key"
         },
+        "cosmosDbResourceGroup": {
+            "value": "dfc-dev-app-shared-rg"
+        },
         "Environment": {
             "value": "FOO"
         },

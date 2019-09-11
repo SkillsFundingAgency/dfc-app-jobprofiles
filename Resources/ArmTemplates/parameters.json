@@ -26,6 +26,9 @@
         "cosmosDbKey": {
             "value": "__appSharedCosmosPrimaryKey__"
         },
+        "cosmosDbResourceGroup": {
+            "value": "__appSharedResourceGroup__"
+        },
         "environment": {
             "value": "__ReleaseEnvironmentName__",
             "metadata": {

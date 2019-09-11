@@ -7,6 +7,8 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IJobProfileService
     {
+        Task<bool> PingAsync();
+
         Task<IEnumerable<JobProfileModel>> GetAllAsync();
 
         Task<JobProfileModel> GetByIdAsync(Guid documentId);

@@ -1,11 +1,11 @@
-﻿using DFC.App.JobProfile.Controllers;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using System.Net.Mime;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
 {
@@ -13,21 +13,24 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
     {
         public BaseHealthController()
         {
-            FakeJobProfileService = A.Fake<IJobProfileService>();
             FakeLogger = A.Fake<ILogger<HealthController>>();
+            FakeJobProfileService = A.Fake<IJobProfileService>();
+            FakeAutoMapper = A.Fake<IMapper>();
         }
-
-        protected IJobProfileService FakeJobProfileService { get; }
 
         protected ILogger<HealthController> FakeLogger { get; }
 
-        protected HealthController BuildHealthController()
+        protected IJobProfileService FakeJobProfileService { get; }
+
+        protected IMapper FakeAutoMapper { get; }
+
+        protected HealthController BuildHealthController(string mediaTypeName)
         {
             var httpContext = new DefaultHttpContext();
 
-            httpContext.Request.Headers[HeaderNames.Accept] = MediaTypeNames.Application.Json;
+            httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
 
-            var controller = new HealthController(FakeLogger)
+            var controller = new HealthController(FakeLogger, FakeJobProfileService, FakeAutoMapper)
             {
                 ControllerContext = new ControllerContext()
                 {

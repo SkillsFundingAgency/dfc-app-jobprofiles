@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,6 +10,8 @@ namespace DFC.App.JobProfile.Data.Contracts
         CreateOrUpdateJobProfileModel CreateOrUpdateJobProfileModel { get; set; }
 
         JobProfileModel JobProfileModel { get; set; }
+
+        Uri RequestBaseAddress { get; set; }
 
         Task LoadAsync();
 

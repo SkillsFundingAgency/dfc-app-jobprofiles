@@ -15,6 +15,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
     [Trait("Profile Service", "Segment Service Load Tests")]
     public class SegmentServiceLoadAsyncTests
     {
+        private readonly Uri dummyBaseAddressUri = new Uri("https://localhost:12345/");
         private readonly ILogger<SegmentService> logger;
         private readonly ICareerPathSegmentService careerPathSegmentService;
         private readonly ICurrentOpportunitiesSegmentService currentOpportunitiesSegmentService;
@@ -159,6 +160,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             // act
@@ -227,6 +229,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             A.CallTo(() => careerPathSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCareerPath));
@@ -312,6 +315,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             A.CallTo(() => careerPathSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCareerPath));
@@ -384,6 +388,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCurrentOpportunities));
@@ -456,6 +461,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForHowToBecome));
@@ -528,6 +534,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             A.CallTo(() => overviewBannerSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForOverviewBanner));
@@ -600,6 +607,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             A.CallTo(() => relatedCareersSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForRelatedCareers));
@@ -672,6 +680,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             A.CallTo(() => whatItTakesSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForWhatItTakes));
@@ -744,6 +753,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 CreateOrUpdateJobProfileModel = createOrUpdateJobProfileModel,
                 JobProfileModel = jobProfileModel,
+                RequestBaseAddress = dummyBaseAddressUri,
             };
 
             A.CallTo(() => whatYouWillDoSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForWhatYouWillDo));

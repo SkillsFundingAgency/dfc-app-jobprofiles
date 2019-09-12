@@ -46,6 +46,24 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Theory]
+        [MemberData(nameof(HealthContentRouteData))]
+        public async Task GetHealthJsonContentEndpointsReturnSuccessAndCorrectContentType(string url)
+        {
+            // Arrange
+            var uri = new Uri(url, UriKind.Relative);
+            var client = factory.CreateClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+
+            // Act
+            var response = await client.GetAsync(uri).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal($"{MediaTypeNames.Application.Json}; charset={Encoding.UTF8.WebName}", response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
         [MemberData(nameof(HealthOkRouteData))]
         public async Task GetHealthOkEndpointsReturnSuccess(string url)
         {

@@ -21,14 +21,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingJobProfileModel);
-            A.CallTo(() => FakeJobProfileService.CreateAsync(A<CreateOrUpdateJobProfileModel>.Ignored)).Returns(createdJobProfileModel);
+            A.CallTo(() => FakeJobProfileService.CreateAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<Uri>.Ignored)).Returns(createdJobProfileModel);
 
             // Act
             var result = await controller.CreateOrUpdate(jobProfileModel).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeJobProfileService.CreateAsync(A<CreateOrUpdateJobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.CreateAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
 
             var okResult = Assert.IsType<CreatedAtActionResult>(result);
 
@@ -48,14 +48,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingJobProfileModel);
-            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<JobProfileModel>.Ignored)).Returns(updatedJobProfileModel);
+            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).Returns(updatedJobProfileModel);
 
             // Act
             var result = await controller.CreateOrUpdate(jobProfileModel).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
 
             var okResult = Assert.IsType<OkObjectResult>(result);
 

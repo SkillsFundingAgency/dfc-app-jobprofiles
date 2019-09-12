@@ -13,6 +13,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "Create Tests")]
     public class ProfileServiceCreateTests
     {
+        private readonly Uri dummyBaseAddressUri = new Uri("https://localhost:12345/");
         private readonly ICosmosRepository<JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
         private readonly SegmentService segmentService;
@@ -37,7 +38,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
 
             // act
-            var result = jobProfileService.CreateAsync(createOrUdateJobProfileModel).Result;
+            var result = jobProfileService.CreateAsync(createOrUdateJobProfileModel, dummyBaseAddressUri).Result;
 
             // assert
             A.CallTo(() => repository.CreateAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
@@ -46,15 +47,28 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public async Task JobProfileServiceCreateReturnsArgumentNullExceptionWhenNullIsUsedAsync()
+        public async Task JobProfileServiceCreateReturnsArgumentNullExceptionWhenNullParam1IsUsedAsync()
         {
             // arrange
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.CreateAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.CreateAsync(null, dummyBaseAddressUri).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
             Assert.Equal("Value cannot be null.\r\nParameter name: createJobProfileModel", exceptionResult.Message);
+        }
+
+        [Fact]
+        public async Task JobProfileServiceCreateReturnsArgumentNullExceptionWhenNullParam2IsUsedAsync()
+        {
+            // arrange
+            var createOrUdateJobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();
+
+            // act
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.CreateAsync(createOrUdateJobProfileModel, null).ConfigureAwait(false)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal("Value cannot be null.\r\nParameter name: requestBaseAddress", exceptionResult.Message);
         }
 
         [Fact]
@@ -67,7 +81,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => repository.CreateAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.BadRequest);
 
             // act
-            var result = jobProfileService.CreateAsync(createOrUdateJobProfileModel).Result;
+            var result = jobProfileService.CreateAsync(createOrUdateJobProfileModel, dummyBaseAddressUri).Result;
 
             // assert
             A.CallTo(() => repository.CreateAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
@@ -85,7 +99,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => repository.CreateAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.FailedDependency);
 
             // act
-            var result = jobProfileService.CreateAsync(createOrUpdateJobProfileModel).Result;
+            var result = jobProfileService.CreateAsync(createOrUpdateJobProfileModel, dummyBaseAddressUri).Result;
 
             // assert
             A.CallTo(() => repository.CreateAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();

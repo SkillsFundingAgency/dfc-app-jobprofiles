@@ -1,6 +1,8 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segments;
+using DFC.App.JobProfile.ProfileService.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -42,6 +44,8 @@ namespace DFC.App.JobProfile.ProfileService
         public CreateOrUpdateJobProfileModel CreateOrUpdateJobProfileModel { get; set; }
 
         public JobProfileModel JobProfileModel { get; set; }
+
+        public Uri RequestBaseAddress { get; set; }
 
         public async Task LoadAsync()
         {
@@ -152,13 +156,13 @@ namespace DFC.App.JobProfile.ProfileService
             JobProfileModel.Data.WhatItTakes = GetDataResult(whatItTakesSegmnentDataTask);
             JobProfileModel.Data.WhatYouWillDo = GetDataResult(whatYouWillDoSegmnentDataTask);
 
-            JobProfileModel.Markup.CareerPath = GetMarkupResult(careerPathSegmnentMarkupTask, careerPathSegmentService.SegmentClientOptions.OfflineHtml);
-            JobProfileModel.Markup.CurrentOpportunities = GetMarkupResult(currentOpportunitiesSegmnentMarkupTask, currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml);
-            JobProfileModel.Markup.HowToBecome = GetMarkupResult(howToBecomeSegmnentMarkupTask, howToBecomeSegmentService.SegmentClientOptions.OfflineHtml);
-            JobProfileModel.Markup.OverviewBanner = GetMarkupResult(overviewBannerSegmnentMarkupTask, overviewBannerSegmentService.SegmentClientOptions.OfflineHtml);
-            JobProfileModel.Markup.RelatedCareers = GetMarkupResult(relatedCareersSegmnentMarkupTask, relatedCareersSegmentService.SegmentClientOptions.OfflineHtml);
-            JobProfileModel.Markup.WhatItTakes = GetMarkupResult(whatItTakesSegmnentMarkupTask, whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
-            JobProfileModel.Markup.WhatYouWillDo = GetMarkupResult(whatYouWillDoSegmnentMarkupTask, whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+            JobProfileModel.Markup.CareerPath = GetMarkupResult(careerPathSegmnentMarkupTask, careerPathSegmentService.SegmentClientOptions);
+            JobProfileModel.Markup.CurrentOpportunities = GetMarkupResult(currentOpportunitiesSegmnentMarkupTask, currentOpportunitiesSegmentService.SegmentClientOptions);
+            JobProfileModel.Markup.HowToBecome = GetMarkupResult(howToBecomeSegmnentMarkupTask, howToBecomeSegmentService.SegmentClientOptions);
+            JobProfileModel.Markup.OverviewBanner = GetMarkupResult(overviewBannerSegmnentMarkupTask, overviewBannerSegmentService.SegmentClientOptions);
+            JobProfileModel.Markup.RelatedCareers = GetMarkupResult(relatedCareersSegmnentMarkupTask, relatedCareersSegmentService.SegmentClientOptions);
+            JobProfileModel.Markup.WhatItTakes = GetMarkupResult(whatItTakesSegmnentMarkupTask, whatItTakesSegmentService.SegmentClientOptions);
+            JobProfileModel.Markup.WhatYouWillDo = GetMarkupResult(whatYouWillDoSegmnentMarkupTask, whatYouWillDoSegmentService.SegmentClientOptions);
 
             JobProfileModel.Updated = DateTime.UtcNow;
 
@@ -206,17 +210,19 @@ namespace DFC.App.JobProfile.ProfileService
             return noResultsModel;
         }
 
-        private string GetMarkupResult(Task<string> task, string offlineHtml)
+        private string GetMarkupResult(Task<string> task, SegmentClientOptions segmentClientOptions)
         {
             if (task != null)
             {
                 if (task.IsCompletedSuccessfully && task.Result != null)
                 {
-                    return task.Result;
+                    var markup = UrlRewriter.Rewrite(task.Result, segmentClientOptions.BaseAddress, RequestBaseAddress);
+
+                    return markup;
                 }
             }
 
-            return offlineHtml;
+            return segmentClientOptions.OfflineHtml;
         }
 
         private IList<HealthCheckItem> GetHealthResults(Task<IList<HealthCheckItem>> task)

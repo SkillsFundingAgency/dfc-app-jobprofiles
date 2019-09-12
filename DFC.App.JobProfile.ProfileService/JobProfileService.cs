@@ -67,11 +67,16 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.GetAsync(d => d.AlternativeNames.Contains(alternativeName.ToLowerInvariant())).ConfigureAwait(false);
         }
 
-        public async Task<JobProfileModel> CreateAsync(CreateOrUpdateJobProfileModel createJobProfileModel)
+        public async Task<JobProfileModel> CreateAsync(CreateOrUpdateJobProfileModel createJobProfileModel, Uri requestBaseAddress)
         {
             if (createJobProfileModel == null)
             {
                 throw new ArgumentNullException(nameof(createJobProfileModel));
+            }
+
+            if (requestBaseAddress == null)
+            {
+                throw new ArgumentNullException(nameof(requestBaseAddress));
             }
 
             var jobProfileModel = new JobProfileModel
@@ -84,6 +89,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             segmentService.CreateOrUpdateJobProfileModel = createJobProfileModel;
             segmentService.JobProfileModel = jobProfileModel;
+            segmentService.RequestBaseAddress = requestBaseAddress;
 
             await segmentService.LoadAsync().ConfigureAwait(false);
 
@@ -94,7 +100,7 @@ namespace DFC.App.JobProfile.ProfileService
                 : null;
         }
 
-        public async Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingJobProfileModel)
+        public async Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress)
         {
             if (replaceJobProfileModel == null)
             {
@@ -104,6 +110,11 @@ namespace DFC.App.JobProfile.ProfileService
             if (existingJobProfileModel == null)
             {
                 throw new ArgumentNullException(nameof(existingJobProfileModel));
+            }
+
+            if (requestBaseAddress == null)
+            {
+                throw new ArgumentNullException(nameof(requestBaseAddress));
             }
 
             if (existingJobProfileModel.Markup == null)
@@ -118,6 +129,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             segmentService.CreateOrUpdateJobProfileModel = replaceJobProfileModel;
             segmentService.JobProfileModel = existingJobProfileModel;
+            segmentService.RequestBaseAddress = requestBaseAddress;
 
             await segmentService.LoadAsync().ConfigureAwait(false);
 

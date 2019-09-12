@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings-template.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
@@ -33,6 +37,11 @@
 
   <ItemGroup>
     <Folder Include="Views\Home\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="appsettings-template.json" />
   </ItemGroup>
 
 

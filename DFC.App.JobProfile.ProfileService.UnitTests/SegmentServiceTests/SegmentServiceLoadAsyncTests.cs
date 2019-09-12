@@ -6,13 +6,14 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
 {
-    [Trait("Profile Service", "Segment Service Tests")]
-    public class SegmentServiceTests
+    [Trait("Profile Service", "Segment Service Load Tests")]
+    public class SegmentServiceLoadAsyncTests
     {
         private readonly ILogger<SegmentService> logger;
         private readonly ICareerPathSegmentService careerPathSegmentService;
@@ -69,7 +70,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             WhatYouWillDo = "<p>WhatYouWillDo data</p>",
         };
 
-        public SegmentServiceTests()
+        public SegmentServiceLoadAsyncTests()
         {
             logger = A.Fake<ILogger<SegmentService>>();
             careerPathSegmentService = A.Fake<CareerPathSegmentService>();
@@ -128,7 +129,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenNoRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenNoRefreshRequired()
         {
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
@@ -197,7 +198,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenAllRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenAllRefreshRequired()
         {
             // arrange
             var documentId = Guid.NewGuid();
@@ -281,7 +282,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenCareerOathOnlyRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenCareerOathOnlyRefreshRequired()
         {
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
@@ -353,7 +354,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenCurrentOpportunitiesOnlyRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenCurrentOpportunitiesOnlyRefreshRequired()
         {
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
@@ -425,7 +426,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenHowToBecomeOnlyRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenHowToBecomeOnlyRefreshRequired()
         {
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
@@ -497,7 +498,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenOverviewBannerOnlyRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenOverviewBannerOnlyRefreshRequired()
         {
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
@@ -569,7 +570,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenRelatedCareersOnlyRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenRelatedCareersOnlyRefreshRequired()
         {
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
@@ -641,7 +642,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenWhatItTakesOnlyRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenWhatItTakesOnlyRefreshRequired()
         {
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
@@ -713,7 +714,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceReturnsSuccessWhenWhatYouWillDoOnlyRefreshRequired()
+        public async Task SegmentServiceLoadAsyncReturnsSuccessWhenWhatYouWillDoOnlyRefreshRequired()
         {
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;

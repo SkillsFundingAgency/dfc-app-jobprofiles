@@ -165,6 +165,28 @@ namespace DFC.App.JobProfile.ProfileService
             logger.LogInformation($"{nameof(LoadAsync)}: Loaded segments for {CreateOrUpdateJobProfileModel.CanonicalName}");
         }
 
+        public async Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync()
+        {
+            var tasks = new List<Task<IList<HealthCheckItem>>>
+            {
+                careerPathSegmentService.HealthCheckAsync(),
+                currentOpportunitiesSegmentService.HealthCheckAsync(),
+                howToBecomeSegmentService.HealthCheckAsync(),
+                overviewBannerSegmentService.HealthCheckAsync(),
+                relatedCareersSegmentService.HealthCheckAsync(),
+                whatItTakesSegmentService.HealthCheckAsync(),
+                whatYouWillDoSegmentService.HealthCheckAsync(),
+            };
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            var result = new List<HealthCheckItem>();
+
+            tasks.ForEach(f => result.AddRange(GetHealthResults(f)));
+
+            return result;
+        }
+
         private TModel GetDataResult<TModel>(Task<TModel> task)
             where TModel : BaseSegmentModel, new()
         {
@@ -195,6 +217,19 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return offlineHtml;
+        }
+
+        private IList<HealthCheckItem> GetHealthResults(Task<IList<HealthCheckItem>> task)
+        {
+            if (task != null)
+            {
+                if (task.IsCompletedSuccessfully && task.Result != null)
+                {
+                    return task.Result;
+                }
+            }
+
+            return null;
         }
     }
 }

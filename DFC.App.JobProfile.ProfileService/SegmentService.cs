@@ -237,18 +237,5 @@ namespace DFC.App.JobProfile.ProfileService
 
             return null;
         }
-
-        private IList<HealthCheckItem> GetHealthResults(Task<IList<HealthCheckItem>> task)
-        {
-            if (task != null)
-            {
-                if (task.IsCompletedSuccessfully && task.Result != null)
-                {
-                    return task.Result;
-                }
-            }
-
-            return null;
-        }
     }
 }

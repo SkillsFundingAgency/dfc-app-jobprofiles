@@ -231,7 +231,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
-            
+
             A.CallTo(() => careerPathSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCareerPath));
             A.CallTo(() => currentOpportunitiesSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForCurrentOpportunities));
             A.CallTo(() => howToBecomeSegmentService.LoadDataAsync()).Returns(Task.FromResult(expectedResultForHowToBecome));

@@ -6,6 +6,7 @@ using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.Utilities
 {
+    [Trait("UrlRewriter Utility", "Content URL Rewriter Tests")]
     public class UrlRewriterTests
     {
         public static IEnumerable<object[]> ContentLinkMappings => new List<object[]>

@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
@@ -18,16 +19,35 @@ namespace DFC.App.JobProfile.Repository.CosmosDb
         private readonly CosmosDbConnection cosmosDbConnection;
         private readonly IDocumentClient documentClient;
 
-        public CosmosRepository(CosmosDbConnection cosmosDbConnection, IDocumentClient documentClient)
+        public CosmosRepository(CosmosDbConnection cosmosDbConnection, IDocumentClient documentClient, IHostingEnvironment env)
         {
             this.cosmosDbConnection = cosmosDbConnection;
             this.documentClient = documentClient;
 
-            CreateDatabaseIfNotExistsAsync().Wait();
-            CreateCollectionIfNotExistsAsync().Wait();
+            if (env.IsDevelopment())
+            {
+                CreateDatabaseIfNotExistsAsync().Wait();
+                CreateCollectionIfNotExistsAsync().Wait();
+            }
         }
 
         private Uri DocumentCollectionUri => UriFactory.CreateDocumentCollectionUri(cosmosDbConnection.DatabaseId, cosmosDbConnection.CollectionId);
+
+        public async Task<bool> PingAsync()
+        {
+            var query = documentClient.CreateDocumentQuery<T>(DocumentCollectionUri, new FeedOptions { MaxItemCount = 1, EnableCrossPartitionQuery = true })
+                                       .AsDocumentQuery();
+
+            if (query == null)
+            {
+                return false;
+            }
+
+            var models = await query.ExecuteNextAsync<T>().ConfigureAwait(false);
+            var firstModel = models.FirstOrDefault();
+
+            return firstModel != null;
+        }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {

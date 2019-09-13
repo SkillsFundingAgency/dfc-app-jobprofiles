@@ -2,6 +2,6 @@
 {
     public class BodyViewModel
     {
-        public SegmentsViewModel Segments { get; set; }
+        public SegmentsMarkupViewModel Markup { get; set; }
     }
 }

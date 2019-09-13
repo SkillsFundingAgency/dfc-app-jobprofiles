@@ -18,12 +18,18 @@ namespace DFC.App.JobProfile.Data.Models
 
         public bool IncludeInSitemap { get; set; }
 
+        public DateTime Created { get; set; } = DateTime.UtcNow;
+
+        public int PartitionKey => Created.Second;
+
+        public DateTime Updated { get; set; }
+
         public MetaTagsModel MetaTags { get; set; }
 
-        public SegmentsModel Segments { get; set; }
-
-        public DateTime LastReviewed { get; set; }
-
         public string[] AlternativeNames { get; set; }
+
+        public SegmentsMarkupModel Markup { get; set; }
+
+        public SegmentsDataModel Data { get; set; }
     }
 }

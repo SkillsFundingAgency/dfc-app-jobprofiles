@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,24 +7,17 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceHealthTests
 {
-    [Trait("Profile Service", "Career Path Segment Service Tests")]
-    public class CareerPathSegmentServiceTests
+    [Trait("Profile Service", "Career Path Segment Service Health Tests")]
+    public class CareerPathSegmentServiceHealthTests
     {
-        private const string ExpecedLastReviewed = "2019-08-30T08:00:00";
-        private static readonly CareerPathSegmentModel ExpectedResult = new CareerPathSegmentModel
-        {
-            LastReviewed = DateTime.Parse(ExpecedLastReviewed),
-            Content = "some content",
-        };
-
         private readonly ILogger<CareerPathSegmentService> logger;
         private readonly CareerPathSegmentClientOptions careerPathSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpecedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = "{\"healthItems\":[{\"service\":\"DFC.App.CareerPath\",\"message\":\"Document store is available\"}]}";
 
-        public CareerPathSegmentServiceTests()
+        public CareerPathSegmentServiceHealthTests()
         {
             logger = A.Fake<ILogger<CareerPathSegmentService>>();
             careerPathSegmentClientOptions = A.Fake<CareerPathSegmentClientOptions>();
@@ -45,33 +37,29 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                     var careerPathSegmentService = new CareerPathSegmentService(httpClient, logger, careerPathSegmentClientOptions);
 
                     // act
-                    var results = await careerPathSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await careerPathSegmentService.HealthCheckAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
-                    A.Equals(results.Content, ExpectedResult.Content);
+                    A.Equals(results.Count, 1);
                 }
             }
         }
 
         [Fact]
-        public async Task CareerPathSegmentServiceReturnsNullWhenNotFound()
+        public async Task CareerPathSegmentServiceReturnsNullWhenError()
         {
             // arrange
-            const string responseJson = "{\"notValid\": true}";
-            CareerPathSegmentModel expectedResult = null;
-
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(null, HttpStatusCode.BadRequest))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
                     var careerPathSegmentService = new CareerPathSegmentService(httpClient, logger, careerPathSegmentClientOptions);
 
                     // act
-                    var results = await careerPathSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await careerPathSegmentService.HealthCheckAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results, expectedResult);
+                    A.Equals(results, null);
                 }
             }
         }

@@ -2,5 +2,6 @@
 {
     public class WhatYouWillDoSegmentModel : BaseSegmentModel
     {
+        public string Markup { get; set; }
     }
 }

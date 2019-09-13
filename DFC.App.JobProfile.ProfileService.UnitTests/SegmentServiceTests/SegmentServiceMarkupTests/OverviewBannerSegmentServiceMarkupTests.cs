@@ -3,29 +3,29 @@ using DFC.App.JobProfile.Data.Models.Segments;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceMarkupTests
 {
-    [Trait("Profile Service", "Overview Banner Segment Service Tests")]
-    public class OverviewBannerSegmentServiceTests
+    [Trait("Profile Service", "Overview Banner Segment Service Markup Tests")]
+    public class OverviewBannerSegmentServiceMarkupTests
     {
-        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly OverviewBannerSegmentModel ExpectedResult = new OverviewBannerSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
-            Content = "some content",
+            Updated = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
 
         private readonly ILogger<OverviewBannerSegmentService> logger;
         private readonly OverviewBannerSegmentClientOptions overviewBannerSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseHtml = $"<div><h1>{nameof(OverviewBannerSegmentServiceMarkupTests)}</h1><p>Lorum ipsum ...</p></div>";
 
-        public OverviewBannerSegmentServiceTests()
+        public OverviewBannerSegmentServiceMarkupTests()
         {
             logger = A.Fake<ILogger<OverviewBannerSegmentService>>();
             overviewBannerSegmentClientOptions = A.Fake<OverviewBannerSegmentClientOptions>();
@@ -38,18 +38,20 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public async Task OverviewBannerSegmentServiceReturnsSuccessWhenOK()
         {
             // arrange
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.OK))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.OK))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions);
+                    var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await overviewBannerSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await overviewBannerSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
-                    A.Equals(results.Content, ExpectedResult.Content);
+                    A.Equals(results, ExpectedResult.Updated);
                 }
             }
         }
@@ -58,17 +60,19 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public async Task OverviewBannerSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            const string responseJson = "{\"notValid\": true}";
             OverviewBannerSegmentModel expectedResult = null;
 
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.NotFound))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions);
+                    var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await overviewBannerSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await overviewBannerSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

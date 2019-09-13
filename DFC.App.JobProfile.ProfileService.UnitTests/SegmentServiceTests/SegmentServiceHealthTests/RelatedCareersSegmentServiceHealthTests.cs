@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,24 +7,17 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceHealthTests
 {
-    [Trait("Profile Service", "Related Careers Segment Service Tests")]
-    public class RelatedCareersSegmentServiceTests
+    [Trait("Profile Service", "Related Careers Segment Service Health Tests")]
+    public class RelatedCareersSegmentServiceHealthTests
     {
-        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
-        private static readonly RelatedCareersSegmentModel ExpectedResult = new RelatedCareersSegmentModel
-        {
-            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
-            Content = "some content",
-        };
-
         private readonly ILogger<RelatedCareersSegmentService> logger;
         private readonly RelatedCareersSegmentClientOptions relatedCareersSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = "{\"healthItems\":[{\"service\":\"DFC.App.RelatedCareers\",\"message\":\"Document store is available\"}]}";
 
-        public RelatedCareersSegmentServiceTests()
+        public RelatedCareersSegmentServiceHealthTests()
         {
             logger = A.Fake<ILogger<RelatedCareersSegmentService>>();
             relatedCareersSegmentClientOptions = A.Fake<RelatedCareersSegmentClientOptions>();
@@ -45,33 +37,29 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                     var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions);
 
                     // act
-                    var results = await relatedCareersSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await relatedCareersSegmentService.HealthCheckAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
-                    A.Equals(results.Content, ExpectedResult.Content);
+                    A.Equals(results.Count, 1);
                 }
             }
         }
 
         [Fact]
-        public async Task RelatedCareersSegmentServiceReturnsNullWhenNotFound()
+        public async Task RelatedCareersSegmentServiceReturnsNullWhenError()
         {
             // arrange
-            const string responseJson = "{\"notValid\": true}";
-            RelatedCareersSegmentModel expectedResult = null;
-
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(null, HttpStatusCode.BadRequest))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
                     var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions);
 
                     // act
-                    var results = await relatedCareersSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await relatedCareersSegmentService.HealthCheckAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results, expectedResult);
+                    A.Equals(results, null);
                 }
             }
         }

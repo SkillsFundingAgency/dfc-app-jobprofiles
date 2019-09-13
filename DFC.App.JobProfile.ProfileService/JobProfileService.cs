@@ -140,9 +140,9 @@ namespace DFC.App.JobProfile.ProfileService
                 : null;
         }
 
-        public async Task<bool> DeleteAsync(Guid documentId)
+        public async Task<bool> DeleteAsync(Guid documentId, int partitionKey)
         {
-            var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
+            var result = await repository.DeleteAsync(documentId, partitionKey).ConfigureAwait(false);
 
             return result == HttpStatusCode.NoContent;
         }

@@ -23,6 +23,6 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
 
-        Task<bool> DeleteAsync(Guid documentId);
+        Task<bool> DeleteAsync(Guid documentId, int partitionKey);
     }
 }

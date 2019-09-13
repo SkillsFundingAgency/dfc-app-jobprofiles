@@ -127,7 +127,7 @@ namespace DFC.App.JobProfile.Controllers
                 return NotFound();
             }
 
-            await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
+            await jobProfileService.DeleteAsync(documentId, jobProfileModel.PartitionKey).ConfigureAwait(false);
 
             logger.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
 

@@ -10,11 +10,16 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
     [Trait("Integration Tests", "Health Controller Tests")]
     public class HealthControllerRouteTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
+        private const string DefaultArticleName = "profile-article";
+        private readonly Guid defaultArticleGuid = Guid.Parse("63DEA97E-B61C-4C14-15DC-1BD08EA20DC8");
+
         private readonly CustomWebApplicationFactory<Startup> factory;
 
         public HealthControllerRouteTests(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
+
+            DataSeeding.SeedDefaultArticle(factory, defaultArticleGuid, DefaultArticleName);
         }
 
         public static IEnumerable<object[]> HealthContentRouteData => new List<object[]>

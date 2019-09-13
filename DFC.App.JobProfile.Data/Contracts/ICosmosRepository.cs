@@ -19,6 +19,6 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<HttpStatusCode> UpdateAsync(Guid documentId, T model);
 
-        Task<HttpStatusCode> DeleteAsync(Guid documentId);
+        Task<HttpStatusCode> DeleteAsync(Guid documentId, int partitionKey);
     }
 }

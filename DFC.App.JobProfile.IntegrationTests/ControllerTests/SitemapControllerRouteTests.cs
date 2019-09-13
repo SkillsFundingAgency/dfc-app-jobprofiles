@@ -9,16 +9,13 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
     [Trait("Category", "Sitemap Controller Tests")]
     public class SitemapControllerRouteTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private const string DefaultArticleName = "profile-article";
-        private readonly Guid defaultArticleGuid = Guid.Parse("63DEA97E-B61C-4C14-15DC-1BD08EA20DC8");
-
         private readonly CustomWebApplicationFactory<Startup> factory;
 
         public SitemapControllerRouteTests(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
 
-            DataSeeding.SeedDefaultArticle(factory, defaultArticleGuid, DefaultArticleName);
+            DataSeeding.SeedDefaultArticle(factory);
         }
 
         public static IEnumerable<object[]> SitemapRouteData => new List<object[]>

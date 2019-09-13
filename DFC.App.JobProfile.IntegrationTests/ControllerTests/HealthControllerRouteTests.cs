@@ -21,7 +21,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
         public static IEnumerable<object[]> HealthContentRouteData => new List<object[]>
         {
-            new object[] { "/profile/health" },
+            new object[] { "/health" },
         };
 
         public static IEnumerable<object[]> HealthOkRouteData => new List<object[]>

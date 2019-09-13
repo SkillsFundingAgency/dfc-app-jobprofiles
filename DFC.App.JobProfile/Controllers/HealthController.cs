@@ -24,7 +24,7 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile/health")]
+        [Route("health")]
         public async Task<IActionResult> Health()
         {
             string resourceName = typeof(Program).Namespace;

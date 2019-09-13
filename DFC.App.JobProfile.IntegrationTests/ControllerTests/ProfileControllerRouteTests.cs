@@ -191,6 +191,31 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
+        public async Task DeleteProfileEndpointsReturnSuccessWhenFound()
+        {
+            // Arrange
+            var documentId = Guid.NewGuid();
+            const string postUrl = "/profile";
+            var deleteUri = new Uri($"/profile/{documentId}", UriKind.Relative);
+            var jobProfileModel = new CreateOrUpdateJobProfileModel()
+            {
+                DocumentId = documentId,
+                CanonicalName = documentId.ToString().ToLowerInvariant(),
+            };
+            var client = factory.CreateClient();
+
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            _ = await client.PostAsync(postUrl, jobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+
+            // Act
+            var response = await client.DeleteAsync(deleteUri).ConfigureAwait(false);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
         public async Task DeleteProfileEndpointsReturnNotFound()
         {
             // Arrange

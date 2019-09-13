@@ -29,15 +29,16 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             Guid documentId = Guid.NewGuid();
+            const int partitionKey = 0;
             var expectedResult = true;
 
-            A.CallTo(() => repository.DeleteAsync(documentId)).Returns(HttpStatusCode.NoContent);
+            A.CallTo(() => repository.DeleteAsync(documentId, partitionKey)).Returns(HttpStatusCode.NoContent);
 
             // act
-            var result = jobProfileService.DeleteAsync(documentId).Result;
+            var result = jobProfileService.DeleteAsync(documentId, partitionKey).Result;
 
             // assert
-            A.CallTo(() => repository.DeleteAsync(documentId)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.DeleteAsync(documentId, partitionKey)).MustHaveHappenedOnceExactly();
             A.Equals(result, expectedResult);
         }
 
@@ -46,15 +47,16 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             Guid documentId = Guid.NewGuid();
+            const int partitionKey = 0;
             var expectedResult = false;
 
-            A.CallTo(() => repository.DeleteAsync(documentId)).Returns(HttpStatusCode.BadRequest);
+            A.CallTo(() => repository.DeleteAsync(documentId, partitionKey)).Returns(HttpStatusCode.BadRequest);
 
             // act
-            var result = jobProfileService.DeleteAsync(documentId).Result;
+            var result = jobProfileService.DeleteAsync(documentId, partitionKey).Result;
 
             // assert
-            A.CallTo(() => repository.DeleteAsync(documentId)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.DeleteAsync(documentId, partitionKey)).MustHaveHappenedOnceExactly();
             A.Equals(result, expectedResult);
         }
 
@@ -63,16 +65,17 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             Guid documentId = Guid.NewGuid();
+            const int partitionKey = 0;
             var jobProfileModel = A.Fake<JobProfileModel>();
             var expectedResult = false;
 
-            A.CallTo(() => repository.DeleteAsync(documentId)).Returns(HttpStatusCode.FailedDependency);
+            A.CallTo(() => repository.DeleteAsync(documentId, partitionKey)).Returns(HttpStatusCode.FailedDependency);
 
             // act
-            var result = jobProfileService.DeleteAsync(documentId).Result;
+            var result = jobProfileService.DeleteAsync(documentId, partitionKey).Result;
 
             // assert
-            A.CallTo(() => repository.DeleteAsync(documentId)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.DeleteAsync(documentId, partitionKey)).MustHaveHappenedOnceExactly();
             A.Equals(result, expectedResult);
         }
     }

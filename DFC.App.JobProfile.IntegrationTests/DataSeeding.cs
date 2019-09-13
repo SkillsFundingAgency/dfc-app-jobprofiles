@@ -34,7 +34,7 @@ namespace DFC.App.JobProfile.IntegrationTests
 
             client.DefaultRequestHeaders.Accept.Clear();
 
-            models.ForEach(f => client.PostAsync(url, f, new JsonMediaTypeFormatter()));
+            models.ForEach(f => client.PostAsync(url, f, new JsonMediaTypeFormatter()).Wait());
         }
     }
 }

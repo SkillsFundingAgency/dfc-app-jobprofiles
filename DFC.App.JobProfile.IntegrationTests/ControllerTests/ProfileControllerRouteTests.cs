@@ -15,25 +15,22 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
     [Trait("Integration Tests", "Profile Controller Tests")]
     public class ProfileControllerRouteTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private const string DefaultArticleName = "profile-article";
-        private readonly Guid defaultArticleGuid = Guid.Parse("63DEA97E-B61C-4C14-15DC-1BD08EA20DC8");
-
         private readonly CustomWebApplicationFactory<Startup> factory;
 
         public ProfileControllerRouteTests(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
 
-            DataSeeding.SeedDefaultArticle(factory, defaultArticleGuid, DefaultArticleName);
+            DataSeeding.SeedDefaultArticle(factory);
         }
 
         public static IEnumerable<object[]> ProfileContentRouteData => new List<object[]>
         {
             new object[] { "/profile" },
-            new object[] { $"/profile/{DefaultArticleName}" },
-            new object[] { $"/profile/{DefaultArticleName}/htmlhead" },
-            new object[] { $"/profile/{DefaultArticleName}/breadcrumb" },
-            new object[] { $"/profile/{DefaultArticleName}/contents" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/htmlhead" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/breadcrumb" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/contents" },
         };
 
         public static IEnumerable<object[]> MissingprofileContentRouteData => new List<object[]>
@@ -124,8 +121,8 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             const string url = "/profile";
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
             {
-                DocumentId = defaultArticleGuid,
-                CanonicalName = DefaultArticleName,
+                DocumentId = DataSeeding.DefaultArticleGuid,
+                CanonicalName = DataSeeding.DefaultArticleName,
                 RefreshAllSegments = true,
             };
             var client = factory.CreateClient();
@@ -147,8 +144,8 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             const string url = "/profile";
             var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
             {
-                DocumentId = defaultArticleGuid,
-                CanonicalName = DefaultArticleName,
+                DocumentId = DataSeeding.DefaultArticleGuid,
+                CanonicalName = DataSeeding.DefaultArticleName,
                 RefreshAllSegments = true,
             };
             var client = factory.CreateClient();

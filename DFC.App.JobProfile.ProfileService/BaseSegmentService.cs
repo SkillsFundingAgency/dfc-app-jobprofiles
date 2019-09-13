@@ -82,8 +82,7 @@ namespace DFC.App.JobProfile.ProfileService
 
         public virtual async Task<IList<HealthCheckItem>> HealthCheckAsync()
         {
-            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}/contents", "health", System.StringComparison.OrdinalIgnoreCase);
-            var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
+            var url = $"{SegmentClientOptions.BaseAddress}health";
 
             logger.LogInformation($"{nameof(LoadDataAsync)}: Checking health for {url}");
 

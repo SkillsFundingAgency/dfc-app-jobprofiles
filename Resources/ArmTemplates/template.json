@@ -2,6 +2,15 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "appServiceDomain": {
+            "type": "string"
+        },
+        "appSharedResourceGroup": {
+            "type": "string"
+        },
+        "appSharedStorageAccountName": {
+            "type": "string"
+        },
         "aseHostingEnvironmentName": {
             "type": "string",
             "defaultValue": ""
@@ -22,10 +31,13 @@
             "type": "string",
             "defaultValue": ""
         },
-        "appSharedResourceGroup": {
+        "cosmosDbName": {
             "type": "string"
         },
-        "appSharedStorageAccountName": {
+        "cosmosDbKey": {
+            "type": "securestring"
+        },
+        "cosmosDbResourceGroup": {
             "type": "string"
         },
         "environment": {
@@ -45,23 +57,34 @@
         "appServicePlanName": "[if(greater(length(parameters('sharedAppServicePlanName')), 0), parameters('sharedAppServicePlanName'), concat(variables('resourcePrefix'), '-asp'))]",
         "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
-        "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
-        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]"
+        "cosmosDbCollectionName": "jobProfiles",
+        "cosmosDbCollectionPartitionKey": "/PartitionKey",
+        "cosmosDbDatabaseName": "dfc-app-jobprofiles",
+        "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
+        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
+        "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlCareerpathApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlJobprofileHowtobecomeApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlRelatedcareersApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlJobprofileSkillsApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "urlJobprofileTasksApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-TBC-as.', parameters('appServiceDomain')))]",
+        "webAppName": "[concat(variables('ResourcePrefix'), '-as')]"
     },
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "[variables('AppServiceAppInsightsName')]",
+            "name": "[variables('appServiceAppInsightsName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'application-insights.json')]",
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'application-insights.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "appInsightsName": {
-                        "value": "[variables('AppServiceAppInsightsName')]"
+                        "value": "[variables('appServiceAppInsightsName')]"
                     },
                     "attachedService": {
                         "value": ""
@@ -77,7 +100,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service-plan.json')]",
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service-plan.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -141,6 +164,154 @@
                             {
                                 "name": "AzureWebJobsStorage",
                                 "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('appSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('appSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__JobProfile__AccessKey",
+                                "value": "[parameters('cosmosDbKey')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__JobProfile__EndpointUrl",
+                                "value": "[variables('cosmosDbEndpoint')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__JobProfile__DatabaseId",
+                                "value": "[variables('cosmosDbDatabaseName')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__JobProfile__CollectionId",
+                                "value": "[variables('cosmosDbCollectionName')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__JobProfile__PartitionKey",
+                                "value": "[variables('cosmosDbCollectionPartitionKey')]"
+                            },
+                            {
+                                "name": "Policies__HttpCircuitBreaker__DurationOfBreak",
+                                "value": "00:01:00"
+                            },
+                            {
+                                "name": "Policies__HttpCircuitBreaker__ExceptionsAllowedBeforeBreaking",
+                                "value": 3
+                            },
+                            {
+                                "name": "Policies__HttpRetry__BackoffPower",
+                                "value": 2
+                            },
+                            {
+                                "name": "Policies__HttpRetry__Count",
+                                "value": 3
+                            },
+                            {
+                                "name": "OverviewBannerSegmentClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "OverviewBannerSegmentClientOptions__BaseAddress",
+                                "value": "[variables('urlJobprofileOverviewApp')]"
+                            },
+                            {
+                                "name": "OverviewBannerSegmentClientOptions__Endpoint",
+                                "value": "segment/{0}/contents"
+                            },
+                            {
+                                "name": "OverviewBannerSegmentClientOptions__OfflineHtml",
+                                "value": "<H2>Overview banner - Unavailable</H2>"
+                            },
+                            {
+                                "name": "CurrentOpportunitiesSegmentClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "CurrentOpportunitiesSegmentClientOptions__BaseAddress",
+                                "value": "[variables('urlJobprofileCurrentopportunitiesApp')]"
+                            },
+                            {
+                                "name": "CurrentOpportunitiesSegmentClientOptions__Endpoint",
+                                "value": "segment/{0}/contents"
+                            },
+                            {
+                                "name": "CurrentOpportunitiesSegmentClientOptions__OfflineHtml",
+                                "value": "<H2>Current opportunities - Unavailable</H2>"
+                            },
+                            {
+                                "name": "CareerPathSegmentClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "CareerPathSegmentClientOptions__BaseAddress",
+                                "value": "[variables('urlCareerpathApp')]"
+                            },
+                            {
+                                "name": "CareerPathSegmentClientOptions__Endpoint",
+                                "value": "segment/{0}/contents"
+                            },
+                            {
+                                "name": "CareerPathSegmentClientOptions__OfflineHtml",
+                                "value": "<H2>Career path - Unavailable</H2>"
+                            },
+                            {
+                                "name": "HowToBecomeSegmentClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "HowToBecomeSegmentClientOptions__BaseAddress",
+                                "value": "[variables('urlJobprofileHowtobecomeApp')]"
+                            },
+                            {
+                                "name": "HowToBecomeSegmentClientOptions__Endpoint",
+                                "value": "segment/{0}/contents"
+                            },
+                            {
+                                "name": "HowToBecomeSegmentClientOptions__OfflineHtml",
+                                "value": "<H2>How to become - Unavailable</H2>"
+                            },
+                            {
+                                "name": "RelatedCareersSegmentClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "RelatedCareersSegmentClientOptions__BaseAddress",
+                                "value": "[variables('urlRelatedcareersApp')]"
+                            },
+                            {
+                                "name": "RelatedCareersSegmentClientOptions__Endpoint",
+                                "value": "segment/{0}/contents"
+                            },
+                            {
+                                "name": "RelatedCareersSegmentClientOptions__OfflineHtml",
+                                "value": "<H2>Related careers - Unavailable</H2>"
+                            },
+                            {
+                                "name": "WhatItTakesSegmentClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "WhatItTakesSegmentClientOptions__BaseAddress",
+                                "value": "[variables('urlJobprofileSkillsApp')]"
+                            },
+                            {
+                                "name": "WhatItTakesSegmentClientOptions__Endpoint",
+                                "value": "segment/{0}/contents"
+                            },
+                            {
+                                "name": "WhatItTakesSegmentClientOptions__OfflineHtml",
+                                "value": "<H2>What it takes - Unavailable</H2>"
+                            },
+                            {
+                                "name": "WhatYouWillDoSegmentClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "WhatYouWillDoSegmentClientOptions__BaseAddress",
+                                "value": "[variables('urlJobprofileTasksApp')]"
+                            },
+                            {
+                                "name": "WhatYouWillDoSegmentClientOptions__Endpoint",
+                                "value": "segment/{0}/contents"
+                            },
+                            {
+                                "name": "WhatYouWillDoSegmentClientOptions__OfflineHtml",
+                                "value": "<H2>What you will do - Unavailable</H2>"
                             }
                         ]
                     }
@@ -149,6 +320,36 @@
             "dependsOn": [
                 "[variables('AppServiceAppInsightsName')]"
             ]
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('cosmosDbCollectionName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('cosmosDbResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'CosmosDb/cosmos-collection.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "accountName": {
+                        "value": "[parameters('cosmosDbName')]"
+                    },
+                    "databaseName": {
+                        "value": "[variables('cosmosDbDatabaseName')]"
+                    },
+                    "collectionName": {
+                        "value": "[variables('cosmosDbCollectionName')]"
+                    },
+                    "provisionRequestUnits": {
+                        "value": false
+                    },
+                    "partitionKey": {
+                        "value": "[variables('cosmosDbCollectionPartitionKey')]"
+                    }
+                }
+            }
         }
     ],
         "outputs": {}

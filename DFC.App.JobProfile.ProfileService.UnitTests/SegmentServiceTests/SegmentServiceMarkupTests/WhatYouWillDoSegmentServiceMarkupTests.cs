@@ -3,29 +3,29 @@ using DFC.App.JobProfile.Data.Models.Segments;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceMarkupTests
 {
-    [Trait("Profile Service", "What You WIll Do Segment Service Tests")]
-    public class WhatYouWillDoSegmentServiceTests
+    [Trait("Profile Service", "What You Will Do Segment Service Markup Tests")]
+    public class WhatYouWillDoSegmentServiceMarkupTests
     {
-        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly WhatYouWillDoSegmentModel ExpectedResult = new WhatYouWillDoSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
-            Content = "some content",
+            Updated = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
 
         private readonly ILogger<WhatYouWillDoSegmentService> logger;
         private readonly WhatYouWillDoSegmentClientOptions whatYouWillDoSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseHtml = $"<div><h1>{nameof(WhatYouWillDoSegmentServiceMarkupTests)}</h1><p>Lorum ipsum ...</p></div>";
 
-        public WhatYouWillDoSegmentServiceTests()
+        public WhatYouWillDoSegmentServiceMarkupTests()
         {
             logger = A.Fake<ILogger<WhatYouWillDoSegmentService>>();
             whatYouWillDoSegmentClientOptions = A.Fake<WhatYouWillDoSegmentClientOptions>();
@@ -38,18 +38,20 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public async Task WhatYouWillDoSegmentServiceReturnsSuccessWhenOK()
         {
             // arrange
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.OK))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.OK))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var whatYouWillDoSegmentService = new WhatYouWillDoSegmentService(httpClient, logger, whatYouWillDoSegmentClientOptions);
+                    var whatYouWillDoSegmentService = new WhatYouWillDoSegmentService(httpClient, logger, whatYouWillDoSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await whatYouWillDoSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await whatYouWillDoSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
-                    A.Equals(results.Content, ExpectedResult.Content);
+                    A.Equals(results, ExpectedResult.Updated);
                 }
             }
         }
@@ -58,17 +60,19 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public async Task WhatYouWillDoSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            const string responseJson = "{\"notValid\": true}";
             WhatYouWillDoSegmentModel expectedResult = null;
 
-            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
+            using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.NotFound))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var whatYouWillDoSegmentService = new WhatYouWillDoSegmentService(httpClient, logger, whatYouWillDoSegmentClientOptions);
+                    var whatYouWillDoSegmentService = new WhatYouWillDoSegmentService(httpClient, logger, whatYouWillDoSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await whatYouWillDoSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await whatYouWillDoSegmentService.LoadMarkupAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

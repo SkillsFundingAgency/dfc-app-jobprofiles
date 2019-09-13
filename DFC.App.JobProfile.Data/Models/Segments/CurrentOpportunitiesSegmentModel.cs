@@ -2,5 +2,6 @@
 {
     public class CurrentOpportunitiesSegmentModel : BaseSegmentModel
     {
+        public string Markup { get; set; }
     }
 }

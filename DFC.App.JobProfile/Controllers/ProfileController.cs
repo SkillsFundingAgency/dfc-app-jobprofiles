@@ -90,11 +90,13 @@ namespace DFC.App.JobProfile.Controllers
                 return BadRequest(ModelState);
             }
 
+            var requestBaseAddress = Request.RequestBaseAddress(Url);
+
             var existingJobProfileModel = await jobProfileService.GetByIdAsync(createOrUpdateJobProfileModel.DocumentId).ConfigureAwait(false);
 
             if (existingJobProfileModel == null)
             {
-                var createdResponse = await jobProfileService.CreateAsync(createOrUpdateJobProfileModel).ConfigureAwait(false);
+                var createdResponse = await jobProfileService.CreateAsync(createOrUpdateJobProfileModel, requestBaseAddress).ConfigureAwait(false);
 
                 logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {createOrUpdateJobProfileModel.CanonicalName}");
 
@@ -102,7 +104,7 @@ namespace DFC.App.JobProfile.Controllers
             }
             else
             {
-                var updatedResponse = await jobProfileService.ReplaceAsync(createOrUpdateJobProfileModel, existingJobProfileModel).ConfigureAwait(false);
+                var updatedResponse = await jobProfileService.ReplaceAsync(createOrUpdateJobProfileModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
 
                 logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {createOrUpdateJobProfileModel.CanonicalName}");
 

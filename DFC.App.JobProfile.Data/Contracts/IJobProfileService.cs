@@ -7,6 +7,10 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IJobProfileService
     {
+        Task<bool> PingAsync();
+
+        Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync();
+
         Task<IEnumerable<JobProfileModel>> GetAllAsync();
 
         Task<JobProfileModel> GetByIdAsync(Guid documentId);
@@ -15,9 +19,9 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
 
-        Task<JobProfileModel> CreateAsync(CreateOrUpdateJobProfileModel createJobProfileModel);
+        Task<JobProfileModel> CreateAsync(CreateOrUpdateJobProfileModel createJobProfileModel, Uri requestBaseAddress);
 
-        Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingHJobProfileModel);
+        Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
 
         Task<bool> DeleteAsync(Guid documentId);
     }

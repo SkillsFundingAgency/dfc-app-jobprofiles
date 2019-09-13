@@ -3,29 +3,29 @@ using DFC.App.JobProfile.Data.Models.Segments;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.SegmentServiceDataTests
 {
-    [Trait("Profile Service", "How To Become Segment Service Tests")]
-    public class HowToBecomeSegmentServiceTests
+    [Trait("Profile Service", "How To Become Segment Service Data Tests")]
+    public class HowToBecomeSegmentServiceDataTests
     {
-        private const string ExpectedLastReviewed = "2019-08-30T08:00:00";
+        private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly HowToBecomeSegmentModel ExpectedResult = new HowToBecomeSegmentModel
         {
-            LastReviewed = DateTime.Parse(ExpectedLastReviewed),
-            Content = "some content",
+            Updated = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
 
         private readonly ILogger<HowToBecomeSegmentService> logger;
         private readonly HowToBecomeSegmentClientOptions howToBecomeSegmentClientOptions;
 
-        private readonly string responseJson = $"{{\"LastReviewed\": \"{ExpectedLastReviewed}\", \"Content\": \"{ExpectedResult.Content}\"}}";
+        private readonly string responseJson = $"{{\"Updated\": \"{ExpectedUpdated}\"}}";
 
-        public HowToBecomeSegmentServiceTests()
+        public HowToBecomeSegmentServiceDataTests()
         {
             logger = A.Fake<ILogger<HowToBecomeSegmentService>>();
             howToBecomeSegmentClientOptions = A.Fake<HowToBecomeSegmentClientOptions>();
@@ -42,14 +42,16 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var howToBecomeSegmentService = new HowToBecomeSegmentService(httpClient, logger, howToBecomeSegmentClientOptions);
+                    var howToBecomeSegmentService = new HowToBecomeSegmentService(httpClient, logger, howToBecomeSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await howToBecomeSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await howToBecomeSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
-                    A.Equals(results.Content, ExpectedResult.Content);
+                    A.Equals(results.Updated, ExpectedResult.Updated);
                 }
             }
         }
@@ -58,17 +60,19 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public async Task HowToBecomeSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            const string responseJson = "{\"notValid\": true}";
             HowToBecomeSegmentModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
             {
                 using (var httpClient = new HttpClient(messageHandler))
                 {
-                    var howToBecomeSegmentService = new HowToBecomeSegmentService(httpClient, logger, howToBecomeSegmentClientOptions);
+                    var howToBecomeSegmentService = new HowToBecomeSegmentService(httpClient, logger, howToBecomeSegmentClientOptions)
+                    {
+                        CanonicalName = "article-name",
+                    };
 
                     // act
-                    var results = await howToBecomeSegmentService.LoadAsync("article-name").ConfigureAwait(false);
+                    var results = await howToBecomeSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
                     A.Equals(results, expectedResult);

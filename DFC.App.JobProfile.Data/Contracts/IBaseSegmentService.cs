@@ -1,12 +1,20 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
+using DFC.App.JobProfile.Data.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IBaseSegmentService<TModel>
     {
+        string CanonicalName { get; set; }
+
         SegmentClientOptions SegmentClientOptions { get; set; }
 
-        Task<TModel> LoadAsync(string article);
+        Task<TModel> LoadDataAsync();
+
+        Task<string> LoadMarkupAsync();
+
+        Task<IList<HealthCheckItem>> HealthCheckAsync();
     }
 }

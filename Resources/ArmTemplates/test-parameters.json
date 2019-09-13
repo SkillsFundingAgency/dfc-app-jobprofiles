@@ -12,7 +12,7 @@
             "value": "dfcdevappsharedstr"
         },
         "cosmosDBName": {
-            "value": "dfc-foo-app-sharedresources-cdb"
+            "value": "dfc-dev-app-sharedresources-cdb"
         },
         "cosmosDbKey": {
             "value": "not-a-real-key"

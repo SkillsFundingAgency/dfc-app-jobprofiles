@@ -48,7 +48,7 @@ namespace DFC.App.JobProfile.Controllers
 
                     viewModel.HealthItems.AddRange(segmentHealthItemViewModels);
 
-                    return this.NegotiateContentResult(viewModel);
+                    return this.NegotiateContentResult(viewModel, viewModel.HealthItems);
                 }
 
                 message = $"Ping to {resourceName} has failed";

@@ -3,6 +3,7 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
@@ -29,11 +30,11 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
             A.CallTo(() => FakeJobProfileService.PingAsync()).MustHaveHappenedOnceExactly();
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<HealthViewModel>(jsonResult.Value);
+            var models = Assert.IsAssignableFrom<List<HealthItemViewModel>>(jsonResult.Value);
 
-            model.HealthItems.Count.Should().BeGreaterThan(0);
-            model.HealthItems.First().Service.Should().NotBeNullOrWhiteSpace();
-            model.HealthItems.First().Message.Should().NotBeNullOrWhiteSpace();
+            models.Count.Should().BeGreaterThan(0);
+            models.First().Service.Should().NotBeNullOrWhiteSpace();
+            models.First().Message.Should().NotBeNullOrWhiteSpace();
 
             controller.Dispose();
         }

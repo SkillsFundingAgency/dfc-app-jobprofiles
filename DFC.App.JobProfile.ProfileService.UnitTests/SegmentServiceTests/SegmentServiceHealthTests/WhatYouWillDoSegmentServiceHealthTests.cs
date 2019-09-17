@@ -40,7 +40,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                     var results = await whatYouWillDoSegmentService.HealthCheckAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.Count, 1);
+                    A.Equals(results.HealthItems.Count, 1);
                 }
             }
         }

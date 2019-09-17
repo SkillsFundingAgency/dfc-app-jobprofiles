@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Mime;
@@ -80,31 +81,72 @@ namespace DFC.App.JobProfile.ProfileService
             return null;
         }
 
-        public virtual async Task<IList<HealthCheckItem>> HealthCheckAsync()
+        public virtual async Task<HealthCheckItems> HealthCheckAsync()
         {
             var url = $"{SegmentClientOptions.BaseAddress}health";
 
             logger.LogInformation($"{nameof(LoadDataAsync)}: Checking health for {url}");
 
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-            request.Headers.Accept.Clear();
-            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-
-            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-                var result = JsonConvert.DeserializeObject<HealthCheckItems>(responseString);
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
 
-                logger.LogInformation($"{nameof(LoadDataAsync)}: Checked health for {url}");
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
-                return result.HealthItems;
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                    var result = JsonConvert.DeserializeObject<HealthCheckItems>(responseString);
+
+                    result.Source = SegmentClientOptions.BaseAddress;
+
+                    logger.LogInformation($"{nameof(LoadDataAsync)}: Checked health for {url}");
+
+                    return result;
+                }
+                else
+                {
+                    logger.LogError($"{nameof(HealthCheckAsync)}: Error loading health data from {url}: {response.StatusCode}");
+
+                    var result = new HealthCheckItems
+                    {
+                        Source = SegmentClientOptions.BaseAddress,
+                        HealthItems = new List<HealthCheckItem>
+                        {
+                            new HealthCheckItem
+                            {
+                                Service = SegmentClientOptions.BaseAddress.ToString(),
+                                Message = $"No health response from {SegmentClientOptions.BaseAddress.ToString()} app",
+                            },
+                        },
+                    };
+
+                    return result;
+                }
             }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"{nameof(HealthCheckAsync)}: {ex.Message}");
 
-            return default(List<HealthCheckItem>);
+                var result = new HealthCheckItems
+                {
+                    Source = SegmentClientOptions.BaseAddress,
+                    HealthItems = new List<HealthCheckItem>
+                    {
+                        new HealthCheckItem
+                        {
+                            Service = SegmentClientOptions.BaseAddress.ToString(),
+                            Message = $"{ex.GetType().Name}: {ex.Message}",
+                        },
+                    },
+                };
+
+                return result;
+            }
         }
     }
 }

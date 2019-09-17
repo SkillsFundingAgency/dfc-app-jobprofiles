@@ -1,7 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.Segments;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -85,7 +84,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         }
 
         [Fact]
-        public async Task SegmentServiceSegmentsHealthCheckAsyncReturnsSuccessWhenWhatYouWillDoOnlyRefreshRequired()
+        public async Task SegmentServiceSegmentsHealthCheckAsyncReturnsSuccess()
         {
             // arrange
             var segmentService = new SegmentService(
@@ -98,12 +97,16 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService);
 
-            IList<HealthCheckItem> expectedResult = new List<HealthCheckItem>
+            var expectedResult = new HealthCheckItems
             {
-                new HealthCheckItem
+                Source = new Uri("http://somewhere.com"),
+                HealthItems = new List<HealthCheckItem>
                 {
-                    Service = "Unit test",
-                    Message = "All ok",
+                    new HealthCheckItem
+                    {
+                        Service = "Unit test",
+                        Message = "All ok",
+                    },
                 },
             };
 
@@ -128,8 +131,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             A.CallTo(() => whatYouWillDoSegmentService.HealthCheckAsync()).MustHaveHappenedOnceExactly();
 
             results.Count.Should().Be(NumberOfSegmentServices);
-            results[0].Service.Should().Be(expectedResult[0].Service);
-            results[0].Message.Should().Be(expectedResult[0].Message);
+            results[0].Service.Should().Be(expectedResult.HealthItems[0].Service);
+            results[0].Message.Should().Be(expectedResult.HealthItems[0].Message);
         }
     }
 }

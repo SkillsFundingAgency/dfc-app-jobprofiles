@@ -171,7 +171,7 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync()
         {
-            var tasks = new List<Task<IList<HealthCheckItem>>>
+            var tasks = new List<Task<HealthCheckItems>>
             {
                 careerPathSegmentService.HealthCheckAsync(),
                 currentOpportunitiesSegmentService.HealthCheckAsync(),
@@ -225,13 +225,24 @@ namespace DFC.App.JobProfile.ProfileService
             return segmentClientOptions.OfflineHtml;
         }
 
-        private IList<HealthCheckItem> GetHealthResults(Task<IList<HealthCheckItem>> task)
+        private IList<HealthCheckItem> GetHealthResults(Task<HealthCheckItems> task)
         {
             if (task != null)
             {
-                if (task.IsCompletedSuccessfully && task.Result != null)
+                if (task.IsCompletedSuccessfully && task.Result?.HealthItems?.Count > 0)
                 {
-                    return task.Result;
+                    return task.Result.HealthItems;
+                }
+                else
+                {
+                    return new List<HealthCheckItem>()
+                    {
+                        new HealthCheckItem
+                        {
+                            Service = task.Result.Source.ToString(),
+                            Message = $"No health response from {task.Result.Source.ToString()} app",
+                        },
+                    };
                 }
             }
 

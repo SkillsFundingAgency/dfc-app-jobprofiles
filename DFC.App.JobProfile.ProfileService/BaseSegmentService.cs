@@ -39,17 +39,23 @@ namespace DFC.App.JobProfile.ProfileService
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
 
-            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
-                var result = JsonConvert.DeserializeObject<TModel>(responseString);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var result = JsonConvert.DeserializeObject<TModel>(responseString);
 
-                logger.LogInformation($"{nameof(LoadDataAsync)}: Loaded data segment from {url}");
+                    logger.LogInformation($"{nameof(LoadDataAsync)}: Loaded data segment from {url}");
 
-                return result;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"{nameof(LoadDataAsync)}: {ex.Message}");
             }
 
             return default(TModel);
@@ -67,15 +73,23 @@ namespace DFC.App.JobProfile.ProfileService
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
 
-            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
-                logger.LogInformation($"{nameof(LoadDataAsync)}: Loaded markup segment from {url}");
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                return responseString;
+                    logger.LogInformation($"{nameof(LoadDataAsync)}: Loaded markup segment from {url}");
+
+                    return responseString;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"{nameof(LoadMarkupAsync)}: {ex.Message}");
             }
 
             return null;

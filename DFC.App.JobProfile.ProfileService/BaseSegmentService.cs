@@ -85,7 +85,6 @@ namespace DFC.App.JobProfile.ProfileService
 
                     return responseString;
                 }
-
             }
             catch (Exception ex)
             {

@@ -171,6 +171,12 @@ namespace DFC.App.JobProfile.ProfileService
             JobProfileModel.Markup.WhatItTakes = GetMarkupResult(whatItTakesSegmnentMarkupTask, whatItTakesSegmentService.SegmentClientOptions);
             JobProfileModel.Markup.WhatYouWillDo = GetMarkupResult(whatYouWillDoSegmnentMarkupTask, whatYouWillDoSegmentService.SegmentClientOptions);
 
+            var title = JobProfileModel.Data.OverviewBanner?.Title ?? JobProfileModel.CanonicalName;
+
+            JobProfileModel.MetaTags.Title = $"{title} | Explore careers";
+            JobProfileModel.MetaTags.Description = JobProfileModel.Data.OverviewBanner?.Overview ?? title;
+            JobProfileModel.MetaTags.Keywords = title;
+
             JobProfileModel.Updated = DateTime.UtcNow;
 
             logger.LogInformation($"{nameof(LoadAsync)}: Loaded segments for {CreateOrUpdateJobProfileModel.CanonicalName}");

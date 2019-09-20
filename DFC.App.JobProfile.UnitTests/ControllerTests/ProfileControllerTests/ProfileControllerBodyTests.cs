@@ -123,7 +123,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void JobProfileControllerBodyHtmlReturnsSuccessWhenNoAlternateArticle(string mediaTypeName)
+        public async void JobProfileControllerBodyHtmlReturnsNoContentWhenNoAlternateArticle(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -141,15 +141,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<BodyViewModel>(viewResult.ViewData.Model);
+            var viewResult = Assert.IsType<NoContentResult>(result);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void JobProfileControllerBodyJsonReturnsSuccessWhenNoAlternateArticle(string mediaTypeName)
+        public async void JobProfileControllerBodyJsonReturnsNoContentWhenNoAlternateArticle(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -167,8 +166,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var jsonResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<BodyViewModel>(jsonResult.Value);
+            var jsonResult = Assert.IsType<NoContentResult>(result);
 
             controller.Dispose();
         }

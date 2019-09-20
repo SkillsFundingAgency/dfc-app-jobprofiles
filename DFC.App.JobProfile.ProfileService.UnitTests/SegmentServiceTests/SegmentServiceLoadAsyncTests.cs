@@ -151,6 +151,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -203,6 +204,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -220,6 +225,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -288,6 +294,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(expectedResultForMarkup.WhatItTakes);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().Be(expectedResultForWhatYouWillDo.Updated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(expectedResultForMarkup.WhatYouWillDo);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -306,6 +316,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -361,6 +372,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -379,6 +394,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -434,6 +450,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -452,6 +472,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -507,6 +528,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -525,6 +550,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -580,6 +606,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -598,6 +628,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -653,6 +684,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -671,6 +706,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -726,6 +762,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(expectedResultForMarkup.WhatItTakes);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().BeAfter(expectedUpdated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -744,6 +784,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 DocumentId = createOrUpdateJobProfileModel.DocumentId,
                 CanonicalName = createOrUpdateJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -799,6 +840,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Updated.Should().Be(expectedResultForWhatYouWillDo.Updated);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(expectedResultForMarkup.WhatYouWillDo);
+
+            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
+            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
     }
 }

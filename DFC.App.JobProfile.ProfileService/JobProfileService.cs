@@ -83,6 +83,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 DocumentId = createJobProfileModel.DocumentId,
                 CanonicalName = createJobProfileModel.CanonicalName,
+                MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
             };
@@ -115,6 +116,11 @@ namespace DFC.App.JobProfile.ProfileService
             if (requestBaseAddress == null)
             {
                 throw new ArgumentNullException(nameof(requestBaseAddress));
+            }
+
+            if (existingJobProfileModel.MetaTags == null)
+            {
+                existingJobProfileModel.MetaTags = new MetaTagsModel();
             }
 
             if (existingJobProfileModel.Markup == null)

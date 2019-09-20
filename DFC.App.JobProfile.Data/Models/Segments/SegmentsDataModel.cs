@@ -1,4 +1,12 @@
-﻿namespace DFC.App.JobProfile.Data.Models.Segments
+﻿using DFC.App.JobProfile.Data.Models.Segments.CareerPathDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoDataModels;
+
+namespace DFC.App.JobProfile.Data.Models.Segments
 {
     public class SegmentsDataModel
     {

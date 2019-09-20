@@ -1,6 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments;
+using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerDataModels;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 

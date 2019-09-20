@@ -197,7 +197,7 @@ namespace DFC.App.JobProfile.Controllers
 
             logger.LogInformation($"{nameof(Body)} has returned content for: {article}");
 
-            return this.NegotiateContentResult(viewModel, jobProfileModel.Data);
+            return this.NegotiateContentResult(viewModel, jobProfileModel?.Data);
         }
 
         #region Define helper methods

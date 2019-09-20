@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models.Segments;
+using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerDataModels;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;

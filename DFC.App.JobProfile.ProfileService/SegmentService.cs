@@ -2,6 +2,13 @@
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segments;
+using DFC.App.JobProfile.Data.Models.Segments.CareerPathDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoDataModels;
 using DFC.App.JobProfile.ProfileService.Utilities;
 using Microsoft.Extensions.Logging;
 using System;

@@ -123,7 +123,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void JobProfileControllerBodyHtmlReturnsSuccessWhenNoAlternateArticle(string mediaTypeName)
+        public async void JobProfileControllerBodyHtmlReturnsNoContentWhenNoAlternateArticle(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -148,7 +148,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void JobProfileControllerBodyJsonReturnsSuccessWhenNoAlternateArticle(string mediaTypeName)
+        public async void JobProfileControllerBodyJsonReturnsNoContentWhenNoAlternateArticle(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";

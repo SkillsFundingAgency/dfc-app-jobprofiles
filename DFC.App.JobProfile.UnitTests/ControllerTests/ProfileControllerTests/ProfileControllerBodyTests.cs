@@ -141,8 +141,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<BodyViewModel>(viewResult.ViewData.Model);
+            var viewResult = Assert.IsType<NoContentResult>(result);
 
             controller.Dispose();
         }
@@ -167,8 +166,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var jsonResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<BodyViewModel>(jsonResult.Value);
+            var jsonResult = Assert.IsType<NoContentResult>(result);
 
             controller.Dispose();
         }

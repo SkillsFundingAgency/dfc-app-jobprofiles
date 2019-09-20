@@ -180,24 +180,26 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 mapper.Map(jobProfileModel, viewModel);
+
+                logger.LogInformation($"{nameof(Body)} has returned content for: {article}");
+
+                return this.NegotiateContentResult(viewModel, jobProfileModel.Data);
             }
-            else
+
+            var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
+
+            if (alternateJobProfileModel != null)
             {
-                var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
+                var alternateUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
 
-                if (alternateJobProfileModel != null)
-                {
-                    var alternateUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                logger.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
-                    logger.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
-
-                    return RedirectPermanentPreserveMethod(alternateUrl);
-                }
+                return RedirectPermanentPreserveMethod(alternateUrl);
             }
 
-            logger.LogInformation($"{nameof(Body)} has returned content for: {article}");
+            logger.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
 
-            return this.NegotiateContentResult(viewModel, jobProfileModel?.Data);
+            return NoContent();
         }
 
         #region Define helper methods

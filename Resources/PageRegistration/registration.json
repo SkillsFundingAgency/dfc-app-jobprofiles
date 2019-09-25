@@ -11,7 +11,7 @@
 		"Regions": [
 			{
 				"PageRegion": 1,
-				"RegionEndpoint": "https:///__AppServiceName__.__appServiceDomain__/profile/{0}/htmlhead",
+				"RegionEndpoint": "https:///__AppServiceName__.__appServiceDomain__/profile/{0}/htmlhead"
 			},
 			{
 				"PageRegion": 2,

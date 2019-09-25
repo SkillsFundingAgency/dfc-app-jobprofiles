@@ -1,0 +1,29 @@
+[
+	{	
+		"Path": "jobprofile",
+		"TopNavigationText": "Job Profiles",
+		"TopNavigationOrder": 400,
+		"Layout": 1,
+		"OfflineHtml": "<div class=\"govuk-width-container\"><H2>Job Profile Service Unavailable</H2></div>",
+		"PhaseBannerHtml": "<div class=\"govuk-phase-banner\"><p class=\"govuk-phase-banner__content\"><strong class=\"govuk-tag govuk-phase-banner__content__tag\">Dev</strong><span class=\"govuk-phase-banner__text\">This is a new service - your <a class=\"govuk-link\" href=\"#\">feedback</a> will help us to improve it.</span></p></div>",
+		"SitemapUrl": "https:///__AppServiceName__.__appServiceDomain__/sitemap.xml",
+		"RobotsUrl": "https:///__AppServiceName__.__appServiceDomain__/robots.txt",
+		"Regions": [
+			{
+				"PageRegion": 1,
+				"RegionEndpoint": "https:///__AppServiceName__.__appServiceDomain__/profile/{0}/htmlhead",
+			},
+			{
+				"PageRegion": 2,
+				"RegionEndpoint": "https:///__AppServiceName__.__appServiceDomain__/profile/{0}/breadcrumb",
+				"OfflineHtml": "<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>"
+			},
+			{
+				"PageRegion": 4,
+				"RegionEndpoint": "https:///__AppServiceName__.__appServiceDomain__/profile/{0}/contents",
+				"OfflineHtml": "<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>",
+				"HealthCheckRequired": true
+			}
+		]
+	}
+]

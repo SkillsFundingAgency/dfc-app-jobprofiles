@@ -5,6 +5,7 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.DraftProfileService;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.HttpClientPolicies;
+using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.Repository.CosmosDb;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +23,7 @@ namespace DFC.App.JobProfile
     public class Startup
     {
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
+        public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
 
         private readonly IConfiguration configuration;
 
@@ -42,9 +44,11 @@ namespace DFC.App.JobProfile
 
             var cosmosDbConnection = configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
             var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
+            var brandingAssetsModel = configuration.GetSection(BrandingAssetsConfigAppSettings).Get<BrandingAssetsModel>();
 
             services.AddSingleton(cosmosDbConnection);
             services.AddSingleton<IDocumentClient>(documentClient);
+            services.AddSingleton(brandingAssetsModel);
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<IDraftJobProfileService, DraftJobProfileService>();

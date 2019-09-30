@@ -1,9 +1,9 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
+using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -19,14 +19,14 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ILogger<ProfileController> logger;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
-        private readonly IConfiguration configuration;
+        private readonly BrandingAssetsModel brandingAssetsModel;
 
-        public ProfileController(ILogger<ProfileController> logger, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, IConfiguration configuration)
+        public ProfileController(ILogger<ProfileController> logger, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, BrandingAssetsModel brandingAssetsModel)
         {
             this.logger = logger;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
-            this.configuration = configuration;
+            this.brandingAssetsModel = brandingAssetsModel;
         }
 
         [HttpGet]
@@ -153,7 +153,7 @@ namespace DFC.App.JobProfile.Controllers
                 viewModel.CanonicalUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
 
-            viewModel.CssLink = configuration.GetValue<string>("AppCssFilePath");
+            viewModel.CssLink = brandingAssetsModel.AppCssFilePath;
 
             logger.LogInformation($"{nameof(Head)} has returned content for: {article}");
 

@@ -21,3 +21,8 @@
 {
     <meta name="keywords" content="@Model.Keywords">
 }
+
+@if (!string.IsNullOrWhiteSpace(Model.CssLink))
+{
+    <link href="@Model.CssLink" rel="stylesheet" type="text/css" />
+}

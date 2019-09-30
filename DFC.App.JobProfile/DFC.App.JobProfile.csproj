@@ -43,7 +43,7 @@
 
   <ItemGroup>
     <None Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="appsettings-template.json" />
   </ItemGroup>

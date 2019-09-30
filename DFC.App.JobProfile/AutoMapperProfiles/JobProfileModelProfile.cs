@@ -35,6 +35,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileModel, HeadViewModel>()
                 .ForMember(d => d.CanonicalUrl, s => s.Ignore())
+                .ForMember(d => d.CssLink, s => s.Ignore())
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.MetaTags.Title))
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.MetaTags.Description))
                 .ForMember(d => d.Keywords, s => s.MapFrom(a => a.MetaTags.Keywords))

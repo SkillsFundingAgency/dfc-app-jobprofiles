@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
+using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,12 +19,14 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ILogger<ProfileController> logger;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
+        private readonly BrandingAssetsModel brandingAssetsModel;
 
-        public ProfileController(ILogger<ProfileController> logger, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public ProfileController(ILogger<ProfileController> logger, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, BrandingAssetsModel brandingAssetsModel)
         {
             this.logger = logger;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
+            this.brandingAssetsModel = brandingAssetsModel;
         }
 
         [HttpGet]
@@ -149,6 +152,8 @@ namespace DFC.App.JobProfile.Controllers
 
                 viewModel.CanonicalUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
+
+            viewModel.CssLink = brandingAssetsModel.AppCssFilePath;
 
             logger.LogInformation($"{nameof(Head)} has returned content for: {article}");
 

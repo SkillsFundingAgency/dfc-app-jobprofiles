@@ -31,6 +31,9 @@
             "type": "string",
             "defaultValue": ""
         },
+        "brandingAssetsAppCssFilePath": {
+            "type": "string"
+        },
         "cosmosDbName": {
             "type": "string"
         },
@@ -164,6 +167,10 @@
                             {
                                 "name": "AzureWebJobsStorage",
                                 "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('appSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('appSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                            },
+                            {
+                                "name": "BrandingAssets__AppCssFilePath",
+                                "value": "[parameters('brandingAssetsAppCssFilePath')]"
                             },
                             {
                                 "name": "Configuration__CosmosDbConnections__JobProfile__AccessKey",

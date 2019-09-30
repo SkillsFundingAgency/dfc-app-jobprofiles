@@ -11,6 +11,9 @@
         "appSharedStorageAccountName": {
             "value": "dfcdevappsharedstr"
         },
+        "brandingAssetsAppCssFilePath": {
+            "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
+        },
         "cosmosDBName": {
             "value": "dfc-dev-app-sharedresources-cdb"
         },

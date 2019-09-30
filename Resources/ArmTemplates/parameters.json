@@ -20,6 +20,9 @@
         "aspTier": {
             "value": "__aspTier__"
         },
+        "brandingAssetsAppCssFilePath": {
+            "value": "__brandingAssetsAppCssFilePath__"
+        },
         "cosmosDBName": {
             "value": "__appSharedCosmosDBName__"
         },

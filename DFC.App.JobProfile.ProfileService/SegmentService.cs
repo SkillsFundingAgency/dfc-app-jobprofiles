@@ -78,7 +78,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshCareerPathSegment)
             {
-                careerPathSegmentService.CanonicalName = CreateOrUpdateJobProfileModel.CanonicalName;
+                careerPathSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
 
                 careerPathSegmnentDataTask = careerPathSegmentService.LoadDataAsync();
                 tasks.Add(careerPathSegmnentDataTask);
@@ -89,7 +89,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshCurrentOpportunitiesSegment)
             {
-                currentOpportunitiesSegmentService.CanonicalName = CreateOrUpdateJobProfileModel.CanonicalName;
+                currentOpportunitiesSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
 
                 currentOpportunitiesSegmnentDataTask = currentOpportunitiesSegmentService.LoadDataAsync();
                 tasks.Add(currentOpportunitiesSegmnentDataTask);
@@ -100,7 +100,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshHowToBecomeSegment)
             {
-                howToBecomeSegmentService.CanonicalName = CreateOrUpdateJobProfileModel.CanonicalName;
+                howToBecomeSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
 
                 howToBecomeSegmnentDataTask = howToBecomeSegmentService.LoadDataAsync();
                 tasks.Add(howToBecomeSegmnentDataTask);
@@ -111,7 +111,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshOverviewBannerSegment)
             {
-                overviewBannerSegmentService.CanonicalName = CreateOrUpdateJobProfileModel.CanonicalName;
+                overviewBannerSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
 
                 overviewBannerSegmnentDataTask = overviewBannerSegmentService.LoadDataAsync();
                 tasks.Add(overviewBannerSegmnentDataTask);
@@ -122,7 +122,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshRelatedCareersSegment)
             {
-                relatedCareersSegmentService.CanonicalName = CreateOrUpdateJobProfileModel.CanonicalName;
+                relatedCareersSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
 
                 relatedCareersSegmnentDataTask = relatedCareersSegmentService.LoadDataAsync();
                 tasks.Add(relatedCareersSegmnentDataTask);
@@ -133,7 +133,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshWhatItTakesSegment)
             {
-                whatItTakesSegmentService.CanonicalName = CreateOrUpdateJobProfileModel.CanonicalName;
+                whatItTakesSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
 
                 whatItTakesSegmnentDataTask = whatItTakesSegmentService.LoadDataAsync();
                 tasks.Add(whatItTakesSegmnentDataTask);
@@ -144,7 +144,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshWhatYouWillDoSegment)
             {
-                whatYouWillDoSegmentService.CanonicalName = CreateOrUpdateJobProfileModel.CanonicalName;
+                whatYouWillDoSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
 
                 whatYouWillDoSegmnentDataTask = whatYouWillDoSegmentService.LoadDataAsync();
                 tasks.Add(whatYouWillDoSegmnentDataTask);
@@ -217,7 +217,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             var noResultsModel = new TModel
             {
-                Updated = DateTime.UtcNow,
+                LastReviewed = DateTime.UtcNow,
             };
 
             return noResultsModel;

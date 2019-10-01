@@ -23,13 +23,13 @@ namespace DFC.App.JobProfile.ProfileService
             this.SegmentClientOptions = segmentClientOptions;
         }
 
-        public string CanonicalName { get; set; }
+        public Guid DocumentId { get; set; }
 
         public SegmentClientOptions SegmentClientOptions { get; set; }
 
         public virtual async Task<TModel> LoadDataAsync()
         {
-            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", CanonicalName, System.StringComparison.OrdinalIgnoreCase);
+            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", DocumentId.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
             var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
 
             logger.LogInformation($"{nameof(LoadDataAsync)}: Loading data segment from {url}");
@@ -63,7 +63,7 @@ namespace DFC.App.JobProfile.ProfileService
 
         public virtual async Task<string> LoadMarkupAsync()
         {
-            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", CanonicalName, System.StringComparison.OrdinalIgnoreCase);
+            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", DocumentId.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
             var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
 
             logger.LogInformation($"{nameof(LoadDataAsync)}: Loading markup segment from {url}");

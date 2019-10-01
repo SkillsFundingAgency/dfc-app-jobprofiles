@@ -11,8 +11,6 @@ namespace DFC.App.JobProfile.Data.Models.Segments.WhatItTakesDataModels
             Restrictions = new List<string>();
         }
 
-        public DateTime LastReviewed { get; set; }
-
         public string Summary { get; set; }
 
         public IEnumerable<JobProfileSkillSegmentSkillDataModel> Skills { get; set; }

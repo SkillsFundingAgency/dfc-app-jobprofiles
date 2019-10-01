@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels

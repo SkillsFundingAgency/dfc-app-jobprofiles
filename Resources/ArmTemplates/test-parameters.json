@@ -31,6 +31,9 @@
         },
         "sharedAppServicePlanResourceGroup": {
             "value": "dfc-dev-app-sharedresources-rg"
+        },
+        "cosmosDbCollectionName": {
+            "value": "a-collection"
         }
     }
 }

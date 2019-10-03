@@ -1,6 +1,6 @@
 [
 	{	
-		"Path": "app-job-profiles",
+		"Path": "job-profiles",
 		"TopNavigationText": "Job Profiles",
 		"TopNavigationOrder": 400,
 		"Layout": 1,

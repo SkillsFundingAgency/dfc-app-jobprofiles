@@ -1,4 +1,4 @@
-﻿namespace DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesDataModels
+﻿namespace DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels
 {
     public class Course
     {

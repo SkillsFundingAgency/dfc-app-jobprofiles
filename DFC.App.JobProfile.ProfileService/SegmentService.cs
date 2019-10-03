@@ -2,13 +2,14 @@
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segments;
-using DFC.App.JobProfile.Data.Models.Segments.CareerPathDataModels;
-using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesDataModels;
-using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels;
-using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerDataModels;
-using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersDataModels;
-using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesDataModels;
-using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.CareerPathModels;
+using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels;
+using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels;
+using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels;
+using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels;
+using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels;
+using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoModels;
+using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.ProfileService.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
@@ -48,7 +49,7 @@ namespace DFC.App.JobProfile.ProfileService
             this.whatYouWillDoSegmentService = whatYouWillDoSegmentService;
         }
 
-        public CreateOrUpdateJobProfileModel CreateOrUpdateJobProfileModel { get; set; }
+        public RefreshJobProfileSegment RefreshJobProfileSegment { get; set; }
 
         public JobProfileModel JobProfileModel { get; set; }
 
@@ -56,9 +57,18 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task LoadAsync()
         {
-            logger.LogInformation($"{nameof(LoadAsync)}: Loading segments for {CreateOrUpdateJobProfileModel.CanonicalName}");
+            logger.LogInformation($"{nameof(LoadAsync)}: Loading segments for {RefreshJobProfileSegment.CanonicalName}");
 
             var tasks = new List<Task>();
+
+            bool refreshAllSegments = string.IsNullOrWhiteSpace(RefreshJobProfileSegment.Segment);
+            bool refreshCareerPathSegment = refreshAllSegments || RefreshJobProfileSegment.Segment == CareerPathSegmentModel.SegmentName;
+            bool refreshCurrentOpportunitiesSegment = refreshAllSegments || RefreshJobProfileSegment.Segment == CurrentOpportunitiesSegmentModel.SegmentName;
+            bool refreshHowToBecomeSegment = refreshAllSegments || RefreshJobProfileSegment.Segment == HowToBecomeSegmentModel.SegmentName;
+            bool refreshOverviewBannerSegment = refreshAllSegments || RefreshJobProfileSegment.Segment == OverviewBannerSegmentModel.SegmentName;
+            bool refreshRelatedCareersSegment = refreshAllSegments || RefreshJobProfileSegment.Segment == RelatedCareersSegmentModel.SegmentName;
+            bool refreshWhatItTakesSegment = refreshAllSegments || RefreshJobProfileSegment.Segment == WhatItTakesSegmentModel.SegmentName;
+            bool refreshWhatYouWillDoSegment = refreshAllSegments || RefreshJobProfileSegment.Segment == WhatYouWillDoSegmentModel.SegmentName;
 
             Task<CareerPathSegmentModel> careerPathSegmnentDataTask = null;
             Task<CurrentOpportunitiesSegmentModel> currentOpportunitiesSegmnentDataTask = null;
@@ -76,9 +86,9 @@ namespace DFC.App.JobProfile.ProfileService
             Task<string> whatItTakesSegmnentMarkupTask = null;
             Task<string> whatYouWillDoSegmnentMarkupTask = null;
 
-            if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshCareerPathSegment)
+            if (refreshAllSegments || refreshCareerPathSegment)
             {
-                careerPathSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
+                careerPathSegmentService.DocumentId = RefreshJobProfileSegment.JobProfileId;
 
                 careerPathSegmnentDataTask = careerPathSegmentService.LoadDataAsync();
                 tasks.Add(careerPathSegmnentDataTask);
@@ -87,9 +97,9 @@ namespace DFC.App.JobProfile.ProfileService
                 tasks.Add(careerPathSegmnentMarkupTask);
             }
 
-            if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshCurrentOpportunitiesSegment)
+            if (refreshAllSegments || refreshCurrentOpportunitiesSegment)
             {
-                currentOpportunitiesSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
+                currentOpportunitiesSegmentService.DocumentId = RefreshJobProfileSegment.JobProfileId;
 
                 currentOpportunitiesSegmnentDataTask = currentOpportunitiesSegmentService.LoadDataAsync();
                 tasks.Add(currentOpportunitiesSegmnentDataTask);
@@ -98,9 +108,9 @@ namespace DFC.App.JobProfile.ProfileService
                 tasks.Add(currentOpportunitiesSegmnentMarkupTask);
             }
 
-            if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshHowToBecomeSegment)
+            if (refreshAllSegments || refreshHowToBecomeSegment)
             {
-                howToBecomeSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
+                howToBecomeSegmentService.DocumentId = RefreshJobProfileSegment.JobProfileId;
 
                 howToBecomeSegmnentDataTask = howToBecomeSegmentService.LoadDataAsync();
                 tasks.Add(howToBecomeSegmnentDataTask);
@@ -109,9 +119,9 @@ namespace DFC.App.JobProfile.ProfileService
                 tasks.Add(howToBecomeSegmnentMarkupTask);
             }
 
-            if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshOverviewBannerSegment)
+            if (refreshAllSegments || refreshOverviewBannerSegment)
             {
-                overviewBannerSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
+                overviewBannerSegmentService.DocumentId = RefreshJobProfileSegment.JobProfileId;
 
                 overviewBannerSegmnentDataTask = overviewBannerSegmentService.LoadDataAsync();
                 tasks.Add(overviewBannerSegmnentDataTask);
@@ -120,9 +130,9 @@ namespace DFC.App.JobProfile.ProfileService
                 tasks.Add(overviewBannerSegmnentMarkupTask);
             }
 
-            if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshRelatedCareersSegment)
+            if (refreshAllSegments || refreshRelatedCareersSegment)
             {
-                relatedCareersSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
+                relatedCareersSegmentService.DocumentId = RefreshJobProfileSegment.JobProfileId;
 
                 relatedCareersSegmnentDataTask = relatedCareersSegmentService.LoadDataAsync();
                 tasks.Add(relatedCareersSegmnentDataTask);
@@ -131,9 +141,9 @@ namespace DFC.App.JobProfile.ProfileService
                 tasks.Add(relatedCareersSegmnentMarkupTask);
             }
 
-            if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshWhatItTakesSegment)
+            if (refreshAllSegments || refreshWhatItTakesSegment)
             {
-                whatItTakesSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
+                whatItTakesSegmentService.DocumentId = RefreshJobProfileSegment.JobProfileId;
 
                 whatItTakesSegmnentDataTask = whatItTakesSegmentService.LoadDataAsync();
                 tasks.Add(whatItTakesSegmnentDataTask);
@@ -142,9 +152,9 @@ namespace DFC.App.JobProfile.ProfileService
                 tasks.Add(whatItTakesSegmnentMarkupTask);
             }
 
-            if (CreateOrUpdateJobProfileModel.RefreshAllSegments || CreateOrUpdateJobProfileModel.RefreshWhatYouWillDoSegment)
+            if (refreshAllSegments || refreshWhatYouWillDoSegment)
             {
-                whatYouWillDoSegmentService.DocumentId = CreateOrUpdateJobProfileModel.DocumentId;
+                whatYouWillDoSegmentService.DocumentId = RefreshJobProfileSegment.JobProfileId;
 
                 whatYouWillDoSegmnentDataTask = whatYouWillDoSegmentService.LoadDataAsync();
                 tasks.Add(whatYouWillDoSegmnentDataTask);
@@ -155,13 +165,13 @@ namespace DFC.App.JobProfile.ProfileService
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
-            JobProfileModel.Data.CareerPath = GetDataResult(careerPathSegmnentDataTask);
-            JobProfileModel.Data.CurrentOpportunities = GetDataResult(currentOpportunitiesSegmnentDataTask);
-            JobProfileModel.Data.HowToBecome = GetDataResult(howToBecomeSegmnentDataTask);
-            JobProfileModel.Data.OverviewBanner = GetDataResult(overviewBannerSegmnentDataTask);
-            JobProfileModel.Data.RelatedCareers = GetDataResult(relatedCareersSegmnentDataTask);
-            JobProfileModel.Data.WhatItTakes = GetDataResult(whatItTakesSegmnentDataTask);
-            JobProfileModel.Data.WhatYouWillDo = GetDataResult(whatYouWillDoSegmnentDataTask);
+            JobProfileModel.Data.CareerPath = GetDataResult(careerPathSegmnentDataTask)?.Data;
+            JobProfileModel.Data.CurrentOpportunities = GetDataResult(currentOpportunitiesSegmnentDataTask)?.Data;
+            JobProfileModel.Data.HowToBecome = GetDataResult(howToBecomeSegmnentDataTask)?.Data;
+            JobProfileModel.Data.OverviewBanner = GetDataResult(overviewBannerSegmnentDataTask)?.Data;
+            JobProfileModel.Data.RelatedCareers = GetDataResult(relatedCareersSegmnentDataTask)?.Data;
+            JobProfileModel.Data.WhatItTakes = GetDataResult(whatItTakesSegmnentDataTask)?.Data;
+            JobProfileModel.Data.WhatYouWillDo = GetDataResult(whatYouWillDoSegmnentDataTask)?.Data;
 
             JobProfileModel.Markup.CareerPath = GetMarkupResult(careerPathSegmnentMarkupTask, careerPathSegmentService.SegmentClientOptions);
             JobProfileModel.Markup.CurrentOpportunities = GetMarkupResult(currentOpportunitiesSegmnentMarkupTask, currentOpportunitiesSegmentService.SegmentClientOptions);
@@ -177,9 +187,9 @@ namespace DFC.App.JobProfile.ProfileService
             JobProfileModel.MetaTags.Description = JobProfileModel.Data.OverviewBanner?.Overview ?? title;
             JobProfileModel.MetaTags.Keywords = title;
 
-            JobProfileModel.Updated = DateTime.UtcNow;
+            JobProfileModel.LastReviewed = DateTime.UtcNow;
 
-            logger.LogInformation($"{nameof(LoadAsync)}: Loaded segments for {CreateOrUpdateJobProfileModel.CanonicalName}");
+            logger.LogInformation($"{nameof(LoadAsync)}: Loaded segments for {RefreshJobProfileSegment.CanonicalName}");
         }
 
         public async Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync()

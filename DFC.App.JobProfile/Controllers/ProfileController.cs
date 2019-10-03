@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
@@ -79,11 +80,11 @@ namespace DFC.App.JobProfile.Controllers
         [HttpPut]
         [HttpPost]
         [Route("profile")]
-        public async Task<IActionResult> CreateOrUpdate([FromBody]CreateOrUpdateJobProfileModel createOrUpdateJobProfileModel)
+        public async Task<IActionResult> CreateOrUpdate([FromBody]RefreshJobProfileSegment refreshJobProfileSegment)
         {
             logger.LogInformation($"{nameof(CreateOrUpdate)} has been called");
 
-            if (createOrUpdateJobProfileModel == null)
+            if (refreshJobProfileSegment == null)
             {
                 return BadRequest();
             }
@@ -95,21 +96,21 @@ namespace DFC.App.JobProfile.Controllers
 
             var requestBaseAddress = Request.RequestBaseAddress(Url);
 
-            var existingJobProfileModel = await jobProfileService.GetByIdAsync(createOrUpdateJobProfileModel.DocumentId).ConfigureAwait(false);
+            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegment.JobProfileId).ConfigureAwait(false);
 
             if (existingJobProfileModel == null)
             {
-                var createdResponse = await jobProfileService.CreateAsync(createOrUpdateJobProfileModel, requestBaseAddress).ConfigureAwait(false);
+                var createdResponse = await jobProfileService.CreateAsync(refreshJobProfileSegment, requestBaseAddress).ConfigureAwait(false);
 
-                logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {createOrUpdateJobProfileModel.CanonicalName}");
+                logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {createdResponse.CanonicalName}");
 
                 return new CreatedAtActionResult(nameof(Document), "Profile", new { article = createdResponse.CanonicalName }, createdResponse);
             }
             else
             {
-                var updatedResponse = await jobProfileService.ReplaceAsync(createOrUpdateJobProfileModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
+                var updatedResponse = await jobProfileService.ReplaceAsync(refreshJobProfileSegment, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
 
-                logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {createOrUpdateJobProfileModel.CanonicalName}");
+                logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {updatedResponse.CanonicalName}");
 
                 return new OkObjectResult(updatedResponse);
             }
@@ -130,7 +131,7 @@ namespace DFC.App.JobProfile.Controllers
                 return NotFound();
             }
 
-            await jobProfileService.DeleteAsync(documentId, jobProfileModel.PartitionKey).ConfigureAwait(false);
+            await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
 
             logger.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
 

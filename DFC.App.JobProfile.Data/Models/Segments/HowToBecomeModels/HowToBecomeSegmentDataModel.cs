@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels
+namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels
 {
-    public partial class HowToBecomeSegmentModel : BaseSegmentModel
+    public class HowToBecomeSegmentDataModel
     {
+        public DateTime? LastReviewed { get; set; }
+
         public string Title { get; set; }
 
         public TitlePrefix TitlePrefix { get; set; }

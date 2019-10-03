@@ -1,4 +1,4 @@
-﻿namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels
+﻿namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels
 {
     public class MoreInformation
     {

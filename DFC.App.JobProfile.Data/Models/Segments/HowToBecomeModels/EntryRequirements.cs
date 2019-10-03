@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels
+namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels
 {
     public class EntryRequirements
     {

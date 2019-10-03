@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DFC.App.JobProfile.Data.Models.Segments.RelatedCareersDataModels
+namespace DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels
 {
     public class RelatedCareerDataModel
     {

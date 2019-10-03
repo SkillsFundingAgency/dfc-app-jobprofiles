@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace DFC.App.JobProfile.Data.Models.Segments.WhatItTakesDataModels
+namespace DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels
 {
-    public class WhatItTakesSegmentModel : BaseSegmentModel
+    public class WhatItTakesSegmentDataModel
     {
-        public WhatItTakesSegmentModel()
+        public WhatItTakesSegmentDataModel()
         {
             Skills = new List<JobProfileSkillSegmentSkillDataModel>();
             Restrictions = new List<string>();
         }
+
+        public DateTime? LastReviewed { get; set; }
 
         public string Summary { get; set; }
 

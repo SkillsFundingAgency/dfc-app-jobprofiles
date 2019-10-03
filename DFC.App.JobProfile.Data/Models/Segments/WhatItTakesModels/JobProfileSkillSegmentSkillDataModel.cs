@@ -1,4 +1,4 @@
-﻿namespace DFC.App.JobProfile.Data.Models.Segments.WhatItTakesDataModels
+﻿namespace DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels
 {
     public class JobProfileSkillSegmentSkillDataModel
     {

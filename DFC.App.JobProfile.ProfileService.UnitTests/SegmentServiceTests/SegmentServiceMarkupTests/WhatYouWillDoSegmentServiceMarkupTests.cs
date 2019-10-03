@@ -1,5 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoModels;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;

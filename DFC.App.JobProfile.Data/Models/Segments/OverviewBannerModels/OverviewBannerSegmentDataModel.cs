@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models.Segments.OverviewBannerDataModels
+namespace DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels
 {
-    public class OverviewBannerSegmentModel : BaseSegmentModel
+    public class OverviewBannerSegmentDataModel
     {
+        public DateTime? LastReviewed { get; set; }
+
         public string SocCode { get; set; }
 
         public string SocDescription { get; set; }

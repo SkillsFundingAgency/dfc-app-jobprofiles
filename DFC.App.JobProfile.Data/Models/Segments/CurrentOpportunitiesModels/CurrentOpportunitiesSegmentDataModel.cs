@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesDataModels
+namespace DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels
 {
-    public class CurrentOpportunitiesSegmentModel : BaseSegmentModel
+    public class CurrentOpportunitiesSegmentDataModel
     {
+        public DateTime? LastReviewed { get; set; }
+
         public string JobTitle { get; set; }
 
         public IEnumerable<string> Standards { get; set; }

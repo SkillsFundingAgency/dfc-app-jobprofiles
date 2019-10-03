@@ -1,4 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models;
+﻿using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -96,18 +96,19 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             // Arrange
             const string url = "/profile";
             var documentId = Guid.NewGuid();
-            var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
+            var refreshJobProfileSegment = new RefreshJobProfileSegment()
             {
-                DocumentId = documentId,
+                JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                RefreshAllSegments = true,
+                SocLevelTwo = "12",
+                Segment = null,
             };
             var client = factory.CreateClient();
 
             client.DefaultRequestHeaders.Accept.Clear();
 
             // Act
-            var response = await client.PostAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            var response = await client.PostAsync(url, refreshJobProfileSegment, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -119,18 +120,19 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             // Arrange
             const string url = "/profile";
-            var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
+            var refreshJobProfileSegment = new RefreshJobProfileSegment()
             {
-                DocumentId = DataSeeding.DefaultArticleGuid,
+                JobProfileId = DataSeeding.DefaultArticleGuid,
                 CanonicalName = DataSeeding.DefaultArticleName,
-                RefreshAllSegments = true,
+                SocLevelTwo = "12",
+                Segment = "none",
             };
             var client = factory.CreateClient();
 
             client.DefaultRequestHeaders.Accept.Clear();
 
             // Act
-            var response = await client.PostAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            var response = await client.PostAsync(url, refreshJobProfileSegment, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -142,18 +144,19 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             // Arrange
             const string url = "/profile";
-            var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
+            var refreshJobProfileSegment = new RefreshJobProfileSegment()
             {
-                DocumentId = DataSeeding.DefaultArticleGuid,
+                JobProfileId = DataSeeding.DefaultArticleGuid,
                 CanonicalName = DataSeeding.DefaultArticleName,
-                RefreshAllSegments = true,
+                SocLevelTwo = "12",
+                Segment = "none",
             };
             var client = factory.CreateClient();
 
             client.DefaultRequestHeaders.Accept.Clear();
 
             // Act
-            var response = await client.PutAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            var response = await client.PutAsync(url, refreshJobProfileSegment, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -166,21 +169,21 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             // Arrange
             const string url = "/profile";
             var documentId = Guid.NewGuid();
-            var createOrUpdateJobProfileModel = new CreateOrUpdateJobProfileModel()
+            var refreshJobProfileSegment = new RefreshJobProfileSegment()
             {
-                DocumentId = documentId,
+                JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                RefreshOverviewBannerSegment = true,
-                RefreshRelatedCareersSegment = true,
+                SocLevelTwo = "12",
+                Segment = "OverviewBanner",
             };
             var client = factory.CreateClient();
 
             client.DefaultRequestHeaders.Accept.Clear();
 
-            _ = await client.PostAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            _ = await client.PostAsync(url, refreshJobProfileSegment, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Act
-            var response = await client.PutAsync(url, createOrUpdateJobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            var response = await client.PutAsync(url, refreshJobProfileSegment, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -194,16 +197,17 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var documentId = Guid.NewGuid();
             const string postUrl = "/profile";
             var deleteUri = new Uri($"/profile/{documentId}", UriKind.Relative);
-            var jobProfileModel = new CreateOrUpdateJobProfileModel()
+            var refreshJobProfileSegment = new RefreshJobProfileSegment()
             {
-                DocumentId = documentId,
+                JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
+                SocLevelTwo = "12",
             };
             var client = factory.CreateClient();
 
             client.DefaultRequestHeaders.Accept.Clear();
 
-            _ = await client.PostAsync(postUrl, jobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            _ = await client.PostAsync(postUrl, refreshJobProfileSegment, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Act
             var response = await client.DeleteAsync(deleteUri).ConfigureAwait(false);

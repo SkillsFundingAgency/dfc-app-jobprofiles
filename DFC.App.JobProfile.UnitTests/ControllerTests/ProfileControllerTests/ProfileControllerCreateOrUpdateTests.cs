@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,20 +16,20 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsSuccessForCreate(string mediaTypeName)
         {
             // Arrange
-            var jobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();
-            JobProfileModel existingJobProfileModel = null;
+            var refreshJobProfileSegment = A.Fake<RefreshJobProfileSegment>();
+            JobProfileModel existingRefreshJobProfileSegment = null;
             var createdJobProfileModel = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingJobProfileModel);
-            A.CallTo(() => FakeJobProfileService.CreateAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<Uri>.Ignored)).Returns(createdJobProfileModel);
+            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingRefreshJobProfileSegment);
+            A.CallTo(() => FakeJobProfileService.CreateAsync(A<RefreshJobProfileSegment>.Ignored, A<Uri>.Ignored)).Returns(createdJobProfileModel);
 
             // Act
-            var result = await controller.CreateOrUpdate(jobProfileModel).ConfigureAwait(false);
+            var result = await controller.CreateOrUpdate(refreshJobProfileSegment).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeJobProfileService.CreateAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.CreateAsync(A<RefreshJobProfileSegment>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
 
             var okResult = Assert.IsType<CreatedAtActionResult>(result);
 
@@ -42,20 +43,20 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsSuccessForUpdate(string mediaTypeName)
         {
             // Arrange
-            var jobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();
-            var existingJobProfileModel = A.Fake<JobProfileModel>();
-            JobProfileModel updatedJobProfileModel = null;
+            var refreshJobProfileSegment = A.Fake<RefreshJobProfileSegment>();
+            var existingRefreshJobProfileSegment = A.Fake<JobProfileModel>();
+            JobProfileModel updatedJobProfileModel = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingJobProfileModel);
-            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).Returns(updatedJobProfileModel);
+            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingRefreshJobProfileSegment);
+            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<RefreshJobProfileSegment>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).Returns(updatedJobProfileModel);
 
             // Act
-            var result = await controller.CreateOrUpdate(jobProfileModel).ConfigureAwait(false);
+            var result = await controller.CreateOrUpdate(refreshJobProfileSegment).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<RefreshJobProfileSegment>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
 
             var okResult = Assert.IsType<OkObjectResult>(result);
 
@@ -69,11 +70,11 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsNull(string mediaTypeName)
         {
             // Arrange
-            CreateOrUpdateJobProfileModel jobProfileModel = null;
+            RefreshJobProfileSegment refreshJobProfileSegment = null;
             var controller = BuildProfileController(mediaTypeName);
 
             // Act
-            var result = await controller.CreateOrUpdate(jobProfileModel).ConfigureAwait(false);
+            var result = await controller.CreateOrUpdate(refreshJobProfileSegment).ConfigureAwait(false);
 
             // Assert
             var statusResult = Assert.IsType<BadRequestResult>(result);
@@ -88,13 +89,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
         {
             // Arrange
-            var jobProfileModel = new CreateOrUpdateJobProfileModel();
+            var refreshJobProfileSegment = new RefreshJobProfileSegment();
             var controller = BuildProfileController(mediaTypeName);
 
             controller.ModelState.AddModelError(string.Empty, "Model is not valid");
 
             // Act
-            var result = await controller.CreateOrUpdate(jobProfileModel).ConfigureAwait(false);
+            var result = await controller.CreateOrUpdate(refreshJobProfileSegment).ConfigureAwait(false);
 
             // Assert
             var statusResult = Assert.IsType<BadRequestObjectResult>(result);

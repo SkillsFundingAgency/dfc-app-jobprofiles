@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -15,22 +16,25 @@ namespace DFC.App.JobProfile.IntegrationTests
         public static void SeedDefaultArticle(CustomWebApplicationFactory<Startup> factory)
         {
             const string url = "/profile";
-            var models = new List<CreateOrUpdateJobProfileModel>()
+            var models = new List<RefreshJobProfileSegment>()
             {
-                new CreateOrUpdateJobProfileModel()
+                new RefreshJobProfileSegment()
                 {
-                    DocumentId = DefaultArticleGuid,
+                    JobProfileId = DefaultArticleGuid,
                     CanonicalName = DefaultArticleName,
+                    SocLevelTwo = "12",
                 },
-                new CreateOrUpdateJobProfileModel()
+                new RefreshJobProfileSegment()
                 {
-                    DocumentId = Guid.Parse("C16B389D-91AD-4F3D-2485-9F7EE953AFE4"),
+                    JobProfileId = Guid.Parse("C16B389D-91AD-4F3D-2485-9F7EE953AFE4"),
                     CanonicalName = $"{DefaultArticleName}-2",
+                    SocLevelTwo = "34",
                 },
-                new CreateOrUpdateJobProfileModel()
+                new RefreshJobProfileSegment()
                 {
-                    DocumentId = Guid.Parse("C0103C26-E7C9-4008-3F66-1B2DB192177E"),
+                    JobProfileId = Guid.Parse("C0103C26-E7C9-4008-3F66-1B2DB192177E"),
                     CanonicalName = $"{DefaultArticleName}-3",
+                    SocLevelTwo = "56",
                 },
             };
 

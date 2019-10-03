@@ -66,29 +66,33 @@ namespace DFC.App.JobProfile.Repository.CosmosDb
             return models.Any() ? models : null;
         }
 
-        public async Task<HttpStatusCode> CreateAsync(T model)
+        public async Task<HttpStatusCode> UpsertAsync(T model)
         {
-            var result = await documentClient.CreateDocumentAsync(DocumentCollectionUri, model).ConfigureAwait(false);
+            var ac = new AccessCondition { Condition = model.Etag, Type = AccessConditionType.IfMatch };
+            var pk = new PartitionKey(model.PartitionKey);
+
+            var result = await documentClient.UpsertDocumentAsync(DocumentCollectionUri, model, new RequestOptions { AccessCondition = ac, PartitionKey = pk }).ConfigureAwait(false);
 
             return result.StatusCode;
         }
 
-        public async Task<HttpStatusCode> UpdateAsync(Guid documentId, T model)
+        public async Task<HttpStatusCode> DeleteAsync(Guid documentId)
         {
             var documentUri = CreateDocumentUri(documentId);
 
-            var result = await documentClient.ReplaceDocumentAsync(documentUri, model).ConfigureAwait(false);
+            var model = await GetAsync(d => d.DocumentId == documentId).ConfigureAwait(false);
 
-            return result.StatusCode;
-        }
+            if (model != null)
+            {
+                var ac = new AccessCondition { Condition = model.Etag, Type = AccessConditionType.IfMatch };
+                var pk = new PartitionKey(model.PartitionKey);
 
-        public async Task<HttpStatusCode> DeleteAsync(Guid documentId, int partitionKey)
-        {
-            var documentUri = CreateDocumentUri(documentId);
+                var result = await documentClient.DeleteDocumentAsync(documentUri, new RequestOptions { AccessCondition = ac, PartitionKey = pk }).ConfigureAwait(false);
 
-            var result = await documentClient.DeleteDocumentAsync(documentUri, new RequestOptions() { PartitionKey = new PartitionKey(partitionKey) }).ConfigureAwait(false);
+                return result.StatusCode;
+            }
 
-            return result.StatusCode;
+            return HttpStatusCode.NotFound;
         }
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> where)

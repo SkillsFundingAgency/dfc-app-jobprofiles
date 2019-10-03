@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,10 +20,10 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
 
-        Task<JobProfileModel> CreateAsync(CreateOrUpdateJobProfileModel createJobProfileModel, Uri requestBaseAddress);
+        Task<JobProfileModel> CreateAsync(RefreshJobProfileSegment refreshJobProfileSegment, Uri requestBaseAddress);
 
-        Task<JobProfileModel> ReplaceAsync(CreateOrUpdateJobProfileModel replaceJobProfileModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
+        Task<JobProfileModel> ReplaceAsync(RefreshJobProfileSegment refreshJobProfileSegment, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
 
-        Task<bool> DeleteAsync(Guid documentId, int partitionKey);
+        Task<bool> DeleteAsync(Guid documentId);
     }
 }

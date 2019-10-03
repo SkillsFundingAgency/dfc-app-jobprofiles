@@ -8,7 +8,7 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface ISegmentService
     {
-        RefreshJobProfileSegment RefreshJobProfileSegment { get; set; }
+        RefreshJobProfileSegmentServiceBusModel RefreshJobProfileSegmentServiceBusModel { get; set; }
 
         JobProfileModel JobProfileModel { get; set; }
 

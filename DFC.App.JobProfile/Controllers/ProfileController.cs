@@ -80,11 +80,11 @@ namespace DFC.App.JobProfile.Controllers
         [HttpPut]
         [HttpPost]
         [Route("profile")]
-        public async Task<IActionResult> CreateOrUpdate([FromBody]RefreshJobProfileSegment refreshJobProfileSegment)
+        public async Task<IActionResult> CreateOrUpdate([FromBody]RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel)
         {
             logger.LogInformation($"{nameof(CreateOrUpdate)} has been called");
 
-            if (refreshJobProfileSegment == null)
+            if (refreshJobProfileSegmentServiceBusModel == null)
             {
                 return BadRequest();
             }
@@ -96,11 +96,11 @@ namespace DFC.App.JobProfile.Controllers
 
             var requestBaseAddress = Request.RequestBaseAddress(Url);
 
-            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegment.JobProfileId).ConfigureAwait(false);
+            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegmentServiceBusModel.JobProfileId).ConfigureAwait(false);
 
             if (existingJobProfileModel == null)
             {
-                var createdResponse = await jobProfileService.CreateAsync(refreshJobProfileSegment, requestBaseAddress).ConfigureAwait(false);
+                var createdResponse = await jobProfileService.CreateAsync(refreshJobProfileSegmentServiceBusModel, requestBaseAddress).ConfigureAwait(false);
 
                 logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {createdResponse.CanonicalName}");
 
@@ -108,7 +108,7 @@ namespace DFC.App.JobProfile.Controllers
             }
             else
             {
-                var updatedResponse = await jobProfileService.ReplaceAsync(refreshJobProfileSegment, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
+                var updatedResponse = await jobProfileService.ReplaceAsync(refreshJobProfileSegmentServiceBusModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
 
                 logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {updatedResponse.CanonicalName}");
 

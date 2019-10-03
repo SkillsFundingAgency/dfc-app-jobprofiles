@@ -20,9 +20,9 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
 
-        Task<JobProfileModel> CreateAsync(RefreshJobProfileSegment refreshJobProfileSegment, Uri requestBaseAddress);
+        Task<JobProfileModel> CreateAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, Uri requestBaseAddress);
 
-        Task<JobProfileModel> ReplaceAsync(RefreshJobProfileSegment refreshJobProfileSegment, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
+        Task<JobProfileModel> ReplaceAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
 
         Task<bool> DeleteAsync(Guid documentId);
     }

@@ -170,7 +170,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -179,8 +179,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -195,7 +195,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
@@ -245,7 +245,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         {
             // arrange
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -254,8 +254,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -270,7 +270,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
@@ -337,7 +337,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -346,8 +346,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -362,7 +362,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
@@ -416,7 +416,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -425,8 +425,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -441,7 +441,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
@@ -495,7 +495,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -504,8 +504,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -520,7 +520,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
@@ -574,7 +574,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -583,8 +583,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -599,7 +599,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
@@ -653,7 +653,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -662,8 +662,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -678,7 +678,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
@@ -732,7 +732,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -741,8 +741,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -757,7 +757,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };
@@ -811,7 +811,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             // arrange
             DateTime expectedUpdated = DateTime.UtcNow;
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegment = new RefreshJobProfileSegment
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
@@ -820,8 +820,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             };
             var jobProfileModel = new JobProfileModel
             {
-                DocumentId = refreshJobProfileSegment.JobProfileId,
-                CanonicalName = refreshJobProfileSegment.CanonicalName,
+                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
+                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
                 MetaTags = new MetaTagsModel(),
                 Markup = new SegmentsMarkupModel(),
                 Data = new SegmentsDataModel(),
@@ -836,7 +836,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                                                         whatItTakesSegmentService,
                                                         whatYouWillDoSegmentService)
             {
-                RefreshJobProfileSegment = refreshJobProfileSegment,
+                RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel,
                 JobProfileModel = jobProfileModel,
                 RequestBaseAddress = dummyBaseAddressUri,
             };

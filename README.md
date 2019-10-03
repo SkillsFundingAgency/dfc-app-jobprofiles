@@ -36,6 +36,7 @@ Once you have cloned the public repo you need to remove the -template part from 
 
 | Location | Repo Filename | Rename to |
 |-------|-------|-------|
+| DFC.App.JobProfile.MessageFunctionApp | local.settings-template.json | local.settings.json |
 | DFC.App.JobProfile.IntegrationTests | appsettings-template.json | appsettings.json |
 | DFC.App.JobProfile | appsettings-template.json | appsettings.json |
 

@@ -31,7 +31,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public void JobProfileServiceUpdateReturnsSuccessWhenProfileReplaced()
         {
             // arrange
-            var refreshJobProfileSegment = A.Fake<RefreshJobProfileSegment>();
+            var refreshJobProfileSegmentServiceBusModel = A.Fake<RefreshJobProfileSegmentServiceBusModel>();
             var jobProfileModel = A.Fake<JobProfileModel>();
             var expectedResult = A.Fake<JobProfileModel>();
 
@@ -39,7 +39,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
 
             // act
-            var result = jobProfileService.ReplaceAsync(refreshJobProfileSegment, jobProfileModel, dummyBaseAddressUri).Result;
+            var result = jobProfileService.ReplaceAsync(refreshJobProfileSegmentServiceBusModel, jobProfileModel, dummyBaseAddressUri).Result;
 
             // assert
             A.CallTo(() => repository.UpsertAsync(jobProfileModel)).MustHaveHappenedOnceExactly();
@@ -57,17 +57,17 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.ReplaceAsync(null, jobProfileModel, dummyBaseAddressUri).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
-            Assert.Equal("Value cannot be null.\r\nParameter name: refreshJobProfileSegment", exceptionResult.Message);
+            Assert.Equal("Value cannot be null.\r\nParameter name: refreshJobProfileSegmentServiceBusModel", exceptionResult.Message);
         }
 
         [Fact]
         public async System.Threading.Tasks.Task JobProfileServiceUpdateReturnsArgumentNullExceptionWhenNullIParam2sUsed()
         {
             // arrange
-            var refreshJobProfileSegment = A.Fake<RefreshJobProfileSegment>();
+            var refreshJobProfileSegmentServiceBusModel = A.Fake<RefreshJobProfileSegmentServiceBusModel>();
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.ReplaceAsync(refreshJobProfileSegment, null, dummyBaseAddressUri).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.ReplaceAsync(refreshJobProfileSegmentServiceBusModel, null, dummyBaseAddressUri).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
             Assert.Equal("Value cannot be null.\r\nParameter name: existingJobProfileModel", exceptionResult.Message);
@@ -77,11 +77,11 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async System.Threading.Tasks.Task JobProfileServiceUpdateReturnsArgumentNullExceptionWhenNullIParam3sUsed()
         {
             // arrange
-            var refreshJobProfileSegment = A.Fake<RefreshJobProfileSegment>();
+            var refreshJobProfileSegmentServiceBusModel = A.Fake<RefreshJobProfileSegmentServiceBusModel>();
             var jobProfileModel = A.Fake<JobProfileModel>();
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.ReplaceAsync(refreshJobProfileSegment, jobProfileModel, null).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.ReplaceAsync(refreshJobProfileSegmentServiceBusModel, jobProfileModel, null).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
             Assert.Equal("Value cannot be null.\r\nParameter name: requestBaseAddress", exceptionResult.Message);
@@ -91,14 +91,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public void JobProfileServiceUpdateReturnsNullWhenProfileNotReplaced()
         {
             // arrange
-            var refreshJobProfileSegment = A.Fake<RefreshJobProfileSegment>();
+            var refreshJobProfileSegmentServiceBusModel = A.Fake<RefreshJobProfileSegmentServiceBusModel>();
             var jobProfileModel = A.Fake<JobProfileModel>();
             var expectedResult = A.Dummy<JobProfileModel>();
 
             A.CallTo(() => repository.UpsertAsync(jobProfileModel)).Returns(HttpStatusCode.BadRequest);
 
             // act
-            var result = jobProfileService.ReplaceAsync(refreshJobProfileSegment, jobProfileModel, dummyBaseAddressUri).Result;
+            var result = jobProfileService.ReplaceAsync(refreshJobProfileSegmentServiceBusModel, jobProfileModel, dummyBaseAddressUri).Result;
 
             // assert
             A.CallTo(() => repository.UpsertAsync(jobProfileModel)).MustHaveHappenedOnceExactly();
@@ -110,14 +110,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public void JobProfileServiceUpdateReturnsNullWhenMissingRepository()
         {
             // arrange
-            var refreshJobProfileSegment = A.Fake<RefreshJobProfileSegment>();
+            var refreshJobProfileSegmentServiceBusModel = A.Fake<RefreshJobProfileSegmentServiceBusModel>();
             var jobProfileModel = A.Fake<JobProfileModel>();
             JobProfileModel expectedResult = null;
 
             A.CallTo(() => repository.UpsertAsync(jobProfileModel)).Returns(HttpStatusCode.FailedDependency);
 
             // act
-            var result = jobProfileService.ReplaceAsync(refreshJobProfileSegment, jobProfileModel, dummyBaseAddressUri).Result;
+            var result = jobProfileService.ReplaceAsync(refreshJobProfileSegmentServiceBusModel, jobProfileModel, dummyBaseAddressUri).Result;
 
             // assert
             A.CallTo(() => repository.UpsertAsync(jobProfileModel)).MustHaveHappenedOnceExactly();

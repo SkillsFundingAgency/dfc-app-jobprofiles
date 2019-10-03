@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
 {
-    public class RefreshJobProfileSegment
+    public class JobProfilePatchServiceBusModel
     {
         [Required]
         public Guid JobProfileId { get; set; }
@@ -13,7 +13,5 @@ namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
 
         [Required]
         public string SocLevelTwo { get; set; }
-
-        public string Segment { get; set; }
     }
 }

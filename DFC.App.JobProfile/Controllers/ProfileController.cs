@@ -208,6 +208,29 @@ namespace DFC.App.JobProfile.Controllers
             return NoContent();
         }
 
+        [HttpGet]
+        [Route("profile/{documentId}/profile")]
+        public async Task<IActionResult> Profile(Guid documentId)
+        {
+            logger.LogInformation($"{nameof(Profile)} has been called");
+
+            var viewModel = new BodyViewModel();
+            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+
+                logger.LogInformation($"{nameof(Profile)} has returned a profile for: {documentId}");
+
+                return this.NegotiateContentResult(viewModel, jobProfileModel);
+            }
+
+            logger.LogWarning($"{nameof(Profile)} has not returned a profile for: {documentId}");
+
+            return NoContent();
+        }
+
         #region Define helper methods
 
         private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)

@@ -1,6 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments;
-using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,7 +17,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly OverviewBannerSegmentModel ExpectedResult = new OverviewBannerSegmentModel
         {
-            Updated = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
+            LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
 
         private readonly ILogger<OverviewBannerSegmentService> logger;
@@ -45,14 +44,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act
                     var results = await overviewBannerSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.Updated, ExpectedResult.Updated);
+                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
                 }
             }
         }
@@ -69,7 +68,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var overviewBannerSegmentService = new OverviewBannerSegmentService(httpClient, logger, overviewBannerSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act

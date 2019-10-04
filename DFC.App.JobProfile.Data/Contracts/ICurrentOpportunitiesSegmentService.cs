@@ -1,4 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesDataModels;
+﻿using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {

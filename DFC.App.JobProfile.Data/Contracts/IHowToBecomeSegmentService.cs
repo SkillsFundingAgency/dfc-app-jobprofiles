@@ -1,4 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels;
+﻿using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {

@@ -1,6 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments.CareerPathDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.CareerPathModels;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 

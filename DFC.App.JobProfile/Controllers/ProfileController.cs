@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
@@ -14,7 +15,7 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class ProfileController : Controller
     {
-        public const string ProfilePathRoot = "jobprofile";
+        public const string ProfilePathRoot = "job-profile";
 
         private readonly ILogger<ProfileController> logger;
         private readonly IJobProfileService jobProfileService;
@@ -79,11 +80,35 @@ namespace DFC.App.JobProfile.Controllers
         [HttpPut]
         [HttpPost]
         [Route("profile")]
-        public async Task<IActionResult> CreateOrUpdate([FromBody]CreateOrUpdateJobProfileModel createOrUpdateJobProfileModel)
+        public async Task<IActionResult> CreateOrUpdate([FromBody]JobProfileModel jobProfileModel)
         {
             logger.LogInformation($"{nameof(CreateOrUpdate)} has been called");
 
-            if (createOrUpdateJobProfileModel == null)
+            if (jobProfileModel == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await jobProfileService.UpsertAsync(jobProfileModel).ConfigureAwait(false);
+
+            logger.LogInformation($"{nameof(CreateOrUpdate)} has upserted content for: {jobProfileModel.CanonicalName}");
+
+            return new StatusCodeResult((int)response);
+        }
+
+        [HttpPut]
+        [HttpPost]
+        [Route("profile/refresh")]
+        public async Task<IActionResult> PostRefresh([FromBody]RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel)
+        {
+            logger.LogInformation($"{nameof(PostRefresh)} has been called");
+
+            if (refreshJobProfileSegmentServiceBusModel == null)
             {
                 return BadRequest();
             }
@@ -95,24 +120,52 @@ namespace DFC.App.JobProfile.Controllers
 
             var requestBaseAddress = Request.RequestBaseAddress(Url);
 
-            var existingJobProfileModel = await jobProfileService.GetByIdAsync(createOrUpdateJobProfileModel.DocumentId).ConfigureAwait(false);
+            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegmentServiceBusModel.JobProfileId).ConfigureAwait(false);
 
-            if (existingJobProfileModel == null)
+            if (existingJobProfileModel != null)
             {
-                var createdResponse = await jobProfileService.CreateAsync(createOrUpdateJobProfileModel, requestBaseAddress).ConfigureAwait(false);
+                var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentServiceBusModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
 
-                logger.LogInformation($"{nameof(CreateOrUpdate)} has created content for: {createOrUpdateJobProfileModel.CanonicalName}");
+                logger.LogInformation($"{nameof(PostRefresh)} has upserted content for: {existingJobProfileModel.CanonicalName}");
 
-                return new CreatedAtActionResult(nameof(Document), "Profile", new { article = createdResponse.CanonicalName }, createdResponse);
+                return new StatusCodeResult((int)response);
             }
-            else
+
+            return NoContent();
+        }
+
+        [HttpPatch]
+        [Route("profile/{documentId}/metadata")]
+        public async Task<IActionResult> Patch([FromBody]JobProfileMetaDataPatchServiceBusModel jobProfileMetaDataPatchServiceBusModel, Guid documentId)
+        {
+            logger.LogInformation($"{nameof(Patch)} has been called");
+
+            if (jobProfileMetaDataPatchServiceBusModel == null)
             {
-                var updatedResponse = await jobProfileService.ReplaceAsync(createOrUpdateJobProfileModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
-
-                logger.LogInformation($"{nameof(CreateOrUpdate)} has updated content for: {createOrUpdateJobProfileModel.CanonicalName}");
-
-                return new OkObjectResult(updatedResponse);
+                return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
+
+            if (jobProfileModel == null)
+            {
+                logger.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
+
+                return NoContent();
+            }
+
+            mapper.Map(jobProfileMetaDataPatchServiceBusModel, jobProfileModel);
+
+            var response = await jobProfileService.UpsertAsync(jobProfileModel).ConfigureAwait(false);
+
+            logger.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileModel.CanonicalName}");
+
+            return new StatusCodeResult((int)response);
         }
 
         [HttpDelete]
@@ -130,7 +183,7 @@ namespace DFC.App.JobProfile.Controllers
                 return NotFound();
             }
 
-            await jobProfileService.DeleteAsync(documentId, jobProfileModel.PartitionKey).ConfigureAwait(false);
+            await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
 
             logger.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
 
@@ -203,6 +256,29 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             logger.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
+
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("profile/{documentId}/profile")]
+        public async Task<IActionResult> Profile(Guid documentId)
+        {
+            logger.LogInformation($"{nameof(Profile)} has been called");
+
+            var viewModel = new BodyViewModel();
+            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+
+                logger.LogInformation($"{nameof(Profile)} has returned a profile for: {documentId}");
+
+                return this.NegotiateContentResult(viewModel, jobProfileModel);
+            }
+
+            logger.LogWarning($"{nameof(Profile)} has not returned a profile for: {documentId}");
 
             return NoContent();
         }

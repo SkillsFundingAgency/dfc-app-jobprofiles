@@ -1,5 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,7 +17,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly RelatedCareersSegmentModel ExpectedResult = new RelatedCareersSegmentModel
         {
-            Updated = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
+            LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
 
         private readonly ILogger<RelatedCareersSegmentService> logger;
@@ -44,14 +44,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act
                     var results = await relatedCareersSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.Updated, ExpectedResult.Updated);
+                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act

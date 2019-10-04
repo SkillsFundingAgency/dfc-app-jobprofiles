@@ -1,5 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,7 +17,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
         private static readonly HowToBecomeSegmentModel ExpectedResult = new HowToBecomeSegmentModel
         {
-            Updated = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
+            LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
 
         private readonly ILogger<HowToBecomeSegmentService> logger;
@@ -44,14 +44,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var howToBecomeSegmentService = new HowToBecomeSegmentService(httpClient, logger, howToBecomeSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act
                     var results = await howToBecomeSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.Updated, ExpectedResult.Updated);
+                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var howToBecomeSegmentService = new HowToBecomeSegmentService(httpClient, logger, howToBecomeSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act

@@ -1,5 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,9 +15,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
     public class WhatItTakesSegmentServiceDataTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
-        private static readonly WhatItTakesSegmentModel ExpectedResult = new WhatItTakesSegmentModel
+        private static readonly JobProfileSkillSegmentModel ExpectedResult = new JobProfileSkillSegmentModel
         {
-            Updated = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
+            LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
 
         private readonly ILogger<WhatItTakesSegmentService> logger;
@@ -44,14 +44,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var whatItTakesSegmentService = new WhatItTakesSegmentService(httpClient, logger, whatItTakesSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act
                     var results = await whatItTakesSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.Updated, ExpectedResult.Updated);
+                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
                 }
             }
         }
@@ -60,7 +60,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task WhatItTakesSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            WhatItTakesSegmentModel expectedResult = null;
+            JobProfileSkillSegmentModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
             {
@@ -68,7 +68,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var whatItTakesSegmentService = new WhatItTakesSegmentService(httpClient, logger, whatItTakesSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act

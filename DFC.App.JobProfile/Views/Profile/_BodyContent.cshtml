@@ -1,0 +1,29 @@
+﻿@model BodyViewModel
+
+<header class="job-profile-hero">
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="_OverviewBannerSegment" model=Model.Markup.OverviewBanner.Value />
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="govuk-width-container">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_SegmentLinks" />
+            <partial name="_HowToBecomeSegment" model=Model.Markup.HowToBecome.Value />
+            <partial name="_WhatItTakesSegment" model=Model.Markup.WhatItTakes.Value />
+            <partial name="_WhatYouWillDoSegment" model=Model.Markup.WhatYouWillDo.Value />
+            <partial name="_CareerPathSegment" model=Model.Markup.CareerPath.Value />
+            <partial name="_CurrentOpportunitiesSegment" model=Model.Markup.CurrentOpportunities.Value />
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <partial name="_Search" />
+            <partial name="_RelatedCareersSegment" model=Model.Markup.RelatedCareers.Value />
+        </div>
+    </div>
+</div>

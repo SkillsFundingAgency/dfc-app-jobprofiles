@@ -26,9 +26,7 @@ namespace DFC.App.JobProfile.ViewModels
 
         public string Keywords { get; set; }
 
-        public DateTime Created { get; set; }
-
-        public DateTime Updated { get; set; }
+        public DateTime LastReviewed { get; set; }
 
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }

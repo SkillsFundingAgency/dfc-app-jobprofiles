@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.Segments;
 using DFC.App.JobProfile.ViewModels;
 using FakeItEasy;
 using FluentAssertions;
@@ -48,6 +49,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(mediaTypeName);
 
             expectedResult.CanonicalName = article;
+            expectedResult.Data = A.Fake<SegmentsDataModel>();
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);
             A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<BodyViewModel>.Ignored)).Returns(A.Fake<BodyViewModel>());
@@ -60,7 +62,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<BodyViewModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<BodyViewModel>(jsonResult.Value);
+            var model = Assert.IsAssignableFrom<SegmentsDataModel>(jsonResult.Value);
 
             controller.Dispose();
         }

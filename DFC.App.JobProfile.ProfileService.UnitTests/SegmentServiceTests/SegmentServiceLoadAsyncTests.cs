@@ -174,7 +174,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = "None",
             };
             var jobProfileModel = new JobProfileModel
@@ -245,7 +244,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = null,
             };
             var jobProfileModel = new JobProfileModel
@@ -333,7 +331,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = "CareerPath",
             };
             var jobProfileModel = new JobProfileModel
@@ -408,7 +405,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = "CurrentOpportunities",
             };
             var jobProfileModel = new JobProfileModel
@@ -483,7 +479,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = "HowToBecome",
             };
             var jobProfileModel = new JobProfileModel
@@ -558,7 +553,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = "OverviewBanner",
             };
             var jobProfileModel = new JobProfileModel
@@ -633,7 +627,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = "RelatedCareers",
             };
             var jobProfileModel = new JobProfileModel
@@ -708,7 +701,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = "WhatItTakes",
             };
             var jobProfileModel = new JobProfileModel
@@ -783,7 +775,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             {
                 JobProfileId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
                 Segment = "WhatYouWillDo",
             };
             var jobProfileModel = new JobProfileModel

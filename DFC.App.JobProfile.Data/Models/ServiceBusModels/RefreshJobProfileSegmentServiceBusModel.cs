@@ -11,9 +11,6 @@ namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
         [Required]
         public string CanonicalName { get; set; }
 
-        [Required]
-        public string SocLevelTwo { get; set; }
-
         public string Segment { get; set; }
     }
 }

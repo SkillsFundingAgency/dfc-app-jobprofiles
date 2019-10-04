@@ -101,7 +101,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 JobProfileId = DataSeeding.DefaultArticleGuid,
                 CanonicalName = DataSeeding.DefaultArticleName,
-                SocLevelTwo = "12",
                 Segment = null,
             };
             var client = factory.CreateClient();
@@ -125,7 +124,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 JobProfileId = DataSeeding.DefaultArticleGuid,
                 CanonicalName = DataSeeding.DefaultArticleName,
-                SocLevelTwo = "12",
                 Segment = "none",
             };
             var client = factory.CreateClient();
@@ -158,7 +156,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 JobProfileId = jobProfileModel.DocumentId,
                 CanonicalName = jobProfileModel.CanonicalName,
-                SocLevelTwo = jobProfileModel.SocLevelTwo,
                 Segment = "OverviewBanner",
             };
             var client = factory.CreateClient();

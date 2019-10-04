@@ -1,8 +1,8 @@
-﻿using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels;
+﻿using DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {
-    public interface IWhatItTakesSegmentService : IBaseSegmentService<WhatItTakesSegmentModel>
+    public interface IWhatItTakesSegmentService : IBaseSegmentService<JobProfileSkillSegmentModel>
     {
     }
 }

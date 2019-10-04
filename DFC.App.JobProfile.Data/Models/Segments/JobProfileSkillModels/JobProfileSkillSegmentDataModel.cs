@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels
+namespace DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels
 {
-    public class WhatItTakesSegmentDataModel
+    public class JobProfileSkillSegmentDataModel
     {
-        public WhatItTakesSegmentDataModel()
+        public JobProfileSkillSegmentDataModel()
         {
             Skills = new List<JobProfileSkillSegmentSkillDataModel>();
-            Restrictions = new List<string>();
+            Restrictions = new List<GenericListContent>();
         }
 
-        public DateTime? LastReviewed { get; set; }
+        public DateTime LastReviewed { get; set; }
 
         public string Summary { get; set; }
 
@@ -22,7 +22,7 @@ namespace DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels
 
         public string RestrictionsSummary { get; set; }
 
-        public IEnumerable<string> Restrictions { get; set; }
+        public IEnumerable<GenericListContent> Restrictions { get; set; }
 
         public string OtherRequirements { get; set; }
     }

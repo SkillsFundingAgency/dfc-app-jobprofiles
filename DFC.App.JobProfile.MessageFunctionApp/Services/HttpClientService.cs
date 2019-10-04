@@ -57,7 +57,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         public static async Task<HttpStatusCode> PostAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel)
         {
-            var endpoint = jobProfileClientOptions.PostEndpoint;
+            var endpoint = jobProfileClientOptions.PostRefreshEndpoint;
             var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
 
             using (var request = new HttpRequestMessage(HttpMethod.Post, url))
@@ -65,6 +65,23 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                 request.Headers.Accept.Clear();
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
                 request.Content = new ObjectContent(typeof(RefreshJobProfileSegmentServiceBusModel), refreshJobProfileSegmentServiceBusModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
+
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+
+                return response.StatusCode;
+            }
+        }
+
+        public static async Task<HttpStatusCode> PostAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, JobProfileModel jobProfileModel)
+        {
+            var endpoint = jobProfileClientOptions.PostEndpoint;
+            var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
+
+            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            {
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                request.Content = new ObjectContent(typeof(RefreshJobProfileSegmentServiceBusModel), jobProfileModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
 
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 

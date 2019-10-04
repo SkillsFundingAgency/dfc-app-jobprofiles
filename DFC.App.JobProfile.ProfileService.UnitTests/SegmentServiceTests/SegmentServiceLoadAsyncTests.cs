@@ -5,10 +5,10 @@ using DFC.App.JobProfile.Data.Models.Segments;
 using DFC.App.JobProfile.Data.Models.Segments.CareerPathModels;
 using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels;
 using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels;
+using DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels;
+using DFC.App.JobProfile.Data.Models.Segments.JobProfileTasksModels;
 using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels;
 using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels;
-using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels;
-using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoModels;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using FakeItEasy;
 using FluentAssertions;
@@ -77,19 +77,19 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             },
         };
 
-        private readonly WhatItTakesSegmentModel expectedResultForWhatItTakes = new WhatItTakesSegmentModel
+        private readonly JobProfileSkillSegmentModel expectedResultForWhatItTakes = new JobProfileSkillSegmentModel
         {
             LastReviewed = DateTime.UtcNow.AddDays(-6),
-            Data = new WhatItTakesSegmentDataModel
+            Data = new JobProfileSkillSegmentDataModel
             {
                 LastReviewed = DateTime.UtcNow.AddDays(-6),
             },
         };
 
-        private readonly WhatYouWillDoSegmentModel expectedResultForWhatYouWillDo = new WhatYouWillDoSegmentModel
+        private readonly JobProfileTasksSegmentModel expectedResultForWhatYouWillDo = new JobProfileTasksSegmentModel
         {
             LastReviewed = DateTime.UtcNow.AddDays(-7),
-            Data = new WhatYouWillDoSegmentDataModel
+            Data = new JobProfileTasksDataSegmentModel
             {
                 LastReviewed = DateTime.UtcNow.AddDays(-7),
             },
@@ -109,13 +109,13 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public SegmentServiceLoadAsyncTests()
         {
             logger = A.Fake<ILogger<SegmentService>>();
-            careerPathSegmentService = A.Fake<CareerPathSegmentService>();
-            currentOpportunitiesSegmentService = A.Fake<CurrentOpportunitiesSegmentService>();
-            howToBecomeSegmentService = A.Fake<HowToBecomeSegmentService>();
-            overviewBannerSegmentService = A.Fake<OverviewBannerSegmentService>();
-            relatedCareersSegmentService = A.Fake<RelatedCareersSegmentService>();
-            whatItTakesSegmentService = A.Fake<WhatItTakesSegmentService>();
-            whatYouWillDoSegmentService = A.Fake<WhatYouWillDoSegmentService>();
+            careerPathSegmentService = A.Fake<ICareerPathSegmentService>();
+            currentOpportunitiesSegmentService = A.Fake<ICurrentOpportunitiesSegmentService>();
+            howToBecomeSegmentService = A.Fake<IHowToBecomeSegmentService>();
+            overviewBannerSegmentService = A.Fake<IOverviewBannerSegmentService>();
+            relatedCareersSegmentService = A.Fake<IRelatedCareersSegmentService>();
+            whatItTakesSegmentService = A.Fake<IWhatItTakesSegmentService>();
+            whatYouWillDoSegmentService = A.Fake<IWhatYouWillDoSegmentService>();
 
             var baseAddress = new Uri("https://nowhere.com");
             const string endpoint = "segment/{0}/contents";
@@ -234,10 +234,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Should().BeNull();
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -325,10 +321,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(expectedResultForMarkup.WhatItTakes);
             jobProfileModel.Data.WhatYouWillDo.LastReviewed.Should().Be(expectedResultForWhatYouWillDo.Data.LastReviewed);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(expectedResultForMarkup.WhatYouWillDo);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -404,10 +396,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Should().BeNull();
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -483,10 +471,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Should().BeNull();
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -562,10 +546,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Should().BeNull();
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -641,10 +621,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Should().BeNull();
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -720,10 +696,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.Should().BeNull();
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -799,10 +771,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(expectedResultForMarkup.WhatItTakes);
             jobProfileModel.Data.WhatYouWillDo.Should().BeNull();
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -878,10 +846,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
             jobProfileModel.Markup.WhatItTakes.Should().Be(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml);
             jobProfileModel.Data.WhatYouWillDo.LastReviewed.Should().Be(expectedResultForWhatYouWillDo.Data.LastReviewed);
             jobProfileModel.Markup.WhatYouWillDo.Should().Be(expectedResultForMarkup.WhatYouWillDo);
-
-            jobProfileModel.MetaTags.Title.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Description.Should().NotBeNullOrWhiteSpace();
-            jobProfileModel.MetaTags.Keywords.Should().NotBeNullOrWhiteSpace();
         }
     }
 }

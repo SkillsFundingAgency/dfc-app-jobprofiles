@@ -1,5 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels;
+using DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,7 +15,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
     public class WhatItTakesSegmentServiceDataTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
-        private static readonly WhatItTakesSegmentModel ExpectedResult = new WhatItTakesSegmentModel
+        private static readonly JobProfileSkillSegmentModel ExpectedResult = new JobProfileSkillSegmentModel
         {
             LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
@@ -60,7 +60,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task WhatItTakesSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            WhatItTakesSegmentModel expectedResult = null;
+            JobProfileSkillSegmentModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
             {

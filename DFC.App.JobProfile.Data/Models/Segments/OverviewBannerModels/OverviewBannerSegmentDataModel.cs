@@ -5,7 +5,7 @@ namespace DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels
 {
     public class OverviewBannerSegmentDataModel
     {
-        public DateTime? LastReviewed { get; set; }
+        public DateTime LastReviewed { get; set; }
 
         public string SocCode { get; set; }
 
@@ -15,9 +15,9 @@ namespace DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels
 
         public string AlternativeTitle { get; set; }
 
-        public List<string> HiddenAlternativeTitle { get; set; }
+        public List<GenericListContent> HiddenAlternativeTitle { get; set; }
 
-        public List<string> JobProfileSpecialism { get; set; }
+        public List<GenericListContent> JobProfileSpecialism { get; set; }
 
         public string Overview { get; set; }
 

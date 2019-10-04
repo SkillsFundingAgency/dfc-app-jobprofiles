@@ -30,9 +30,9 @@ namespace DFC.App.JobProfile.Data.Models
 
         public bool IncludeInSitemap { get; set; }
 
-        public MetaTagsModel MetaTags { get; set; }
-
         public string[] AlternativeNames { get; set; }
+
+        public MetaTagsModel MetaTags { get; set; }
 
         public SegmentsMarkupModel Markup { get; set; }
 

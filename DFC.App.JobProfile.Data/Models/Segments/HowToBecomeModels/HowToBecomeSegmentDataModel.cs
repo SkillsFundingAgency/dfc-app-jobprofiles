@@ -6,7 +6,7 @@ namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels
 {
     public class HowToBecomeSegmentDataModel
     {
-        public DateTime? LastReviewed { get; set; }
+        public DateTime LastReviewed { get; set; }
 
         public string Title { get; set; }
 
@@ -18,6 +18,6 @@ namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels
 
         public MoreInformation MoreInformation { get; set; }
 
-        public IEnumerable<string> Registrations { get; set; }
+        public IEnumerable<GenericListContent> Registrations { get; set; }
     }
 }

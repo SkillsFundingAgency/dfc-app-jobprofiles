@@ -5,9 +5,9 @@ namespace DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels
 {
     public class CurrentOpportunitiesSegmentDataModel
     {
-        public DateTime? LastReviewed { get; set; }
-
         public string JobTitle { get; set; }
+
+        public DateTime LastReviewed { get; set; }
 
         public IEnumerable<string> Standards { get; set; }
 

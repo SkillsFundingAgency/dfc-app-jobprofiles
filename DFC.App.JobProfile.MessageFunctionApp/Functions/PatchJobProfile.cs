@@ -1,3 +1,4 @@
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.PatchModels;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
@@ -23,29 +24,76 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                                         [Inject] JobProfileClientOptions jobProfileClientOptions,
                                         [Inject] HttpClient httpClient)
         {
-            var serviceBusModel = JsonConvert.DeserializeObject<JobProfilePatchServiceBusModel>(serviceBusMessage);
+            var serviceBusModel = JsonConvert.DeserializeObject<JobProfileMetaDataPatchServiceBusModel>(serviceBusMessage);
 
             log.LogInformation($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Patching job profile");
 
             var jobProfileModel = await HttpClientService.GetByIdAsync(httpClient, jobProfileClientOptions, serviceBusModel.JobProfileId).ConfigureAwait(false);
 
-            if (jobProfileModel == null || jobProfileModel.Data == null)
+            if (jobProfileModel != null)
             {
-                var jobProfilePatchModel = new JobProfilePatchModel
+                if (jobProfileModel.LastReviewed < serviceBusModel.LastReviewed)
                 {
-                    SocLevelTwo = serviceBusModel.SocLevelTwo,
-                    CanonicalName = serviceBusModel.CanonicalName,
-                };
+                    var jobProfilePatchModel = new JobProfilePatchModel
+                    {
+                        SocLevelTwo = serviceBusModel.SocLevelTwo,
+                        CanonicalName = serviceBusModel.CanonicalName,
+                        LastReviewed = serviceBusModel.LastReviewed,
+                        BreadcrumbTitle = serviceBusModel.BreadcrumbTitle,
+                        IncludeInSitemap = serviceBusModel.IncludeInSitemap,
+                        AlternativeNames = serviceBusModel.AlternativeNames,
+                        MetaTags = new MetaTagsModel
+                        {
+                            Title = serviceBusModel.Title,
+                            Description = serviceBusModel.Description,
+                            Keywords = serviceBusModel.Keywords,
+                        },
+                    };
 
-                var result = await HttpClientService.PatchAsync(httpClient, jobProfileClientOptions, jobProfilePatchModel, serviceBusModel.JobProfileId).ConfigureAwait(false);
+                    var result = await HttpClientService.PatchAsync(httpClient, jobProfileClientOptions, jobProfilePatchModel, serviceBusModel.JobProfileId).ConfigureAwait(false);
 
-                if (result == HttpStatusCode.OK)
-                {
-                    log.LogInformation($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Patched job profile");
+                    if (result == HttpStatusCode.OK)
+                    {
+                        log.LogInformation($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Patched job profile");
+                    }
+                    else
+                    {
+                        log.LogWarning($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Job profile not patched: Status: {result}");
+                    }
                 }
                 else
                 {
-                    log.LogWarning($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Job profile not patched: Status: {result}");
+                    log.LogWarning($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Service bus message is stale: {serviceBusModel.LastReviewed}, stored: {jobProfileModel.LastReviewed}");
+                }
+            }
+            else
+            {
+                jobProfileModel = new JobProfileModel
+                {
+                    DocumentId = serviceBusModel.JobProfileId,
+                    SocLevelTwo = serviceBusModel.SocLevelTwo,
+                    CanonicalName = serviceBusModel.CanonicalName,
+                    LastReviewed = serviceBusModel.LastReviewed,
+                    BreadcrumbTitle = serviceBusModel.BreadcrumbTitle,
+                    IncludeInSitemap = serviceBusModel.IncludeInSitemap,
+                    AlternativeNames = serviceBusModel.AlternativeNames,
+                    MetaTags = new MetaTagsModel
+                    {
+                        Title = serviceBusModel.Title,
+                        Description = serviceBusModel.Description,
+                        Keywords = serviceBusModel.Keywords,
+                    },
+                };
+
+                var result = await HttpClientService.PostAsync(httpClient, jobProfileClientOptions, jobProfileModel).ConfigureAwait(false);
+
+                if (result == HttpStatusCode.OK)
+                {
+                    log.LogInformation($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Posted job profile");
+                }
+                else
+                {
+                    log.LogWarning($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Job profile not posted: Status: {result}");
                 }
             }
         }

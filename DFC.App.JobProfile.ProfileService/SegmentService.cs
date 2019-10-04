@@ -5,10 +5,10 @@ using DFC.App.JobProfile.Data.Models.Segments;
 using DFC.App.JobProfile.Data.Models.Segments.CareerPathModels;
 using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels;
 using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels;
+using DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels;
+using DFC.App.JobProfile.Data.Models.Segments.JobProfileTasksModels;
 using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels;
 using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels;
-using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels;
-using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoModels;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.ProfileService.Utilities;
 using Microsoft.Extensions.Logging;
@@ -67,16 +67,16 @@ namespace DFC.App.JobProfile.ProfileService
             bool refreshHowToBecomeSegment = refreshAllSegments || RefreshJobProfileSegmentServiceBusModel.Segment == HowToBecomeSegmentModel.SegmentName;
             bool refreshOverviewBannerSegment = refreshAllSegments || RefreshJobProfileSegmentServiceBusModel.Segment == OverviewBannerSegmentModel.SegmentName;
             bool refreshRelatedCareersSegment = refreshAllSegments || RefreshJobProfileSegmentServiceBusModel.Segment == RelatedCareersSegmentModel.SegmentName;
-            bool refreshWhatItTakesSegment = refreshAllSegments || RefreshJobProfileSegmentServiceBusModel.Segment == WhatItTakesSegmentModel.SegmentName;
-            bool refreshWhatYouWillDoSegment = refreshAllSegments || RefreshJobProfileSegmentServiceBusModel.Segment == WhatYouWillDoSegmentModel.SegmentName;
+            bool refreshWhatItTakesSegment = refreshAllSegments || RefreshJobProfileSegmentServiceBusModel.Segment == JobProfileSkillSegmentModel.SegmentName;
+            bool refreshWhatYouWillDoSegment = refreshAllSegments || RefreshJobProfileSegmentServiceBusModel.Segment == JobProfileTasksSegmentModel.SegmentName;
 
             Task<CareerPathSegmentModel> careerPathSegmnentDataTask = null;
             Task<CurrentOpportunitiesSegmentModel> currentOpportunitiesSegmnentDataTask = null;
             Task<HowToBecomeSegmentModel> howToBecomeSegmnentDataTask = null;
             Task<OverviewBannerSegmentModel> overviewBannerSegmnentDataTask = null;
             Task<RelatedCareersSegmentModel> relatedCareersSegmnentDataTask = null;
-            Task<WhatItTakesSegmentModel> whatItTakesSegmnentDataTask = null;
-            Task<WhatYouWillDoSegmentModel> whatYouWillDoSegmnentDataTask = null;
+            Task<JobProfileSkillSegmentModel> whatItTakesSegmnentDataTask = null;
+            Task<JobProfileTasksSegmentModel> whatYouWillDoSegmnentDataTask = null;
 
             Task<string> careerPathSegmnentMarkupTask = null;
             Task<string> currentOpportunitiesSegmnentMarkupTask = null;
@@ -180,14 +180,6 @@ namespace DFC.App.JobProfile.ProfileService
             JobProfileModel.Markup.RelatedCareers = GetMarkupResult(relatedCareersSegmnentMarkupTask, relatedCareersSegmentService.SegmentClientOptions);
             JobProfileModel.Markup.WhatItTakes = GetMarkupResult(whatItTakesSegmnentMarkupTask, whatItTakesSegmentService.SegmentClientOptions);
             JobProfileModel.Markup.WhatYouWillDo = GetMarkupResult(whatYouWillDoSegmnentMarkupTask, whatYouWillDoSegmentService.SegmentClientOptions);
-
-            var title = JobProfileModel.Data.OverviewBanner?.Title ?? JobProfileModel.CanonicalName;
-
-            JobProfileModel.MetaTags.Title = $"{title} | Explore careers";
-            JobProfileModel.MetaTags.Description = JobProfileModel.Data.OverviewBanner?.Overview ?? title;
-            JobProfileModel.MetaTags.Keywords = title;
-
-            JobProfileModel.LastReviewed = DateTime.UtcNow;
 
             logger.LogInformation($"{nameof(LoadAsync)}: Loaded segments for {RefreshJobProfileSegmentServiceBusModel.CanonicalName}");
         }

@@ -15,6 +15,6 @@ namespace DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels
         [Required]
         public string Title { get; set; }
 
-        public DateTime Updated { get; set; }
+        public string SocLevelTwo { get; set; }
     }
 }

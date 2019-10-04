@@ -26,8 +26,8 @@ namespace DFC.App.JobProfile.Repository.CosmosDb
 
             if (env.IsDevelopment())
             {
-                CreateDatabaseIfNotExistsAsync().Wait();
-                CreateCollectionIfNotExistsAsync().Wait();
+                CreateDatabaseIfNotExistsAsync().GetAwaiter().GetResult();
+                CreateCollectionIfNotExistsAsync().GetAwaiter().GetResult();
             }
         }
 

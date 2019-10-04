@@ -28,13 +28,13 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         public SegmentServiceSegmentsHealthCheckAsyncTests()
         {
             logger = A.Fake<ILogger<SegmentService>>();
-            careerPathSegmentService = A.Fake<CareerPathSegmentService>();
-            currentOpportunitiesSegmentService = A.Fake<CurrentOpportunitiesSegmentService>();
-            howToBecomeSegmentService = A.Fake<HowToBecomeSegmentService>();
-            overviewBannerSegmentService = A.Fake<OverviewBannerSegmentService>();
-            relatedCareersSegmentService = A.Fake<RelatedCareersSegmentService>();
-            whatItTakesSegmentService = A.Fake<WhatItTakesSegmentService>();
-            whatYouWillDoSegmentService = A.Fake<WhatYouWillDoSegmentService>();
+            careerPathSegmentService = A.Fake<ICareerPathSegmentService>();
+            currentOpportunitiesSegmentService = A.Fake<ICurrentOpportunitiesSegmentService>();
+            howToBecomeSegmentService = A.Fake<IHowToBecomeSegmentService>();
+            overviewBannerSegmentService = A.Fake<IOverviewBannerSegmentService>();
+            relatedCareersSegmentService = A.Fake<IRelatedCareersSegmentService>();
+            whatItTakesSegmentService = A.Fake<IWhatItTakesSegmentService>();
+            whatYouWillDoSegmentService = A.Fake<IWhatYouWillDoSegmentService>();
 
             var baseAddress = new Uri("https://nowhere.com");
             const string endpoint = "segment/{0}/contents";

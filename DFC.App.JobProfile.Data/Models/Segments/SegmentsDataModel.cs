@@ -1,10 +1,10 @@
 ﻿using DFC.App.JobProfile.Data.Models.Segments.CareerPathModels;
 using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels;
 using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels;
+using DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels;
+using DFC.App.JobProfile.Data.Models.Segments.JobProfileTasksModels;
 using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels;
 using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels;
-using DFC.App.JobProfile.Data.Models.Segments.WhatItTakesModels;
-using DFC.App.JobProfile.Data.Models.Segments.WhatYouWillDoModels;
 
 namespace DFC.App.JobProfile.Data.Models.Segments
 {
@@ -20,8 +20,8 @@ namespace DFC.App.JobProfile.Data.Models.Segments
 
         public RelatedCareersSegmentDataModel RelatedCareers { get; set; }
 
-        public WhatItTakesSegmentDataModel WhatItTakes { get; set; }
+        public JobProfileSkillSegmentDataModel WhatItTakes { get; set; }
 
-        public WhatYouWillDoSegmentDataModel WhatYouWillDo { get; set; }
+        public JobProfileTasksDataSegmentModel WhatYouWillDo { get; set; }
     }
 }

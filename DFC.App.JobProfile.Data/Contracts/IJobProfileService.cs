@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Contracts
@@ -20,9 +21,9 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
 
-        Task<JobProfileModel> CreateAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, Uri requestBaseAddress);
+        Task<HttpStatusCode> UpsertAsync(JobProfileModel jobProfileModel);
 
-        Task<JobProfileModel> ReplaceAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
+        Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
 
         Task<bool> DeleteAsync(Guid documentId);
     }

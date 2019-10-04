@@ -23,6 +23,5 @@ namespace DFC.App.JobProfile.Data.Models.Segments
 
         [Required]
         public DateTime? LastReviewed { get; set; }
-
     }
 }

@@ -68,42 +68,34 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.GetAsync(d => d.AlternativeNames.Contains(alternativeName.ToLowerInvariant())).ConfigureAwait(false);
         }
 
-        public async Task<JobProfileModel> CreateAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, Uri requestBaseAddress)
+        public async Task<HttpStatusCode> UpsertAsync(JobProfileModel jobProfileModel)
         {
-            if (refreshJobProfileSegmentServiceBusModel == null)
+            if (jobProfileModel == null)
             {
-                throw new ArgumentNullException(nameof(refreshJobProfileSegmentServiceBusModel));
+                throw new ArgumentNullException(nameof(jobProfileModel));
             }
 
-            if (requestBaseAddress == null)
+            if (jobProfileModel.MetaTags == null)
             {
-                throw new ArgumentNullException(nameof(requestBaseAddress));
+                jobProfileModel.MetaTags = new MetaTagsModel();
             }
 
-            var jobProfileModel = new JobProfileModel
+            if (jobProfileModel.Markup == null)
             {
-                DocumentId = refreshJobProfileSegmentServiceBusModel.JobProfileId,
-                CanonicalName = refreshJobProfileSegmentServiceBusModel.CanonicalName,
-                SocLevelTwo = refreshJobProfileSegmentServiceBusModel.SocLevelTwo,
-                MetaTags = new MetaTagsModel(),
-                Markup = new SegmentsMarkupModel(),
-                Data = new SegmentsDataModel(),
-            };
+                jobProfileModel.Markup = new SegmentsMarkupModel();
+            }
 
-            segmentService.RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel;
-            segmentService.JobProfileModel = jobProfileModel;
-            segmentService.RequestBaseAddress = requestBaseAddress;
-
-            await segmentService.LoadAsync().ConfigureAwait(false);
+            if (jobProfileModel.Data == null)
+            {
+                jobProfileModel.Data = new SegmentsDataModel();
+            }
 
             var result = await repository.UpsertAsync(jobProfileModel).ConfigureAwait(false);
 
-            return result == HttpStatusCode.Created
-                ? await GetByIdAsync(refreshJobProfileSegmentServiceBusModel.JobProfileId).ConfigureAwait(false)
-                : null;
+            return result;
         }
 
-        public async Task<JobProfileModel> ReplaceAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress)
+        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress)
         {
             if (refreshJobProfileSegmentServiceBusModel == null)
             {
@@ -143,9 +135,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             var result = await repository.UpsertAsync(existingJobProfileModel).ConfigureAwait(false);
 
-            return result == HttpStatusCode.OK
-                ? await GetByIdAsync(existingJobProfileModel.DocumentId).ConfigureAwait(false)
-                : null;
+            return result;
         }
 
         public async Task<bool> DeleteAsync(Guid documentId)

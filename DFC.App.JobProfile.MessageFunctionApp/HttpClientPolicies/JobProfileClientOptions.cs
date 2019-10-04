@@ -12,6 +12,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies
 
         public string PostEndpoint { get; set; }
 
+        public string PostRefreshEndpoint { get; set; }
+
         public string DeleteEndpoint { get; set; }
 
         public TimeSpan Timeout { get; set; } = new TimeSpan(0, 0, 30);         // default to 30 seconds

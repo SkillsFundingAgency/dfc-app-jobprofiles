@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.Data.Models.ServiceBusModels;
+﻿using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -92,41 +93,16 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task PostProfileEndpointsReturnCreated()
-        {
-            // Arrange
-            const string url = "/profile";
-            var documentId = Guid.NewGuid();
-            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel()
-            {
-                JobProfileId = documentId,
-                CanonicalName = documentId.ToString().ToLowerInvariant(),
-                SocLevelTwo = "12",
-                Segment = null,
-            };
-            var client = factory.CreateClient();
-
-            client.DefaultRequestHeaders.Accept.Clear();
-
-            // Act
-            var response = await client.PostAsync(url, refreshJobProfileSegmentServiceBusModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-        }
-
-        [Fact]
         public async Task PostProfileEndpointsForDefaultArticleRefreshAllReturnOk()
         {
             // Arrange
-            const string url = "/profile";
+            const string url = "/profile/refresh";
             var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel()
             {
                 JobProfileId = DataSeeding.DefaultArticleGuid,
                 CanonicalName = DataSeeding.DefaultArticleName,
                 SocLevelTwo = "12",
-                Segment = "none",
+                Segment = null,
             };
             var client = factory.CreateClient();
 
@@ -144,7 +120,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         public async Task PutProfileEndpointsForDefaultArticleRefreshAllReturnOk()
         {
             // Arrange
-            const string url = "/profile";
+            const string url = "/profile/refresh";
             var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel()
             {
                 JobProfileId = DataSeeding.DefaultArticleGuid,
@@ -168,23 +144,31 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         public async Task PutProfileEndpointsReturnOk()
         {
             // Arrange
-            const string url = "/profile";
+            const string postUrl = "/profile";
+            const string putUrl = "/profile/refresh";
             var documentId = Guid.NewGuid();
-            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel()
+            var jobProfileModel = new JobProfileModel()
             {
-                JobProfileId = documentId,
+                DocumentId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
                 SocLevelTwo = "12",
+                LastReviewed = DateTime.UtcNow,
+            };
+            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel()
+            {
+                JobProfileId = jobProfileModel.DocumentId,
+                CanonicalName = jobProfileModel.CanonicalName,
+                SocLevelTwo = jobProfileModel.SocLevelTwo,
                 Segment = "OverviewBanner",
             };
             var client = factory.CreateClient();
 
             client.DefaultRequestHeaders.Accept.Clear();
 
-            _ = await client.PostAsync(url, refreshJobProfileSegmentServiceBusModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            _ = await client.PostAsync(postUrl, jobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Act
-            var response = await client.PutAsync(url, refreshJobProfileSegmentServiceBusModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            var response = await client.PutAsync(putUrl, refreshJobProfileSegmentServiceBusModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -198,17 +182,18 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var documentId = Guid.NewGuid();
             const string postUrl = "/profile";
             var deleteUri = new Uri($"/profile/{documentId}", UriKind.Relative);
-            var refreshJobProfileSegmentServiceBusModel = new RefreshJobProfileSegmentServiceBusModel()
+            var jobProfileModel = new JobProfileModel()
             {
-                JobProfileId = documentId,
+                DocumentId = documentId,
                 CanonicalName = documentId.ToString().ToLowerInvariant(),
                 SocLevelTwo = "12",
+                LastReviewed = DateTime.UtcNow,
             };
             var client = factory.CreateClient();
 
             client.DefaultRequestHeaders.Accept.Clear();
 
-            _ = await client.PostAsync(postUrl, refreshJobProfileSegmentServiceBusModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
+            _ = await client.PostAsync(postUrl, jobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
             // Act
             var response = await client.DeleteAsync(deleteUri).ConfigureAwait(false);

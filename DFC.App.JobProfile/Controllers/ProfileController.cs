@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.PatchModels;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
@@ -136,11 +137,11 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPatch]
         [Route("profile/{documentId}/metadata")]
-        public async Task<IActionResult> Patch([FromBody]JobProfileMetaDataPatchServiceBusModel jobProfileMetaDataPatchServiceBusModel, Guid documentId)
+        public async Task<IActionResult> Patch([FromBody]JobProfilePatchModel jobProfilePatchModel, Guid documentId)
         {
             logger.LogInformation($"{nameof(Patch)} has been called");
 
-            if (jobProfileMetaDataPatchServiceBusModel == null)
+            if (jobProfilePatchModel == null)
             {
                 return BadRequest();
             }
@@ -159,7 +160,7 @@ namespace DFC.App.JobProfile.Controllers
                 return NoContent();
             }
 
-            mapper.Map(jobProfileMetaDataPatchServiceBusModel, jobProfileModel);
+            mapper.Map(jobProfilePatchModel, jobProfileModel);
 
             var response = await jobProfileService.UpsertAsync(jobProfileModel).ConfigureAwait(false);
 

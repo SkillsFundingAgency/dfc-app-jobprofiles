@@ -1,10 +1,13 @@
-﻿using System;
+﻿using DFC.App.JobProfile.Data.Contracts;
+using System;
 using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels
 {
-    public class CurrentOpportunitiesSegmentDataModel
+    public class CurrentOpportunitiesSegmentDataModel : ISegmentDataModel
     {
+        public const string SegmentName = "CurrentOpportunities";
+
         public string JobTitle { get; set; }
 
         public DateTime LastReviewed { get; set; }

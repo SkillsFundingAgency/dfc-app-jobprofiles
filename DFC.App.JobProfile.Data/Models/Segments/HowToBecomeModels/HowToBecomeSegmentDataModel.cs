@@ -1,11 +1,14 @@
-﻿using DFC.App.JobProfile.Data.Enums;
+﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Enums;
 using System;
 using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels
 {
-    public class HowToBecomeSegmentDataModel
+    public class HowToBecomeSegmentDataModel : ISegmentDataModel
     {
+        public const string SegmentName = "HowToBecome";
+
         public DateTime LastReviewed { get; set; }
 
         public string Title { get; set; }

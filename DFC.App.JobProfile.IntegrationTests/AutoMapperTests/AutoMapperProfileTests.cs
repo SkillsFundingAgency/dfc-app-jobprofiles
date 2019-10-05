@@ -30,14 +30,14 @@ namespace DFC.App.JobProfile.IntegrationTests.AutoMapperTests
         }
 
         [Fact]
-        public void AutoMapperProfileConfigurationForJobProfileMetaDataPatchServiceBusModelProfileReturnSuccess()
+        public void AutoMapperProfileConfigurationForJobProfileMetaDataPatchModelProfileReturnSuccess()
         {
             // Arrange
             _ = factory.CreateClient();
             var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
 
             // Act
-            mapper.ConfigurationProvider.AssertConfigurationIsValid<JobProfileMetaDataPatchServiceBusModelProfile>();
+            mapper.ConfigurationProvider.AssertConfigurationIsValid<JobProfileMetaDataPatchModelProfile>();
 
             // Assert
             Assert.True(true);

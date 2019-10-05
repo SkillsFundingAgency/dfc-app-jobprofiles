@@ -1,12 +1,12 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 
-namespace DFC.App.JobProfile.ProfileService
+namespace DFC.App.JobProfile.ProfileService.SegmentServices
 {
-    public class HowToBecomeSegmentService : BaseSegmentService<HowToBecomeSegmentModel, HowToBecomeSegmentService>, IHowToBecomeSegmentService
+    public class HowToBecomeSegmentService : BaseSegmentService<HowToBecomeSegmentDataModel, HowToBecomeSegmentService>, IHowToBecomeSegmentService
     {
         public HowToBecomeSegmentService(
                                             HttpClient httpClient,

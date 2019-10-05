@@ -38,7 +38,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return default(JobProfileModel);
         }
 
-        public static async Task<HttpStatusCode> PatchAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, JobProfilePatchModel jobProfilePatchModel, Guid documentId)
+        public static async Task<HttpStatusCode> PatchAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, JobProfileMetaDataPatchModel jobProfileMetaDataPatchModel, Guid documentId)
         {
             var endpoint = jobProfileClientOptions.PatchEndpoint.Replace("{0}", documentId.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
             var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
@@ -47,7 +47,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             {
                 request.Headers.Accept.Clear();
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                request.Content = new ObjectContent(typeof(JobProfilePatchModel), jobProfilePatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
+                request.Content = new ObjectContent(typeof(JobProfileMetaDataPatchModel), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
 
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
@@ -55,7 +55,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
         }
 
-        public static async Task<HttpStatusCode> PostAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel)
+        public static async Task<HttpStatusCode> PostAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, RefreshJobProfileSegmentModel refreshJobProfileSegmentModel)
         {
             var endpoint = jobProfileClientOptions.PostRefreshEndpoint;
             var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
@@ -64,7 +64,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             {
                 request.Headers.Accept.Clear();
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                request.Content = new ObjectContent(typeof(RefreshJobProfileSegmentServiceBusModel), refreshJobProfileSegmentServiceBusModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
+                request.Content = new ObjectContent(typeof(RefreshJobProfileSegmentModel), refreshJobProfileSegmentModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
 
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 

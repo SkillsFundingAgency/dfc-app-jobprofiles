@@ -1,10 +1,13 @@
-﻿using System;
+﻿using DFC.App.JobProfile.Data.Contracts;
+using System;
 using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels
 {
-    public class OverviewBannerSegmentDataModel
+    public class OverviewBannerSegmentDataModel : ISegmentDataModel
     {
+        public const string SegmentName = "OverviewBanner";
+
         public DateTime LastReviewed { get; set; }
 
         public string SocCode { get; set; }

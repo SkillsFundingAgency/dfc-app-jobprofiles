@@ -22,6 +22,6 @@ namespace DFC.App.JobProfile.Data.Models.Segments
 
         public JobProfileSkillSegmentDataModel WhatItTakes { get; set; }
 
-        public JobProfileTasksDataSegmentModel WhatYouWillDo { get; set; }
+        public JobProfileTasksSegmentDataModel WhatYouWillDo { get; set; }
     }
 }

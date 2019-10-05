@@ -34,11 +34,9 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             {
                 if (jobProfileModel.LastReviewed < serviceBusModel.LastReviewed)
                 {
-                    var jobProfilePatchModel = new JobProfilePatchModel
+                    var jobProfileMetaDataPatchModel = new JobProfileMetaDataPatchModel
                     {
-                        SocLevelTwo = serviceBusModel.SocLevelTwo,
                         CanonicalName = serviceBusModel.CanonicalName,
-                        LastReviewed = serviceBusModel.LastReviewed,
                         BreadcrumbTitle = serviceBusModel.BreadcrumbTitle,
                         IncludeInSitemap = serviceBusModel.IncludeInSitemap,
                         AlternativeNames = serviceBusModel.AlternativeNames,
@@ -50,7 +48,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                         },
                     };
 
-                    var result = await HttpClientService.PatchAsync(httpClient, jobProfileClientOptions, jobProfilePatchModel, serviceBusModel.JobProfileId).ConfigureAwait(false);
+                    var result = await HttpClientService.PatchAsync(httpClient, jobProfileClientOptions, jobProfileMetaDataPatchModel, serviceBusModel.JobProfileId).ConfigureAwait(false);
 
                     if (result == HttpStatusCode.OK)
                     {

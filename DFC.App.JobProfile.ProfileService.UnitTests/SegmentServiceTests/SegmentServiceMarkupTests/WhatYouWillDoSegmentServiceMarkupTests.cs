@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models.Segments.JobProfileTasksModels;
+using DFC.App.JobProfile.ProfileService.SegmentServices;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,7 +16,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
     public class WhatYouWillDoSegmentServiceMarkupTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
-        private static readonly JobProfileTasksSegmentModel ExpectedResult = new JobProfileTasksSegmentModel
+        private static readonly JobProfileTasksSegmentDataModel ExpectedResult = new JobProfileTasksSegmentDataModel
         {
             LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
@@ -60,7 +61,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task WhatYouWillDoSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            JobProfileTasksSegmentModel expectedResult = null;
+            JobProfileTasksSegmentDataModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseHtml, HttpStatusCode.NotFound))
             {

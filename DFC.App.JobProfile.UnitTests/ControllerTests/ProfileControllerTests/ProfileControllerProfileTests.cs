@@ -69,6 +69,54 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         }
 
         [Theory]
+        [MemberData(nameof(HtmlMediaTypes))]
+        public async void ProfileControllerDocumentHtmlReturnsNoContentWhenNoData(string mediaTypeName)
+        {
+            // Arrange
+            var documentId = Guid.NewGuid();
+            JobProfileModel expectedResult = null;
+            var controller = BuildProfileController(mediaTypeName);
+
+            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
+
+            // Act
+            var result = await controller.Profile(documentId).ConfigureAwait(false);
+
+            // Assert
+            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
+
+            var statusResult = Assert.IsType<NoContentResult>(result);
+
+            A.Equals((int)HttpStatusCode.NoContent, statusResult.StatusCode);
+
+            controller.Dispose();
+        }
+
+        [Theory]
+        [MemberData(nameof(JsonMediaTypes))]
+        public async void ProfileControllerDocumentJsonReturnsNoContentWhenNoData(string mediaTypeName)
+        {
+            // Arrange
+            var documentId = Guid.NewGuid();
+            JobProfileModel expectedResult = null;
+            var controller = BuildProfileController(mediaTypeName);
+
+            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
+
+            // Act
+            var result = await controller.Profile(documentId).ConfigureAwait(false);
+
+            // Assert
+            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
+
+            var statusResult = Assert.IsType<NoContentResult>(result);
+
+            A.Equals((int)HttpStatusCode.NoContent, statusResult.StatusCode);
+
+            controller.Dispose();
+        }
+
+        [Theory]
         [MemberData(nameof(InvalidMediaTypes))]
         public async void JobProfileControllerProfileReturnsNotAcceptable(string mediaTypeName)
         {

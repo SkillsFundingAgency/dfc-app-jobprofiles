@@ -1,3 +1,4 @@
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
@@ -26,7 +27,14 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
 
             log.LogInformation($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Posting profile");
 
-            var result = await HttpClientService.PostAsync(httpClient, jobProfileClientOptions, serviceBusModel).ConfigureAwait(false);
+            var refreshJobProfileSegmentModel = new RefreshJobProfileSegmentModel
+            {
+                DocumentId = serviceBusModel.JobProfileId,
+                CanonicalName = serviceBusModel.CanonicalName,
+                Segment = serviceBusModel.Segment,
+            };
+
+            var result = await HttpClientService.PostAsync(httpClient, jobProfileClientOptions, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
             if (result == HttpStatusCode.OK)
             {

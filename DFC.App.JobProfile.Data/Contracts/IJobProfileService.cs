@@ -23,7 +23,7 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<HttpStatusCode> UpsertAsync(JobProfileModel jobProfileModel);
 
-        Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
+        Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentModel refreshJobProfileSegmentModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
 
         Task<bool> DeleteAsync(Guid documentId);
     }

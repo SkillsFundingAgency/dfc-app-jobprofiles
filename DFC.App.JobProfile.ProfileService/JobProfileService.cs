@@ -95,11 +95,11 @@ namespace DFC.App.JobProfile.ProfileService
             return result;
         }
 
-        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress)
+        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentModel refreshJobProfileSegmentModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress)
         {
-            if (refreshJobProfileSegmentServiceBusModel == null)
+            if (refreshJobProfileSegmentModel == null)
             {
-                throw new ArgumentNullException(nameof(refreshJobProfileSegmentServiceBusModel));
+                throw new ArgumentNullException(nameof(refreshJobProfileSegmentModel));
             }
 
             if (existingJobProfileModel == null)
@@ -127,7 +127,7 @@ namespace DFC.App.JobProfile.ProfileService
                 existingJobProfileModel.Data = new SegmentsDataModel();
             }
 
-            segmentService.RefreshJobProfileSegmentServiceBusModel = refreshJobProfileSegmentServiceBusModel;
+            segmentService.RefreshJobProfileSegmentModel = refreshJobProfileSegmentModel;
             segmentService.JobProfileModel = existingJobProfileModel;
             segmentService.RequestBaseAddress = requestBaseAddress;
 

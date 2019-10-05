@@ -1,12 +1,12 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 
-namespace DFC.App.JobProfile.ProfileService
+namespace DFC.App.JobProfile.ProfileService.SegmentServices
 {
-    public class CurrentOpportunitiesSegmentService : BaseSegmentService<CurrentOpportunitiesSegmentModel, CurrentOpportunitiesSegmentService>, ICurrentOpportunitiesSegmentService
+    public class CurrentOpportunitiesSegmentService : BaseSegmentService<CurrentOpportunitiesSegmentDataModel, CurrentOpportunitiesSegmentService>, ICurrentOpportunitiesSegmentService
     {
         public CurrentOpportunitiesSegmentService(
                                                     HttpClient httpClient,

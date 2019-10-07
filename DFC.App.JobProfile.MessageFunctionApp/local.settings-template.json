@@ -1,0 +1,23 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "service-bus-connection-string": "[service bus connection string]",
+    "patch-profile-topic-name": "job-profile-profile-topic",
+    "patch-profile-subscription-name": "job-profile-patch",
+    "post-profile-topic-name": "job-profile-profile-topic",
+    "post-profile-subscription-name": "job-profile-post",
+    "delete-topic-name": "job-profile-delete-topic",
+    "delete-subscription-name": "job-profile-delete"
+  },
+  "jobProfileClientOptions": {
+    "Timeout": "00:00:30",
+    "BaseAddress": "https://localhost",
+    "GetEndpoint": "profile/{0}/profile",
+    "PatchEndpoint": "profile/{0}/metadata",
+    "PostEndpoint": "profile",
+    "PostRefreshEndpoint": "profile/refresh",
+    "DeleteEndpoint": "profile/{0}"
+  }
+}

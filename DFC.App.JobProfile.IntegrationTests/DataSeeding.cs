@@ -15,22 +15,28 @@ namespace DFC.App.JobProfile.IntegrationTests
         public static void SeedDefaultArticle(CustomWebApplicationFactory<Startup> factory)
         {
             const string url = "/profile";
-            var models = new List<CreateOrUpdateJobProfileModel>()
+            var models = new List<JobProfileModel>()
             {
-                new CreateOrUpdateJobProfileModel()
+                new JobProfileModel()
                 {
                     DocumentId = DefaultArticleGuid,
                     CanonicalName = DefaultArticleName,
+                    SocLevelTwo = "12",
+                    LastReviewed = DateTime.UtcNow,
                 },
-                new CreateOrUpdateJobProfileModel()
+                new JobProfileModel()
                 {
                     DocumentId = Guid.Parse("C16B389D-91AD-4F3D-2485-9F7EE953AFE4"),
                     CanonicalName = $"{DefaultArticleName}-2",
+                    SocLevelTwo = "34",
+                    LastReviewed = DateTime.UtcNow,
                 },
-                new CreateOrUpdateJobProfileModel()
+                new JobProfileModel()
                 {
                     DocumentId = Guid.Parse("C0103C26-E7C9-4008-3F66-1B2DB192177E"),
                     CanonicalName = $"{DefaultArticleName}-3",
+                    SocLevelTwo = "56",
+                    LastReviewed = DateTime.UtcNow,
                 },
             };
 

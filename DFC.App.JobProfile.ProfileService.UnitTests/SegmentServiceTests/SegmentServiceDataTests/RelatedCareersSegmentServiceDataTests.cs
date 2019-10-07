@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersDataModels;
+using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels;
+using DFC.App.JobProfile.ProfileService.SegmentServices;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,9 +16,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
     public class RelatedCareersSegmentServiceDataTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
-        private static readonly RelatedCareersSegmentModel ExpectedResult = new RelatedCareersSegmentModel
+        private static readonly RelatedCareersSegmentDataModel ExpectedResult = new RelatedCareersSegmentDataModel
         {
-            Updated = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
+            LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
 
         private readonly ILogger<RelatedCareersSegmentService> logger;
@@ -44,14 +45,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act
                     var results = await relatedCareersSegmentService.LoadDataAsync().ConfigureAwait(false);
 
                     // assert
-                    A.Equals(results.Updated, ExpectedResult.Updated);
+                    A.Equals(results.LastReviewed, ExpectedResult.LastReviewed);
                 }
             }
         }
@@ -60,7 +61,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task RelatedCareersSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            RelatedCareersSegmentModel expectedResult = null;
+            RelatedCareersSegmentDataModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
             {
@@ -68,7 +69,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
                 {
                     var relatedCareersSegmentService = new RelatedCareersSegmentService(httpClient, logger, relatedCareersSegmentClientOptions)
                     {
-                        CanonicalName = "article-name",
+                        DocumentId = Guid.NewGuid(),
                     };
 
                     // act

@@ -15,24 +15,20 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsSuccessForCreate(string mediaTypeName)
         {
             // Arrange
-            var jobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();
-            JobProfileModel existingJobProfileModel = null;
-            var createdJobProfileModel = A.Fake<JobProfileModel>();
+            var jobProfileModel = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingJobProfileModel);
-            A.CallTo(() => FakeJobProfileService.CreateAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<Uri>.Ignored)).Returns(createdJobProfileModel);
+            A.CallTo(() => FakeJobProfileService.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.Created);
 
             // Act
             var result = await controller.CreateOrUpdate(jobProfileModel).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeJobProfileService.CreateAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.UpsertAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var okResult = Assert.IsType<CreatedAtActionResult>(result);
+            var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
 
-            A.Equals((int)HttpStatusCode.Created, okResult.StatusCode);
+            A.Equals((int)HttpStatusCode.Created, statusCodeResult.StatusCode);
 
             controller.Dispose();
         }
@@ -42,24 +38,20 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsSuccessForUpdate(string mediaTypeName)
         {
             // Arrange
-            var jobProfileModel = A.Fake<CreateOrUpdateJobProfileModel>();
-            var existingJobProfileModel = A.Fake<JobProfileModel>();
-            JobProfileModel updatedJobProfileModel = null;
+            var jobProfileModel = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingJobProfileModel);
-            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).Returns(updatedJobProfileModel);
+            A.CallTo(() => FakeJobProfileService.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.OK);
 
             // Act
             var result = await controller.CreateOrUpdate(jobProfileModel).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeJobProfileService.ReplaceAsync(A<CreateOrUpdateJobProfileModel>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.UpsertAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var okResult = Assert.IsType<OkObjectResult>(result);
+            var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
 
-            A.Equals((int)HttpStatusCode.OK, okResult.StatusCode);
+            A.Equals((int)HttpStatusCode.OK, statusCodeResult.StatusCode);
 
             controller.Dispose();
         }
@@ -69,7 +61,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsNull(string mediaTypeName)
         {
             // Arrange
-            CreateOrUpdateJobProfileModel jobProfileModel = null;
+            JobProfileModel jobProfileModel = null;
             var controller = BuildProfileController(mediaTypeName);
 
             // Act
@@ -88,7 +80,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
         {
             // Arrange
-            var jobProfileModel = new CreateOrUpdateJobProfileModel();
+            var jobProfileModel = new JobProfileModel();
             var controller = BuildProfileController(mediaTypeName);
 
             controller.ModelState.AddModelError(string.Empty, "Model is not valid");

@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
+using DFC.App.JobProfile.ProfileService.SegmentServices;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.DraftProfileService;
@@ -7,6 +8,7 @@ using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
+using DFC.App.JobProfile.ProfileService.SegmentServices;
 using DFC.App.JobProfile.Repository.CosmosDb;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

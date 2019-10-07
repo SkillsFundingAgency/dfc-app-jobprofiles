@@ -1,10 +1,13 @@
-﻿using System;
+﻿using DFC.App.JobProfile.Data.Contracts;
+using System;
 using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models.Segments.JobProfileTasksModels
 {
-    public class JobProfileTasksDataSegmentModel
+    public class JobProfileTasksSegmentDataModel : ISegmentDataModel
     {
+        public const string SegmentName = "WhatYouWillDo";
+
         public DateTime LastReviewed { get; set; }
 
         public string Introduction { get; set; }

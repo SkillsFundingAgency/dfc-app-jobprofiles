@@ -1,7 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.PatchModels;
-using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
@@ -105,11 +104,11 @@ namespace DFC.App.JobProfile.Controllers
         [HttpPut]
         [HttpPost]
         [Route("profile/refresh")]
-        public async Task<IActionResult> PostRefresh([FromBody]RefreshJobProfileSegmentServiceBusModel refreshJobProfileSegmentServiceBusModel)
+        public async Task<IActionResult> PostRefresh([FromBody]RefreshJobProfileSegmentModel refreshJobProfileSegmentModel)
         {
             logger.LogInformation($"{nameof(PostRefresh)} has been called");
 
-            if (refreshJobProfileSegmentServiceBusModel == null)
+            if (refreshJobProfileSegmentModel == null)
             {
                 return BadRequest();
             }
@@ -121,11 +120,11 @@ namespace DFC.App.JobProfile.Controllers
 
             var requestBaseAddress = Request.RequestBaseAddress(Url);
 
-            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegmentServiceBusModel.JobProfileId).ConfigureAwait(false);
+            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegmentModel.DocumentId).ConfigureAwait(false);
 
             if (existingJobProfileModel != null)
             {
-                var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentServiceBusModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
+                var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
 
                 logger.LogInformation($"{nameof(PostRefresh)} has upserted content for: {existingJobProfileModel.CanonicalName}");
 
@@ -137,11 +136,11 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPatch]
         [Route("profile/{documentId}/metadata")]
-        public async Task<IActionResult> Patch([FromBody]JobProfilePatchModel jobProfilePatchModel, Guid documentId)
+        public async Task<IActionResult> Patch([FromBody]JobProfileMetaDataPatchModel jobProfileMetaDataPatchModel, Guid documentId)
         {
             logger.LogInformation($"{nameof(Patch)} has been called");
 
-            if (jobProfilePatchModel == null)
+            if (jobProfileMetaDataPatchModel == null)
             {
                 return BadRequest();
             }
@@ -160,7 +159,7 @@ namespace DFC.App.JobProfile.Controllers
                 return NoContent();
             }
 
-            mapper.Map(jobProfilePatchModel, jobProfileModel);
+            mapper.Map(jobProfileMetaDataPatchModel, jobProfileModel);
 
             var response = await jobProfileService.UpsertAsync(jobProfileModel).ConfigureAwait(false);
 

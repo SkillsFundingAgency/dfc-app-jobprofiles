@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using Microsoft.Extensions.Logging;
@@ -9,9 +10,10 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
-namespace DFC.App.JobProfile.ProfileService
+namespace DFC.App.JobProfile.ProfileService.SegmentServices
 {
     public abstract class BaseSegmentService<TModel, TService> : IBaseSegmentService<TModel>
+        where TModel : ISegmentDataModel
     {
         private readonly HttpClient httpClient;
         private readonly ILogger<TService> logger;

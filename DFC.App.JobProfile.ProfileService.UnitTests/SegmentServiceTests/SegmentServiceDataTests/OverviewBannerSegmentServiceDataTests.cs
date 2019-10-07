@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels;
+using DFC.App.JobProfile.ProfileService.SegmentServices;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,7 +16,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
     public class OverviewBannerSegmentServiceDataTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
-        private static readonly OverviewBannerSegmentModel ExpectedResult = new OverviewBannerSegmentModel
+        private static readonly OverviewBannerSegmentDataModel ExpectedResult = new OverviewBannerSegmentDataModel
         {
             LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),
         };
@@ -60,7 +61,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
         public async Task OverviewBannerSegmentServiceReturnsNullWhenNotFound()
         {
             // arrange
-            OverviewBannerSegmentModel expectedResult = null;
+            OverviewBannerSegmentDataModel expectedResult = null;
 
             using (var messageHandler = FakeHttpMessageHandler.GetHttpMessageHandler(responseJson, HttpStatusCode.NotFound))
             {

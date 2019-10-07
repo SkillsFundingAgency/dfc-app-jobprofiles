@@ -37,7 +37,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void PagesControllerDocumentJsonReturnsSuccess(string mediaTypeName)
+        public async void ProfileControllerDocumentJsonReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -86,7 +86,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void PagesControllerDocumentJsonReturnsNoContentWhenNoData(string mediaTypeName)
+        public async void ProfileControllerDocumentJsonReturnsNoContentWhenNoData(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -110,7 +110,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(InvalidMediaTypes))]
-        public async void PagesControllerDocumentReturnsNotAcceptable(string mediaTypeName)
+        public async void ProfileControllerDocumentReturnsNotAcceptable(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";

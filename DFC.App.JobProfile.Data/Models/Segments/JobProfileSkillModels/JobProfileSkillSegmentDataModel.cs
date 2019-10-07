@@ -1,11 +1,13 @@
-﻿using System;
+﻿using DFC.App.JobProfile.Data.Contracts;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels
 {
-    public class JobProfileSkillSegmentDataModel
+    public class JobProfileSkillSegmentDataModel : ISegmentDataModel
     {
+        public const string SegmentName = "WhatItTakes";
+
         public JobProfileSkillSegmentDataModel()
         {
             Skills = new List<JobProfileSkillSegmentSkillDataModel>();

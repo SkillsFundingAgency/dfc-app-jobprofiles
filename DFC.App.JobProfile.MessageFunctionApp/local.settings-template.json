@@ -7,7 +7,7 @@
     "patch-profile-topic-name": "job-profile-profile-topic",
     "patch-profile-subscription-name": "job-profile-patch",
     "post-profile-topic-name": "job-profile-profile-topic",
-    "post-profile-subscription-name": "job-profile-post",
+    "post-profile-subscription-name": "job-profile-refresh",
     "delete-topic-name": "job-profile-delete-topic",
     "delete-subscription-name": "job-profile-delete"
   },

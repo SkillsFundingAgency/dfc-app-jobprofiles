@@ -41,7 +41,7 @@ jobs:
       TestSuffix: UnitTests
 
   # Build DFC.App.JobProfile.MessageFunctionApp
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
     parameters:
       SolutionBaseName: $(SolutionBaseName).MessageFunctionApp
       BuildPlatform: $(BuildPlatform)

@@ -78,7 +78,7 @@
         "urlJobprofileTasksApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobproftasks-as.', parameters('appServiceDomain')))]",
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
         "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
-        "functionAppName": "[concat(variables('ResourcePrefix'), '-as')]",
+        "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
         "functionAppInsightsName": "[concat(variables('functionAppName'), '-ai')]"
     },
     "resources": [

@@ -10,7 +10,7 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/tags/v1.6.1
+    ref: refs/tags/v1.6.4
     endpoint: 'GitHub (ESFA)'
 
 jobs:
@@ -39,6 +39,15 @@ jobs:
       DotNetCoreVersion: 2.2.402
       PublishWebApp: true
       TestSuffix: UnitTests
+
+  # Build DFC.App.JobProfile.MessageFunctionApp
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
+    parameters:
+      SolutionBaseName: $(SolutionBaseName).MessageFunctionApp
+      BuildPlatform: $(BuildPlatform)
+      BuildConfiguration: $(BuildConfiguration)
+      DotNetCoreVersion: 2.2.402
+
   # Test DFC.App.JobProfile.DraftProfileService (an artifact will be built but isn't consumed in the release) 
   - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
     parameters:
@@ -47,6 +56,7 @@ jobs:
       BuildConfiguration: $(BuildConfiguration)
       DotNetCoreVersion: 2.2.402
       TestSuffix: UnitTests
+
   # Test DFC.App.JobProfile.ProfileService (an artifact will be built but isn't consumed in the release) 
   - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
     parameters:
@@ -55,15 +65,3 @@ jobs:
       BuildConfiguration: $(BuildConfiguration)
       DotNetCoreVersion: 2.2.402
       TestSuffix: UnitTests      
-  # Test DFC.App.JobProfile.Data (an artifact will be built but isn't consumed in the release) 
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).Data
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration)   
-  # Test DFC.App.JobProfile.Repository.CosmosDb (an artifact will be built but isn't consumed in the release) 
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).Repository.CosmosDb
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration) 

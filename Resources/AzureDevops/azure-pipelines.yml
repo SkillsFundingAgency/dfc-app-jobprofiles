@@ -43,7 +43,7 @@ jobs:
   # Build DFC.App.JobProfile.MessageFunctionApp
   - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
     parameters:
-      SolutionBaseName: $(SolutionBaseName)
+      SolutionBaseName: $(SolutionBaseName).MessageFunctionApp
       BuildPlatform: $(BuildPlatform)
       BuildConfiguration: $(BuildConfiguration)
       DotNetCoreVersion: 2.2.402

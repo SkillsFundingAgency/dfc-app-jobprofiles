@@ -8,6 +8,9 @@
         "appSharedResourceGroup": {
             "value": "dfc-dev-app-sharedresources-rg"
         },
+        "appSharedServiceBusName": {
+            "value": "dfc-dev-app-sharedresources-ns"
+        },
         "appSharedStorageAccountName": {
             "value": "dfcdevappsharedstr"
         },

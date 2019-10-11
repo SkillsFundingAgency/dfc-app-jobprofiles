@@ -23,8 +23,8 @@
         "cosmosDbKey": {
             "value": "not-a-real-key"
         },
-        "cosmosDbResourceGroup": {
-            "value": "dfc-dev-app-sharedresources-rg"
+        "serviceBusNamespace": {
+            "value": "dfc-dev-app-sharedresources-ns"
         },
         "Environment": {
             "value": "FOO"

@@ -8,6 +8,9 @@
         "appSharedResourceGroup": {
             "value": "__appSharedResourceGroup__"
         },
+        "appSharedServiceBusName": {
+            "value": "__appSharedServiceBusName__"
+        },
         "appSharedStorageAccountName": {
             "value": "__appSharedStorageAccountName__"
         },

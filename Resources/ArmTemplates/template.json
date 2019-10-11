@@ -8,6 +8,9 @@
         "appSharedResourceGroup": {
             "type": "string"
         },
+        "appSharedServiceBusName": {
+            "type": "string"
+        },
         "appSharedStorageAccountName": {
             "type": "string"
         },
@@ -69,6 +72,7 @@
         "cosmosDbDatabaseName": "dfc-app-jobprofiles",
         "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
+        "urlJobprofiles": "[toLower(concat('https://', variables('webAppName'), '.', parameters('appServiceDomain')))]",
         "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofover-as.', parameters('appServiceDomain')))]",
         "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofcops-as.', parameters('appServiceDomain')))]",
         "urlCareerpathApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-carpath-as.', parameters('appServiceDomain')))]",
@@ -398,6 +402,62 @@
                             {
                                 "name": "AzureWebJobsStorage",
                                 "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('appSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('appSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                            },
+                            {
+                                "name": "Values__service-bus-connection-string",
+                                "value": "[listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.ServiceBus/namespaces/authorizationRules', parameters('appSharedServiceBusName'), 'ReadWrite'), '2017-04-01').primaryConnectionString.value]"
+                            },
+                            {
+                                "name": "Values__patch-profile-topic-name",
+                                "value": "job-profile-profile-topic"
+                            },
+                            {
+                                "name": "Values__patch-profile-subscription-name",
+                                "value": "job-profile-patch"
+                            },
+                            {
+                                "name": "Values__post-profile-topic-name",
+                                "value": "job-profile-profile-topic"
+                            },
+                            {
+                                "name": "Values__post-profile-subscription-name",
+                                "value": "job-profile-refresh"
+                            },
+                            {
+                                "name": "Values__delete-topic-name",
+                                "value": "job-profile-delete-topic"
+                            },
+                            {
+                                "name": "Values__delete-subscription-name",
+                                "value": "job-profile-delete"
+                            },
+                            {
+                                "name": "jobProfileClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "jobProfileClientOptions__BaseAddress",
+                                "value": "[variables('urlJobprofiles')]"
+                            },
+                            {
+                                "name": "jobProfileClientOptions__GetEndpoint",
+                                "value": "profile/{0}/profile"
+                            },
+                            {
+                                "name": "jobProfileClientOptions__PatchEndpoint",
+                                "value": "profile/{0}/metadata"
+                            },
+                            {
+                                "name": "jobProfileClientOptions__PostEndpoint",
+                                "value": "profile"
+                            },
+                            {
+                                "name": "jobProfileClientOptions__PostRefreshEndpoint",
+                                "value": "profile/refresh"
+                            },
+                            {
+                                "name": "jobProfileClientOptions__DeleteEndpoint",
+                                "value": "profile/{0}"
                             }
                         ]
                     }

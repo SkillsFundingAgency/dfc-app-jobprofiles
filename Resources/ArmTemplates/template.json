@@ -43,9 +43,6 @@
         "cosmosDbKey": {
             "type": "securestring"
         },
-        "cosmosDbResourceGroup": {
-            "type": "string"
-        },
         "environment": {
             "type": "string"
         },
@@ -56,6 +53,12 @@
         "sharedAppServicePlanResourceGroup": {
             "type": "string",
             "defaultValue": ""
+        },
+        "serviceBusNamespace": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the shared service bus to attach to"
+            }
         },
         "cosmosDbCollectionName": {
             "type": "string",
@@ -83,7 +86,12 @@
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
         "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
         "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
-        "functionAppInsightsName": "[concat(variables('functionAppName'), '-ai')]"
+        "functionAppInsightsName": "[concat(variables('functionAppName'), '-ai')]",
+        "mainTopicName": "job-profile-profile-topic",
+        "postSubscriptionName": "job-profile-post",
+        "patchSubscriptionName": "job-profile-patch",
+        "deleteTopicName": "job-profile-delete-topic",
+        "deleteSubscriptionName": "job-profile-delete"
     },
     "resources": [
         {
@@ -471,7 +479,7 @@
             "apiVersion": "2017-05-10",
             "name": "[parameters('cosmosDbCollectionName')]",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('cosmosDbResourceGroup')]",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -496,6 +504,129 @@
                     }
                 }
             }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('mainTopicName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceBusNamespaceName": {
+                        "value": "[parameters('serviceBusNamespace')]"
+                    },
+                    "serviceBusTopicName": {
+                        "value": "[variables('mainTopicName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('postSubscriptionName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-subscription.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceBusNamespaceName": {
+                        "value": "[parameters('serviceBusNamespace')]"
+                    },
+                    "serviceBusTopicName": {
+                        "value": "[variables('mainTopicName')]"
+                    },
+                    "serviceBusTopicSubscriptionName": {
+                        "value": "[variables('postSubscriptionName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('mainTopicName')]"
+            ]
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('patchSubscriptionName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-subscription.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceBusNamespaceName": {
+                        "value": "[parameters('serviceBusNamespace')]"
+                    },
+                    "serviceBusTopicName": {
+                        "value": "[variables('mainTopicName')]"
+                    },
+                    "serviceBusTopicSubscriptionName": {
+                        "value": "[variables('patchSubscriptionName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('mainTopicName')]"
+            ]
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('deleteTopicName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceBusNamespaceName": {
+                        "value": "[parameters('serviceBusNamespace')]"
+                    },
+                    "serviceBusTopicName": {
+                        "value": "[variables('deleteTopicName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('deleteSubscriptionName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-subscription.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceBusNamespaceName": {
+                        "value": "[parameters('serviceBusNamespace')]"
+                    },
+                    "serviceBusTopicName": {
+                        "value": "[variables('deleteTopicName')]"
+                    },
+                    "serviceBusTopicSubscriptionName": {
+                        "value": "[variables('deleteSubscriptionName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('deleteTopicName')]"
+            ]
         }
     ],
         "outputs": {}

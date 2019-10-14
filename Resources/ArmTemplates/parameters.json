@@ -32,9 +32,6 @@
         "cosmosDbKey": {
             "value": "__appSharedCosmosPrimaryKey__"
         },
-        "cosmosDbResourceGroup": {
-            "value": "__appSharedResourceGroup__"
-        },
         "environment": {
             "value": "__ReleaseEnvironmentName__",
             "metadata": {
@@ -46,6 +43,9 @@
         },
         "sharedAppServicePlanResourceGroup": {
             "value": "__appSharedResourceGroup__"
+        },
+        "serviceBusNamespace": {
+            "value": "__appSharedServiceBusName__"
         },
         "cosmosDbCollectionName": {
             "value": "__cosmosDbCollectionName__"

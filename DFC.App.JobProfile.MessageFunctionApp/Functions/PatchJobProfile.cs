@@ -24,11 +24,11 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                                         [Inject] JobProfileClientOptions jobProfileClientOptions,
                                         [Inject] HttpClient httpClient)
         {
-            var serviceBusModel = JsonConvert.DeserializeObject<JobProfileMetaDataPatchServiceBusModel>(serviceBusMessage);
+            var serviceBusModel = JsonConvert.DeserializeObject<JobProfile>(serviceBusMessage);
 
             log.LogInformation($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Patching job profile");
 
-            var jobProfileModel = await HttpClientService.GetByIdAsync(httpClient, jobProfileClientOptions, serviceBusModel.JobProfileId).ConfigureAwait(false);
+            var jobProfileModel = await OldHttpClientService.GetByIdAsync(httpClient, jobProfileClientOptions, serviceBusModel.JobProfileId).ConfigureAwait(false);
 
             if (jobProfileModel != null)
             {
@@ -48,7 +48,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                         },
                     };
 
-                    var result = await HttpClientService.PatchAsync(httpClient, jobProfileClientOptions, jobProfileMetaDataPatchModel, serviceBusModel.JobProfileId).ConfigureAwait(false);
+                    var result = await OldHttpClientService.PatchAsync(httpClient, jobProfileClientOptions, jobProfileMetaDataPatchModel, serviceBusModel.JobProfileId).ConfigureAwait(false);
 
                     if (result == HttpStatusCode.OK)
                     {
@@ -83,7 +83,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                     },
                 };
 
-                var result = await HttpClientService.PostAsync(httpClient, jobProfileClientOptions, jobProfileModel).ConfigureAwait(false);
+                var result = await OldHttpClientService.PostAsync(httpClient, jobProfileClientOptions, jobProfileModel).ConfigureAwait(false);
 
                 if (result == HttpStatusCode.OK)
                 {

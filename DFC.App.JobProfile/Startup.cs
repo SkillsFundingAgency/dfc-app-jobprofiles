@@ -52,6 +52,7 @@ namespace DFC.App.JobProfile
             services.AddSingleton<IDocumentClient>(documentClient);
             services.AddSingleton(brandingAssetsModel);
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
+
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<IDraftJobProfileService, DraftJobProfileService>();
             services.AddScoped<ISegmentService, SegmentService>();

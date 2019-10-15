@@ -1,4 +1,4 @@
-using DFC.App.JobProfile.Data.Models;
+﻿using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
@@ -34,7 +34,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                 Segment = serviceBusModel.Segment,
             };
 
-            var result = await HttpClientService.PostAsync(httpClient, jobProfileClientOptions, refreshJobProfileSegmentModel).ConfigureAwait(false);
+            var result = await OldHttpClientService.PostAsync(httpClient, jobProfileClientOptions, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
             if (result == HttpStatusCode.OK)
             {

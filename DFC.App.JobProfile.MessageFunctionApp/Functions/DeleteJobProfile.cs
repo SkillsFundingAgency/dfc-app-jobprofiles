@@ -26,11 +26,11 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
 
             log.LogInformation($"{ThisClassPath}: JobProfile Id: {serviceBusModel.JobProfileId}: Deleting job profile");
 
-            var jobProfileDataModel = await HttpClientService.GetByIdAsync(httpClient, jobProfileClientOptions, serviceBusModel.JobProfileId).ConfigureAwait(false);
+            var jobProfileDataModel = await OldHttpClientService.GetByIdAsync(httpClient, jobProfileClientOptions, serviceBusModel.JobProfileId).ConfigureAwait(false);
 
             if (jobProfileDataModel == null || jobProfileDataModel.LastReviewed < serviceBusModel.LastReviewed)
             {
-                var result = await HttpClientService.DeleteAsync(httpClient, jobProfileClientOptions, serviceBusModel.JobProfileId).ConfigureAwait(false);
+                var result = await OldHttpClientService.DeleteAsync(httpClient, jobProfileClientOptions, serviceBusModel.JobProfileId).ConfigureAwait(false);
 
                 if (result == HttpStatusCode.OK)
                 {

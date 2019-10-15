@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.Data.Models.PatchModels
 {
-    public class JobProfileMetaDataPatchModel
+    public class JobProfileMetaDataPatchModel : BasePatchModel
     {
         [Required]
         public string CanonicalName { get; set; }

@@ -2,22 +2,15 @@
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "cms-messages-subscription": "job-profile-metadata",
+    "cms-messages-topic": "cms-messages-localdev",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "service-bus-connection-string": "[service bus connection string]",
-    "patch-profile-topic-name": "job-profile-profile-topic",
-    "patch-profile-subscription-name": "job-profile-patch",
-    "post-profile-topic-name": "job-profile-profile-topic",
-    "post-profile-subscription-name": "job-profile-refresh",
-    "delete-topic-name": "job-profile-delete-topic",
-    "delete-subscription-name": "job-profile-delete"
+    "job-profiles-refresh-subscription": "job-profile-segment-refresh",
+    "job-profiles-refresh-topic": "job-profile-refresh",
+    "service-bus-connection-string": "[service bus connection string]"
   },
   "jobProfileClientOptions": {
-    "Timeout": "00:00:30",
-    "BaseAddress": "https://localhost",
-    "GetEndpoint": "profile/{0}/profile",
-    "PatchEndpoint": "profile/{0}/metadata",
-    "PostEndpoint": "profile",
-    "PostRefreshEndpoint": "profile/refresh",
-    "DeleteEndpoint": "profile/{0}"
+    "Timeout": "00:00:10",
+    "BaseAddress": "https://localhost"
   }
 }

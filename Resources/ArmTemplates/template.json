@@ -54,16 +54,17 @@
             "type": "string",
             "defaultValue": ""
         },
-        "serviceBusNamespace": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the shared service bus to attach to"
-            }
-        },
         "cosmosDbCollectionName": {
             "type": "string",
             "metadata": {
                 "description": "The name of the collection to create"
+            }
+        },
+        "cmsSubscriptionSqlFilter": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Filter to apply to subscription (no filter applied if left blank)"
             }
         }
     },
@@ -509,13 +510,16 @@
                 },
                 "parameters": {
                     "serviceBusNamespaceName": {
-                        "value": "[parameters('serviceBusNamespace')]"
+                        "value": "[parameters('appSharedServiceBusName')]"
                     },
                     "serviceBusTopicName": {
                         "value": "[variables('cmsTopicName')]"
                     },
                     "serviceBusTopicSubscriptionName": {
                         "value": "[variables('cmsSubscriptionName')]"
+                    },
+                    "subscriptionSqlFilter": {
+                        "value": "[parameters('cmsSubscriptionSqlFilter')]"
                     }
                 }
             }
@@ -533,7 +537,7 @@
                 },
                 "parameters": {
                     "serviceBusNamespaceName": {
-                        "value": "[parameters('serviceBusNamespace')]"
+                        "value": "[parameters('appSharedServiceBusName')]"
                     },
                     "serviceBusTopicName": {
                         "value": "[variables('refreshTopicName')]"
@@ -554,7 +558,7 @@
                 },
                 "parameters": {
                     "serviceBusNamespaceName": {
-                        "value": "[parameters('serviceBusNamespace')]"
+                        "value": "[parameters('appSharedServiceBusName')]"
                     },
                     "serviceBusTopicName": {
                         "value": "[variables('refreshTopicName')]"

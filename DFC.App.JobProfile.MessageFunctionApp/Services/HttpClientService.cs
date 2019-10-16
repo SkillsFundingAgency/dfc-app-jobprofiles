@@ -73,11 +73,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         public async Task<HttpStatusCode> DeleteAsync(Guid id)
         {
-            if (httpClient == null)
-            {
-                return default;
-            }
-
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}/profile/{id}");
             var response = await httpClient.DeleteAsync(url).ConfigureAwait(false);
 

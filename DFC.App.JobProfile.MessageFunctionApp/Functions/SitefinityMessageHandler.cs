@@ -19,7 +19,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         [FunctionName("SitefinityMessageHandler")]
         public static async Task Run(
                                         [ServiceBusTrigger("%cms-messages-topic%", "%cms-messages-subscription%", Connection = "service-bus-connection-string")] Message sitefinityMessage,
-                                        ILogger log,
+                                        [Inject] ILogger log,
                                         [Inject] IMessageProcessor processor)
         {
             if (sitefinityMessage is null)

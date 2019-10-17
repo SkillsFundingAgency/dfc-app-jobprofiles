@@ -27,7 +27,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            var url = new Uri($"{jobProfileClientOptions.BaseAddress}/profile/{id}");
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{id}");
             var response = await httpClient.GetAsync(url).ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -54,7 +54,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                 throw new ArgumentException("message", nameof(patchTypeEndpoint));
             }
 
-            var url = new Uri($"{jobProfileClientOptions.BaseAddress}/profile/{patchModel?.JobProfileId}/{patchTypeEndpoint}");
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{patchModel?.JobProfileId}/{patchTypeEndpoint}");
             using (var content = new ObjectContent<TInput>(patchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
             {
                 var response = await httpClient.PatchAsync(url, content).ConfigureAwait(false);
@@ -72,7 +72,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         public async Task<HttpStatusCode> DeleteAsync(Guid id)
         {
-            var url = new Uri($"{jobProfileClientOptions.BaseAddress}/profile/{id}");
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{id}");
             var response = await httpClient.DeleteAsync(url).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -94,7 +94,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                 throw new ArgumentNullException(nameof(postModel));
             }
 
-            var url = new Uri($"{jobProfileClientOptions.BaseAddress}/{postEndpoint}");
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}{postEndpoint}");
             using (var content = new ObjectContent<TInput>(postModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
             {
                 var response = await httpClient.PostAsync(url, content).ConfigureAwait(false);

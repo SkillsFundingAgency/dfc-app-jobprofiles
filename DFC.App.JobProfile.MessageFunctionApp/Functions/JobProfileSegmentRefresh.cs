@@ -24,7 +24,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
 
         [FunctionName("JobProfileSegmentRefresh")]
         public static async Task Run(
-                                        [ServiceBusTrigger("%job-profile-refresh-topic%", "%job-profile-segment-refresh-subscription%", Connection = "service-bus-connection-string")] Message segmentRefreshMessage,
+                                        [ServiceBusTrigger("%job-profiles-refresh-topic%", "%job-profiles-refresh-subscription%", Connection = "service-bus-connection-string")] Message segmentRefreshMessage,
                                         ILogger log,
                                         [Inject] IMessageProcessor processor)
         {

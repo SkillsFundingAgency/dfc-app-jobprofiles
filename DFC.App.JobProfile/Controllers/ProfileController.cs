@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
@@ -121,17 +122,16 @@ namespace DFC.App.JobProfile.Controllers
             var requestBaseAddress = Request.RequestBaseAddress(Url);
 
             var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegmentModel.JobProfileId).ConfigureAwait(false);
-
             if (existingJobProfileModel != null)
             {
-                var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
-
-                logger.LogInformation($"{nameof(PostRefresh)} has upserted content for: {existingJobProfileModel.CanonicalName}");
-
-                return new StatusCodeResult((int)response);
+                return StatusCode((int)HttpStatusCode.AlreadyReported);
             }
 
-            return NoContent();
+            var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
+
+            logger.LogInformation($"{nameof(PostRefresh)} has upserted content for: {existingJobProfileModel.CanonicalName}");
+
+            return new StatusCodeResult((int)response);
         }
 
         [HttpPatch]
@@ -156,7 +156,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 logger.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
 
-                return NoContent();
+                return NotFound();
             }
 
             mapper.Map(jobProfileMetaDataPatchModel, jobProfileModel);
@@ -320,6 +320,6 @@ namespace DFC.App.JobProfile.Controllers
             return viewModel;
         }
 
-        #endregion
+        #endregion Define helper methods
     }
 }

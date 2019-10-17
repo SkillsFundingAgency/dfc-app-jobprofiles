@@ -2,21 +2,23 @@
 using DFC.App.JobProfile.Data.Models.Segments;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileModel : IDataModel
+    public class JobProfileModel : BaseJobProfile, IDataModel
     {
         [Required]
         [JsonProperty(PropertyName = "id")]
-        public Guid DocumentId { get; set; }
+        public Guid DocumentId
+        {
+            get => JobProfileId;
+            set => JobProfileId = value;
+        }
 
         [JsonProperty(PropertyName = "_etag")]
         public string Etag { get; set; }
-
-        [Required]
-        public string CanonicalName { get; set; }
 
         [Required]
         public string SocLevelTwo { get; set; }
@@ -30,9 +32,9 @@ namespace DFC.App.JobProfile.Data.Models
 
         public bool IncludeInSitemap { get; set; }
 
-        public string[] AlternativeNames { get; set; }
+        public IList<string> AlternativeNames { get; set; }
 
-        public MetaTagsModel MetaTags { get; set; }
+        public MetaTags MetaTags { get; set; }
 
         public SegmentsMarkupModel Markup { get; set; }
 

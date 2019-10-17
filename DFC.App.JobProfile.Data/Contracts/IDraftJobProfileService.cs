@@ -5,6 +5,6 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IDraftJobProfileService
     {
-        Task<JobProfileModel> GetSitefinityData(string canonicalName);
+        Task<Models.JobProfileModel> GetSitefinityData(string canonicalName);
     }
 }

@@ -1,6 +1,4 @@
 ﻿using DFC.App.JobProfile.Data;
-using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.PatchModels;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -13,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Services
 {
-    public class HttpClientService : IHttpClientService<JobProfileMetaDataPatchModel>
+    public class HttpClientService<T> : IHttpClientService<T>
+                where T : class, new()
     {
         private readonly HttpClient httpClient;
         private readonly JobProfileClientOptions jobProfileClientOptions;
@@ -26,7 +25,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             this.logger = logger;
         }
 
-        public async Task<JobProfileMetaDataPatchModel> GetByIdAsync(Guid id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}/profile/{id}");
             var response = await httpClient.GetAsync(url).ConfigureAwait(false);
@@ -34,7 +33,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var result = JsonConvert.DeserializeObject<JobProfileMetaDataPatchModel>(responseString);
+                var result = JsonConvert.DeserializeObject<T>(responseString);
 
                 return result;
             }
@@ -42,8 +41,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return default;
         }
 
-        public async Task<HttpStatusCode> PatchAsync<T>(T patchModel, string patchTypeEndpoint)
-            where T : BasePatchModel
+        public async Task<HttpStatusCode> PatchAsync<TInput>(TInput patchModel, string patchTypeEndpoint)
+            where TInput : BaseJobProfile
         {
             if (patchModel is null)
             {
@@ -56,7 +55,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}/profile/{patchModel?.JobProfileId}/{patchTypeEndpoint}");
-            using (var content = new ObjectContent<T>(patchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
+            using (var content = new ObjectContent<TInput>(patchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
             {
                 var response = await httpClient.PatchAsync(url, content).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
@@ -87,21 +86,22 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return response.StatusCode;
         }
 
-        public async Task<HttpStatusCode> PostAsync(JobProfileMetaDataPatchModel jobProfile)
+        public async Task<HttpStatusCode> PostAsync<TInput>(TInput postModel, string postEndpoint)
+            where TInput : BaseJobProfile
         {
-            if (jobProfile is null)
+            if (postModel is null)
             {
-                throw new ArgumentNullException(nameof(jobProfile));
+                throw new ArgumentNullException(nameof(postModel));
             }
 
-            var url = new Uri($"{jobProfileClientOptions.BaseAddress}/profile");
-            using (var content = new ObjectContent<JobProfileMetaDataPatchModel>(jobProfile, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}/{postEndpoint}");
+            using (var content = new ObjectContent<TInput>(postModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
             {
                 var response = await httpClient.PostAsync(url, content).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    logger.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST, Id: {jobProfile.JobProfileId}, name: {jobProfile.CanonicalName}");
+                    logger.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST type {typeof(T)}, Id: {postModel.JobProfileId}.");
 
                     response.EnsureSuccessStatusCode();
                 }

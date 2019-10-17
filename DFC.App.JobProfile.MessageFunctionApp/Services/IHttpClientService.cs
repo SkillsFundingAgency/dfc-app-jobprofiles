@@ -10,11 +10,12 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
     {
         Task<TModel> GetByIdAsync(Guid id);
 
-        Task<HttpStatusCode> PostAsync(TModel postModel);
+        Task<HttpStatusCode> PostAsync<TInput>(TInput postModel, string postEndpoint = "profile")
+            where TInput : BaseJobProfile;
 
         Task<HttpStatusCode> DeleteAsync(Guid id);
 
         Task<HttpStatusCode> PatchAsync<TInput>(TInput patchModel, string patchTypeEndpoint = "metadata")
-            where TInput : BasePatchModel;
+            where TInput : BaseJobProfile;
     }
 }

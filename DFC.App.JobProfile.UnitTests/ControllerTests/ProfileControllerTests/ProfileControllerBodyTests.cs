@@ -73,7 +73,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             const string article = "an-article-name";
-            JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
             var expectedAlternativeResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
@@ -101,7 +101,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             const string article = "an-article-name";
-            JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
             var expectedAlternativeResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
@@ -129,8 +129,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             const string article = "an-article-name";
-            JobProfileModel expectedResult = null;
-            JobProfileModel expectedAlternativeResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedAlternativeResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);
@@ -154,8 +154,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             const string article = "an-article-name";
-            JobProfileModel expectedResult = null;
-            JobProfileModel expectedAlternativeResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedAlternativeResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);

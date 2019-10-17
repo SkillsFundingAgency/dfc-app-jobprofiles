@@ -13,7 +13,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "Upsert Tests")]
     public class ProfileServiceUpsertTests
     {
-        private readonly ICosmosRepository<JobProfileModel> repository;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
         private readonly ISegmentService segmentService;
         private readonly IJobProfileService jobProfileService;
@@ -78,7 +78,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             var jobProfileModel = A.Fake<JobProfileModel>();
-            JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
 
             A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.FailedDependency);
 

@@ -6,7 +6,7 @@ namespace DFC.App.JobProfile.DraftProfileService
 {
     public class DraftJobProfileService : IDraftJobProfileService
     {
-        public Task<JobProfileModel> GetSitefinityData(string canonicalName)
+        public Task<Data.Models.JobProfileModel> GetSitefinityData(string canonicalName)
         {
             throw new System.NotImplementedException();
         }

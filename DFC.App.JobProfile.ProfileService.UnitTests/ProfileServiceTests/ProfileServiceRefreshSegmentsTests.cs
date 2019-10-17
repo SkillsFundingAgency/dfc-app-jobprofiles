@@ -13,7 +13,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     public class ProfileServiceRefreshSegmentsTests
     {
         private readonly Uri dummyBaseAddressUri = new Uri("https://localhost:12345/");
-        private readonly ICosmosRepository<JobProfileModel> repository;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
         private readonly ISegmentService segmentService;
         private readonly IJobProfileService jobProfileService;
@@ -30,7 +30,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public void JobProfileServiceRefreshSegmentsReturnsSuccessWhenProfileReplaced()
         {
             // arrange
-            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegmentModel>();
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
             var jobProfileModel = A.Fake<JobProfileModel>();
             var expectedResult = A.Fake<JobProfileModel>();
 
@@ -62,7 +62,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async System.Threading.Tasks.Task JobProfileServiceRefreshSegmentsReturnsArgumentNullExceptionWhenNullIParam2sUsed()
         {
             // arrange
-            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegmentModel>();
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
 
             // act
             var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, null, dummyBaseAddressUri).ConfigureAwait(false)).ConfigureAwait(false);
@@ -75,7 +75,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async System.Threading.Tasks.Task JobProfileServiceRefreshSegmentsReturnsArgumentNullExceptionWhenNullIParam3sUsed()
         {
             // arrange
-            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegmentModel>();
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
             var jobProfileModel = A.Fake<JobProfileModel>();
 
             // act
@@ -89,7 +89,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public void JobProfileServiceRefreshSegmentsReturnsNullWhenProfileNotReplaced()
         {
             // arrange
-            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegmentModel>();
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
             var jobProfileModel = A.Fake<JobProfileModel>();
             var expectedResult = A.Dummy<JobProfileModel>();
 
@@ -109,9 +109,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public void JobProfileServiceRefreshSegmentsReturnsNullWhenMissingRepository()
         {
             // arrange
-            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegmentModel>();
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
             var jobProfileModel = A.Fake<JobProfileModel>();
-            JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
 
             A.CallTo(() => segmentService.LoadAsync());
             A.CallTo(() => repository.UpsertAsync(jobProfileModel)).Returns(HttpStatusCode.FailedDependency);

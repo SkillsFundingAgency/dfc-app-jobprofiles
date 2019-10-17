@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data;
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.PatchModels;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using Microsoft.Extensions.Logging;
@@ -13,17 +14,39 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
     public class MessageProcessor : IMessageProcessor
     {
         private readonly IMapper mapper;
-        private readonly IHttpClientService<JobProfileMetaDataPatchModel> httpClientService;
+        private readonly IHttpClientService<JobProfileMetadata> httpClientService;
         private readonly ILogger log;
 
-        public MessageProcessor(IMapper mapper, IHttpClientService<JobProfileMetaDataPatchModel> httpClientService, ILogger log)
+        public MessageProcessor(IMapper mapper, IHttpClientService<JobProfileMetadata> httpClientService, ILogger log)
         {
             this.mapper = mapper;
             this.httpClientService = httpClientService;
             this.log = log;
         }
 
-        public Task<HttpStatusCode> ProcessAsync(string message, string messageAction, string messageCtype, string messageContentId, long sequenceNumber)
+        public async Task<HttpStatusCode> ProcessSegmentRefresEventAsync(string eventData)
+        {
+            if (string.IsNullOrWhiteSpace(eventData))
+            {
+                throw new ArgumentException("Event data cannot be null or empty.", nameof(eventData));
+            }
+
+            var refreshPayload = JsonConvert.DeserializeObject<RefreshJobProfileSegment>(eventData);
+            var result = await httpClientService.PostAsync(refreshPayload, "refresh").ConfigureAwait(false);
+
+            if (result == HttpStatusCode.OK)
+            {
+                log.LogInformation($"{nameof(ProcessSegmentRefresEventAsync)}: Segment: {refreshPayload.Segment} of job profile: '{refreshPayload.CanonicalName} - {refreshPayload.JobProfileId}' updated.");
+            }
+            else
+            {
+                log.LogWarning($"{nameof(ProcessSegmentRefresEventAsync)}: Segment: {refreshPayload.Segment} of job profile: '{refreshPayload.CanonicalName} - {refreshPayload.JobProfileId}' NOT updated : Status: {result}");
+            }
+
+            return result;
+        }
+
+        public Task<HttpStatusCode> ProcessSitefinityMessageAsync(string message, string messageAction, string messageCtype, string messageContentId, long sequenceNumber)
         {
             if (string.IsNullOrWhiteSpace(messageCtype))
             {
@@ -43,8 +66,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                 default:
                     break;
             }
-
-            //var result = await HttpClientService.PostAsync(httpClient, jobProfileClientOptions, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
             return Task.FromResult(HttpStatusCode.InternalServerError);
         }
@@ -72,10 +93,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             var jobProfileMessage = JsonConvert.DeserializeObject<JobProfileMessage>(message);
-
-            var jobProfile = mapper.Map<JobProfileMetaDataPatchModel>(jobProfileMessage);
+            var jobProfile = mapper.Map<JobProfileMetadata>(jobProfileMessage);
             jobProfile.SequenceNumber = sequenceNumber;
-            jobProfile.MessageAction = action;
 
             switch (action)
             {

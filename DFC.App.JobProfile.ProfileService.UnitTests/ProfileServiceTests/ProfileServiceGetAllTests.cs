@@ -11,7 +11,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "GetAll Tests")]
     public class ProfileServiceGetAllTests
     {
-        private readonly ICosmosRepository<JobProfileModel> repository;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
         private readonly ISegmentService segmentService;
         private readonly IJobProfileService jobProfileService;
@@ -44,7 +44,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async Task JobProfileServiceGetAllListReturnsNullWhenMissingRepository()
         {
             // arrange
-            IEnumerable<JobProfileModel> expectedResults = null;
+            IEnumerable<Data.Models.JobProfileModel> expectedResults = null;
 
             A.CallTo(() => repository.GetAllAsync()).Returns(expectedResults);
 

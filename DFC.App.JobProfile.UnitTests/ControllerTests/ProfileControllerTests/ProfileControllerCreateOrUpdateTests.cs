@@ -61,7 +61,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsNull(string mediaTypeName)
         {
             // Arrange
-            JobProfileModel jobProfileModel = null;
+            Data.Models.JobProfileModel jobProfileModel = null;
             var controller = BuildProfileController(mediaTypeName);
 
             // Act
@@ -80,7 +80,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
         {
             // Arrange
-            var jobProfileModel = new JobProfileModel();
+            var jobProfileModel = new Data.Models.JobProfileModel();
             var controller = BuildProfileController(mediaTypeName);
 
             controller.ModelState.AddModelError(string.Empty, "Model is not valid");

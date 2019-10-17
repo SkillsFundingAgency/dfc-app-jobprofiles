@@ -9,5 +9,6 @@ namespace DFC.App.JobProfile.Data
         Published,
         Deleted,
         Draft,
+        Refresh,
     }
 }

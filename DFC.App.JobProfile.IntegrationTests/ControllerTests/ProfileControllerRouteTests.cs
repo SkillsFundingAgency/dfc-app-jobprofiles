@@ -98,23 +98,23 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             // Arrange
             var documentId = Guid.NewGuid();
-            string canonicalName = documentId.ToString().ToLowerInvariant();
+            string canonicalName = documentId.ToString().ToUpperInvariant();
             const string postUrl = "/profile";
             string patchUrl = $"/profile/{documentId}/metadata";
-            var jobProfileModel = new JobProfileModel()
+            var jobProfileModel = new Data.Models.JobProfileModel()
             {
                 DocumentId = documentId,
-                CanonicalName = documentId.ToString().ToLowerInvariant(),
+                CanonicalName = documentId.ToString().ToUpperInvariant(),
                 SocLevelTwo = "33",
                 LastReviewed = DateTime.UtcNow,
             };
-            var jobProfileMetaDataPatchModel = new JobProfileMetaDataPatchModel()
+            var jobProfileMetaDataPatchModel = new JobProfileMetadata()
             {
                 CanonicalName = canonicalName,
                 BreadcrumbTitle = "This is my breadcrumb title",
                 IncludeInSitemap = true,
                 AlternativeNames = new string[] { "jp1", "jp2" },
-                MetaTags = new MetaTagsModel
+                MetaTags = new MetaTags
                 {
                     Title = $"This is a title for {canonicalName}",
                     Description = "This is a description",
@@ -127,18 +127,20 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             _ = await client.PostAsync(postUrl, jobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
 
-            var request = new HttpRequestMessage(HttpMethod.Patch, patchUrl);
+            using (var request = new HttpRequestMessage(HttpMethod.Patch, patchUrl))
+            {
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                request.Content = new ObjectContent(typeof(JobProfileMetadata), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
 
-            request.Headers.Accept.Clear();
-            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-            request.Content = new ObjectContent(typeof(JobProfileMetaDataPatchModel), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
 
-            // Act
-            var response = await client.SendAsync(request).ConfigureAwait(false);
+                // Act
+                var response = await client.SendAsync(request).ConfigureAwait(false);
 
-            // Assert
-            response.EnsureSuccessStatusCode();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+                // Assert
+                response.EnsureSuccessStatusCode();
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
+            }
         }
 
         [Fact]
@@ -146,15 +148,15 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             // Arrange
             var documentId = Guid.NewGuid();
-            string canonicalName = documentId.ToString().ToLowerInvariant();
+            string canonicalName = documentId.ToString().ToUpperInvariant();
             string url = $"/profile/{documentId}/metadata";
-            var jobProfileMetaDataPatchModel = new JobProfileMetaDataPatchModel()
+            var jobProfileMetaDataPatchModel = new JobProfileMetadata()
             {
                 CanonicalName = canonicalName,
                 BreadcrumbTitle = "This is my breadcrumb title",
                 IncludeInSitemap = true,
                 AlternativeNames = new string[] { "jp1", "jp2" },
-                MetaTags = new MetaTagsModel
+                MetaTags = new MetaTags
                 {
                     Title = $"This is a title for {canonicalName}",
                     Description = "This is a description",
@@ -169,7 +171,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-            request.Content = new ObjectContent(typeof(JobProfileMetaDataPatchModel), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
+            request.Content = new ObjectContent(typeof(JobProfileMetadata), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
 
             // Act
             var response = await client.SendAsync(request).ConfigureAwait(false);
@@ -183,10 +185,10 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         public async Task PostProfileEndpointsForDefaultArticleRefreshAllReturnOk()
         {
             // Arrange
-            const string url = "/profile/refresh";
-            var refreshJobProfileSegmentModel = new RefreshJobProfileSegmentModel()
+            const string url = "/refresh";
+            var refreshJobProfileSegmentModel = new RefreshJobProfileSegment()
             {
-                DocumentId = DataSeeding.DefaultArticleGuid,
+                JobProfileId = DataSeeding.DefaultArticleGuid,
                 CanonicalName = DataSeeding.DefaultArticleName,
                 Segment = null,
             };
@@ -207,18 +209,18 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             // Arrange
             const string postUrl = "/profile";
-            const string postRefreshUrl = "/profile/refresh";
+            const string postRefreshUrl = "/refresh";
             var documentId = Guid.NewGuid();
-            var jobProfileModel = new JobProfileModel()
+            var jobProfileModel = new Data.Models.JobProfileModel()
             {
                 DocumentId = documentId,
-                CanonicalName = documentId.ToString().ToLowerInvariant(),
+                CanonicalName = documentId.ToString().ToUpperInvariant(),
                 SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
             };
-            var refreshJobProfileSegmentModel = new RefreshJobProfileSegmentModel()
+            var refreshJobProfileSegmentModel = new RefreshJobProfileSegment()
             {
-                DocumentId = jobProfileModel.DocumentId,
+                JobProfileId = jobProfileModel.DocumentId,
                 CanonicalName = jobProfileModel.CanonicalName,
                 Segment = null,
             };
@@ -241,18 +243,18 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             // Arrange
             const string postUrl = "/profile";
-            const string putUrl = "/profile/refresh";
+            const string putUrl = "/refresh";
             var documentId = Guid.NewGuid();
-            var jobProfileModel = new JobProfileModel()
+            var jobProfileModel = new Data.Models.JobProfileModel()
             {
                 DocumentId = documentId,
-                CanonicalName = documentId.ToString().ToLowerInvariant(),
+                CanonicalName = documentId.ToString().ToUpperInvariant(),
                 SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
             };
-            var refreshJobProfileSegmentModel = new RefreshJobProfileSegmentModel()
+            var refreshJobProfileSegmentModel = new RefreshJobProfileSegment()
             {
-                DocumentId = jobProfileModel.DocumentId,
+                JobProfileId = jobProfileModel.DocumentId,
                 CanonicalName = jobProfileModel.CanonicalName,
                 Segment = OverviewBannerSegmentDataModel.SegmentName,
             };
@@ -277,10 +279,10 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var documentId = Guid.NewGuid();
             const string postUrl = "/profile";
             var deleteUri = new Uri($"/profile/{documentId}", UriKind.Relative);
-            var jobProfileModel = new JobProfileModel()
+            var jobProfileModel = new Data.Models.JobProfileModel()
             {
                 DocumentId = documentId,
-                CanonicalName = documentId.ToString().ToLowerInvariant(),
+                CanonicalName = documentId.ToString().ToUpperInvariant(),
                 SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
             };

@@ -12,7 +12,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "GetById Tests")]
     public class ProfileServiceGetByIdTests
     {
-        private readonly ICosmosRepository<JobProfileModel> repository;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
         private readonly ISegmentService segmentService;
         private readonly IJobProfileService jobProfileService;
@@ -47,7 +47,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             Guid documentId = Guid.NewGuid();
-            JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
 
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
 

@@ -11,7 +11,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "Delete Tests")]
     public class ProfileServiceDeleteTests
     {
-        private readonly ICosmosRepository<JobProfileModel> repository;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
         private readonly ISegmentService segmentService;
         private readonly IJobProfileService jobProfileService;

@@ -12,12 +12,12 @@ namespace DFC.App.JobProfile.ProfileService
 {
     public class JobProfileService : IJobProfileService
     {
-        private readonly ICosmosRepository<JobProfileModel> repository;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
         private readonly IDraftJobProfileService draftJobProfileService;
         private readonly ISegmentService segmentService;
 
         public JobProfileService(
-            ICosmosRepository<JobProfileModel> repository,
+            ICosmosRepository<Data.Models.JobProfileModel> repository,
             IDraftJobProfileService draftJobProfileService,
             ISegmentService segmentService)
         {
@@ -36,17 +36,17 @@ namespace DFC.App.JobProfile.ProfileService
             return await segmentService.SegmentsHealthCheckAsync().ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<JobProfileModel>> GetAllAsync()
+        public async Task<IEnumerable<Data.Models.JobProfileModel>> GetAllAsync()
         {
             return await repository.GetAllAsync().ConfigureAwait(false);
         }
 
-        public async Task<JobProfileModel> GetByIdAsync(Guid documentId)
+        public async Task<Data.Models.JobProfileModel> GetByIdAsync(Guid documentId)
         {
             return await repository.GetAsync(d => d.DocumentId == documentId).ConfigureAwait(false);
         }
 
-        public async Task<JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false)
+        public async Task<Data.Models.JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false)
         {
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
@@ -58,7 +58,7 @@ namespace DFC.App.JobProfile.ProfileService
                 : await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
         }
 
-        public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
+        public async Task<Data.Models.JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {
             if (string.IsNullOrWhiteSpace(alternativeName))
             {
@@ -68,7 +68,7 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.GetAsync(d => d.AlternativeNames.Contains(alternativeName.ToLowerInvariant())).ConfigureAwait(false);
         }
 
-        public async Task<HttpStatusCode> UpsertAsync(JobProfileModel jobProfileModel)
+        public async Task<HttpStatusCode> UpsertAsync(Data.Models.JobProfileModel jobProfileModel)
         {
             if (jobProfileModel == null)
             {
@@ -77,7 +77,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (jobProfileModel.MetaTags == null)
             {
-                jobProfileModel.MetaTags = new MetaTagsModel();
+                jobProfileModel.MetaTags = new MetaTags();
             }
 
             if (jobProfileModel.Markup == null)
@@ -95,7 +95,7 @@ namespace DFC.App.JobProfile.ProfileService
             return result;
         }
 
-        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentModel refreshJobProfileSegmentModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress)
+        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel, Data.Models.JobProfileModel existingJobProfileModel, Uri requestBaseAddress)
         {
             if (refreshJobProfileSegmentModel == null)
             {
@@ -114,7 +114,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             if (existingJobProfileModel.MetaTags == null)
             {
-                existingJobProfileModel.MetaTags = new MetaTagsModel();
+                existingJobProfileModel.MetaTags = new MetaTags();
             }
 
             if (existingJobProfileModel.Markup == null)

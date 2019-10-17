@@ -80,7 +80,7 @@ namespace DFC.App.JobProfile.Controllers
         [HttpPut]
         [HttpPost]
         [Route("profile")]
-        public async Task<IActionResult> CreateOrUpdate([FromBody]JobProfileModel jobProfileModel)
+        public async Task<IActionResult> CreateOrUpdate([FromBody] Data.Models.JobProfileModel jobProfileModel)
         {
             logger.LogInformation($"{nameof(CreateOrUpdate)} has been called");
 
@@ -103,8 +103,8 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPut]
         [HttpPost]
-        [Route("profile/refresh")]
-        public async Task<IActionResult> PostRefresh([FromBody]RefreshJobProfileSegmentModel refreshJobProfileSegmentModel)
+        [Route("refresh")]
+        public async Task<IActionResult> PostRefresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
         {
             logger.LogInformation($"{nameof(PostRefresh)} has been called");
 
@@ -120,7 +120,7 @@ namespace DFC.App.JobProfile.Controllers
 
             var requestBaseAddress = Request.RequestBaseAddress(Url);
 
-            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegmentModel.DocumentId).ConfigureAwait(false);
+            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegmentModel.JobProfileId).ConfigureAwait(false);
 
             if (existingJobProfileModel != null)
             {
@@ -136,7 +136,7 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPatch]
         [Route("profile/{documentId}/metadata")]
-        public async Task<IActionResult> Patch([FromBody]JobProfileMetaDataPatchModel jobProfileMetaDataPatchModel, Guid documentId)
+        public async Task<IActionResult> Patch([FromBody]JobProfileMetadata jobProfileMetaDataPatchModel, Guid documentId)
         {
             logger.LogInformation($"{nameof(Patch)} has been called");
 
@@ -285,7 +285,7 @@ namespace DFC.App.JobProfile.Controllers
 
         #region Define helper methods
 
-        private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)
+        private static BreadcrumbViewModel BuildBreadcrumb(Data.Models.JobProfileModel jobProfileModel)
         {
             var viewModel = new BreadcrumbViewModel
             {

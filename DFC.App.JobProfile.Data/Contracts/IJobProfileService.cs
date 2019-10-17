@@ -13,17 +13,17 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync();
 
-        Task<IEnumerable<JobProfileModel>> GetAllAsync();
+        Task<IEnumerable<Models.JobProfileModel>> GetAllAsync();
 
-        Task<JobProfileModel> GetByIdAsync(Guid documentId);
+        Task<Models.JobProfileModel> GetByIdAsync(Guid documentId);
 
-        Task<JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false);
+        Task<Models.JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false);
 
-        Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
+        Task<Models.JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
 
-        Task<HttpStatusCode> UpsertAsync(JobProfileModel jobProfileModel);
+        Task<HttpStatusCode> UpsertAsync(Models.JobProfileModel jobProfileModel);
 
-        Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentModel refreshJobProfileSegmentModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
+        Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel, Models.JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
 
         Task<bool> DeleteAsync(Guid documentId);
     }

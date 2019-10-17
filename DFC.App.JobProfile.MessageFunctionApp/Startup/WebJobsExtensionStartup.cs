@@ -28,7 +28,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Startup
             builder?.Services.AddSingleton(configuration.GetSection("jobProfileClientOptions").Get<JobProfileClientOptions>());
             builder?.Services.AddSingleton(new HttpClient());
             builder?.Services.AddAutoMapper(typeof(WebJobsExtensionStartup).Assembly);
-            builder?.Services.AddSingleton<IHttpClientService<JobProfileMetaDataPatchModel>, HttpClientService>();
+            builder?.Services.AddSingleton<IHttpClientService<JobProfileMetadata>, HttpClientService<JobProfileMetadata>>();
         }
     }
 }

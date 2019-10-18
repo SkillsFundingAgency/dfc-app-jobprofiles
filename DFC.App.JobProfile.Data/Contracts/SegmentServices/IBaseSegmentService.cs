@@ -17,5 +17,9 @@ namespace DFC.App.JobProfile.Data.Contracts.SegmentServices
         Task<string> LoadMarkupAsync();
 
         Task<HealthCheckItems> HealthCheckAsync();
+
+        Task<string> GetJsonAsync(Guid jobProfileId);
+
+        Task<string> GetMarkupAsync(Guid jobProfileId);
     }
 }

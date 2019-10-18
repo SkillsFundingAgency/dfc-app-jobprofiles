@@ -34,21 +34,22 @@ namespace DFC.App.JobProfile.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            //AOP: These should be coded as an Aspect
             logger.LogInformation($"{nameof(Index)} has been called");
 
             var viewModel = new IndexViewModel();
             var jobProfileModels = await jobProfileService.GetAllAsync().ConfigureAwait(false);
 
-            if (jobProfileModels != null)
+            if (jobProfileModels is null)
+            {
+                logger.LogWarning($"{nameof(Index)} has returned with no results");
+            }
+            else
             {
                 viewModel.Documents = (from a in jobProfileModels.OrderBy(o => o.CanonicalName)
                                        select mapper.Map<IndexDocumentViewModel>(a)).ToList();
 
                 logger.LogInformation($"{nameof(Index)} has succeeded");
-            }
-            else
-            {
-                logger.LogWarning($"{nameof(Index)} has returned with no results");
             }
 
             return this.NegotiateContentResult(viewModel);
@@ -58,34 +59,31 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{article}")]
         public async Task<IActionResult> Document(string article)
         {
+            //AOP: These should be coded as an Aspect
             logger.LogInformation($"{nameof(Document)} has been called with: {article}");
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
-
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
-
                 viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
-
                 logger.LogInformation($"{nameof(Document)} has succeeded for: {article}");
-
                 return this.NegotiateContentResult(viewModel);
             }
 
             logger.LogWarning($"{nameof(Document)} has returned no content for: {article}");
-
             return NoContent();
         }
 
         [HttpPut]
         [HttpPost]
         [Route("profile")]
-        public async Task<IActionResult> CreateOrUpdate([FromBody] Data.Models.JobProfileModel jobProfileModel)
+        public async Task<IActionResult> Create([FromBody] Data.Models.JobProfileModel jobProfileModel)
         {
-            logger.LogInformation($"{nameof(CreateOrUpdate)} has been called");
+            //AOP: These should be coded as an Aspect
+            logger.LogInformation($"{nameof(Create)} has been called");
 
-            if (jobProfileModel == null)
+            if (jobProfileModel is null)
             {
                 return BadRequest();
             }
@@ -95,19 +93,17 @@ namespace DFC.App.JobProfile.Controllers
                 return BadRequest(ModelState);
             }
 
-            var response = await jobProfileService.UpsertAsync(jobProfileModel).ConfigureAwait(false);
-
-            logger.LogInformation($"{nameof(CreateOrUpdate)} has upserted content for: {jobProfileModel.CanonicalName}");
-
+            var response = await jobProfileService.Create(jobProfileModel).ConfigureAwait(false);
+            logger.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName}");
             return new StatusCodeResult((int)response);
         }
 
         [HttpPut]
         [HttpPost]
         [Route("refresh")]
-        public async Task<IActionResult> PostRefresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
+        public async Task<IActionResult> Refresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
         {
-            logger.LogInformation($"{nameof(PostRefresh)} has been called");
+            logger.LogInformation($"{nameof(Refresh)} has been called");
 
             if (refreshJobProfileSegmentModel == null)
             {
@@ -119,18 +115,9 @@ namespace DFC.App.JobProfile.Controllers
                 return BadRequest(ModelState);
             }
 
-            var requestBaseAddress = Request.RequestBaseAddress(Url);
-
-            var existingJobProfileModel = await jobProfileService.GetByIdAsync(refreshJobProfileSegmentModel.JobProfileId).ConfigureAwait(false);
-            if (existingJobProfileModel != null)
-            {
-                return StatusCode((int)HttpStatusCode.AlreadyReported);
-            }
-
-            var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, existingJobProfileModel, requestBaseAddress).ConfigureAwait(false);
-
-            logger.LogInformation($"{nameof(PostRefresh)} has upserted content for: {existingJobProfileModel.CanonicalName}");
-
+            //var requestBaseAddress = Request.RequestBaseAddress(Url);
+            var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
+            logger.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName}");
             return new StatusCodeResult((int)response);
         }
 
@@ -161,7 +148,7 @@ namespace DFC.App.JobProfile.Controllers
 
             mapper.Map(jobProfileMetaDataPatchModel, jobProfileModel);
 
-            var response = await jobProfileService.UpsertAsync(jobProfileModel).ConfigureAwait(false);
+            var response = await jobProfileService.Create(jobProfileModel).ConfigureAwait(false);
 
             logger.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileModel.CanonicalName}");
 

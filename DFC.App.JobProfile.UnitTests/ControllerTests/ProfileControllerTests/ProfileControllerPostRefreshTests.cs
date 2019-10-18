@@ -24,7 +24,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.RefreshSegmentsAsync(A<RefreshJobProfileSegment>.Ignored, A<JobProfileModel>.Ignored, A<Uri>.Ignored)).Returns(HttpStatusCode.OK);
 
             // Act
-            var result = await controller.PostRefresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
+            var result = await controller.Refresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
@@ -49,7 +49,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(existingRefreshJobProfileSegment);
 
             // Act
-            var result = await controller.PostRefresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
+            var result = await controller.Refresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
@@ -71,7 +71,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(mediaTypeName);
 
             // Act
-            var result = await controller.PostRefresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
+            var result = await controller.Refresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
 
             // Assert
             var statusResult = Assert.IsType<BadRequestResult>(result);
@@ -92,7 +92,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             controller.ModelState.AddModelError(string.Empty, "Model is not valid");
 
             // Act
-            var result = await controller.PostRefresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
+            var result = await controller.Refresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
 
             // Assert
             var statusResult = Assert.IsType<BadRequestObjectResult>(result);

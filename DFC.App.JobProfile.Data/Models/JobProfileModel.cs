@@ -36,8 +36,10 @@ namespace DFC.App.JobProfile.Data.Models
 
         public MetaTags MetaTags { get; set; }
 
-        public SegmentsMarkupModel Markup { get; set; }
+        //public SegmentsMarkupModel Markup { get; set; }
 
-        public SegmentsDataModel Data { get; set; }
+        //public SegmentsDataModel Data { get; set; }
+
+        public IList<SegmentModel> Segments { get; set; }
     }
 }

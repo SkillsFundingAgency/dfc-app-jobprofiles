@@ -36,7 +36,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.Created);
 
             // act
-            var result = jobProfileService.UpsertAsync(jobProfileModel).Result;
+            var result = jobProfileService.Create(jobProfileModel).Result;
 
             // assert
             A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
@@ -49,7 +49,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             // arrange
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.UpsertAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.Create(null).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
             Assert.Equal("Value cannot be null.\r\nParameter name: jobProfileModel", exceptionResult.Message);
@@ -65,7 +65,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.BadRequest);
 
             // act
-            var result = jobProfileService.UpsertAsync(jobProfileModel).Result;
+            var result = jobProfileService.Create(jobProfileModel).Result;
 
             // assert
             A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
@@ -83,7 +83,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.FailedDependency);
 
             // act
-            var result = jobProfileService.UpsertAsync(jobProfileModel).Result;
+            var result = jobProfileService.Create(jobProfileModel).Result;
 
             // assert
             A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();

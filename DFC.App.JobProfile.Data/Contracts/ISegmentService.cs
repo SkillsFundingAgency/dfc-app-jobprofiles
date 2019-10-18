@@ -14,8 +14,8 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Uri RequestBaseAddress { get; set; }
 
-        Task LoadAsync();
-
         Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync();
+
+        Task<SegmentModel> RefreshSegmentAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel);
     }
 }

@@ -2,6 +2,6 @@
 {
     public class RefreshJobProfileSegment : BaseJobProfile
     {
-        public string Segment { get; set; }
+        public JobProfileSegment Segment { get; set; }
     }
 }

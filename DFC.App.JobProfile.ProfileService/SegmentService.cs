@@ -1,15 +1,10 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.Segments.CareerPathModels;
-using DFC.App.JobProfile.Data.Models.Segments.CurrentOpportunitiesModels;
-using DFC.App.JobProfile.Data.Models.Segments.HowToBecomeModels;
-using DFC.App.JobProfile.Data.Models.Segments.JobProfileSkillModels;
-using DFC.App.JobProfile.Data.Models.Segments.JobProfileTasksModels;
-using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels;
-using DFC.App.JobProfile.Data.Models.Segments.RelatedCareersModels;
 using DFC.App.JobProfile.ProfileService.Utilities;
+using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -54,6 +49,42 @@ namespace DFC.App.JobProfile.ProfileService
 
         public Uri RequestBaseAddress { get; set; }
 
+        public async Task<SegmentModel> RefreshSegmentAsync(RefreshJobProfileSegment toRefresh)
+        {
+            if (toRefresh is null)
+            {
+                throw new ArgumentNullException(nameof(toRefresh));
+            }
+
+            switch (toRefresh.Segment)
+            {
+                case JobProfileSegment.Overview:
+                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+
+                case JobProfileSegment.HowToBecome:
+                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+
+                case JobProfileSegment.WhatItTakes:
+                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+
+                case JobProfileSegment.WhatYouWillDo:
+                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+
+                case JobProfileSegment.CareerPathsAndProgression:
+                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+
+                case JobProfileSegment.CurrentOppurtunities:
+                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+
+                case JobProfileSegment.RelatedCareers:
+                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(toRefresh), $"Segment to be refreshed should be one of {Enum.GetNames(typeof(JobProfileSegment))}");
+            }
+        }
+
+        /*
         public async Task LoadAsync()
         {
             logger.LogInformation($"{nameof(LoadAsync)}: Loading segments for {RefreshJobProfileSegmentModel.CanonicalName}");
@@ -167,47 +198,48 @@ namespace DFC.App.JobProfile.ProfileService
             if (refreshCareerPathSegment)
             {
                 JobProfileModel.Data.CareerPath = GetDataResult(careerPathSegmnentDataTask);
-                JobProfileModel.Markup.CareerPath = GetMarkupResult(careerPathSegmnentMarkupTask, careerPathSegmentService.SegmentClientOptions);
+                JobProfileModel.Segments.CareerPath = GetMarkupResult(careerPathSegmnentMarkupTask, careerPathSegmentService.SegmentClientOptions);
             }
 
             if (refreshCurrentOpportunitiesSegment)
             {
                 JobProfileModel.Data.CurrentOpportunities = GetDataResult(currentOpportunitiesSegmnentDataTask);
-                JobProfileModel.Markup.CurrentOpportunities = GetMarkupResult(currentOpportunitiesSegmnentMarkupTask, currentOpportunitiesSegmentService.SegmentClientOptions);
+                JobProfileModel.Segments.CurrentOpportunities = GetMarkupResult(currentOpportunitiesSegmnentMarkupTask, currentOpportunitiesSegmentService.SegmentClientOptions);
             }
 
             if (refreshHowToBecomeSegment)
             {
                 JobProfileModel.Data.HowToBecome = GetDataResult(howToBecomeSegmnentDataTask);
-                JobProfileModel.Markup.HowToBecome = GetMarkupResult(howToBecomeSegmnentMarkupTask, howToBecomeSegmentService.SegmentClientOptions);
+                JobProfileModel.Segments.HowToBecome = GetMarkupResult(howToBecomeSegmnentMarkupTask, howToBecomeSegmentService.SegmentClientOptions);
             }
 
             if (refreshOverviewBannerSegment)
             {
                 JobProfileModel.Data.OverviewBanner = GetDataResult(overviewBannerSegmnentDataTask);
-                JobProfileModel.Markup.OverviewBanner = GetMarkupResult(overviewBannerSegmnentMarkupTask, overviewBannerSegmentService.SegmentClientOptions);
+                JobProfileModel.Segments.OverviewBanner = GetMarkupResult(overviewBannerSegmnentMarkupTask, overviewBannerSegmentService.SegmentClientOptions);
             }
 
             if (refreshRelatedCareersSegment)
             {
                 JobProfileModel.Data.RelatedCareers = GetDataResult(relatedCareersSegmnentDataTask);
-                JobProfileModel.Markup.RelatedCareers = GetMarkupResult(relatedCareersSegmnentMarkupTask, relatedCareersSegmentService.SegmentClientOptions);
+                JobProfileModel.Segments.RelatedCareers = GetMarkupResult(relatedCareersSegmnentMarkupTask, relatedCareersSegmentService.SegmentClientOptions);
             }
 
             if (refreshWhatItTakesSegment)
             {
                 JobProfileModel.Data.WhatItTakes = GetDataResult(whatItTakesSegmnentDataTask);
-                JobProfileModel.Markup.WhatItTakes = GetMarkupResult(whatItTakesSegmnentMarkupTask, whatItTakesSegmentService.SegmentClientOptions);
+                JobProfileModel.Segments.WhatItTakes = GetMarkupResult(whatItTakesSegmnentMarkupTask, whatItTakesSegmentService.SegmentClientOptions);
             }
 
             if (refreshWhatYouWillDoSegment)
             {
                 JobProfileModel.Data.WhatYouWillDo = GetDataResult(whatYouWillDoSegmnentDataTask);
-                JobProfileModel.Markup.WhatYouWillDo = GetMarkupResult(whatYouWillDoSegmnentMarkupTask, whatYouWillDoSegmentService.SegmentClientOptions);
+                JobProfileModel.Segments.WhatYouWillDo = GetMarkupResult(whatYouWillDoSegmnentMarkupTask, whatYouWillDoSegmentService.SegmentClientOptions);
             }
 
             logger.LogInformation($"{nameof(LoadAsync)}: Loaded segments for {RefreshJobProfileSegmentModel.CanonicalName}");
         }
+        */
 
         public async Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync()
         {
@@ -245,21 +277,6 @@ namespace DFC.App.JobProfile.ProfileService
             return default(TModel);
         }
 
-        private string GetMarkupResult(Task<string> task, SegmentClientOptions segmentClientOptions)
-        {
-            if (task != null)
-            {
-                if (task.IsCompletedSuccessfully && task.Result != null)
-                {
-                    var markup = UrlRewriter.Rewrite(task.Result, segmentClientOptions.BaseAddress, RequestBaseAddress);
-
-                    return markup;
-                }
-            }
-
-            return segmentClientOptions.OfflineHtml;
-        }
-
         private IList<HealthCheckItem> GetHealthResults(Task<HealthCheckItems> task)
         {
             if (task != null)
@@ -282,6 +299,39 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return null;
+        }
+
+        private async Task<SegmentModel> GetSegmentDataAsync<T>(IBaseSegmentService<T> segmentService, RefreshJobProfileSegment toRefresh)
+                    where T : ISegmentDataModel
+        {
+            var jsonResultTask = segmentService.GetJsonAsync(toRefresh.JobProfileId);
+            var htmlResultTask = segmentService.GetMarkupAsync(toRefresh.JobProfileId);
+
+            await Task.WhenAll(jsonResultTask, htmlResultTask).ConfigureAwait(false);
+
+            return new SegmentModel
+            {
+                Segment = toRefresh.Segment,
+                RefreshedAt = DateTime.UtcNow,
+                RefreshSequence = toRefresh.SequenceNumber,
+                Markup = GetMarkupResult(htmlResultTask, segmentService.SegmentClientOptions),
+                Json = jsonResultTask.Result,
+            };
+        }
+
+        private HtmlString GetMarkupResult(Task<string> task, SegmentClientOptions segmentClientOptions)
+        {
+            if (task != null)
+            {
+                if (task.IsCompletedSuccessfully && task.Result != null)
+                {
+                    var markup = UrlRewriter.Rewrite(task.Result, segmentClientOptions.BaseAddress, RequestBaseAddress);
+
+                    return new HtmlString(markup);
+                }
+            }
+
+            return new HtmlString(segmentClientOptions.OfflineHtml);
         }
     }
 }

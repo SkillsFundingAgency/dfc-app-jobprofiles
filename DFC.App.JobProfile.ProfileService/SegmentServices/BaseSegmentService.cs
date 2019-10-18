@@ -186,7 +186,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
                 else if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     logger.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
-                    return string.Empty;
+                    return null;
                 }
 
                 return responseString;
@@ -210,7 +210,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
             else if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 logger.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
-                return string.Empty;
+                return null;
             }
 
             return responseString;

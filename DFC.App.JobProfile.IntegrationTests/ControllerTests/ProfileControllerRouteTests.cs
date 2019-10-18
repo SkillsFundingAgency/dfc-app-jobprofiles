@@ -190,7 +190,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 JobProfileId = DataSeeding.DefaultArticleGuid,
                 CanonicalName = DataSeeding.DefaultArticleName,
-                Segment = null,
+                Segment = Data.JobProfileSegment.Overview,
             };
             var client = factory.CreateClient();
 

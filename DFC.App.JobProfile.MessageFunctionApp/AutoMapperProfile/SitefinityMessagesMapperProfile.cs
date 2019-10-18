@@ -16,6 +16,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.AutoMapperProfile
                 .ForMember(d => d.AlternativeNames, o => o.Ignore())
                 .ForMember(d => d.BreadcrumbTitle, o => o.MapFrom(s => s.Title))
                 .ForMember(d => d.MetaTags, o => o.MapFrom(s => s))
+                .ForMember(d => d.LastReviewed, o => o.MapFrom(s => s.LastModified))
                 .ForMember(d => d.SequenceNumber, o => o.Ignore())
                 ;
 

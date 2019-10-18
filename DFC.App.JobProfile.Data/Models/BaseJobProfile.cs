@@ -12,6 +12,12 @@ namespace DFC.App.JobProfile.Data
         [Required]
         public string CanonicalName { get; set; }
 
+        [Required]
+        public int SocLevelTwo { get; set; }
+
         public long SequenceNumber { get; set; }
+
+        [Required]
+        public DateTime? LastReviewed { get; set; }
     }
 }

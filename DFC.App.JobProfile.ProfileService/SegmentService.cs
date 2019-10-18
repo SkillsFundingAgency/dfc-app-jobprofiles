@@ -323,10 +323,14 @@ namespace DFC.App.JobProfile.ProfileService
         {
             if (task != null)
             {
-                if (task.IsCompletedSuccessfully && task.Result != null)
+                if (task.Result is null)
+                {
+                    return null;
+                }
+
+                if (task.IsCompletedSuccessfully)
                 {
                     var markup = UrlRewriter.Rewrite(task.Result, segmentClientOptions.BaseAddress, RequestBaseAddress);
-
                     return new HtmlString(markup);
                 }
             }

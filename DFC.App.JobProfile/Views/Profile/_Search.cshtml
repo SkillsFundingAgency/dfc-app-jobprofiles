@@ -1,12 +1,10 @@
-﻿<aside id="MainContent_T41A29498006_Col00" class="sf_colsIn job-profile-sidebar" data-sf-element="Container" data-placeholder-label="Job Profile Sidebar Container">
+﻿<aside class="job-profile-sidebar">
     <div>
-        <div class="sf-Long-text">
-            <h2 class="heading-medium" id="job-profile-search">Not what you're looking for?</h2>
-        </div>
+        <h2 class="heading-medium" id="job-profile-search">Not what you're looking for?</h2>
     </div>
     <div class="job-profile-search">
         <h3 class="heading-small">Search further careers</h3>
-        <form action="/job-profiles/Search/" class="js-live-search-form site-search  ui-front" id="job-profile-search-box" method="post">
+        <form action="/search-results" class="js-live-search-form site-search ui-front" id="job-profile-search-box" method="get">
             <div class="job-profile-search-content">
                 <label for="search-main"> Enter a job title</label>
                 <div class="search-input-wrapper">
@@ -14,7 +12,6 @@
                 </div>
                 <button class="submit" type="submit" value="Search">Search</button>
             </div>
-            <input id="JobProfileUrl" name="JobProfileUrl" type="hidden" value="acoustics-consultant"><ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" style="display: none;"></ul>
         </form>
     </div>
 </aside>

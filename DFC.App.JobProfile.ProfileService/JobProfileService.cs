@@ -79,8 +79,7 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             jobProfileModel.MetaTags ??= new MetaTags();
-            jobProfileModel.Segments ??= new SegmentsMarkupModel();
-            jobProfileModel.Data ??= new SegmentsDataModel();
+            jobProfileModel.Segments ??= new List<SegmentModel>();
 
             var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
             if (existingRecord != null)
@@ -99,8 +98,7 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             jobProfileModel.MetaTags ??= new MetaTags();
-            jobProfileModel.Segments ??= new SegmentsMarkupModel();
-            jobProfileModel.Data ??= new SegmentsDataModel();
+            jobProfileModel.Segments ??= new List<SegmentModel>();
 
             var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
             if (existingRecord is null)
@@ -127,13 +125,12 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             var segmentData = await segmentService.RefreshSegmentAsync(segmentRefresh).ConfigureAwait(false);
-            if(string.IsNullOrWhiteSpace(segmentData.Markup.Value) && )
-           
-
             if (existingJobProfile.Segments.Any(s => s.Segment == segmentData.Segment))
             {
                 var existingItem = existingJobProfile.Segments.Single(s => s.Segment == segmentData.Segment);
                 var index = existingJobProfile.Segments.IndexOf(existingItem);
+                segmentData.Markup ??= existingItem.Markup;
+                segmentData.Json ??= existingItem.Json;
                 existingJobProfile.Segments[index] = segmentData;
             }
             else
@@ -141,9 +138,7 @@ namespace DFC.App.JobProfile.ProfileService
                 existingJobProfile.Segments.Add(segmentData);
             }
 
-            var result = await repository.UpsertAsync(existingJobProfile).ConfigureAwait(false);
-
-            return result;
+            return await repository.UpsertAsync(existingJobProfile).ConfigureAwait(false);
         }
 
         public async Task<bool> DeleteAsync(Guid documentId)

@@ -163,5 +163,57 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
                 return result;
             }
         }
+
+        public virtual async Task<string> GetJsonAsync(Guid jobProfileId)
+        {
+            var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
+            var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
+
+            logger.LogInformation($"{nameof(LoadDataAsync)}: Loading data segment from {url}");
+
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            {
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    logger.LogError($"Failed to get JSON data for {jobProfileId} from {url}, receveid error : {responseString}");
+                }
+                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    logger.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
+                    return string.Empty;
+                }
+
+                return responseString;
+            }
+        }
+
+        public virtual async Task<string> GetMarkupAsync(Guid jobProfileId)
+        {
+            var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
+            var url = new Uri($"{SegmentClientOptions.BaseAddress}{endpoint}");
+
+            logger.LogInformation($"{nameof(LoadDataAsync)}: Loading data segment from {url}");
+
+            var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+            var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.LogError($"Failed to get JSON data for {jobProfileId} from {url}, receveid error : {responseString}");
+            }
+            else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                logger.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
+                return string.Empty;
+            }
+
+            return responseString;
+        }
     }
 }

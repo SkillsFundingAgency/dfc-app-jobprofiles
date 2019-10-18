@@ -127,6 +127,9 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             var segmentData = await segmentService.RefreshSegmentAsync(segmentRefresh).ConfigureAwait(false);
+            if(string.IsNullOrWhiteSpace(segmentData.Markup.Value) && )
+           
+
             if (existingJobProfile.Segments.Any(s => s.Segment == segmentData.Segment))
             {
                 var existingItem = existingJobProfile.Segments.Single(s => s.Segment == segmentData.Segment);

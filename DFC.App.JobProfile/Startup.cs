@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CorrelationId;
+using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
@@ -37,6 +39,8 @@ namespace DFC.App.JobProfile
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCorrelationId();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -55,6 +59,7 @@ namespace DFC.App.JobProfile
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<IDraftJobProfileService, DraftJobProfileService>();
             services.AddScoped<ISegmentService, SegmentService>();
+            services.AddTransient<CorrelationIdDelegatingHandler>();
 
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());
@@ -104,6 +109,13 @@ namespace DFC.App.JobProfile
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper mapper)
         {
+            app.UseCorrelationId(new CorrelationIdOptions
+            {
+                Header = "DssCorrelationId",
+                UseGuidForCorrelationId = true,
+                UpdateTraceIdentifier = false,
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

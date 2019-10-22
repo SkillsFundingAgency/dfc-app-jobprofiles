@@ -22,13 +22,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             expectedResult.CanonicalName = article;
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
 
             // Act
             var result = await controller.Breadcrumb(article).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<BreadcrumbViewModel>(viewResult.ViewData.Model);
@@ -49,13 +49,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             expectedResult.CanonicalName = article;
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
 
             // Act
             var result = await controller.Breadcrumb(article).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<BreadcrumbViewModel>(jsonResult.Value);
@@ -74,13 +74,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             Data.Models.JobProfileModel expectedResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
 
             // Act
             var result = await controller.Breadcrumb(article).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<BreadcrumbViewModel>(viewResult.ViewData.Model);
@@ -99,13 +99,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             Data.Models.JobProfileModel expectedResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
 
             // Act
             var result = await controller.Breadcrumb(article).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<BreadcrumbViewModel>(jsonResult.Value);
@@ -126,13 +126,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             expectedResult.CanonicalName = article;
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
 
             // Act
             var result = await controller.Breadcrumb(article).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
             var statusResult = Assert.IsType<StatusCodeResult>(result);
 

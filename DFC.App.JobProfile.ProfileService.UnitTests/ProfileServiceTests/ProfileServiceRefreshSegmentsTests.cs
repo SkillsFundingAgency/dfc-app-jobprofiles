@@ -15,7 +15,7 @@
 //    {
 //        private readonly Uri dummyBaseAddressUri = new Uri("https://localhost:12345/");
 //        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
-//        private readonly IDraftJobProfileService draftJobProfileService;
+//
 //        private readonly ISegmentService segmentService;
 //        private readonly IMapper mapper;
 //        private readonly IJobProfileService jobProfileService;
@@ -23,10 +23,10 @@
 //        public ProfileServiceRefreshSegmentsTests()
 //        {
 //            repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-//            draftJobProfileService = A.Fake<IDraftJobProfileService>();
+//
 //            segmentService = A.Fake<ISegmentService>();
 //            mapper = A.Fake<IMapper>();
-//            jobProfileService = new JobProfileService(repository, draftJobProfileService, segmentService, mapper);
+//            jobProfileService = new JobProfileService(repository, segmentService, mapper);
 //        }
 
 //        //[Fact]

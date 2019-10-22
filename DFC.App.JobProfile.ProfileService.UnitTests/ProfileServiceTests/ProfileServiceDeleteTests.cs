@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.DraftProfileService;
 using FakeItEasy;
 using System;
 using System.Net;
@@ -13,7 +12,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     public class ProfileServiceDeleteTests
     {
         private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
-        private readonly IDraftJobProfileService draftJobProfileService;
         private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
         private readonly IJobProfileService jobProfileService;
@@ -21,10 +19,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public ProfileServiceDeleteTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            draftJobProfileService = A.Fake<IDraftJobProfileService>();
+
             segmentService = A.Fake<ISegmentService>();
             mapper = A.Fake<IMapper>();
-            jobProfileService = new JobProfileService(repository, draftJobProfileService, segmentService, mapper);
+            jobProfileService = new JobProfileService(repository, segmentService, mapper);
         }
 
         [Fact]

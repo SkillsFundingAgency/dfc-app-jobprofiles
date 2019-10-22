@@ -13,18 +13,15 @@ namespace DFC.App.JobProfile.ProfileService
     public class JobProfileService : IJobProfileService
     {
         private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
-        private readonly IDraftJobProfileService draftJobProfileService;
         private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
 
         public JobProfileService(
             ICosmosRepository<Data.Models.JobProfileModel> repository,
-            IDraftJobProfileService draftJobProfileService,
             ISegmentService segmentService,
             IMapper mapper)
         {
             this.repository = repository;
-            this.draftJobProfileService = draftJobProfileService;
             this.segmentService = segmentService;
             this.mapper = mapper;
         }
@@ -49,16 +46,14 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.GetAsync(d => d.DocumentId == documentId).ConfigureAwait(false);
         }
 
-        public async Task<Data.Models.JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false)
+        public async Task<Data.Models.JobProfileModel> GetByNameAsync(string canonicalName)
         {
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
-            return isDraft
-                ? await draftJobProfileService.GetSitefinityData(canonicalName.ToLowerInvariant()).ConfigureAwait(false)
-                : await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
         }
 
         public async Task<Data.Models.JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

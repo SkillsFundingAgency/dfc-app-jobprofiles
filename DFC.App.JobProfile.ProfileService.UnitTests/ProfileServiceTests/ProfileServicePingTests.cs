@@ -21,7 +21,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>(), A.Fake<SegmentService>(), mapper);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper);
 
             // act
             var result = jobProfileService.PingAsync().Result;
@@ -40,7 +40,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>(), A.Fake<SegmentService>(), mapper);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper);
 
             // act
             var result = jobProfileService.PingAsync().Result;

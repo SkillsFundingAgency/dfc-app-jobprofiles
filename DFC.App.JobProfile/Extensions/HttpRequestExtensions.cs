@@ -6,16 +6,17 @@ namespace DFC.App.JobProfile.Extensions
 {
     public static class HttpRequestExtensions
     {
-        public static bool IsDraftRequest(this HttpRequest request)
+        public static Uri GetBaseAddress(this HttpRequest request, IUrlHelper urlHelper = null)
         {
-            return request != null && request.Path.Value.StartsWith("/draft", StringComparison.OrdinalIgnoreCase);
-        }
-
-        public static Uri RequestBaseAddress(this HttpRequest request, IUrlHelper urlHelper)
-        {
-            if (request != null && urlHelper != null)
+            if (request != null)
             {
-                return new Uri($"{request.Scheme}://{request.Host}{urlHelper.Content("~")}");
+                if (request.Headers.TryGetValue("x-forwarded-proto", out var forwardedProtocol)
+                    && request.Headers.TryGetValue("x-original-host", out var originalHost))
+                {
+                    return new Uri($"{forwardedProtocol}://{originalHost}");
+                }
+
+                return new Uri($"{request.Scheme}://{request.Host}{urlHelper?.Content("~")}");
             }
 
             return null;

@@ -16,7 +16,7 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class ProfileController : Controller
     {
-        public const string ProfilePathRoot = "job-profile";
+        public const string ProfilePathRoot = "job-profiles";
 
         private readonly ILogger<ProfileController> logger;
         private readonly IJobProfileService jobProfileService;
@@ -62,17 +62,17 @@ namespace DFC.App.JobProfile.Controllers
             //AOP: These should be coded as an Aspect
             logger.LogInformation($"{nameof(Document)} has been called with: {article}");
 
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
-            if (jobProfileModel != null)
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
+            if (jobProfileModel is null)
             {
-                var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
-                viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
-                logger.LogInformation($"{nameof(Document)} has succeeded for: {article}");
-                return this.NegotiateContentResult(viewModel);
+                logger.LogWarning($"{nameof(Document)} has returned not found: {article}");
+                return NotFound();
             }
 
-            logger.LogWarning($"{nameof(Document)} has returned no content for: {article}");
-            return NoContent();
+            var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
+            viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
+            logger.LogInformation($"{nameof(Document)} has succeeded for: {article}");
+            return this.NegotiateContentResult(viewModel);
         }
 
         [HttpPut]
@@ -184,16 +184,14 @@ namespace DFC.App.JobProfile.Controllers
             logger.LogInformation($"{nameof(Head)} has been called");
 
             var viewModel = new HeadViewModel();
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
 
             if (jobProfileModel != null)
             {
                 mapper.Map(jobProfileModel, viewModel);
 
-                viewModel.CanonicalUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
+                viewModel.CanonicalUrl = $"{Request.GetBaseAddress().ToString().TrimEnd('/')}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
-
-            viewModel.CssLink = brandingAssetsModel.AppCssFilePath;
 
             logger.LogInformation($"{nameof(Head)} has returned content for: {article}");
 
@@ -205,7 +203,7 @@ namespace DFC.App.JobProfile.Controllers
         {
             logger.LogInformation($"{nameof(Breadcrumb)} has been called");
 
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             var viewModel = BuildBreadcrumb(jobProfileModel);
 
             logger.LogInformation($"{nameof(Breadcrumb)} has returned content for: {article}");
@@ -220,7 +218,7 @@ namespace DFC.App.JobProfile.Controllers
             logger.LogInformation($"{nameof(Body)} has been called");
 
             var viewModel = new BodyViewModel();
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article, Request.IsDraftRequest()).ConfigureAwait(false);
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
 
             if (jobProfileModel != null)
             {
@@ -233,7 +231,7 @@ namespace DFC.App.JobProfile.Controllers
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
             if (alternateJobProfileModel != null)
             {
-                var alternateUrl = $"{Request.Scheme}://{Request.Host}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                var alternateUrl = $"{Request.GetBaseAddress()}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
                 logger.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
                 return RedirectPermanentPreserveMethod(alternateUrl);

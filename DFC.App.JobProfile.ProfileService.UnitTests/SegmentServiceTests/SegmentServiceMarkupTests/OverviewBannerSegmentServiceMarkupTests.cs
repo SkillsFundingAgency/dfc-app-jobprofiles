@@ -16,6 +16,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
     public class OverviewBannerSegmentServiceMarkupTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
+
         private static readonly OverviewBannerSegmentDataModel ExpectedResult = new OverviewBannerSegmentDataModel
         {
             LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),

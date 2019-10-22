@@ -28,7 +28,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             A.CallTo(() => segmentService.SegmentsHealthCheckAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>(), segmentService, mapper);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper);
 
             // act
             var result = jobProfileService.SegmentsHealthCheckAsync().Result;

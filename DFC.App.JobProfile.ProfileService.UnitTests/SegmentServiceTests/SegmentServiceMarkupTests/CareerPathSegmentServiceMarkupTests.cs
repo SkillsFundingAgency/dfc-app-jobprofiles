@@ -16,6 +16,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests.Segmen
     public class CareerPathSegmentServiceMarkupTests
     {
         private const string ExpectedUpdated = "2019-08-30T08:00:00";
+
         private static readonly CareerPathSegmentDataModel ExpectedResult = new CareerPathSegmentDataModel
         {
             LastReviewed = DateTime.Parse(ExpectedUpdated, CultureInfo.InvariantCulture),

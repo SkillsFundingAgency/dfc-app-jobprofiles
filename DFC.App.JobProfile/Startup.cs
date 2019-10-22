@@ -3,7 +3,6 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.DraftProfileService;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.Models;
@@ -54,7 +53,6 @@ namespace DFC.App.JobProfile
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
 
             services.AddScoped<IJobProfileService, JobProfileService>();
-            services.AddScoped<IDraftJobProfileService, DraftJobProfileService>();
             services.AddScoped<ISegmentService, SegmentService>();
 
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());

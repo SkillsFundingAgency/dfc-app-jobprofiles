@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using FakeItEasy;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             // arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var segmentService = A.Fake<ISegmentService>();
+            var mapper = A.Fake<IMapper>();
             IList<HealthCheckItem> expectedResult = new List<HealthCheckItem>
             {
                 new HealthCheckItem
@@ -26,7 +28,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             A.CallTo(() => segmentService.SegmentsHealthCheckAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>(), segmentService);
+            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>(), segmentService, mapper);
 
             // act
             var result = jobProfileService.SegmentsHealthCheckAsync().Result;

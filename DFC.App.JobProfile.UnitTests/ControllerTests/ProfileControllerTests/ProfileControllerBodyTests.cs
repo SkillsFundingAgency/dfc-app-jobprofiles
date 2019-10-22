@@ -48,8 +48,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var expectedResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
+            //expectedResult.Data = A.Fake<SegmentsDataModel>();
             expectedResult.CanonicalName = article;
-            expectedResult.Data = A.Fake<SegmentsDataModel>();
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored, A<bool>.Ignored)).Returns(expectedResult);
             A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<BodyViewModel>.Ignored)).Returns(A.Fake<BodyViewModel>());

@@ -105,7 +105,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 DocumentId = documentId,
                 CanonicalName = documentId.ToString().ToUpperInvariant(),
-                SocLevelTwo = "33",
+                SocLevelTwo = 33,
                 LastReviewed = DateTime.UtcNow,
             };
             var jobProfileMetaDataPatchModel = new JobProfileMetadata()
@@ -215,14 +215,14 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 DocumentId = documentId,
                 CanonicalName = documentId.ToString().ToUpperInvariant(),
-                SocLevelTwo = "12",
+                SocLevelTwo = 12,
                 LastReviewed = DateTime.UtcNow,
             };
             var refreshJobProfileSegmentModel = new RefreshJobProfileSegment()
             {
                 JobProfileId = jobProfileModel.DocumentId,
                 CanonicalName = jobProfileModel.CanonicalName,
-                Segment = null,
+                Segment = Data.JobProfileSegment.Overview,
             };
             var client = factory.CreateClient();
 
@@ -249,14 +249,14 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 DocumentId = documentId,
                 CanonicalName = documentId.ToString().ToUpperInvariant(),
-                SocLevelTwo = "12",
+                SocLevelTwo = 12,
                 LastReviewed = DateTime.UtcNow,
             };
             var refreshJobProfileSegmentModel = new RefreshJobProfileSegment()
             {
                 JobProfileId = jobProfileModel.DocumentId,
                 CanonicalName = jobProfileModel.CanonicalName,
-                Segment = OverviewBannerSegmentDataModel.SegmentName,
+                Segment = Data.JobProfileSegment.Overview,
             };
             var client = factory.CreateClient();
 
@@ -283,7 +283,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 DocumentId = documentId,
                 CanonicalName = documentId.ToString().ToUpperInvariant(),
-                SocLevelTwo = "12",
+                SocLevelTwo = 12,
                 LastReviewed = DateTime.UtcNow,
             };
             var client = factory.CreateClient();

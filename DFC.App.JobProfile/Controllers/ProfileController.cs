@@ -15,7 +15,7 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class ProfileController : Controller
     {
-        public const string ProfilePathRoot = "job-profile";
+        public const string ProfilePathRoot = "job-profiles";
 
         private readonly ILogger<ProfileController> logger;
         private readonly IJobProfileService jobProfileService;

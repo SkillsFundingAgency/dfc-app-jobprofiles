@@ -19,10 +19,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             FakeLogger = A.Fake<ILogger<ProfileController>>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
             FakeMapper = A.Fake<AutoMapper.IMapper>();
-            BrandingAssetsModel = new BrandingAssetsModel
-            {
-                AppCssFilePath = "no file value",
-            };
         }
 
         public static IEnumerable<object[]> HtmlMediaTypes => new List<object[]>
@@ -47,15 +43,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected AutoMapper.IMapper FakeMapper { get; }
 
-        protected BrandingAssetsModel BrandingAssetsModel { get; }
-
         protected ProfileController BuildProfileController(string mediaTypeName)
         {
             var httpContext = new DefaultHttpContext();
 
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
 
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeMapper, BrandingAssetsModel)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeMapper)
             {
                 ControllerContext = new ControllerContext()
                 {

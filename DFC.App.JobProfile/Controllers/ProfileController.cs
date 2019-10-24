@@ -21,14 +21,12 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ILogger<ProfileController> logger;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
-        private readonly BrandingAssetsModel brandingAssetsModel;
 
-        public ProfileController(ILogger<ProfileController> logger, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, BrandingAssetsModel brandingAssetsModel)
+        public ProfileController(ILogger<ProfileController> logger, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
         {
             this.logger = logger;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
-            this.brandingAssetsModel = brandingAssetsModel;
         }
 
         [HttpGet]

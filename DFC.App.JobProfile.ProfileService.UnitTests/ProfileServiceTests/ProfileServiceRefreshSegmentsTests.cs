@@ -1,131 +1,107 @@
-﻿//using AutoMapper;
-//using DFC.App.JobProfile.Data.Contracts;
-//using DFC.App.JobProfile.Data.Models;
-//using DFC.App.JobProfile.Data.Models.ServiceBusModels;
-//using DFC.App.JobProfile.DraftProfileService;
-//using FakeItEasy;
-//using System;
-//using System.Net;
-//using Xunit;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Models;
+using FakeItEasy;
+using FluentAssertions;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Net;
+using System.Threading.Tasks;
+using Xunit;
 
-//namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
-//{
-//    [Trait("Profile Service", "RefreshSegments Tests")]
-//    public class ProfileServiceRefreshSegmentsTests
-//    {
-//        private readonly Uri dummyBaseAddressUri = new Uri("https://localhost:12345/");
-//        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
-//
-//        private readonly ISegmentService segmentService;
-//        private readonly IMapper mapper;
-//        private readonly IJobProfileService jobProfileService;
+namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
+{
+    [Trait("Profile Service", "RefreshSegments Tests")]
+    public class ProfileServiceRefreshSegmentsTests
+    {
+        private readonly Uri dummyBaseAddressUri = new Uri("https://localhost:12345/");
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
 
-//        public ProfileServiceRefreshSegmentsTests()
-//        {
-//            repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-//
-//            segmentService = A.Fake<ISegmentService>();
-//            mapper = A.Fake<IMapper>();
-//            jobProfileService = new JobProfileService(repository, segmentService, mapper);
-//        }
+        private readonly ISegmentService segmentService;
+        private readonly IMapper mapper;
+        private readonly IJobProfileService jobProfileService;
 
-//        //[Fact]
-//        //public void JobProfileServiceRefreshSegmentsReturnsSuccessWhenProfileReplaced()
-//        //{
-//        //    // arrange
-//        //    var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
-//        //    var jobProfileModel = A.Fake<JobProfileModel>();
-//        //    var expectedResult = A.Fake<JobProfileModel>();
+        public ProfileServiceRefreshSegmentsTests()
+        {
+            repository = A.Fake<ICosmosRepository<JobProfileModel>>();
 
-//        //    A.CallTo(() => repository.UpsertAsync(jobProfileModel)).Returns(HttpStatusCode.OK);
+            segmentService = A.Fake<ISegmentService>();
+            mapper = A.Fake<IMapper>();
+            jobProfileService = new JobProfileService(repository, segmentService, mapper);
+        }
 
-//        //    // act
-//        //    var result = jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, jobProfileModel, dummyBaseAddressUri).Result;
+        [Fact]
+        public async Task JobProfileServiceRefreshSegmentsReturnsSuccessWhenProfileReplacedAsync()
+        {
+            // arrange
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
+            var existingJobProfileModel = A.Fake<JobProfileModel>();
+            existingJobProfileModel.Segments = new List<SegmentModel>
+            {
+                new SegmentModel
+                {
+                     Segment = Data.JobProfileSegment.Overview,
+                },
+            };
 
-//        //    // assert
-//        //    A.CallTo(() => segmentService.LoadAsync()).MustHaveHappenedOnceExactly();
-//        //    A.CallTo(() => repository.UpsertAsync(jobProfileModel)).MustHaveHappenedOnceExactly();
-//        //    A.Equals(result, expectedResult);
-//        //}
+            var jobProfileModel = A.Fake<JobProfileModel>();
+            var existingSegmentModel = A.Dummy<SegmentModel>();
+            var segmentModel = A.Dummy<SegmentModel>();
 
-//        [Fact]
-//        public async System.Threading.Tasks.Task JobProfileServiceRefreshSegmentsReturnsArgumentNullExceptionWhenNullParam1IsUsed()
-//        {
-//            // arrange
-//            var jobProfileModel = A.Fake<JobProfileModel>();
+            var expectedResult = HttpStatusCode.OK;
 
-//            // act
-//            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshSegmentsAsync(null, jobProfileModel, dummyBaseAddressUri).ConfigureAwait(false)).ConfigureAwait(false);
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(existingJobProfileModel);
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).Returns(segmentModel);
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.OK);
 
-//            // assert
-//            Assert.Equal("Value cannot be null.\r\nParameter name: refreshJobProfileSegmentModel", exceptionResult.Message);
-//        }
+            // act
+            var result = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
 
-//        [Fact]
-//        public async System.Threading.Tasks.Task JobProfileServiceRefreshSegmentsReturnsArgumentNullExceptionWhenNullIParam2sUsed()
-//        {
-//            // arrange
-//            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
+            // assert
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
+            result.Should().Be(expectedResult);
+        }
 
-//            // act
-//            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, null, dummyBaseAddressUri).ConfigureAwait(false)).ConfigureAwait(false);
+        [Fact]
+        public async Task JobProfileServiceRefreshSegmentsReturnsArgumentNullExceptionWhenNullParam1IsUsed()
+        {
+            // arrange
+            var jobProfileModel = A.Fake<JobProfileModel>();
 
-//            // assert
-//            Assert.Equal("Value cannot be null.\r\nParameter name: existingJobProfileModel", exceptionResult.Message);
-//        }
+            // act
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshSegmentsAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
 
-//        [Fact]
-//        public async System.Threading.Tasks.Task JobProfileServiceRefreshSegmentsReturnsArgumentNullExceptionWhenNullIParam3sUsed()
-//        {
-//            // arrange
-//            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
-//            var jobProfileModel = A.Fake<JobProfileModel>();
+            // assert
+            exceptionResult.Should().BeOfType(typeof(ArgumentNullException));
+        }
 
-//            // act
-//            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, jobProfileModel, null).ConfigureAwait(false)).ConfigureAwait(false);
+        [Fact]
+        public async Task JobProfileServiceRefreshSegmentsReturnsBadRequestWhenProfileNotReplacedAsync()
+        {
+            // arrange
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
+            var existingJobProfileModel = A.Fake<JobProfileModel>();
+            existingJobProfileModel.Segments = A.Fake<IList<SegmentModel>>();
+            var jobProfileModel = A.Fake<JobProfileModel>();
+            var segmentModel = A.Dummy<SegmentModel>();
 
-//            // assert
-//            Assert.Equal("Value cannot be null.\r\nParameter name: requestBaseAddress", exceptionResult.Message);
-//        }
+            var expectedResult = HttpStatusCode.BadRequest;
 
-//        [Fact]
-//        public void JobProfileServiceRefreshSegmentsReturnsNullWhenProfileNotReplaced()
-//        {
-//            // arrange
-//            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
-//            var jobProfileModel = A.Fake<JobProfileModel>();
-//            var expectedResult = A.Dummy<JobProfileModel>();
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(existingJobProfileModel);
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).Returns(segmentModel);
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.BadRequest);
 
-//            A.CallTo(() => segmentService.LoadAsync());
-//            A.CallTo(() => repository.UpsertAsync(jobProfileModel)).Returns(HttpStatusCode.BadRequest);
+            // act
+            var result = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
 
-//            // act
-//            var result = jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, jobProfileModel, dummyBaseAddressUri).Result;
-
-//            // assert
-//            A.CallTo(() => segmentService.LoadAsync()).MustHaveHappenedOnceExactly();
-//            A.CallTo(() => repository.UpsertAsync(jobProfileModel)).MustHaveHappenedOnceExactly();
-//            A.Equals(result, expectedResult);
-//        }
-
-//        [Fact]
-//        public void JobProfileServiceRefreshSegmentsReturnsNullWhenMissingRepository()
-//        {
-//            // arrange
-//            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
-//            var jobProfileModel = A.Fake<JobProfileModel>();
-//            Data.Models.JobProfileModel expectedResult = null;
-
-//            A.CallTo(() => segmentService.LoadAsync());
-//            A.CallTo(() => repository.UpsertAsync(jobProfileModel)).Returns(HttpStatusCode.FailedDependency);
-
-//            // act
-//            var result = jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel, jobProfileModel, dummyBaseAddressUri).Result;
-
-//            // assert
-//            A.CallTo(() => segmentService.LoadAsync()).MustHaveHappenedOnceExactly();
-//            A.CallTo(() => repository.UpsertAsync(jobProfileModel)).MustHaveHappenedOnceExactly();
-//            A.Equals(result, expectedResult);
-//        }
-//    }
-//}
+            // assert
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
+            result.Should().Be(expectedResult);
+        }
+    }
+}

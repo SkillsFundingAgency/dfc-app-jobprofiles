@@ -18,20 +18,25 @@ namespace DFC.App.JobProfile.Repository.CosmosDb
     {
         private readonly CosmosDbConnection cosmosDbConnection;
         private readonly IDocumentClient documentClient;
+        private readonly IHostingEnvironment env;
 
         public CosmosRepository(CosmosDbConnection cosmosDbConnection, IDocumentClient documentClient, IHostingEnvironment env)
         {
             this.cosmosDbConnection = cosmosDbConnection;
             this.documentClient = documentClient;
-
-            if (env.IsDevelopment())
-            {
-                CreateDatabaseIfNotExistsAsync().GetAwaiter().GetResult();
-                CreateCollectionIfNotExistsAsync().GetAwaiter().GetResult();
-            }
+            this.env = env;
         }
 
         private Uri DocumentCollectionUri => UriFactory.CreateDocumentCollectionUri(cosmosDbConnection.DatabaseId, cosmosDbConnection.CollectionId);
+
+        public async Task InitialiseDevEnvironment()
+        {
+            if (env.IsDevelopment())
+            {
+                await CreateDatabaseIfNotExistsAsync().ConfigureAwait(false);
+                await CreateCollectionIfNotExistsAsync().ConfigureAwait(false);
+            }
+        }
 
         public async Task<bool> PingAsync()
         {
@@ -68,6 +73,8 @@ namespace DFC.App.JobProfile.Repository.CosmosDb
 
         public async Task<HttpStatusCode> UpsertAsync(T model)
         {
+            await InitialiseDevEnvironment().ConfigureAwait(false);
+
             var ac = new AccessCondition { Condition = model.Etag, Type = AccessConditionType.IfMatch };
             var pk = new PartitionKey(model.PartitionKey);
 

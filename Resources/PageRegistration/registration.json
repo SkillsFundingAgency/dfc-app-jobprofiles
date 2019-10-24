@@ -14,11 +14,6 @@
 				"RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/profile/{0}/htmlhead"
 			},
 			{
-				"PageRegion": 2,
-				"RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/profile/{0}/breadcrumb",
-				"OfflineHtml": "<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>"
-			},
-			{
 				"PageRegion": 4,
 				"RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/profile/{0}/contents",
 				"OfflineHtml": "<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>",

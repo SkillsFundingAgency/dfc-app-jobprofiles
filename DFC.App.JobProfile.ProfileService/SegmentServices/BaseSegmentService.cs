@@ -29,73 +29,6 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
         public SegmentClientOptions SegmentClientOptions { get; set; }
 
-        public virtual async Task<TModel> LoadDataAsync()
-        {
-            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", DocumentId.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
-            var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
-
-            logger.LogInformation($"{nameof(LoadDataAsync)}: Loading data segment from {url}");
-
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-            request.Headers.Accept.Clear();
-            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-
-            try
-            {
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var result = JsonConvert.DeserializeObject<TModel>(responseString);
-
-                    logger.LogInformation($"{nameof(LoadDataAsync)}: Loaded data segment from {url}");
-
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"{nameof(LoadDataAsync)}: {ex.Message}");
-            }
-
-            return default(TModel);
-        }
-
-        public virtual async Task<string> LoadMarkupAsync()
-        {
-            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", DocumentId.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
-            var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
-
-            logger.LogInformation($"{nameof(LoadDataAsync)}: Loading markup segment from {url}");
-
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-            request.Headers.Accept.Clear();
-            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
-
-            try
-            {
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                    logger.LogInformation($"{nameof(LoadDataAsync)}: Loaded markup segment from {url}");
-
-                    return responseString;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"{nameof(LoadMarkupAsync)}: {ex.Message}");
-            }
-
-            return null;
-        }
-
         public virtual async Task<HealthCheckItems> HealthCheckAsync()
         {
             var url = $"{SegmentClientOptions.BaseAddress}health";
@@ -169,7 +102,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
             var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
             var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
 
-            logger.LogInformation($"{nameof(LoadDataAsync)}: Loading data segment from {url}");
+            logger.LogInformation($"{nameof(GetJsonAsync)}: Loading data segment from {url}");
 
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
@@ -198,7 +131,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
             var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
             var url = new Uri($"{SegmentClientOptions.BaseAddress}{endpoint}");
 
-            logger.LogInformation($"{nameof(LoadDataAsync)}: Loading data segment from {url}");
+            logger.LogInformation($"{nameof(GetMarkupAsync)}: Loading data segment from {url}");
 
             var response = await httpClient.GetAsync(url).ConfigureAwait(false);
             var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

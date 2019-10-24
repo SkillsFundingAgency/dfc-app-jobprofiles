@@ -12,9 +12,6 @@ namespace DFC.App.JobProfile.Data.Contracts.SegmentServices
 
         SegmentClientOptions SegmentClientOptions { get; set; }
 
-        Task<TModel> LoadDataAsync();
-
-        Task<string> LoadMarkupAsync();
 
         Task<HealthCheckItems> HealthCheckAsync();
 

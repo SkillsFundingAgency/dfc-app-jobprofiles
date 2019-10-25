@@ -69,6 +69,7 @@
         }
     },
     "variables": {
+        "productionEnvironment": "[or(equals(parameters('environment'), 'PP'), equals(parameters('Environment'), 'PRD'))]",
         "appServicePlanName": "[if(greater(length(parameters('sharedAppServicePlanName')), 0), parameters('sharedAppServicePlanName'), concat(variables('resourcePrefix'), '-asp'))]",
         "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
@@ -541,6 +542,37 @@
                     },
                     "serviceBusTopicName": {
                         "value": "[variables('refreshTopicName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat('monitor-',variables('refreshTopicName'))]",
+            "type": "Microsoft.Resources/deployments",
+            "condition" : "[not(variables('productionEnvironment'))]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'ServiceBus/servicebus-topic-authrule.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "authorizationRuleName": {
+                        "value": "[concat('monitor-',variables('refreshTopicName'))]"
+                    },
+                    "topicName": {
+                        "value": "[variables('refreshTopicName')]"
+                    },
+                    "rights": {
+                        "value": [
+                            "manage",
+                            "send",
+                            "listen"
+                        ]
+                    },
+                    "servicebusName": {
+                        "value": "[variables('appSharedServiceBusName')]"
                     }
                 }
             }

@@ -554,7 +554,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'ServiceBus/servicebus-topic-authrule.json')]",
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-authrule.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

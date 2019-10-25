@@ -12,7 +12,6 @@ namespace DFC.App.JobProfile.Data.Contracts.SegmentServices
 
         SegmentClientOptions SegmentClientOptions { get; set; }
 
-
         Task<HealthCheckItems> HealthCheckAsync();
 
         Task<string> GetJsonAsync(Guid jobProfileId);

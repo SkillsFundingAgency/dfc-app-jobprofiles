@@ -77,9 +77,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var statusResult = Assert.IsType<NoContentResult>(result);
+            var statusResult = Assert.IsType<NotFoundResult>(result);
 
-            A.Equals((int)HttpStatusCode.NoContent, statusResult.StatusCode);
+            A.Equals((int)HttpStatusCode.NotFound, statusResult.StatusCode);
 
             controller.Dispose();
         }
@@ -101,9 +101,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var statusResult = Assert.IsType<NoContentResult>(result);
+            var statusResult = Assert.IsType<NotFoundResult>(result);
 
-            A.Equals((int)HttpStatusCode.NoContent, statusResult.StatusCode);
+            A.Equals((int)HttpStatusCode.NotFound, statusResult.StatusCode);
 
             controller.Dispose();
         }

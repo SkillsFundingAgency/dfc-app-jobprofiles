@@ -33,7 +33,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
         {
             var url = $"{SegmentClientOptions.BaseAddress}health";
 
-            logger.LogInformation($"{nameof(LoadDataAsync)}: Checking health for {url}");
+            logger.LogInformation($"{nameof(HealthCheckAsync)}: Checking health for {url}");
 
             try
             {
@@ -52,7 +52,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
                     result.Source = SegmentClientOptions.BaseAddress;
 
-                    logger.LogInformation($"{nameof(LoadDataAsync)}: Checked health for {url}");
+                    logger.LogInformation($"{nameof(HealthCheckAsync)}: Checked health for {url}");
 
                     return result;
                 }

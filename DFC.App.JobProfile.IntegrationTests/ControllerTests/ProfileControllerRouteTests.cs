@@ -79,7 +79,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
         [Theory]
         [MemberData(nameof(MissingprofileContentRouteData))]
-        public async Task GetProfileHtmlContentEndpointsReturnNoContent(string url)
+        public async Task GetProfileHtmlContentEndpointsReturnNotFound(string url)
         {
             // Arrange
             var uri = new Uri(url, UriKind.Relative);
@@ -90,7 +90,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var response = await client.GetAsync(uri).ConfigureAwait(false);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task PatchProfileEndpointsForNewArticleMetaDataPatchReturnNoContent()
+        public async Task PatchProfileEndpointsForNewArticleMetaDataPatchReturnNotFound()
         {
             // Arrange
             var documentId = Guid.NewGuid();
@@ -153,6 +153,8 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var jobProfileMetaDataPatchModel = new JobProfileMetadata()
             {
                 CanonicalName = canonicalName,
+                SocLevelTwo = 21,
+                LastReviewed = DateTime.Now,
                 BreadcrumbTitle = "This is my breadcrumb title",
                 IncludeInSitemap = true,
                 AlternativeNames = new string[] { "jp1", "jp2" },
@@ -177,8 +179,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var response = await client.SendAsync(request).ConfigureAwait(false);
 
             // Assert
-            response.EnsureSuccessStatusCode();
-            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]

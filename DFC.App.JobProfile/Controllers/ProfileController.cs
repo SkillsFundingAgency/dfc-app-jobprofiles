@@ -188,7 +188,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
 
-                viewModel.CanonicalUrl = $"{Request.GetBaseAddress().ToString().TrimEnd('/')}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
+                viewModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
 
             logger.LogInformation($"{nameof(Head)} has returned content for: {article}");

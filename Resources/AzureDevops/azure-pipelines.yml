@@ -48,15 +48,6 @@ jobs:
       BuildConfiguration: $(BuildConfiguration)
       DotNetCoreVersion: 2.2.402
 
-  # Test DFC.App.JobProfile.DraftProfileService (an artifact will be built but isn't consumed in the release) 
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).DraftProfileService
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration)
-      DotNetCoreVersion: 2.2.402
-      TestSuffix: UnitTests
-
   # Test DFC.App.JobProfile.ProfileService (an artifact will be built but isn't consumed in the release) 
   - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
     parameters:

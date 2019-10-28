@@ -74,8 +74,8 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(jobProfileModel));
             }
 
-            jobProfileModel.MetaTags ??= new MetaTags();
-            jobProfileModel.Segments ??= new List<SegmentModel>();
+            jobProfileModel.MetaTags = jobProfileModel.MetaTags is null ? new MetaTags() : jobProfileModel.MetaTags;
+            jobProfileModel.Segments = jobProfileModel.Segments is null ? new List<SegmentModel>() : jobProfileModel.Segments;
 
             var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
             if (existingRecord != null)
@@ -93,8 +93,8 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(jobProfileModel));
             }
 
-            jobProfileModel.MetaTags ??= new MetaTags();
-            jobProfileModel.Segments ??= new List<SegmentModel>();
+            jobProfileModel.MetaTags = jobProfileModel.MetaTags is null ? new MetaTags() : jobProfileModel.MetaTags;
+            jobProfileModel.Segments = jobProfileModel.Segments is null ? new List<SegmentModel>() : jobProfileModel.Segments;
 
             var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
             if (existingRecord is null)

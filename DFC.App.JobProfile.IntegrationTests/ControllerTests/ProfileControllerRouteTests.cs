@@ -1,6 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.PatchModels;
-using DFC.App.JobProfile.Data.Models.Segments.OverviewBannerModels;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             new object[] { "/profile" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/htmlhead" },
-            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/breadcrumb" },
+            //new object[] { $"/profile/{DataSeeding.DefaultArticleName}/breadcrumb" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/contents" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleGuid}/profile" },
         };
@@ -111,6 +110,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var jobProfileMetaDataPatchModel = new JobProfileMetadata()
             {
                 CanonicalName = canonicalName,
+                LastReviewed = DateTime.UtcNow,
                 BreadcrumbTitle = "This is my breadcrumb title",
                 IncludeInSitemap = true,
                 AlternativeNames = new string[] { "jp1", "jp2" },
@@ -129,17 +129,17 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             using (var request = new HttpRequestMessage(HttpMethod.Patch, patchUrl))
             {
+                jobProfileMetaDataPatchModel.SequenceNumber++;
                 request.Headers.Accept.Clear();
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
                 request.Content = new ObjectContent(typeof(JobProfileMetadata), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
-
 
                 // Act
                 var response = await client.SendAsync(request).ConfigureAwait(false);
 
                 // Assert
                 response.EnsureSuccessStatusCode();
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                response.StatusCode.Should().Be(HttpStatusCode.AlreadyReported);
             }
         }
 
@@ -182,63 +182,9 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
-        [Fact]
-        public async Task PostProfileEndpointsForDefaultArticleRefreshAllReturnOk()
-        {
-            // Arrange
-            const string url = "/refresh";
-            var refreshJobProfileSegmentModel = new RefreshJobProfileSegment()
-            {
-                JobProfileId = DataSeeding.DefaultArticleGuid,
-                CanonicalName = DataSeeding.DefaultArticleName,
-                Segment = Data.JobProfileSegment.Overview,
-            };
-            var client = factory.CreateClient();
-
-            client.DefaultRequestHeaders.Accept.Clear();
-
-            // Act
-            var response = await client.PostAsync(url, refreshJobProfileSegmentModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        [Fact]
-        public async Task PostProfileEndpointsForNewArticleRefreshAllReturnOk()
-        {
-            // Arrange
-            const string postUrl = "/profile";
-            const string postRefreshUrl = "/refresh";
-            var documentId = Guid.NewGuid();
-            var jobProfileModel = new Data.Models.JobProfileModel()
-            {
-                DocumentId = documentId,
-                CanonicalName = documentId.ToString().ToUpperInvariant(),
-                SocLevelTwo = 12,
-                LastReviewed = DateTime.UtcNow,
-            };
-            var refreshJobProfileSegmentModel = new RefreshJobProfileSegment()
-            {
-                JobProfileId = jobProfileModel.DocumentId,
-                CanonicalName = jobProfileModel.CanonicalName,
-                Segment = Data.JobProfileSegment.Overview,
-            };
-            var client = factory.CreateClient();
-
-            client.DefaultRequestHeaders.Accept.Clear();
-
-            _ = await client.PostAsync(postUrl, jobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
-
-            // Act
-            var response = await client.PostAsync(postRefreshUrl, refreshJobProfileSegmentModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
+        /* ***********
+         * Integration test with segment apps yet to be finalised on approach
+         * ************
         [Fact]
         public async Task PutProfileEndpointsForNewArticleRefreshOverviewBannerReturnOk()
         {
@@ -258,6 +204,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                 JobProfileId = jobProfileModel.DocumentId,
                 CanonicalName = jobProfileModel.CanonicalName,
                 Segment = Data.JobProfileSegment.Overview,
+                LastReviewed = DateTime.UtcNow,
             };
             var client = factory.CreateClient();
 
@@ -272,6 +219,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             response.EnsureSuccessStatusCode();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
+        */
 
         [Fact]
         public async Task DeleteProfileEndpointsReturnSuccessWhenFound()

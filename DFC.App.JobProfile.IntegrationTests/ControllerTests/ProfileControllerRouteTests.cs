@@ -153,7 +153,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var jobProfileMetaDataPatchModel = new JobProfileMetadata()
             {
                 CanonicalName = canonicalName,
-                SocLevelTwo = 21,
                 LastReviewed = DateTime.Now,
                 BreadcrumbTitle = "This is my breadcrumb title",
                 IncludeInSitemap = true,

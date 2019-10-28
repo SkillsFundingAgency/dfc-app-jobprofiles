@@ -126,8 +126,16 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var existingItem = existingJobProfile.Segments.Single(s => s.Segment == segmentData.Segment);
                 var index = existingJobProfile.Segments.IndexOf(existingItem);
-                segmentData.Markup ??= existingItem.Markup ?? offlineSegmentData.OfflineMarkup;
-                segmentData.Json ??= existingItem.Json ?? offlineSegmentData.OfflineJson;
+                if (segmentData.Markup is null)
+                {
+                    segmentData.Markup = existingItem.Markup ?? offlineSegmentData.OfflineMarkup;
+                }
+
+                if (segmentData.Json is null)
+                {
+                    segmentData.Json = existingItem.Json ?? offlineSegmentData.OfflineJson;
+                }
+
                 existingJobProfile.Segments[index] = segmentData;
             }
             else

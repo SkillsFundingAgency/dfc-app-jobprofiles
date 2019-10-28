@@ -20,7 +20,13 @@ namespace DFC.App.JobProfile.Data.Models
         [JsonProperty(PropertyName = "_etag")]
         public string Etag { get; set; }
 
+        [Required]
+        public int SocLevelTwo { get; set; }
+
         public string PartitionKey => SocLevelTwo.ToString();
+
+        public DateTime? LastReviewed { get; set; }
+
 
         public string BreadcrumbTitle { get; set; }
 

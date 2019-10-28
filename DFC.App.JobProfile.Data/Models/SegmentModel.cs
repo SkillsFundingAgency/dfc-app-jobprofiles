@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using DFC.App.JobProfile.Data.Enums;
+using Microsoft.AspNetCore.Html;
 using System;
 
 namespace DFC.App.JobProfile.Data.Models
@@ -14,5 +15,7 @@ namespace DFC.App.JobProfile.Data.Models
         public DateTime RefreshedAt { get; set; }
 
         public long RefreshSequence { get; set; }
+
+        public RefreshStatus RefreshStatus { get; set; }
     }
 }

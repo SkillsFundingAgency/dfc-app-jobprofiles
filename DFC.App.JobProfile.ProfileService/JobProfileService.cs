@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segments;
+using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,13 +120,14 @@ namespace DFC.App.JobProfile.ProfileService
                 return HttpStatusCode.NotFound;
             }
 
+            var offlineSegmentData = segmentService.GetOfflineSegment(segmentRefresh.Segment);
             var segmentData = await segmentService.RefreshSegmentAsync(segmentRefresh).ConfigureAwait(false);
             if (existingJobProfile.Segments.Any(s => s.Segment == segmentData.Segment))
             {
                 var existingItem = existingJobProfile.Segments.Single(s => s.Segment == segmentData.Segment);
                 var index = existingJobProfile.Segments.IndexOf(existingItem);
-                segmentData.Markup ??= existingItem.Markup;
-                segmentData.Json ??= existingItem.Json;
+                segmentData.Markup ??= existingItem.Markup ?? offlineSegmentData.OfflineMarkup;
+                segmentData.Json ??= existingItem.Json ?? offlineSegmentData.OfflineJson;
                 existingJobProfile.Segments[index] = segmentData;
             }
             else

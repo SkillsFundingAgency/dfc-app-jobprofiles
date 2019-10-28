@@ -11,5 +11,7 @@ namespace DFC.App.JobProfile.Data.Contracts
         Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync();
 
         Task<SegmentModel> RefreshSegmentAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel);
+
+        OfflineSegmentModel GetOfflineSegment(JobProfileSegment segment);
     }
 }

@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -101,6 +102,146 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).MustHaveHappenedOnceExactly();
             A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
+            result.Should().Be(expectedResult);
+        }
+
+        [Fact]
+        public async Task JobProfileServiceRefreshSegmentReturnsOfflineMarkupWhenFailedAndExistingSegmentNull()
+        {
+            // arrange
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
+            var existingJobProfileModel = A.Fake<JobProfileModel>();
+            existingJobProfileModel.Segments = new List<SegmentModel>
+            {
+                new SegmentModel
+                {
+                     Segment = Data.JobProfileSegment.Overview,
+                },
+            };
+
+            var jobProfileModel = A.Fake<JobProfileModel>();
+            var existingSegmentModel = A.Dummy<SegmentModel>();
+            var segmentModel = A.Dummy<SegmentModel>();
+            var offlineModel = new OfflineSegmentModel
+            {
+                OfflineMarkup = new HtmlString("This is offline markup"),
+                OfflineJson = "This is offline json",
+            };
+
+            var expectedResult = HttpStatusCode.OK;
+
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(existingJobProfileModel);
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).Returns(segmentModel);
+            A.CallTo(() => segmentService.GetOfflineSegment(refreshJobProfileSegmentModel.Segment)).Returns(offlineModel);
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.OK);
+
+            // act
+            var result = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
+
+            // assert
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.That.Matches(m =>
+                m.Segments[0].Markup.Value == offlineModel.OfflineMarkup.Value
+                && m.Segments[0].Json == offlineModel.OfflineJson))).MustHaveHappenedOnceExactly();
+
+            result.Should().Be(expectedResult);
+        }
+
+        [Fact]
+        public async Task JobProfileServiceRefreshSegmentReturnsExistingMarkupWhenFailed()
+        {
+            // arrange
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
+            var existingJobProfileModel = A.Fake<JobProfileModel>();
+            var existingModel = new SegmentModel
+            {
+                Segment = Data.JobProfileSegment.Overview,
+                Markup = new HtmlString("This is existing markup"),
+                Json = "This is existing json",
+            };
+
+            existingJobProfileModel.Segments = new List<SegmentModel>
+            {
+                existingModel,
+            };
+
+            var jobProfileModel = A.Fake<JobProfileModel>();
+            var existingSegmentModel = A.Dummy<SegmentModel>();
+            var segmentModel = A.Dummy<SegmentModel>();
+            var offlineModel = new OfflineSegmentModel
+            {
+                OfflineMarkup = new HtmlString("This is offline markup"),
+                OfflineJson = "This is offline json",
+            };
+
+            var expectedResult = HttpStatusCode.OK;
+
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(existingJobProfileModel);
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).Returns(segmentModel);
+            A.CallTo(() => segmentService.GetOfflineSegment(refreshJobProfileSegmentModel.Segment)).Returns(offlineModel);
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.OK);
+
+            // act
+            var result = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
+
+            // assert
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.That.Matches(m =>
+                m.Segments[0].Markup.Value == existingModel.Markup.Value
+                && m.Segments[0].Json == existingModel.Json))).MustHaveHappenedOnceExactly();
+
+            result.Should().Be(expectedResult);
+        }
+
+        [Fact]
+        public async Task JobProfileServiceRefreshSegmentReturnsNewMarkupWhenSuccess()
+        {
+            // arrange
+            var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
+            var existingJobProfileModel = A.Fake<JobProfileModel>();
+            var existingModel = new SegmentModel
+            {
+                Segment = Data.JobProfileSegment.Overview,
+                Markup = new HtmlString("This is existing markup"),
+                Json = "This is existing json",
+            };
+
+            existingJobProfileModel.Segments = new List<SegmentModel>
+            {
+                existingModel,
+            };
+
+            var jobProfileModel = A.Fake<JobProfileModel>();
+            var existingSegmentModel = A.Dummy<SegmentModel>();
+            var segmentModel = A.Dummy<SegmentModel>();
+            segmentModel.Json = "This is new Json";
+            segmentModel.Markup = new HtmlString("This is new markup");
+
+            var offlineModel = new OfflineSegmentModel
+            {
+                OfflineMarkup = new HtmlString("This is offline markup"),
+                OfflineJson = "This is offline json",
+            };
+
+            var expectedResult = HttpStatusCode.OK;
+
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(existingJobProfileModel);
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).Returns(segmentModel);
+            A.CallTo(() => segmentService.GetOfflineSegment(refreshJobProfileSegmentModel.Segment)).Returns(offlineModel);
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.Ignored)).Returns(HttpStatusCode.OK);
+
+            // act
+            var result = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
+
+            // assert
+            A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.UpsertAsync(A<JobProfileModel>.That.Matches(m =>
+                m.Segments[0].Markup.Value == segmentModel.Markup.Value
+                && m.Segments[0].Json == segmentModel.Json))).MustHaveHappenedOnceExactly();
+
             result.Should().Be(expectedResult);
         }
     }

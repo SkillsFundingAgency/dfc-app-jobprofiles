@@ -100,6 +100,57 @@ namespace DFC.App.JobProfile.ProfileService
             return result;
         }
 
+        public OfflineSegmentModel GetOfflineSegment(JobProfileSegment segment)
+        {
+            switch (segment)
+            {
+                case JobProfileSegment.Overview:
+                    return new OfflineSegmentModel
+                    {
+                        OfflineMarkup = new HtmlString(overviewBannerSegmentService.SegmentClientOptions.OfflineHtml),
+                    };
+
+                case JobProfileSegment.HowToBecome:
+                    return new OfflineSegmentModel
+                    {
+                        OfflineMarkup = new HtmlString(howToBecomeSegmentService.SegmentClientOptions.OfflineHtml),
+                    };
+
+                case JobProfileSegment.WhatItTakes:
+                    return new OfflineSegmentModel
+                    {
+                        OfflineMarkup = new HtmlString(whatItTakesSegmentService.SegmentClientOptions.OfflineHtml),
+                    };
+
+                case JobProfileSegment.WhatYouWillDo:
+                    return new OfflineSegmentModel
+                    {
+                        OfflineMarkup = new HtmlString(whatYouWillDoSegmentService.SegmentClientOptions.OfflineHtml),
+                    };
+
+                case JobProfileSegment.CareerPathsAndProgression:
+                    return new OfflineSegmentModel
+                    {
+                        OfflineMarkup = new HtmlString(careerPathSegmentService.SegmentClientOptions.OfflineHtml),
+                    };
+
+                case JobProfileSegment.CurrentOppurtunities:
+                    return new OfflineSegmentModel
+                    {
+                        OfflineMarkup = new HtmlString(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml),
+                    };
+
+                case JobProfileSegment.RelatedCareers:
+                    return new OfflineSegmentModel
+                    {
+                        OfflineMarkup = new HtmlString(relatedCareersSegmentService.SegmentClientOptions.OfflineHtml),
+                    };
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(segment), $"Segment should be one of {Enum.GetNames(typeof(JobProfileSegment))}");
+            }
+        }
+
         private TModel GetDataResult<TModel>(Task<TModel> task)
             where TModel : ISegmentDataModel
         {
@@ -152,27 +203,22 @@ namespace DFC.App.JobProfile.ProfileService
                 RefreshedAt = DateTime.UtcNow,
                 RefreshSequence = toRefresh.SequenceNumber,
                 Markup = GetMarkupResult(htmlResultTask, segmentService.SegmentClientOptions),
-                Json = jsonResultTask.Result,
+                Json = jsonResultTask?.IsCompletedSuccessfully == true ? jsonResultTask.Result : null,
+                RefreshStatus = jsonResultTask?.IsCompletedSuccessfully == true && htmlResultTask?.IsCompletedSuccessfully == true
+                    ? Data.Enums.RefreshStatus.Success
+                    : Data.Enums.RefreshStatus.Failed,
             };
         }
 
         private HtmlString GetMarkupResult(Task<string> task, SegmentClientOptions segmentClientOptions)
         {
-            if (task != null)
+            if (task is null || task.Result is null || !task.IsCompletedSuccessfully)
             {
-                if (task.Result is null)
-                {
-                    return null;
-                }
-
-                if (task.IsCompletedSuccessfully)
-                {
-                    var markup = UrlRewriter.Rewrite(task.Result, segmentClientOptions.BaseAddress, new Uri("/"));
-                    return new HtmlString(markup);
-                }
+                return null;
             }
 
-            return new HtmlString(segmentClientOptions.OfflineHtml);
+            var markup = UrlRewriter.Rewrite(task.Result, segmentClientOptions.BaseAddress, new Uri("/"));
+            return new HtmlString(markup);
         }
     }
 }

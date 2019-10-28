@@ -135,7 +135,8 @@ namespace DFC.App.JobProfile.ProfileService
                 existingJobProfile.Segments.Add(segmentData);
             }
 
-            return await repository.UpsertAsync(existingJobProfile).ConfigureAwait(false);
+            var result = await repository.UpsertAsync(existingJobProfile).ConfigureAwait(false);
+            return segmentData.RefreshStatus == Data.Enums.RefreshStatus.Success ? result : HttpStatusCode.FailedDependency;
         }
 
         public async Task<bool> DeleteAsync(Guid documentId)

@@ -122,13 +122,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var jobProfileModel = A.Fake<JobProfileModel>();
             var existingSegmentModel = A.Dummy<SegmentModel>();
             var segmentModel = A.Dummy<SegmentModel>();
+            segmentModel.RefreshStatus = Data.Enums.RefreshStatus.Failed;
             var offlineModel = new OfflineSegmentModel
             {
                 OfflineMarkup = new HtmlString("This is offline markup"),
                 OfflineJson = "This is offline json",
             };
 
-            var expectedResult = HttpStatusCode.OK;
+            var expectedResult = HttpStatusCode.FailedDependency;
 
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(existingJobProfileModel);
             A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).Returns(segmentModel);
@@ -169,13 +170,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var jobProfileModel = A.Fake<JobProfileModel>();
             var existingSegmentModel = A.Dummy<SegmentModel>();
             var segmentModel = A.Dummy<SegmentModel>();
+            segmentModel.RefreshStatus = Data.Enums.RefreshStatus.Failed;
             var offlineModel = new OfflineSegmentModel
             {
                 OfflineMarkup = new HtmlString("This is offline markup"),
                 OfflineJson = "This is offline json",
             };
 
-            var expectedResult = HttpStatusCode.OK;
+            var expectedResult = HttpStatusCode.FailedDependency;
 
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(existingJobProfileModel);
             A.CallTo(() => segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel)).Returns(segmentModel);

@@ -1,6 +1,6 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.DraftProfileService;
 using FakeItEasy;
 using System;
 using System.Linq.Expressions;
@@ -11,17 +11,19 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "GetByName Tests")]
     public class ProfileServiceGetByAlternativeNameTests
     {
-        private readonly ICosmosRepository<JobProfileModel> repository;
-        private readonly IDraftJobProfileService draftJobProfileService;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
+
         private readonly ISegmentService segmentService;
+        private readonly IMapper mapper;
         private readonly IJobProfileService jobProfileService;
 
         public ProfileServiceGetByAlternativeNameTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            draftJobProfileService = A.Fake<IDraftJobProfileService>();
+
             segmentService = A.Fake<ISegmentService>();
-            jobProfileService = new JobProfileService(repository, draftJobProfileService, segmentService);
+            mapper = A.Fake<IMapper>();
+            jobProfileService = new JobProfileService(repository, segmentService, mapper);
         }
 
         [Fact]
@@ -58,7 +60,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             const string alternativeName = "name1";
-            JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
 
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
 

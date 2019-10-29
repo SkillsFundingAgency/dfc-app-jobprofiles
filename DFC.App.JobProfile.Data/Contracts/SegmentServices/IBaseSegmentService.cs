@@ -12,10 +12,10 @@ namespace DFC.App.JobProfile.Data.Contracts.SegmentServices
 
         SegmentClientOptions SegmentClientOptions { get; set; }
 
-        Task<TModel> LoadDataAsync();
-
-        Task<string> LoadMarkupAsync();
-
         Task<HealthCheckItems> HealthCheckAsync();
+
+        Task<string> GetJsonAsync(Guid jobProfileId);
+
+        Task<string> GetMarkupAsync(Guid jobProfileId);
     }
 }

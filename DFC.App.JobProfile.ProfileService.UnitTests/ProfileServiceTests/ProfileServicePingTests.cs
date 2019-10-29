@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using FakeItEasy;
 using Xunit;
@@ -8,16 +9,19 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "Ping / Health Tests")]
     public class ProfileServicePingTests
     {
+        private IMapper mapper;
+
         [Fact]
         public void JobProfileServicePingReturnsSuccess()
         {
             // arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var expectedResult = true;
+            mapper = A.Fake<IMapper>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>(), A.Fake<SegmentService>());
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper);
 
             // act
             var result = jobProfileService.PingAsync().Result;
@@ -36,7 +40,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<IDraftJobProfileService>(), A.Fake<SegmentService>());
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper);
 
             // act
             var result = jobProfileService.PingAsync().Result;

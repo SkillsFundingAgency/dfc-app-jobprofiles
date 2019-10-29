@@ -19,11 +19,9 @@ namespace DFC.App.JobProfile.Extensions
             if (controller.Request.Headers.Keys.Contains(HeaderNames.Accept))
             {
                 var acceptHeaders = controller.Request.Headers[HeaderNames.Accept].ToString().ToLowerInvariant().Split(';');
-
                 foreach (var acceptHeader in acceptHeaders)
                 {
                     var items = acceptHeader.Split(',');
-
                     if (items.Contains(MediaTypeNames.Application.Json))
                     {
                         return controller.Ok(dataModel ?? viewModel);

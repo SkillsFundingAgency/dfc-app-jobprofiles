@@ -38,12 +38,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Connected Services\" />
-    <Folder Include="Views\Home\" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <None Include="appsettings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

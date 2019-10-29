@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Home\**" />
+    <Content Remove="Views\Home\**" />
+    <EmbeddedResource Remove="Views\Home\**" />
+    <None Remove="Views\Home\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings-template.json" />
     <Content Remove="appsettings.json" />
   </ItemGroup>
@@ -38,11 +45,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Views\Home\" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <None Include="appsettings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
@@ -52,7 +54,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
-    <ProjectReference Include="..\DFC.App.JobProfile.DraftProfileService\DFC.App.JobProfile.DraftProfileService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.ProfileService\DFC.App.JobProfile.ProfileService.csproj" />
   </ItemGroup>
 

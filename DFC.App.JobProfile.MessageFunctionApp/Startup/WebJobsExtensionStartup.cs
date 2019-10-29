@@ -1,9 +1,13 @@
-﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Data.Models.PatchModels;
+using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Functions.DI.Standard;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 
@@ -21,12 +25,13 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Startup
                .AddEnvironmentVariables()
                .Build();
 
-            var jobProfileClientOptions = configuration.GetSection("jobProfileClientOptions").Get<JobProfileClientOptions>();
-
-            builder.AddDependencyInjection();
-
-            builder.Services.AddSingleton<JobProfileClientOptions>(jobProfileClientOptions);
-            builder.Services.AddSingleton<HttpClient>(new HttpClient());
+            builder?.AddDependencyInjection();
+            builder?.Services.AddSingleton(configuration.GetSection("jobProfileClientOptions").Get<JobProfileClientOptions>());
+            builder?.Services.AddSingleton(new HttpClient());
+            builder?.Services.AddAutoMapper(typeof(WebJobsExtensionStartup).Assembly);
+            builder?.Services.AddSingleton<IMessageProcessor, MessageProcessor>();
+            builder?.Services.AddSingleton<ILogger, Logger<JobProfileMetadata>>();
+            builder?.Services.AddSingleton<IHttpClientService<JobProfileMetadata>, HttpClientService<JobProfileMetadata>>();
         }
     }
 }

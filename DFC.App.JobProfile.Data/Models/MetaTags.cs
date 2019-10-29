@@ -1,6 +1,6 @@
 ﻿namespace DFC.App.JobProfile.Data.Models
 {
-    public class MetaTagsModel
+    public class MetaTags
     {
         public string Title { get; set; }
 

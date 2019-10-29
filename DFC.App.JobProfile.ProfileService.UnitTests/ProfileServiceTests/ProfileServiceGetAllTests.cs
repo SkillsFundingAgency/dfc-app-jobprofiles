@@ -1,6 +1,6 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.DraftProfileService;
 using FakeItEasy;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,17 +11,19 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "GetAll Tests")]
     public class ProfileServiceGetAllTests
     {
-        private readonly ICosmosRepository<JobProfileModel> repository;
-        private readonly IDraftJobProfileService draftJobProfileService;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
+
         private readonly ISegmentService segmentService;
+        private readonly IMapper mapper;
         private readonly IJobProfileService jobProfileService;
 
         public ProfileServiceGetAllTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            draftJobProfileService = A.Fake<IDraftJobProfileService>();
+
             segmentService = A.Fake<ISegmentService>();
-            jobProfileService = new JobProfileService(repository, draftJobProfileService, segmentService);
+            mapper = A.Fake<IMapper>();
+            jobProfileService = new JobProfileService(repository, segmentService, mapper);
         }
 
         [Fact]
@@ -44,7 +46,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async Task JobProfileServiceGetAllListReturnsNullWhenMissingRepository()
         {
             // arrange
-            IEnumerable<JobProfileModel> expectedResults = null;
+            IEnumerable<Data.Models.JobProfileModel> expectedResults = null;
 
             A.CallTo(() => repository.GetAllAsync()).Returns(expectedResults);
 

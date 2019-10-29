@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -13,17 +12,19 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync();
 
-        Task<IEnumerable<JobProfileModel>> GetAllAsync();
+        Task<IEnumerable<Models.JobProfileModel>> GetAllAsync();
 
-        Task<JobProfileModel> GetByIdAsync(Guid documentId);
+        Task<Models.JobProfileModel> GetByIdAsync(Guid documentId);
 
-        Task<JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false);
+        Task<Models.JobProfileModel> GetByNameAsync(string canonicalName);
 
-        Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
+        Task<Models.JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
 
-        Task<HttpStatusCode> UpsertAsync(JobProfileModel jobProfileModel);
+        Task<HttpStatusCode> Create(Models.JobProfileModel jobProfileModel);
 
-        Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentModel refreshJobProfileSegmentModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress);
+        Task<HttpStatusCode> Update(Models.JobProfileModel jobProfileModel);
+
+        Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel);
 
         Task<bool> DeleteAsync(Guid documentId);
     }

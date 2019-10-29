@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
+namespace DFC.App.JobProfile.Data
 {
-    public class RefreshJobProfileSegmentServiceBusModel
+    public class BaseJobProfile
     {
         [Required]
         public Guid JobProfileId { get; set; }
@@ -11,6 +12,7 @@ namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
         [Required]
         public string CanonicalName { get; set; }
 
-        public string Segment { get; set; }
+        public long SequenceNumber { get; set; }
+
     }
 }

@@ -1,7 +1,8 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segments;
-using DFC.App.JobProfile.Data.Models.ServiceBusModels;
+using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +13,18 @@ namespace DFC.App.JobProfile.ProfileService
 {
     public class JobProfileService : IJobProfileService
     {
-        private readonly ICosmosRepository<JobProfileModel> repository;
-        private readonly IDraftJobProfileService draftJobProfileService;
+        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
         private readonly ISegmentService segmentService;
+        private readonly IMapper mapper;
 
         public JobProfileService(
-            ICosmosRepository<JobProfileModel> repository,
-            IDraftJobProfileService draftJobProfileService,
-            ISegmentService segmentService)
+            ICosmosRepository<Data.Models.JobProfileModel> repository,
+            ISegmentService segmentService,
+            IMapper mapper)
         {
             this.repository = repository;
-            this.draftJobProfileService = draftJobProfileService;
             this.segmentService = segmentService;
+            this.mapper = mapper;
         }
 
         public async Task<bool> PingAsync()
@@ -36,29 +37,27 @@ namespace DFC.App.JobProfile.ProfileService
             return await segmentService.SegmentsHealthCheckAsync().ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<JobProfileModel>> GetAllAsync()
+        public async Task<IEnumerable<Data.Models.JobProfileModel>> GetAllAsync()
         {
             return await repository.GetAllAsync().ConfigureAwait(false);
         }
 
-        public async Task<JobProfileModel> GetByIdAsync(Guid documentId)
+        public async Task<Data.Models.JobProfileModel> GetByIdAsync(Guid documentId)
         {
             return await repository.GetAsync(d => d.DocumentId == documentId).ConfigureAwait(false);
         }
 
-        public async Task<JobProfileModel> GetByNameAsync(string canonicalName, bool isDraft = false)
+        public async Task<Data.Models.JobProfileModel> GetByNameAsync(string canonicalName)
         {
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
-            return isDraft
-                ? await draftJobProfileService.GetSitefinityData(canonicalName.ToLowerInvariant()).ConfigureAwait(false)
-                : await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
         }
 
-        public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
+        public async Task<Data.Models.JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {
             if (string.IsNullOrWhiteSpace(alternativeName))
             {
@@ -68,74 +67,84 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.GetAsync(d => d.AlternativeNames.Contains(alternativeName.ToLowerInvariant())).ConfigureAwait(false);
         }
 
-        public async Task<HttpStatusCode> UpsertAsync(JobProfileModel jobProfileModel)
+        public async Task<HttpStatusCode> Create(Data.Models.JobProfileModel jobProfileModel)
         {
             if (jobProfileModel == null)
             {
                 throw new ArgumentNullException(nameof(jobProfileModel));
             }
 
-            if (jobProfileModel.MetaTags == null)
+            jobProfileModel.MetaTags = jobProfileModel.MetaTags is null ? new MetaTags() : jobProfileModel.MetaTags;
+            jobProfileModel.Segments = jobProfileModel.Segments is null ? new List<SegmentModel>() : jobProfileModel.Segments;
+
+            var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
+            if (existingRecord != null)
             {
-                jobProfileModel.MetaTags = new MetaTagsModel();
+                return HttpStatusCode.AlreadyReported;
             }
 
-            if (jobProfileModel.Markup == null)
-            {
-                jobProfileModel.Markup = new SegmentsMarkupModel();
-            }
-
-            if (jobProfileModel.Data == null)
-            {
-                jobProfileModel.Data = new SegmentsDataModel();
-            }
-
-            var result = await repository.UpsertAsync(jobProfileModel).ConfigureAwait(false);
-
-            return result;
+            return await repository.UpsertAsync(jobProfileModel).ConfigureAwait(false);
         }
 
-        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegmentModel refreshJobProfileSegmentModel, JobProfileModel existingJobProfileModel, Uri requestBaseAddress)
+        public async Task<HttpStatusCode> Update(Data.Models.JobProfileModel jobProfileModel)
         {
-            if (refreshJobProfileSegmentModel == null)
+            if (jobProfileModel == null)
             {
-                throw new ArgumentNullException(nameof(refreshJobProfileSegmentModel));
+                throw new ArgumentNullException(nameof(jobProfileModel));
             }
 
-            if (existingJobProfileModel == null)
+            jobProfileModel.MetaTags = jobProfileModel.MetaTags is null ? new MetaTags() : jobProfileModel.MetaTags;
+            jobProfileModel.Segments = jobProfileModel.Segments is null ? new List<SegmentModel>() : jobProfileModel.Segments;
+
+            var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
+            if (existingRecord is null)
             {
-                throw new ArgumentNullException(nameof(existingJobProfileModel));
+                return HttpStatusCode.NotFound;
             }
 
-            if (requestBaseAddress == null)
+            var mappedRecord = mapper.Map(jobProfileModel, existingRecord);
+            return await repository.UpsertAsync(mappedRecord).ConfigureAwait(false);
+        }
+
+        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment segmentRefresh)
+        {
+            if (segmentRefresh is null)
             {
-                throw new ArgumentNullException(nameof(requestBaseAddress));
+                throw new ArgumentNullException(nameof(segmentRefresh));
             }
 
-            if (existingJobProfileModel.MetaTags == null)
+            //Check existing document
+            var existingJobProfile = await GetByIdAsync(segmentRefresh.JobProfileId).ConfigureAwait(false);
+            if (existingJobProfile is null)
             {
-                existingJobProfileModel.MetaTags = new MetaTagsModel();
+                return HttpStatusCode.NotFound;
             }
 
-            if (existingJobProfileModel.Markup == null)
+            var offlineSegmentData = segmentService.GetOfflineSegment(segmentRefresh.Segment);
+            var segmentData = await segmentService.RefreshSegmentAsync(segmentRefresh).ConfigureAwait(false);
+            if (existingJobProfile.Segments.Any(s => s.Segment == segmentData.Segment))
             {
-                existingJobProfileModel.Markup = new SegmentsMarkupModel();
+                var existingItem = existingJobProfile.Segments.Single(s => s.Segment == segmentData.Segment);
+                var index = existingJobProfile.Segments.IndexOf(existingItem);
+                if (segmentData.Markup is null)
+                {
+                    segmentData.Markup = existingItem.Markup ?? offlineSegmentData.OfflineMarkup;
+                }
+
+                if (segmentData.Json is null)
+                {
+                    segmentData.Json = existingItem.Json ?? offlineSegmentData.OfflineJson;
+                }
+
+                existingJobProfile.Segments[index] = segmentData;
+            }
+            else
+            {
+                existingJobProfile.Segments.Add(segmentData);
             }
 
-            if (existingJobProfileModel.Data == null)
-            {
-                existingJobProfileModel.Data = new SegmentsDataModel();
-            }
-
-            segmentService.RefreshJobProfileSegmentModel = refreshJobProfileSegmentModel;
-            segmentService.JobProfileModel = existingJobProfileModel;
-            segmentService.RequestBaseAddress = requestBaseAddress;
-
-            await segmentService.LoadAsync().ConfigureAwait(false);
-
-            var result = await repository.UpsertAsync(existingJobProfileModel).ConfigureAwait(false);
-
-            return result;
+            var result = await repository.UpsertAsync(existingJobProfile).ConfigureAwait(false);
+            return segmentData.RefreshStatus == Data.Enums.RefreshStatus.Success ? result : HttpStatusCode.FailedDependency;
         }
 
         public async Task<bool> DeleteAsync(Guid documentId)

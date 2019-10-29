@@ -17,7 +17,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
-            var jobProfileMetaDataPatchModel = new JobProfileMetaDataPatchModel();
+            var jobProfileMetaDataPatchModel = new JobProfileMetadata();
             var expectedResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
@@ -42,8 +42,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
-            var jobProfileMetaDataPatchModel = new JobProfileMetaDataPatchModel();
-            JobProfileModel expectedResult = null;
+            var jobProfileMetaDataPatchModel = new JobProfileMetadata();
+            Data.Models.JobProfileModel expectedResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
@@ -54,9 +54,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var statusResult = Assert.IsType<NoContentResult>(result);
+            var statusResult = Assert.IsType<NotFoundResult>(result);
 
-            A.Equals((int)HttpStatusCode.NoContent, statusResult.StatusCode);
+            A.Equals((int)HttpStatusCode.NotFound, statusResult.StatusCode);
 
             controller.Dispose();
         }
@@ -67,7 +67,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
-            JobProfileMetaDataPatchModel jobProfileMetaDataPatchModel = null;
+            JobProfileMetadata jobProfileMetaDataPatchModel = null;
             var controller = BuildProfileController(mediaTypeName);
 
             // Act

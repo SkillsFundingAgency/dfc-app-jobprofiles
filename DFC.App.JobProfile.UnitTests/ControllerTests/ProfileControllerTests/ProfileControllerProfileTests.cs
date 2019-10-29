@@ -74,7 +74,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             var documentId = Guid.NewGuid();
-            JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
@@ -98,7 +98,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             var documentId = Guid.NewGuid();
-            JobProfileModel expectedResult = null;
+            Data.Models.JobProfileModel expectedResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);

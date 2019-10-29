@@ -8,14 +8,10 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface ISegmentService
     {
-        RefreshJobProfileSegmentModel RefreshJobProfileSegmentModel { get; set; }
-
-        JobProfileModel JobProfileModel { get; set; }
-
-        Uri RequestBaseAddress { get; set; }
-
-        Task LoadAsync();
-
         Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync();
+
+        Task<SegmentModel> RefreshSegmentAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel);
+
+        OfflineSegmentModel GetOfflineSegment(JobProfileSegment segment);
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
 {
-    public class JobProfileMetaDataPatchServiceBusModel
+    public class JobProfileMessage
     {
         [Required]
         public Guid JobProfileId { get; set; }
@@ -15,20 +15,12 @@ namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
         public string SocLevelTwo { get; set; }
 
         [Required]
-        public DateTime? LastReviewed { get; set; }
+        public DateTime? LastModified { get; set; }
 
-        public string BreadcrumbTitle { get; set; }
+        public string Title { get; set; }
 
         public bool IncludeInSitemap { get; set; }
 
-        public string[] AlternativeNames { get; set; }
-
-        [Required]
-        public string Title { get; set; }
-
-        [Required]
-        public string Description { get; set; }
-
-        public string Keywords { get; set; }
+        public string Overview { get; set; }
     }
 }

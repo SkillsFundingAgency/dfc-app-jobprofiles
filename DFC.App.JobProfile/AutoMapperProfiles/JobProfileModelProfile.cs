@@ -2,6 +2,8 @@
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Html;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
@@ -9,6 +11,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public JobProfileModelProfile()
         {
+            CreateMap<JobProfileModel, JobProfileModel>();
             CreateMap<JobProfileModel, BodyViewModel>()
                 ;
 
@@ -17,21 +20,96 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.MetaTags.Title))
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.MetaTags.Description))
                 .ForMember(d => d.Keywords, s => s.MapFrom(a => a.MetaTags.Keywords))
-                .ForMember(d => d.OverviewBannerSegmentMarkup, s => s.MapFrom(a => new HtmlString(a.Markup.OverviewBanner)))
-                .ForMember(d => d.OverviewBannerSegmentUpdated, s => s.MapFrom(a => a.Data.OverviewBanner.LastReviewed))
-                .ForMember(d => d.CurrentOpportunitiesSegmentMarkup, s => s.MapFrom(a => new HtmlString(a.Markup.CurrentOpportunities)))
-                .ForMember(d => d.CurrentOpportunitiesSegmentUpdated, s => s.MapFrom(a => a.Data.CurrentOpportunities.LastReviewed))
-                .ForMember(d => d.RelatedCareersSegmentMarkup, s => s.MapFrom(a => new HtmlString(a.Markup.RelatedCareers)))
-                .ForMember(d => d.RelatedCareersSegmentUpdated, s => s.MapFrom(a => a.Data.RelatedCareers.LastReviewed))
-                .ForMember(d => d.CareerPathSegmentMarkup, s => s.MapFrom(a => new HtmlString(a.Markup.CareerPath)))
-                .ForMember(d => d.CareerPathSegmentUpdated, s => s.MapFrom(a => a.Data.CareerPath.LastReviewed))
-                .ForMember(d => d.HowToBecomeSegmentMarkup, s => s.MapFrom(a => new HtmlString(a.Markup.HowToBecome)))
-                .ForMember(d => d.HowToBecomeSegmentUpdated, s => s.MapFrom(a => a.Data.HowToBecome.LastReviewed))
-                .ForMember(d => d.WhatItTakesSegmentMarkup, s => s.MapFrom(a => new HtmlString(a.Markup.WhatItTakes)))
-                .ForMember(d => d.WhatItTakesSegmentUpdated, s => s.MapFrom(a => a.Data.WhatItTakes.LastReviewed))
-                .ForMember(d => d.WhatYouWillDoSegmentMarkup, s => s.MapFrom(a => new HtmlString(a.Markup.WhatYouWillDo)))
-                .ForMember(d => d.WhatYouWillDoSegmentUpdated, s => s.MapFrom(a => a.Data.WhatYouWillDo.LastReviewed))
-                ;
+                .ForMember(
+                    d => d.OverviewBannerSegmentMarkup,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.Overview)
+                            .Select(seg => seg.Markup)
+                            .SingleOrDefault()))
+                .ForMember(
+                    d => d.OverviewBannerSegmentUpdated,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.Overview)
+                            .Select(seg => seg.RefreshedAt)
+                            .SingleOrDefault()))
+
+                .ForMember(
+                    d => d.HowToBecomeSegmentMarkup,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.HowToBecome)
+                            .Select(seg => seg.Markup)
+                            .SingleOrDefault()))
+                .ForMember(
+                    d => d.HowToBecomeSegmentUpdated,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.HowToBecome)
+                            .Select(seg => seg.RefreshedAt)
+                            .SingleOrDefault()))
+                .ForMember(
+                    d => d.WhatItTakesSegmentMarkup,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.WhatItTakes)
+                            .Select(seg => seg.Markup)
+                            .SingleOrDefault()))
+                .ForMember(
+                    d => d.WhatItTakesSegmentUpdated,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.WhatItTakes)
+                            .Select(seg => seg.RefreshedAt)
+                            .SingleOrDefault()))
+
+                .ForMember(
+                    d => d.WhatYouWillDoSegmentMarkup,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.WhatYouWillDo)
+                            .Select(seg => seg.Markup)
+                            .SingleOrDefault()))
+                .ForMember(
+                    d => d.WhatYouWillDoSegmentUpdated,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.WhatYouWillDo)
+                            .Select(seg => seg.RefreshedAt)
+                            .SingleOrDefault()))
+
+                .ForMember(
+                    d => d.CareerPathSegmentMarkup,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.CareerPathsAndProgression)
+                            .Select(seg => seg.Markup)
+                            .SingleOrDefault()))
+                .ForMember(
+                    d => d.CareerPathSegmentUpdated,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.CareerPathsAndProgression)
+                            .Select(seg => seg.RefreshedAt)
+                            .SingleOrDefault()))
+
+                .ForMember(
+                    d => d.CurrentOpportunitiesSegmentMarkup,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.CurrentOppurtunities)
+                            .Select(seg => seg.Markup)
+                            .SingleOrDefault()))
+                .ForMember(
+                    d => d.CurrentOpportunitiesSegmentUpdated,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.CurrentOppurtunities)
+                            .Select(seg => seg.RefreshedAt)
+                            .SingleOrDefault()))
+
+                .ForMember(
+                    d => d.RelatedCareersSegmentMarkup,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.RelatedCareers)
+                            .Select(seg => seg.Markup)
+                            .SingleOrDefault()))
+                .ForMember(
+                    d => d.RelatedCareersSegmentUpdated,
+                    o => o.MapFrom(s => s.Segments
+                            .Where(m => m.Segment == Data.JobProfileSegment.RelatedCareers)
+                            .Select(seg => seg.RefreshedAt)
+                            .SingleOrDefault()))
+            ;
 
             CreateMap<JobProfileModel, HeadViewModel>()
                 .ForMember(d => d.CanonicalUrl, s => s.Ignore())

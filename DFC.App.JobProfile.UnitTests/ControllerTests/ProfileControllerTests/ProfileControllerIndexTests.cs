@@ -29,7 +29,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetAllAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
+            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<Data.Models.JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
@@ -56,7 +56,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetAllAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
+            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<Data.Models.JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(jsonResult.Value);
@@ -72,7 +72,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             const int resultsCount = 0;
-            IEnumerable<JobProfileModel> expectedResults = null;
+            IEnumerable<Data.Models.JobProfileModel> expectedResults = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetAllAsync()).Returns(expectedResults);
@@ -83,7 +83,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetAllAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
+            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<Data.Models.JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
@@ -99,7 +99,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             const int resultsCount = 0;
-            IEnumerable<JobProfileModel> expectedResults = null;
+            IEnumerable<Data.Models.JobProfileModel> expectedResults = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetAllAsync()).Returns(expectedResults);
@@ -110,7 +110,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetAllAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
+            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<Data.Models.JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(jsonResult.Value);
@@ -126,7 +126,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             const int resultsCount = 0;
-            IEnumerable<JobProfileModel> expectedResults = null;
+            IEnumerable<Data.Models.JobProfileModel> expectedResults = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetAllAsync()).Returns(expectedResults);
@@ -137,7 +137,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetAllAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
+            A.CallTo(() => FakeMapper.Map<IndexDocumentViewModel>(A<Data.Models.JobProfileModel>.Ignored)).MustHaveHappened(resultsCount, Times.Exactly);
 
             var statusResult = Assert.IsType<StatusCodeResult>(result);
 

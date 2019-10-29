@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 logger.LogInformation("Generating Sitemap");
 
-                var sitemapUrlPrefix = $"{Request.Scheme}://{Request.Host}/{ProfileController.ProfilePathRoot}";
+                var sitemapUrlPrefix = $"{Request.GetBaseAddress()}/{ProfileController.ProfilePathRoot}";
                 var sitemap = new Sitemap();
 
                 var jobProfileModels = await jobProfileService.GetAllAsync().ConfigureAwait(false);

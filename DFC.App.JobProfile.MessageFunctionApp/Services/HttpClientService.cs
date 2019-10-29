@@ -1,7 +1,6 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.PatchModels;
-using DFC.App.JobProfile.Data.Models.ServiceBusModels;
+﻿using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -12,94 +11,100 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Services
 {
-    public static class HttpClientService
+    public class HttpClientService<T> : IHttpClientService<T>
+                where T : class, new()
     {
-        public static async Task<JobProfileModel> GetByIdAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, Guid id)
+        private readonly HttpClient httpClient;
+        private readonly JobProfileClientOptions jobProfileClientOptions;
+        private readonly ILogger logger;
+
+        public HttpClientService(JobProfileClientOptions jobProfileClientOptions, HttpClient httpClient, ILogger logger)
         {
-            var endpoint = jobProfileClientOptions.GetEndpoint.Replace("{0}", id.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
-            var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
+            this.jobProfileClientOptions = jobProfileClientOptions;
+            this.httpClient = httpClient;
+            this.logger = logger;
+        }
 
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+        public async Task<T> GetByIdAsync(Guid id)
+        {
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{id}");
+            var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                request.Headers.Accept.Clear();
-                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var result = JsonConvert.DeserializeObject<T>(responseString);
 
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                return result;
+            }
 
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            return default;
+        }
+
+        public async Task<HttpStatusCode> PatchAsync<TInput>(TInput patchModel, string patchTypeEndpoint)
+            where TInput : BaseJobProfile
+        {
+            if (patchModel is null)
+            {
+                throw new ArgumentNullException(nameof(patchModel));
+            }
+
+            if (string.IsNullOrWhiteSpace(patchTypeEndpoint))
+            {
+                throw new ArgumentException("message", nameof(patchTypeEndpoint));
+            }
+
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{patchModel?.JobProfileId}/{patchTypeEndpoint}");
+            using (var content = new ObjectContent<TInput>(patchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
+            {
+                var response = await httpClient.PatchAsync(url, content).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
                 {
-                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var result = JsonConvert.DeserializeObject<JobProfileModel>(responseString);
+                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    logger.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for patch type {typeof(T)}, Id: {patchModel.JobProfileId}");
 
-                    return result;
+                    response.EnsureSuccessStatusCode();
                 }
-            }
-
-            return default(JobProfileModel);
-        }
-
-        public static async Task<HttpStatusCode> PatchAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, JobProfileMetaDataPatchModel jobProfileMetaDataPatchModel, Guid documentId)
-        {
-            var endpoint = jobProfileClientOptions.PatchEndpoint.Replace("{0}", documentId.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
-            var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
-
-            using (var request = new HttpRequestMessage(HttpMethod.Patch, url))
-            {
-                request.Headers.Accept.Clear();
-                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                request.Content = new ObjectContent(typeof(JobProfileMetaDataPatchModel), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
-
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
                 return response.StatusCode;
             }
         }
 
-        public static async Task<HttpStatusCode> PostAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, RefreshJobProfileSegmentModel refreshJobProfileSegmentModel)
+        public async Task<HttpStatusCode> DeleteAsync(Guid id)
         {
-            var endpoint = jobProfileClientOptions.PostRefreshEndpoint;
-            var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{id}");
+            var response = await httpClient.DeleteAsync(url).ConfigureAwait(false);
 
-            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            if (!response.IsSuccessStatusCode)
             {
-                request.Headers.Accept.Clear();
-                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                request.Content = new ObjectContent(typeof(RefreshJobProfileSegmentModel), refreshJobProfileSegmentModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                logger.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for DELETE, Id: {id}");
 
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-                return response.StatusCode;
+                response.EnsureSuccessStatusCode();
             }
+
+            return response.StatusCode;
         }
 
-        public static async Task<HttpStatusCode> PostAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, JobProfileModel jobProfileModel)
+        public async Task<HttpStatusCode> PostAsync<TInput>(TInput postModel, string postEndpoint)
+            where TInput : BaseJobProfile
         {
-            var endpoint = jobProfileClientOptions.PostEndpoint;
-            var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
-
-            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            if (postModel is null)
             {
-                request.Headers.Accept.Clear();
-                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                request.Content = new ObjectContent(typeof(RefreshJobProfileSegmentServiceBusModel), jobProfileModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
-
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-                return response.StatusCode;
+                throw new ArgumentNullException(nameof(postModel));
             }
-        }
 
-        public static async Task<HttpStatusCode> DeleteAsync(HttpClient httpClient, JobProfileClientOptions jobProfileClientOptions, Guid id)
-        {
-            var endpoint = jobProfileClientOptions.DeleteEndpoint.Replace("{0}", id.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
-            var url = $"{jobProfileClientOptions.BaseAddress}{endpoint}";
-
-            using (var request = new HttpRequestMessage(HttpMethod.Delete, url))
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}{postEndpoint}");
+            using (var content = new ObjectContent<TInput>(postModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
             {
-                request.Headers.Accept.Clear();
-                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                var response = await httpClient.PostAsync(url, content).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    logger.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST type {typeof(T)}, Id: {postModel.JobProfileId}.");
 
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                }
 
                 return response.StatusCode;
             }

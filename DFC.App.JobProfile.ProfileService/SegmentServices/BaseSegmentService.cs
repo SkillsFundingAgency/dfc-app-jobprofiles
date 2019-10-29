@@ -29,78 +29,11 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
         public SegmentClientOptions SegmentClientOptions { get; set; }
 
-        public virtual async Task<TModel> LoadDataAsync()
-        {
-            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", DocumentId.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
-            var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
-
-            logger.LogInformation($"{nameof(LoadDataAsync)}: Loading data segment from {url}");
-
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-            request.Headers.Accept.Clear();
-            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-
-            try
-            {
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var result = JsonConvert.DeserializeObject<TModel>(responseString);
-
-                    logger.LogInformation($"{nameof(LoadDataAsync)}: Loaded data segment from {url}");
-
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"{nameof(LoadDataAsync)}: {ex.Message}");
-            }
-
-            return default(TModel);
-        }
-
-        public virtual async Task<string> LoadMarkupAsync()
-        {
-            var endpoint = SegmentClientOptions.Endpoint.Replace("{0}", DocumentId.ToString().ToLowerInvariant(), System.StringComparison.OrdinalIgnoreCase);
-            var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
-
-            logger.LogInformation($"{nameof(LoadDataAsync)}: Loading markup segment from {url}");
-
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-            request.Headers.Accept.Clear();
-            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
-
-            try
-            {
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                    logger.LogInformation($"{nameof(LoadDataAsync)}: Loaded markup segment from {url}");
-
-                    return responseString;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"{nameof(LoadMarkupAsync)}: {ex.Message}");
-            }
-
-            return null;
-        }
-
         public virtual async Task<HealthCheckItems> HealthCheckAsync()
         {
             var url = $"{SegmentClientOptions.BaseAddress}health";
 
-            logger.LogInformation($"{nameof(LoadDataAsync)}: Checking health for {url}");
+            logger.LogInformation($"{nameof(HealthCheckAsync)}: Checking health for {url}");
 
             try
             {
@@ -119,7 +52,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
                     result.Source = SegmentClientOptions.BaseAddress;
 
-                    logger.LogInformation($"{nameof(LoadDataAsync)}: Checked health for {url}");
+                    logger.LogInformation($"{nameof(HealthCheckAsync)}: Checked health for {url}");
 
                     return result;
                 }
@@ -162,6 +95,58 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
                 return result;
             }
+        }
+
+        public virtual async Task<string> GetJsonAsync(Guid jobProfileId)
+        {
+            var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
+            var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
+
+            logger.LogInformation($"{nameof(GetJsonAsync)}: Loading data segment from {url}");
+
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            {
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    logger.LogError($"Failed to get JSON data for {jobProfileId} from {url}, receveid error : {responseString}");
+                }
+                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    logger.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
+                    return null;
+                }
+
+                return responseString;
+            }
+        }
+
+        public virtual async Task<string> GetMarkupAsync(Guid jobProfileId)
+        {
+            var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
+            var url = new Uri($"{SegmentClientOptions.BaseAddress}{endpoint}");
+
+            logger.LogInformation($"{nameof(GetMarkupAsync)}: Loading data segment from {url}");
+
+            var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+            var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.LogError($"Failed to get JSON data for {jobProfileId} from {url}, receveid error : {responseString}");
+            }
+            else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                logger.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
+                return null;
+            }
+
+            return responseString;
         }
     }
 }

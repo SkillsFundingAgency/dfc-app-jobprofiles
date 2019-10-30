@@ -413,23 +413,23 @@
                                 "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('appSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('appSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
                             },
                             {
-                                "name": "Values__service-bus-connection-string",
+                                "name": "service-bus-connection-string",
                                 "value": "[listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.ServiceBus/namespaces/authorizationRules', parameters('appSharedServiceBusName'), 'ReadWrite'), '2017-04-01').primaryConnectionString]"
                             },
                             {
-                                "name": "Values__cms-messages-topic",
+                                "name": "cms-messages-topic",
                                 "value": "[variables('cmsTopicName')]"
                             },
                             {
-                                "name": "Values__cms-messages-subscription",
+                                "name": "cms-messages-subscription",
                                 "value": "[variables('cmsSubscriptionName')]"
                             },
                             {
-                                "name": "Values__job-profiles-refresh-topic",
+                                "name": "job-profiles-refresh-topic",
                                 "value": "[variables('refreshTopicName')]"
                             },
                             {
-                                "name": "Values__job-profiles-refresh-subscription",
+                                "name": "job-profiles-refresh-subscription",
                                 "value": "[variables('refreshSubscriptionName')]"
                             },
                             {

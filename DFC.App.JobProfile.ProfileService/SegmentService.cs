@@ -209,16 +209,5 @@ namespace DFC.App.JobProfile.ProfileService
                     : Data.Enums.RefreshStatus.Failed,
             };
         }
-
-        private HtmlString GetMarkupResult(Task<string> task, SegmentClientOptions segmentClientOptions)
-        {
-            if (task is null || task.Result is null || !task.IsCompletedSuccessfully)
-            {
-                return null;
-            }
-
-            var markup = UrlRewriter.Rewrite(task.Result, segmentClientOptions.BaseAddress, new Uri("/"));
-            return new HtmlString(markup);
-        }
     }
 }

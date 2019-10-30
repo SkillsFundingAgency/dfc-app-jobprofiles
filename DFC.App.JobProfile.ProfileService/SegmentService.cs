@@ -202,7 +202,7 @@ namespace DFC.App.JobProfile.ProfileService
                 Segment = toRefresh.Segment,
                 RefreshedAt = DateTime.UtcNow,
                 RefreshSequence = toRefresh.SequenceNumber,
-                Markup = GetMarkupResult(htmlResultTask, segmentService.SegmentClientOptions),
+                Markup = htmlResultTask?.IsCompletedSuccessfully == true ? new HtmlString(htmlResultTask.Result) : null,
                 Json = jsonResultTask?.IsCompletedSuccessfully == true ? jsonResultTask.Result : null,
                 RefreshStatus = jsonResultTask?.IsCompletedSuccessfully == true && htmlResultTask?.IsCompletedSuccessfully == true
                     ? Data.Enums.RefreshStatus.Success

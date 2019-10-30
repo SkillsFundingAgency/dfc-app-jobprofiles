@@ -202,23 +202,12 @@ namespace DFC.App.JobProfile.ProfileService
                 Segment = toRefresh.Segment,
                 RefreshedAt = DateTime.UtcNow,
                 RefreshSequence = toRefresh.SequenceNumber,
-                Markup = GetMarkupResult(htmlResultTask, segmentService.SegmentClientOptions),
+                Markup = htmlResultTask?.IsCompletedSuccessfully == true ? new HtmlString(htmlResultTask.Result) : null,
                 Json = jsonResultTask?.IsCompletedSuccessfully == true ? jsonResultTask.Result : null,
                 RefreshStatus = jsonResultTask?.IsCompletedSuccessfully == true && htmlResultTask?.IsCompletedSuccessfully == true
                     ? Data.Enums.RefreshStatus.Success
                     : Data.Enums.RefreshStatus.Failed,
             };
-        }
-
-        private HtmlString GetMarkupResult(Task<string> task, SegmentClientOptions segmentClientOptions)
-        {
-            if (task is null || task.Result is null || !task.IsCompletedSuccessfully)
-            {
-                return null;
-            }
-
-            var markup = UrlRewriter.Rewrite(task.Result, segmentClientOptions.BaseAddress, new Uri("/"));
-            return new HtmlString(markup);
         }
     }
 }

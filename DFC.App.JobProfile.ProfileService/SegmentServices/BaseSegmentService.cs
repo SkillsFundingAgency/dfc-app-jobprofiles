@@ -97,7 +97,11 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
             }
         }
 
-        public virtual async Task<string> GetJsonAsync(Guid jobProfileId)
+        public virtual async Task<string> GetJsonAsync(Guid jobProfileId) => await GetAsync(jobProfileId, MediaTypeNames.Application.Json).ConfigureAwait(false);
+
+        public virtual async Task<string> GetMarkupAsync(Guid jobProfileId) => await GetAsync(jobProfileId, MediaTypeNames.Text.Html).ConfigureAwait(false);
+
+        private async Task<string> GetAsync(Guid jobProfileId, string acceptHeader)
         {
             var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
             var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
@@ -107,14 +111,14 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
                 request.Headers.Accept.Clear();
-                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(acceptHeader));
 
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
                 var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    logger.LogError($"Failed to get JSON data for {jobProfileId} from {url}, receveid error : {responseString}");
+                    logger.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : {responseString}");
                 }
                 else if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
@@ -124,29 +128,6 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
                 return responseString;
             }
-        }
-
-        public virtual async Task<string> GetMarkupAsync(Guid jobProfileId)
-        {
-            var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
-            var url = new Uri($"{SegmentClientOptions.BaseAddress}{endpoint}");
-
-            logger.LogInformation($"{nameof(GetMarkupAsync)}: Loading data segment from {url}");
-
-            var response = await httpClient.GetAsync(url).ConfigureAwait(false);
-            var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                logger.LogError($"Failed to get JSON data for {jobProfileId} from {url}, receveid error : {responseString}");
-            }
-            else if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                logger.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
-                return null;
-            }
-
-            return responseString;
         }
     }
 }

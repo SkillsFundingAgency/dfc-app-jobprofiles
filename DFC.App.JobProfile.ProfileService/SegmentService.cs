@@ -56,22 +56,22 @@ namespace DFC.App.JobProfile.ProfileService
                     return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
 
                 case JobProfileSegment.HowToBecome:
-                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(howToBecomeSegmentService, toRefresh).ConfigureAwait(false);
 
                 case JobProfileSegment.WhatItTakes:
-                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(whatItTakesSegmentService, toRefresh).ConfigureAwait(false);
 
                 case JobProfileSegment.WhatYouWillDo:
-                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(whatYouWillDoSegmentService, toRefresh).ConfigureAwait(false);
 
                 case JobProfileSegment.CareerPathsAndProgression:
-                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(careerPathSegmentService, toRefresh).ConfigureAwait(false);
 
                 case JobProfileSegment.CurrentOppurtunities:
-                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(currentOpportunitiesSegmentService, toRefresh).ConfigureAwait(false);
 
                 case JobProfileSegment.RelatedCareers:
-                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(relatedCareersSegmentService, toRefresh).ConfigureAwait(false);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(toRefresh), $"Segment to be refreshed should be one of {Enum.GetNames(typeof(JobProfileSegment))}");

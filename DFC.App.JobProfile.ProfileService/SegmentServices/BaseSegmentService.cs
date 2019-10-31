@@ -118,7 +118,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    logger.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, receveid error : {responseString}");
+                    logger.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : {responseString}");
                 }
                 else if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {

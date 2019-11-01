@@ -5,7 +5,7 @@
 		"TopNavigationOrder": 400,
 		"Layout": 1,
 		"OfflineHtml": "<div class=\"govuk-width-container\"><H2>Job Profile Service Unavailable</H2></div>",
-		"PhaseBannerHtml": "<div class=\"govuk-phase-banner\"><p class=\"govuk-phase-banner__content\"><strong class=\"govuk-tag govuk-phase-banner__content__tag\">Dev</strong><span class=\"govuk-phase-banner__text\">This is a new service - your <a class=\"govuk-link\" href=\"#\">feedback</a> will help us to improve it.</span></p></div>",
+		"PhaseBannerHtml": "<div class=\"govuk-phase-banner\"><p class=\"govuk-phase-banner__content\"><strong class=\"govuk-tag govuk-phase-banner__content__tag\">beta</strong><span class=\"govuk-phase-banner__text\">Complete <a target=\"_blank\" class=\"govuk-link\" href=\"https://surveys.ipsosinteractive.com/mrIWeb/mrIWeb.dll?I.Project=S1039833&amp;id=&amp;cf=ovl\">Ipsos MORI survey</a> to give us your feedback about the service.</span></p></div>",
 		"SitemapUrl": "https://__AppServiceName__.__appServiceDomain__/sitemap.xml",
 		"RobotsUrl": "https://__AppServiceName__.__appServiceDomain__/robots.txt",
 		"Regions": [

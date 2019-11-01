@@ -7,6 +7,11 @@ namespace DFC.App.JobProfile.Data.Models.PatchModels
     public class JobProfileMetadata : BaseJobProfile
     {
         [Required]
+        public string SocLevelTwo { get; set; }
+
+        public string PartitionKey => SocLevelTwo.ToString();
+
+        [Required]
         public DateTime? LastReviewed { get; set; }
 
         [Required]

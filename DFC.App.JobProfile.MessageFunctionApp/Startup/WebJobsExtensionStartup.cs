@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DFC.App.JobProfile.Data.Models.PatchModels;
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Functions.DI.Standard;
@@ -30,8 +30,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Startup
             builder?.Services.AddSingleton(new HttpClient());
             builder?.Services.AddAutoMapper(typeof(WebJobsExtensionStartup).Assembly);
             builder?.Services.AddSingleton<IMessageProcessor, MessageProcessor>();
-            builder?.Services.AddSingleton<ILogger, Logger<JobProfileMetadata>>();
-            builder?.Services.AddSingleton<IHttpClientService<JobProfileMetadata>, HttpClientService<JobProfileMetadata>>();
+            builder?.Services.AddSingleton<ILogger, Logger<JobProfileModel>>();
+            builder?.Services.AddSingleton<IHttpClientService<JobProfileModel>, HttpClientService<JobProfileModel>>();
         }
     }
 }

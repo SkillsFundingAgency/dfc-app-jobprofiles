@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.PatchModels;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,10 +13,10 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
     public class MessageProcessor : IMessageProcessor
     {
         private readonly IMapper mapper;
-        private readonly IHttpClientService<JobProfileMetadata> httpClientService;
+        private readonly IHttpClientService<JobProfileModel> httpClientService;
         private readonly ILogger log;
 
-        public MessageProcessor(IMapper mapper, IHttpClientService<JobProfileMetadata> httpClientService, ILogger log)
+        public MessageProcessor(IMapper mapper, IHttpClientService<JobProfileModel> httpClientService, ILogger log)
         {
             this.mapper = mapper;
             this.httpClientService = httpClientService;
@@ -93,7 +92,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             var jobProfileMessage = JsonConvert.DeserializeObject<JobProfileMessage>(message);
-            var jobProfile = mapper.Map<JobProfileMetadata>(jobProfileMessage);
+            var jobProfile = mapper.Map<JobProfileModel>(jobProfileMessage);
             jobProfile.SequenceNumber = sequenceNumber;
 
             switch (action)

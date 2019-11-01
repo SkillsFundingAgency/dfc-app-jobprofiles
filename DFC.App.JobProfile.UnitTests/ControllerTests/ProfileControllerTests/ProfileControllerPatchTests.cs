@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.PatchModels;
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,7 +16,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
-            var jobProfileMetaDataPatchModel = new JobProfileMetadata();
+            var jobProfileMetaDataPatchModel = new JobProfileModel();
             var expectedResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
@@ -42,7 +41,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
-            var jobProfileMetaDataPatchModel = new JobProfileMetadata();
+            var jobProfileMetaDataPatchModel = new JobProfileModel();
             Data.Models.JobProfileModel expectedResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
@@ -67,7 +66,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
-            JobProfileMetadata jobProfileMetaDataPatchModel = null;
+            JobProfileModel jobProfileMetaDataPatchModel = null;
             var controller = BuildProfileController(mediaTypeName);
 
             // Act

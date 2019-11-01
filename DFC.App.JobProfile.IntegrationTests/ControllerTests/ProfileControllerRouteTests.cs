@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.PatchModels;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -107,7 +106,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                 SocLevelTwo = 33,
                 LastReviewed = DateTime.UtcNow,
             };
-            var jobProfileMetaDataPatchModel = new JobProfileMetadata()
+            var jobProfileMetaDataPatchModel = new JobProfileModel()
             {
                 CanonicalName = canonicalName,
                 LastReviewed = DateTime.UtcNow,
@@ -132,7 +131,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                 jobProfileMetaDataPatchModel.SequenceNumber++;
                 request.Headers.Accept.Clear();
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                request.Content = new ObjectContent(typeof(JobProfileMetadata), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
+                request.Content = new ObjectContent(typeof(JobProfileModel), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
 
                 // Act
                 var response = await client.SendAsync(request).ConfigureAwait(false);
@@ -150,7 +149,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var documentId = Guid.NewGuid();
             string canonicalName = documentId.ToString().ToUpperInvariant();
             string url = $"/profile/{documentId}/metadata";
-            var jobProfileMetaDataPatchModel = new JobProfileMetadata()
+            var jobProfileMetaDataPatchModel = new JobProfileModel()
             {
                 CanonicalName = canonicalName,
                 LastReviewed = DateTime.Now,
@@ -172,7 +171,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-            request.Content = new ObjectContent(typeof(JobProfileMetadata), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
+            request.Content = new ObjectContent(typeof(JobProfileModel), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);
 
             // Act
             var response = await client.SendAsync(request).ConfigureAwait(false);

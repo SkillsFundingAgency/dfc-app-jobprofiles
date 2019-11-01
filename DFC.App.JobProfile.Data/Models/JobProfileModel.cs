@@ -21,7 +21,7 @@ namespace DFC.App.JobProfile.Data.Models
         public string Etag { get; set; }
 
         [Required]
-        public int SocLevelTwo { get; set; }
+        public string SocLevelTwo { get; set; }
 
         public string PartitionKey => SocLevelTwo.ToString();
 

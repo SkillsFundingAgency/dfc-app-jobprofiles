@@ -79,7 +79,7 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Create([FromBody] Data.Models.JobProfileModel jobProfileModel)
         {
             //AOP: These should be coded as an Aspect
-            logger.LogInformation($"{nameof(Create)} has been called");
+            logger.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
 
             if (jobProfileModel is null)
             {
@@ -92,7 +92,7 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             var response = await jobProfileService.Create(jobProfileModel).ConfigureAwait(false);
-            logger.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName}");
+            logger.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
             return new StatusCodeResult((int)response);
         }
 
@@ -101,7 +101,7 @@ namespace DFC.App.JobProfile.Controllers
         [Route("refresh")]
         public async Task<IActionResult> Refresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
         {
-            logger.LogInformation($"{nameof(Refresh)} has been called");
+            logger.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}");
 
             if (refreshJobProfileSegmentModel == null)
             {
@@ -115,7 +115,7 @@ namespace DFC.App.JobProfile.Controllers
 
             //var requestBaseAddress = Request.RequestBaseAddress(Url);
             var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
-            logger.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName}");
+            logger.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
             return new StatusCodeResult((int)response);
         }
 
@@ -123,7 +123,7 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{documentId}/metadata")]
         public async Task<IActionResult> Patch([FromBody]JobProfileMetadata jobProfileMetaDataPatchModel, Guid documentId)
         {
-            logger.LogInformation($"{nameof(Patch)} has been called");
+            logger.LogInformation($"{nameof(Patch)} has been called with {documentId} for {jobProfileMetaDataPatchModel?.CanonicalName} with seq number {jobProfileMetaDataPatchModel?.SequenceNumber}");
 
             if (jobProfileMetaDataPatchModel == null)
             {
@@ -148,7 +148,7 @@ namespace DFC.App.JobProfile.Controllers
 
             var response = await jobProfileService.Create(jobProfileModel).ConfigureAwait(false);
 
-            logger.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileModel.CanonicalName}");
+            logger.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileModel.CanonicalName}. Response status - {response}");
 
             return new StatusCodeResult((int)response);
         }

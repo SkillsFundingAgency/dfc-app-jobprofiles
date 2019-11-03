@@ -23,6 +23,12 @@ namespace DFC.App.JobProfile.IntegrationTests
                     CanonicalName = DefaultArticleName,
                     SocLevelTwo = 12,
                     LastReviewed = DateTime.UtcNow,
+                    IncludeInSitemap = true,
+                    MetaTags = new MetaTags
+                    {
+                        Title = $"This is a title for {DefaultArticleGuid}",
+                    },
+                    SequenceNumber = 1,
                 },
                 new Data.Models.JobProfileModel()
                 {
@@ -30,6 +36,12 @@ namespace DFC.App.JobProfile.IntegrationTests
                     CanonicalName = $"{DefaultArticleName}-2",
                     SocLevelTwo = 34,
                     LastReviewed = DateTime.UtcNow,
+                    IncludeInSitemap = true,
+                    MetaTags = new MetaTags
+                    {
+                        Title = $"This is a title for {DefaultArticleGuid}",
+                    },
+                    SequenceNumber = 2,
                 },
                 new Data.Models.JobProfileModel()
                 {
@@ -37,6 +49,12 @@ namespace DFC.App.JobProfile.IntegrationTests
                     CanonicalName = $"{DefaultArticleName}-3",
                     SocLevelTwo = 56,
                     LastReviewed = DateTime.UtcNow,
+                    IncludeInSitemap = true,
+                    MetaTags = new MetaTags
+                    {
+                        Title = $"This is a title for {DefaultArticleGuid}",
+                    },
+                    SequenceNumber = 3,
                 },
             };
 

@@ -1,8 +1,6 @@
 ﻿@model BodyViewModel
 
-<header class="job-profile-hero">
-    <partial name="_OverviewBannerSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview)?.Markup/>
-</header>
+<partial name="_OverviewBannerSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview)?.Markup/>
 
 <div class="govuk-width-container">
     <div class="govuk-grid-row">

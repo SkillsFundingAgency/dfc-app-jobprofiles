@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.Segments;
 using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
@@ -86,15 +85,29 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.UpsertAsync(jobProfileModel).ConfigureAwait(false);
         }
 
+        public async Task<HttpStatusCode> Update(Data.Models.JobProfileMetadata jobProfileMetadata)
+        {
+            if (jobProfileMetadata is null)
+            {
+                throw new ArgumentNullException(nameof(jobProfileMetadata));
+            }
+
+            var existingRecord = await GetByIdAsync(jobProfileMetadata.JobProfileId).ConfigureAwait(false);
+            if (existingRecord is null)
+            {
+                return HttpStatusCode.NotFound;
+            }
+
+            var mappedRecord = mapper.Map(jobProfileMetadata, existingRecord);
+            return await repository.UpsertAsync(mappedRecord).ConfigureAwait(false);
+        }
+
         public async Task<HttpStatusCode> Update(Data.Models.JobProfileModel jobProfileModel)
         {
             if (jobProfileModel == null)
             {
                 throw new ArgumentNullException(nameof(jobProfileModel));
             }
-
-            jobProfileModel.MetaTags = jobProfileModel.MetaTags is null ? new MetaTags() : jobProfileModel.MetaTags;
-            jobProfileModel.Segments = jobProfileModel.Segments is null ? new List<SegmentModel>() : jobProfileModel.Segments;
 
             var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
             if (existingRecord is null)
@@ -126,20 +139,15 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var existingItem = existingJobProfile.Segments.Single(s => s.Segment == segmentData.Segment);
                 var index = existingJobProfile.Segments.IndexOf(existingItem);
-                if (segmentData.Markup is null)
-                {
-                    segmentData.Markup = existingItem.Markup ?? offlineSegmentData.OfflineMarkup;
-                }
-
-                if (segmentData.Json is null)
-                {
-                    segmentData.Json = existingItem.Json ?? offlineSegmentData.OfflineJson;
-                }
+                segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : (!string.IsNullOrEmpty(existingItem.Markup?.Value) ? existingItem.Markup : offlineSegmentData.OfflineMarkup);
+                segmentData.Json = segmentData.Json is null ? existingItem.Json ?? offlineSegmentData.OfflineJson : segmentData.Json;
 
                 existingJobProfile.Segments[index] = segmentData;
             }
             else
             {
+                segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : offlineSegmentData.OfflineMarkup;
+                segmentData.Json = segmentData.Json ?? offlineSegmentData.OfflineJson;
                 existingJobProfile.Segments.Add(segmentData);
             }
 

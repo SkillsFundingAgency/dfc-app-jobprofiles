@@ -16,17 +16,17 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
-            var jobProfileMetaDataPatchModel = new JobProfileModel();
+            var jobProfileMetaDataPatchModel = new JobProfileMetadata();
             var expectedResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeJobProfileService.Update(A<JobProfileMetadata>.Ignored)).Returns(HttpStatusCode.OK);
 
             // Act
             var result = await controller.Patch(jobProfileMetaDataPatchModel, documentId).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.Update(jobProfileMetaDataPatchModel)).MustHaveHappenedOnceExactly();
 
             var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
 
@@ -37,36 +37,11 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerPatchReturnsNotFound(string mediaTypeName)
-        {
-            // Arrange
-            Guid documentId = Guid.NewGuid();
-            var jobProfileMetaDataPatchModel = new JobProfileModel();
-            Data.Models.JobProfileModel expectedResult = null;
-            var controller = BuildProfileController(mediaTypeName);
-
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
-
-            // Act
-            var result = await controller.Patch(jobProfileMetaDataPatchModel, documentId).ConfigureAwait(false);
-
-            // Assert
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-
-            var statusResult = Assert.IsType<NotFoundResult>(result);
-
-            A.Equals((int)HttpStatusCode.NotFound, statusResult.StatusCode);
-
-            controller.Dispose();
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonMediaTypes))]
         public async void ProfileControllerPatchWithNullParamReturnsBadRequest(string mediaTypeName)
         {
             // Arrange
             Guid documentId = Guid.NewGuid();
-            JobProfileModel jobProfileMetaDataPatchModel = null;
+            JobProfileMetadata jobProfileMetaDataPatchModel = null;
             var controller = BuildProfileController(mediaTypeName);
 
             // Act

@@ -17,24 +17,24 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         private const int NumberOfSegmentServices = 7;
 
         private readonly ILogger<SegmentService> logger;
-        private readonly ICareerPathSegmentService careerPathSegmentService;
-        private readonly ICurrentOpportunitiesSegmentService currentOpportunitiesSegmentService;
-        private readonly IHowToBecomeSegmentService howToBecomeSegmentService;
-        private readonly IOverviewBannerSegmentService overviewBannerSegmentService;
-        private readonly IRelatedCareersSegmentService relatedCareersSegmentService;
-        private readonly IWhatItTakesSegmentService whatItTakesSegmentService;
-        private readonly IWhatYouWillDoSegmentService whatYouWillDoSegmentService;
+        private readonly ISegmentRefreshService<CareerPathSegmentClientOptions> careerPathSegmentService;
+        private readonly ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions> currentOpportunitiesSegmentService;
+        private readonly ISegmentRefreshService<HowToBecomeSegmentClientOptions> howToBecomeSegmentService;
+        private readonly ISegmentRefreshService<OverviewBannerSegmentClientOptions> overviewBannerSegmentService;
+        private readonly ISegmentRefreshService<RelatedCareersSegmentClientOptions> relatedCareersSegmentService;
+        private readonly ISegmentRefreshService<WhatItTakesSegmentClientOptions> whatItTakesSegmentService;
+        private readonly ISegmentRefreshService<WhatYouWillDoSegmentClientOptions> whatYouWillDoSegmentService;
 
         public SegmentServiceSegmentsHealthCheckAsyncTests()
         {
             logger = A.Fake<ILogger<SegmentService>>();
-            careerPathSegmentService = A.Fake<ICareerPathSegmentService>();
-            currentOpportunitiesSegmentService = A.Fake<ICurrentOpportunitiesSegmentService>();
-            howToBecomeSegmentService = A.Fake<IHowToBecomeSegmentService>();
-            overviewBannerSegmentService = A.Fake<IOverviewBannerSegmentService>();
-            relatedCareersSegmentService = A.Fake<IRelatedCareersSegmentService>();
-            whatItTakesSegmentService = A.Fake<IWhatItTakesSegmentService>();
-            whatYouWillDoSegmentService = A.Fake<IWhatYouWillDoSegmentService>();
+            careerPathSegmentService = A.Fake<ISegmentRefreshService<CareerPathSegmentClientOptions>>();
+            currentOpportunitiesSegmentService = A.Fake<ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions>>();
+            howToBecomeSegmentService = A.Fake<ISegmentRefreshService<HowToBecomeSegmentClientOptions>>();
+            overviewBannerSegmentService = A.Fake<ISegmentRefreshService<OverviewBannerSegmentClientOptions>>();
+            relatedCareersSegmentService = A.Fake<ISegmentRefreshService<RelatedCareersSegmentClientOptions>>();
+            whatItTakesSegmentService = A.Fake<ISegmentRefreshService<WhatItTakesSegmentClientOptions>>();
+            whatYouWillDoSegmentService = A.Fake<ISegmentRefreshService<WhatYouWillDoSegmentClientOptions>>();
 
             var baseAddress = new Uri("https://nowhere.com");
             const string endpoint = "segment/{0}/contents";
@@ -88,14 +88,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         {
             // arrange
             var segmentService = new SegmentService(
-                                                        logger,
-                                                        careerPathSegmentService,
-                                                        currentOpportunitiesSegmentService,
-                                                        howToBecomeSegmentService,
-                                                        overviewBannerSegmentService,
-                                                        relatedCareersSegmentService,
-                                                        whatItTakesSegmentService,
-                                                        whatYouWillDoSegmentService);
+                logger,
+                overviewBannerSegmentService,
+                howToBecomeSegmentService,
+                whatItTakesSegmentService,
+                whatYouWillDoSegmentService,
+                careerPathSegmentService,
+                currentOpportunitiesSegmentService,
+                relatedCareersSegmentService);
 
             var expectedResult = new HealthCheckItems
             {

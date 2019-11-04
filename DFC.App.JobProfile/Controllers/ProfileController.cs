@@ -116,7 +116,7 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPatch]
         [Route("profile/{documentId}/metadata")]
-        public async Task<IActionResult> Patch([FromBody]JobProfileModel jobProfileMetaDataPatchModel, Guid documentId)
+        public async Task<IActionResult> Patch([FromBody]JobProfileMetadata jobProfileMetaDataPatchModel, Guid documentId)
         {
             logger.LogInformation($"{nameof(Patch)} has been called with {documentId} for {jobProfileMetaDataPatchModel?.CanonicalName} with seq number {jobProfileMetaDataPatchModel?.SequenceNumber}");
 
@@ -130,20 +130,8 @@ namespace DFC.App.JobProfile.Controllers
                 return BadRequest(ModelState);
             }
 
-            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
-
-            if (jobProfileModel == null)
-            {
-                logger.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
-
-                return NotFound();
-            }
-
-            mapper.Map(jobProfileMetaDataPatchModel, jobProfileModel);
-
-            var response = await jobProfileService.Update(jobProfileModel).ConfigureAwait(false);
-
-            logger.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileModel.CanonicalName}. Response status - {response}");
+            var response = await jobProfileService.Update(jobProfileMetaDataPatchModel).ConfigureAwait(false);
+            logger.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileMetaDataPatchModel.CanonicalName}. Response status - {response}");
 
             return new StatusCodeResult((int)response);
         }
@@ -165,7 +153,6 @@ namespace DFC.App.JobProfile.Controllers
                 return BadRequest(ModelState);
             }
 
-            //var requestBaseAddress = Request.RequestBaseAddress(Url);
             var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
             logger.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
             return new StatusCodeResult((int)response);

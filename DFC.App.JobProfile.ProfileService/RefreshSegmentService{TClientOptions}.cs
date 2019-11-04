@@ -12,22 +12,20 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.ProfileService.SegmentServices
 {
-    public abstract class BaseSegmentService<TModel, TService> : IBaseSegmentService<TModel>
-        where TModel : ISegmentDataModel
+    public class RefreshSegmentService<TClientOptions> : Data.Contracts.SegmentServices.ISegmentRefreshService<TClientOptions>
+        where TClientOptions : SegmentClientOptions
     {
         private readonly HttpClient httpClient;
-        private readonly ILogger<TService> logger;
+        private readonly ILogger<TClientOptions> logger;
 
-        public BaseSegmentService(HttpClient httpClient, ILogger<TService> logger, SegmentClientOptions segmentClientOptions)
+        public RefreshSegmentService(HttpClient httpClient, ILogger<TClientOptions> logger, TClientOptions segmentClientOptions)
         {
             this.httpClient = httpClient;
             this.logger = logger;
             this.SegmentClientOptions = segmentClientOptions;
         }
 
-        public Guid DocumentId { get; set; }
-
-        public SegmentClientOptions SegmentClientOptions { get; set; }
+        public TClientOptions SegmentClientOptions { get; set; }
 
         public virtual async Task<HealthCheckItems> HealthCheckAsync()
         {

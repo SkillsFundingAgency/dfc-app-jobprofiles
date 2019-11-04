@@ -3,7 +3,6 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.ProfileService.Utilities;
 using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,35 +11,35 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.ProfileService
 {
-    public class SegmentService : ISegmentService
+    public class SegmentService : Data.Contracts.ISegmentService
     {
         private readonly ILogger<SegmentService> logger;
-        private readonly ICareerPathSegmentService careerPathSegmentService;
-        private readonly ICurrentOpportunitiesSegmentService currentOpportunitiesSegmentService;
-        private readonly IHowToBecomeSegmentService howToBecomeSegmentService;
-        private readonly IOverviewBannerSegmentService overviewBannerSegmentService;
-        private readonly IRelatedCareersSegmentService relatedCareersSegmentService;
-        private readonly IWhatItTakesSegmentService whatItTakesSegmentService;
-        private readonly IWhatYouWillDoSegmentService whatYouWillDoSegmentService;
+        private readonly ISegmentRefreshService<OverviewBannerSegmentClientOptions> overviewBannerSegmentService;
+        private readonly ISegmentRefreshService<HowToBecomeSegmentClientOptions> howToBecomeSegmentService;
+        private readonly ISegmentRefreshService<WhatItTakesSegmentClientOptions> whatItTakesSegmentService;
+        private readonly ISegmentRefreshService<WhatYouWillDoSegmentClientOptions> whatYouWillDoSegmentService;
+        private readonly ISegmentRefreshService<CareerPathSegmentClientOptions> careerPathSegmentService;
+        private readonly ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions> currentOpportunitiesSegmentService;
+        private readonly ISegmentRefreshService<RelatedCareersSegmentClientOptions> relatedCareersSegmentService;
 
         public SegmentService(
             ILogger<SegmentService> logger,
-            ICareerPathSegmentService careerPathSegmentService,
-            ICurrentOpportunitiesSegmentService currentOpportunitiesSegmentService,
-            IHowToBecomeSegmentService howToBecomeSegmentService,
-            IOverviewBannerSegmentService overviewBannerSegmentService,
-            IRelatedCareersSegmentService relatedCareersSegmentService,
-            IWhatItTakesSegmentService whatItTakesSegmentService,
-            IWhatYouWillDoSegmentService whatYouWillDoSegmentService)
+            ISegmentRefreshService<OverviewBannerSegmentClientOptions> overviewBannerSegmentService,
+            ISegmentRefreshService<HowToBecomeSegmentClientOptions> howToBecomeSegmentService,
+            ISegmentRefreshService<WhatItTakesSegmentClientOptions> whatItTakesSegmentService,
+            ISegmentRefreshService<WhatYouWillDoSegmentClientOptions> whatYouWillDoSegmentService,
+            ISegmentRefreshService<CareerPathSegmentClientOptions> careerPathSegmentService,
+            ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions> currentOpportunitiesSegmentService,
+            ISegmentRefreshService<RelatedCareersSegmentClientOptions> relatedCareersSegmentService)
         {
             this.logger = logger;
-            this.careerPathSegmentService = careerPathSegmentService;
-            this.currentOpportunitiesSegmentService = currentOpportunitiesSegmentService;
-            this.howToBecomeSegmentService = howToBecomeSegmentService;
             this.overviewBannerSegmentService = overviewBannerSegmentService;
-            this.relatedCareersSegmentService = relatedCareersSegmentService;
+            this.howToBecomeSegmentService = howToBecomeSegmentService;
             this.whatItTakesSegmentService = whatItTakesSegmentService;
             this.whatYouWillDoSegmentService = whatYouWillDoSegmentService;
+            this.careerPathSegmentService = careerPathSegmentService;
+            this.currentOpportunitiesSegmentService = currentOpportunitiesSegmentService;
+            this.relatedCareersSegmentService = relatedCareersSegmentService;
         }
 
         public async Task<SegmentModel> RefreshSegmentAsync(RefreshJobProfileSegment toRefresh)
@@ -189,8 +188,8 @@ namespace DFC.App.JobProfile.ProfileService
             return null;
         }
 
-        private async Task<SegmentModel> GetSegmentDataAsync<T>(IBaseSegmentService<T> segmentService, RefreshJobProfileSegment toRefresh)
-                    where T : ISegmentDataModel
+        private async Task<SegmentModel> GetSegmentDataAsync<T>(ISegmentRefreshService<T> segmentService, RefreshJobProfileSegment toRefresh)
+                    where T : SegmentClientOptions
         {
             var jsonResultTask = segmentService.GetJsonAsync(toRefresh.JobProfileId);
             var htmlResultTask = segmentService.GetMarkupAsync(toRefresh.JobProfileId);
@@ -202,7 +201,7 @@ namespace DFC.App.JobProfile.ProfileService
                 Segment = toRefresh.Segment,
                 RefreshedAt = DateTime.UtcNow,
                 RefreshSequence = toRefresh.SequenceNumber,
-                Markup = htmlResultTask?.IsCompletedSuccessfully == true ? new HtmlString(htmlResultTask.Result) : null,
+                Markup = htmlResultTask?.IsCompletedSuccessfully == true && htmlResultTask.Result != null ? new HtmlString(htmlResultTask.Result) : HtmlString.Empty,
                 Json = jsonResultTask?.IsCompletedSuccessfully == true ? jsonResultTask.Result : null,
                 RefreshStatus = jsonResultTask?.IsCompletedSuccessfully == true && htmlResultTask?.IsCompletedSuccessfully == true
                     ? Data.Enums.RefreshStatus.Success

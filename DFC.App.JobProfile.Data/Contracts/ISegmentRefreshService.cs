@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Contracts.SegmentServices
 {
-    public interface IBaseSegmentService<TModel>
-        where TModel : ISegmentDataModel
+    public interface ISegmentRefreshService<TClientOptions>
+        where TClientOptions : SegmentClientOptions
     {
-        Guid DocumentId { get; set; }
-
-        SegmentClientOptions SegmentClientOptions { get; set; }
+        TClientOptions SegmentClientOptions { get; set; }
 
         Task<HealthCheckItems> HealthCheckAsync();
 

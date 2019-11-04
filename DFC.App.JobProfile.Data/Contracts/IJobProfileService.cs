@@ -24,6 +24,8 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<HttpStatusCode> Update(Models.JobProfileModel jobProfileModel);
 
+        Task<HttpStatusCode> Update(Models.JobProfileMetadata jobProfileMetadata);
+
         Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel);
 
         Task<bool> DeleteAsync(Guid documentId);

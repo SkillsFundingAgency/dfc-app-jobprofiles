@@ -15,11 +15,6 @@ namespace DFC.App.JobProfile
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                          .UseApplicationInsights()
-                          .ConfigureLogging((webHostBuilderContext, loggingBuilder) =>
-                          {
-                              loggingBuilder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Trace);
-                          })
                           .UseStartup<Startup>();
         }
     }

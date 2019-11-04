@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.PatchModels;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {

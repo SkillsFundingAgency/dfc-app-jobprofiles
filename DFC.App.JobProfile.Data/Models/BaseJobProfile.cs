@@ -12,6 +12,7 @@ namespace DFC.App.JobProfile.Data
         [Required]
         public string CanonicalName { get; set; }
 
+        [Required]
         public long SequenceNumber { get; set; }
 
     }

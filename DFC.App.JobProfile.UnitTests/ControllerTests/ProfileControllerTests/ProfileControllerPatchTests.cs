@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.PatchModels;
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,42 +20,17 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var expectedResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeJobProfileService.Update(A<JobProfileMetadata>.Ignored)).Returns(HttpStatusCode.OK);
 
             // Act
             var result = await controller.Patch(jobProfileMetaDataPatchModel, documentId).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.Update(jobProfileMetaDataPatchModel)).MustHaveHappenedOnceExactly();
 
             var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
 
             A.Equals((int)HttpStatusCode.OK, statusCodeResult.StatusCode);
-
-            controller.Dispose();
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerPatchReturnsNotFound(string mediaTypeName)
-        {
-            // Arrange
-            Guid documentId = Guid.NewGuid();
-            var jobProfileMetaDataPatchModel = new JobProfileMetadata();
-            Data.Models.JobProfileModel expectedResult = null;
-            var controller = BuildProfileController(mediaTypeName);
-
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
-
-            // Act
-            var result = await controller.Patch(jobProfileMetaDataPatchModel, documentId).ConfigureAwait(false);
-
-            // Assert
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-
-            var statusResult = Assert.IsType<NotFoundResult>(result);
-
-            A.Equals((int)HttpStatusCode.NotFound, statusResult.StatusCode);
 
             controller.Dispose();
         }

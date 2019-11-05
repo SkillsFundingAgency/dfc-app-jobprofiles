@@ -87,13 +87,13 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(
                     d => d.CurrentOpportunitiesSegmentMarkup,
                     o => o.MapFrom(s => s.Segments
-                            .Where(m => m.Segment == Data.JobProfileSegment.CurrentOppurtunities)
+                            .Where(m => m.Segment == Data.JobProfileSegment.CurrentOpportunities)
                             .Select(seg => seg.Markup)
                             .SingleOrDefault()))
                 .ForMember(
                     d => d.CurrentOpportunitiesSegmentUpdated,
                     o => o.MapFrom(s => s.Segments
-                            .Where(m => m.Segment == Data.JobProfileSegment.CurrentOppurtunities)
+                            .Where(m => m.Segment == Data.JobProfileSegment.CurrentOpportunities)
                             .Select(seg => seg.RefreshedAt)
                             .SingleOrDefault()))
 

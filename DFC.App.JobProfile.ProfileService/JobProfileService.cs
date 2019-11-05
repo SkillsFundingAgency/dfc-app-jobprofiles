@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -133,22 +132,27 @@ namespace DFC.App.JobProfile.ProfileService
                 return HttpStatusCode.NotFound;
             }
 
+            var existingItem = existingJobProfile.Segments.SingleOrDefault(s => s.Segment == segmentRefresh.Segment);
+            if (existingItem?.RefreshSequence > segmentRefresh.SequenceNumber)
+            {
+                return HttpStatusCode.AlreadyReported;
+            }
+
             var offlineSegmentData = segmentService.GetOfflineSegment(segmentRefresh.Segment);
             var segmentData = await segmentService.RefreshSegmentAsync(segmentRefresh).ConfigureAwait(false);
-            if (existingJobProfile.Segments.Any(s => s.Segment == segmentData.Segment))
+            if (existingItem is null)
             {
-                var existingItem = existingJobProfile.Segments.Single(s => s.Segment == segmentData.Segment);
+                segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : offlineSegmentData.OfflineMarkup;
+                segmentData.Json = segmentData.Json ?? offlineSegmentData.OfflineJson;
+                existingJobProfile.Segments.Add(segmentData);
+            }
+            else
+            {
                 var index = existingJobProfile.Segments.IndexOf(existingItem);
                 segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : (!string.IsNullOrEmpty(existingItem.Markup?.Value) ? existingItem.Markup : offlineSegmentData.OfflineMarkup);
                 segmentData.Json = segmentData.Json is null ? existingItem.Json ?? offlineSegmentData.OfflineJson : segmentData.Json;
 
                 existingJobProfile.Segments[index] = segmentData;
-            }
-            else
-            {
-                segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : offlineSegmentData.OfflineMarkup;
-                segmentData.Json = segmentData.Json ?? offlineSegmentData.OfflineJson;
-                existingJobProfile.Segments.Add(segmentData);
             }
 
             var result = await repository.UpsertAsync(existingJobProfile).ConfigureAwait(false);

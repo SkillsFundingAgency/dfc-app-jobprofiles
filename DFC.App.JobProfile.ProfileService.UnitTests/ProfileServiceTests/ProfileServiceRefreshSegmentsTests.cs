@@ -84,8 +84,15 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
+            refreshJobProfileSegmentModel.Segment = Data.JobProfileSegment.Overview;
             var existingJobProfileModel = A.Fake<JobProfileModel>();
-            existingJobProfileModel.Segments = A.Fake<IList<SegmentModel>>();
+            existingJobProfileModel.Segments = new List<SegmentModel>
+            {
+                new SegmentModel
+                {
+                    Segment = Data.JobProfileSegment.Overview,
+                },
+            };
             var jobProfileModel = A.Fake<JobProfileModel>();
             var segmentModel = A.Dummy<SegmentModel>();
 

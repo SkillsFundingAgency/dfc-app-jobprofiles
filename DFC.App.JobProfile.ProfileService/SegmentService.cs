@@ -66,7 +66,7 @@ namespace DFC.App.JobProfile.ProfileService
                 case JobProfileSegment.CareerPathsAndProgression:
                     return await GetSegmentDataAsync(careerPathSegmentService, toRefresh).ConfigureAwait(false);
 
-                case JobProfileSegment.CurrentOppurtunities:
+                case JobProfileSegment.CurrentOpportunities:
                     return await GetSegmentDataAsync(currentOpportunitiesSegmentService, toRefresh).ConfigureAwait(false);
 
                 case JobProfileSegment.RelatedCareers:
@@ -133,7 +133,7 @@ namespace DFC.App.JobProfile.ProfileService
                         OfflineMarkup = new HtmlString(careerPathSegmentService.SegmentClientOptions.OfflineHtml),
                     };
 
-                case JobProfileSegment.CurrentOppurtunities:
+                case JobProfileSegment.CurrentOpportunities:
                     return new OfflineSegmentModel
                     {
                         OfflineMarkup = new HtmlString(currentOpportunitiesSegmentService.SegmentClientOptions.OfflineHtml),

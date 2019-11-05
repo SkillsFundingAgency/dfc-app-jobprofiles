@@ -187,8 +187,9 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                     Keywords = "some keywords or other",
                 },
                 SequenceNumber = 1,
-
+                SocLevelTwo = "21",
             };
+
             var jobProfileMetaDataPatchModel = new JobProfileModel()
             {
                 JobProfileId = documentId,
@@ -204,6 +205,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                     Keywords = "some keywords or other",
                 },
                 SequenceNumber = 2,
+                SocLevelTwo = "21",
             };
             var client = factory.CreateClient();
 
@@ -309,6 +311,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                     Description = "This is a description",
                     Keywords = "some keywords or other",
                 },
+                SocLevelTwo = "21",
             };
             var client = factory.CreateClient();
 
@@ -377,7 +380,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 DocumentId = documentId,
                 CanonicalName = documentId.ToString().ToUpperInvariant(),
-                SocLevelTwo = 12,
+                SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
                 IncludeInSitemap = true,
                 MetaTags = new MetaTags

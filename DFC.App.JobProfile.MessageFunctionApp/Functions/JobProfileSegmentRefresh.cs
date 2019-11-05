@@ -48,7 +48,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             var message = Encoding.UTF8.GetString(segmentRefreshMessage.Body);
 
             //Check whether we need to defer failed messages?
-            await processor.ProcessSegmentRefresEventAsync(message).ConfigureAwait(false);
+            await processor.ProcessSegmentRefresEventAsync(message, segmentRefreshMessage.SystemProperties.SequenceNumber).ConfigureAwait(false);
         }
     }
 }

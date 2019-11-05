@@ -23,7 +23,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             this.log = log;
         }
 
-        public async Task<HttpStatusCode> ProcessSegmentRefresEventAsync(string eventData)
+        public async Task<HttpStatusCode> ProcessSegmentRefresEventAsync(string eventData, long sequenceNumber)
         {
             if (string.IsNullOrWhiteSpace(eventData))
             {
@@ -31,8 +31,9 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             var refreshPayload = JsonConvert.DeserializeObject<RefreshJobProfileSegment>(eventData);
-            var result = await httpClientService.PostAsync(refreshPayload, "refresh").ConfigureAwait(false);
+            refreshPayload.SequenceNumber = sequenceNumber;
 
+            var result = await httpClientService.PostAsync(refreshPayload, "refresh").ConfigureAwait(false);
             if (result == HttpStatusCode.OK)
             {
                 log.LogInformation($"{nameof(ProcessSegmentRefresEventAsync)}: Segment: {refreshPayload.Segment} of job profile: '{refreshPayload.CanonicalName} - {refreshPayload.JobProfileId}' updated.");

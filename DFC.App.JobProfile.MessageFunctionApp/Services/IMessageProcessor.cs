@@ -11,6 +11,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
     {
         Task<HttpStatusCode> ProcessSitefinityMessageAsync(string message, string messageAction, string messageCtype, string messageContentId, long sequenceNumber);
 
-        Task<HttpStatusCode> ProcessSegmentRefresEventAsync(string eventData);
+        Task<HttpStatusCode> ProcessSegmentRefresEventAsync(string eventData, long sequenceNumber);
     }
 }

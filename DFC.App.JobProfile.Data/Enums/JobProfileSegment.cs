@@ -11,7 +11,7 @@ namespace DFC.App.JobProfile.Data
         WhatItTakes,
         WhatYouWillDo,
         CareerPathsAndProgression,
-        CurrentOppurtunities,
+        CurrentOpportunities,
         RelatedCareers,
     }
 }

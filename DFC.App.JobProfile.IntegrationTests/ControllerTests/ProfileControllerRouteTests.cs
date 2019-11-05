@@ -377,7 +377,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 DocumentId = documentId,
                 CanonicalName = documentId.ToString().ToUpperInvariant(),
-                SocLevelTwo = 12,
+                SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
                 IncludeInSitemap = true,
                 MetaTags = new MetaTags

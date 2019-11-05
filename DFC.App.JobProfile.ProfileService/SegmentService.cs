@@ -203,7 +203,8 @@ namespace DFC.App.JobProfile.ProfileService
                 RefreshSequence = toRefresh.SequenceNumber,
                 Markup = htmlResultTask?.IsCompletedSuccessfully == true && htmlResultTask.Result != null ? new HtmlString(htmlResultTask.Result) : HtmlString.Empty,
                 Json = jsonResultTask?.IsCompletedSuccessfully == true ? jsonResultTask.Result : null,
-                RefreshStatus = jsonResultTask?.IsCompletedSuccessfully == true && htmlResultTask?.IsCompletedSuccessfully == true
+                RefreshStatus = jsonResultTask?.IsCompletedSuccessfully == true
+                    && htmlResultTask?.IsCompletedSuccessfully == true
                     ? Data.Enums.RefreshStatus.Success
                     : Data.Enums.RefreshStatus.Failed,
             };

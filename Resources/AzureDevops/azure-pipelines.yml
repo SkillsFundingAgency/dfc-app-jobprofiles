@@ -1,0 +1,41 @@
+variables:
+    ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'     
+    SolutionBaseName: 'DFC.App.JobProfile'
+    BuildPlatform: 'any cpu'
+    BuildConfiguration: 'release'
+
+resources:
+  repositories:
+  - repository: self
+  - repository: dfc-devops
+    type: github
+    name: SkillsFundingAgency/dfc-devops
+    ref: refs/tags/v1.6.4
+    endpoint: 'GitHub (ESFA)'
+
+jobs:
+
+# #Build and test resources
+# - template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
+#   parameters:
+#     ArmTemplateRoot: $(ArmTemplateRoot)
+
+#Build and test application
+- job: BuildDotNetCore
+  displayName: Build-DotNetCore
+  pool:
+    name: NCS - CI and CD
+    demands:
+    - msbuild
+    - visualstudio
+
+  steps:
+  # Build DFC.App.JobProfile
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
+    parameters:
+      SolutionBaseName: $(SolutionBaseName)
+      BuildPlatform: $(BuildPlatform)
+      BuildConfiguration: $(BuildConfiguration)
+      DotNetCoreVersion: 2.2.402
+      PublishWebApp: true
+      TestSuffix: UnitTests

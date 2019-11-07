@@ -47,8 +47,14 @@
         "cosmosDbCollectionName": {
             "value": "__cosmosDbCollectionName__"
         },
+        "cmsTopicName": {
+            "value": "__cmsTopicName__"
+        },
         "cmsSubscriptionSqlFilter": {
             "value": "__cmsSubscriptionSqlFilter__"
+        },
+        "refreshTopicName": {
+            "value": "__refreshTopicName__"
         }
     }
 }

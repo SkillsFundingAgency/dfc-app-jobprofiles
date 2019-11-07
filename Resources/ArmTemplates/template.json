@@ -60,11 +60,25 @@
                 "description": "The name of the collection to create"
             }
         },
+        "cmsTopicName": {
+            "type": "string",
+            "defaultValue": "cms-messages",
+            "metadata": {
+                "description": "Name of CMS messages topic"
+            }
+        },
         "cmsSubscriptionSqlFilter": {
             "type": "string",
             "defaultValue": "",
             "metadata": {
                 "description": "Filter to apply to subscription (no filter applied if left blank)"
+            }
+        },
+        "refreshTopicName": {
+            "type": "string",
+            "defaultValue": "job-profile-refresh",
+            "metadata": {
+                "description": "Name of job profile refresh topic"
             }
         }
     },
@@ -89,9 +103,7 @@
         "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
         "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
         "functionAppInsightsName": "[concat(variables('functionAppName'), '-ai')]",
-        "cmsTopicName": "cms-messages",
         "cmsSubscriptionName": "job-profile-metadata",
-        "refreshTopicName": "job-profile-refresh",
         "refreshSubscriptionName": "job-profile-segment-refresh"
     },
     "resources": [
@@ -422,7 +434,7 @@
                             },
                             {
                                 "name": "cms-messages-topic",
-                                "value": "[variables('cmsTopicName')]"
+                                "value": "[parameters('cmsTopicName')]"
                             },
                             {
                                 "name": "cms-messages-subscription",
@@ -430,7 +442,7 @@
                             },
                             {
                                 "name": "job-profiles-refresh-topic",
-                                "value": "[variables('refreshTopicName')]"
+                                "value": "[parameters('refreshTopicName')]"
                             },
                             {
                                 "name": "job-profiles-refresh-subscription",
@@ -522,7 +534,7 @@
                         "value": "[parameters('appSharedServiceBusName')]"
                     },
                     "serviceBusTopicName": {
-                        "value": "[variables('cmsTopicName')]"
+                        "value": "[parameters('cmsTopicName')]"
                     },
                     "serviceBusTopicSubscriptionName": {
                         "value": "[variables('cmsSubscriptionName')]"
@@ -535,7 +547,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[variables('refreshTopicName')]",
+            "name": "[parameters('refreshTopicName')]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('appSharedResourceGroup')]",
             "properties": {
@@ -549,14 +561,14 @@
                         "value": "[parameters('appSharedServiceBusName')]"
                     },
                     "serviceBusTopicName": {
-                        "value": "[variables('refreshTopicName')]"
+                        "value": "[parameters('refreshTopicName')]"
                     }
                 }
             }
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat('monitor-',variables('refreshTopicName'))]",
+            "name": "[concat('monitor-',parameters('refreshTopicName'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('appSharedResourceGroup')]",
             "condition" : "[not(variables('productionEnvironment'))]",
@@ -568,10 +580,10 @@
                 },
                 "parameters": {
                     "authorizationRuleName": {
-                        "value": "[concat('monitor-',variables('refreshTopicName'))]"
+                        "value": "[concat('monitor-',parameters('refreshTopicName'))]"
                     },
                     "topicName": {
-                        "value": "[variables('refreshTopicName')]"
+                        "value": "[parameters('refreshTopicName')]"
                     },
                     "rights": {
                         "value": [
@@ -586,7 +598,7 @@
                 }
             },
             "dependsOn": [
-                "[variables('refreshTopicName')]"
+                "[parameters('refreshTopicName')]"
             ]
         },
         {
@@ -605,7 +617,7 @@
                         "value": "[parameters('appSharedServiceBusName')]"
                     },
                     "serviceBusTopicName": {
-                        "value": "[variables('refreshTopicName')]"
+                        "value": "[parameters('refreshTopicName')]"
                     },
                     "serviceBusTopicSubscriptionName": {
                         "value": "[variables('refreshSubscriptionName')]"
@@ -613,7 +625,7 @@
                 }
             },
             "dependsOn": [
-                "[variables('refreshTopicName')]"
+                "[parameters('refreshTopicName')]"
             ]
         }
     ],

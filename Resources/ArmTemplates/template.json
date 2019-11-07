@@ -339,6 +339,10 @@
                             {
                                 "name": "WhatYouWillDoSegmentClientOptions__OfflineHtml",
                                 "value": "<H2>What you will do - Unavailable</H2>"
+                            },
+                            {
+                                "name": "Logging__ApplicationInsights__LogLevel__Default",
+                                "value": "Information"
                             }
                         ]
                     }

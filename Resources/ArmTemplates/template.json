@@ -463,6 +463,10 @@
                             {
                                 "name": "jobProfileClientOptions__DeleteEndpoint",
                                 "value": "profile/{0}"
+                            },
+                            {
+                                "name": "Logging__ApplicationInsights__LogLevel__Default",
+                                "value": "Information"
                             }
                         ]
                     }

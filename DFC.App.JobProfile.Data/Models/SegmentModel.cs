@@ -13,7 +13,10 @@ namespace DFC.App.JobProfile.Data.Models
 
         public HtmlString Markup { get; set; }
 
-        public string Json { get; set; }
+        public string JsonV1 { get; set; }
+
+        [JsonIgnore]
+        public string Json { get => JsonV1; set => JsonV1 = value; }
 
         public DateTime RefreshedAt { get; set; }
 

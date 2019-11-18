@@ -254,7 +254,7 @@
                             },
                             {
                                 "name": "OverviewBannerSegmentClientOptions__OfflineHtml",
-                                "value": "<H2>Overview banner - Unavailable</H2>"
+                                "value": "<header class=\\\"job-profile-hero\\\"><div class=\\\"govuk-width-container\\\"><div class=\\\"govuk-grid-row\\\"><div class=\\\"govuk-grid-column-two-thirds\\\"><div class=\\\"govuk-inset-text\\\">The information in this section is currently unavailable. Try again later.</div></div></div></div></header>"
                             },
                             {
                                 "name": "CurrentOpportunitiesSegmentClientOptions__Timeout",
@@ -270,7 +270,7 @@
                             },
                             {
                                 "name": "CurrentOpportunitiesSegmentClientOptions__OfflineHtml",
-                                "value": "<H2>Current opportunities - Unavailable</H2>"
+                                "value": "<section id=\\\"CurrentOpportunities\\\"> <h2 class=\\\"job-profile-heading\\\">Current opportunities</h2> <div class=\\\"govuk-inset-text\\\">The information in this section is currently unavailable. Try again later.</div></section>"
                             },
                             {
                                 "name": "CareerPathSegmentClientOptions__Timeout",
@@ -286,7 +286,7 @@
                             },
                             {
                                 "name": "CareerPathSegmentClientOptions__OfflineHtml",
-                                "value": "<H2>Career path - Unavailable</H2>"
+                                "value": "<section id=\\\"CareerPathAndProgression\\\"> <h2 class=\\\"job-profile-heading\\\">Career path and progression</h2> <div class=\\\"govuk-inset-text\\\">The information in this section is currently unavailable. Try again later.</div></section>"
                             },
                             {
                                 "name": "HowToBecomeSegmentClientOptions__Timeout",

@@ -318,7 +318,7 @@
                             },
                             {
                                 "name": "RelatedCareersSegmentClientOptions__OfflineHtml",
-                                "value": "<H2>Related careers - Unavailable</H2>"
+                                "value": "<div class=\\\"job-profile-related\\\"> <h3 class=\\\"govuk-heading-m\\\">Related careers</h3><div class=\\\"govuk-inset-text\\\">The information in this section is currently unavailable. Try again later.</div></div>"
                             },
                             {
                                 "name": "WhatItTakesSegmentClientOptions__Timeout",
@@ -334,7 +334,7 @@
                             },
                             {
                                 "name": "WhatItTakesSegmentClientOptions__OfflineHtml",
-                                "value": "<H2>What it takes - Unavailable</H2>"
+                                "value": "<section id=\\\"WhatItTakes\\\"><h2 class=\\\"job-profile-heading\\\">What it takes</h2><div class=\\\"govuk-inset-text\\\">The information in this section is currently unavailable. Try again later.</div></section>"
                             },
                             {
                                 "name": "WhatYouWillDoSegmentClientOptions__Timeout",
@@ -350,7 +350,7 @@
                             },
                             {
                                 "name": "WhatYouWillDoSegmentClientOptions__OfflineHtml",
-                                "value": "<H2>What you will do - Unavailable</H2>"
+                                "value": "<section id=\\\"WhatYouWillDo\\\"><h2 class=\\\"job-profile-heading\\\">What you\\'ll do</h2><div class=\\\"govuk-inset-text\\\">The information in this section is currently unavailable. Try again later.</div></section>"
                             },
                             {
                                 "name": "Logging__ApplicationInsights__LogLevel__Default",

@@ -302,7 +302,7 @@
                             },
                             {
                                 "name": "HowToBecomeSegmentClientOptions__OfflineHtml",
-                                "value": "<H2>How to become - Unavailable</H2>"
+                                "value": "<section id=\\\"HowToBecome\\\"><h2 class=\\\"job-profile-heading\\\">How to become</h2><div class=\\\"govuk-inset-text\\\">The information in this section is currently unavailable. Try again later.</div></section>"
                             },
                             {
                                 "name": "RelatedCareersSegmentClientOptions__Timeout",

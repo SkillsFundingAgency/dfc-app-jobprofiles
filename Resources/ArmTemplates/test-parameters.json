@@ -1,0 +1,39 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appServiceDomain": {
+            "value": "azurewebsites.net"
+        },
+        "appSharedResourceGroup": {
+            "value": "dfc-dev-app-sharedresources-rg"
+        },
+        "appSharedServiceBusName": {
+            "value": "dfc-dev-app-sharedresources-ns"
+        },
+        "appSharedStorageAccountName": {
+            "value": "dfcdevappsharedstr"
+        },
+        "brandingAssetsAppCssFilePath": {
+            "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
+        },
+        "cosmosDBName": {
+            "value": "dfc-dev-app-sharedresources-cdb"
+        },
+        "cosmosDbKey": {
+            "value": "not-a-real-key"
+        },
+        "Environment": {
+            "value": "FOO"
+        },
+        "sharedAppServicePlanName": {
+            "value": "dfc-dev-app-shared-asp"
+        },
+        "sharedAppServicePlanResourceGroup": {
+            "value": "dfc-dev-app-sharedresources-rg"
+        },
+        "cosmosDbCollectionName": {
+            "value": "a-collection"
+        }
+    }
+}

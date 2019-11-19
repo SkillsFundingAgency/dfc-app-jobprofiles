@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "09668fdd-715c-497c-8cf1-b7126c0b04ac",
+		"name": "SetUpJobProfiles",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "App",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \n\t\"Path\": \"jobprofile\",\n    \"TopNavigationText\": \"Job Profiles\",\n    \"TopNavigationOrder\": 400,\n    \"Layout\": \"FullWidth\",\n    \"OfflineHtml\": \"<H2>Job Profile Service Unavailable</H2>\",\n    \"SitemapUrl\": \"https://localhost:44314/sitemap.xml\",\n    \"robotsURL\": \"https://localhost:44314/robots.txt\"\n}"
+				},
+				"url": {
+					"raw": "{{PathRootUrl}}paths",
+					"host": [
+						"{{PathRootUrl}}paths"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "App get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{PathRootUrl}}paths/jobprofile",
+					"host": [
+						"{{PathRootUrl}}paths"
+					],
+					"path": [
+						"jobprofile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegionHead",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \r\n\t\"Path\": \"jobprofile\",\r\n\t\"PageRegion\": \"Head\",\r\n    \"RegionEndpoint\": \"https://localhost:44314/profile/{0}/htmlhead\",\r\n    \"HeathCheckRequired\": false,\r\n    \"OfflineHtml\": null \r\n}"
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/jobprofile/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"jobprofile",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Region get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/jobprofile/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"jobprofile",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegionBreadcrumb",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \r\n\t\"Path\": \"jobprofile\", \r\n\t\"PageRegion\": \"Breadcrumb\",\r\n    \"RegionEndpoint\": \"https://localhost:44314/profile/{0}/breadcrumb\",\r\n    \"HeathCheckRequired\": false,\r\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\"\r\n}"
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/jobprofile/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"jobprofile",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegionBody",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \n\t\"Path\": \"jobprofile\",\n\t\"PageRegion\": \"Body\",\n    \"RegionEndpoint\": \"https://localhost:44314/profile/{0}/contents\",\n    \"HeathCheckRequired\": true,\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\"\n}"
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/jobprofile/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"jobprofile",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JobProfile health status get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://localhost:44314/profile/contents/health?",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44314",
+					"path": [
+						"profile",
+						"contents",
+						"health"
+					],
+					"query": [
+						{
+							"key": "Accept",
+							"value": "application/json",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JobProfile Ping get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://localhost:44314/health/ping?",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44314",
+					"path": [
+						"health",
+						"ping"
+					],
+					"query": [
+						{
+							"key": "Accept",
+							"value": "application/json",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

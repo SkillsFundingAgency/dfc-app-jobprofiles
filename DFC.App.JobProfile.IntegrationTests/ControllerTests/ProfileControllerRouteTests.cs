@@ -34,9 +34,14 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             new object[] { $"/profile/{DataSeeding.DefaultArticleGuid}/profile" },
         };
 
-        public static IEnumerable<object[]> MissingprofileContentRouteData => new List<object[]>
+        public static IEnumerable<object[]> MissingProfileContentRouteData => new List<object[]>
         {
             new object[] { $"/profile/invalid-profile-name" },
+        };
+
+        public static IEnumerable<object[]> ProfileContentRedirectRouteData => new List<object[]>
+        {
+            new object[] { $"/profile/contents" },
         };
 
         [Theory]
@@ -76,8 +81,24 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Theory]
-        [MemberData(nameof(MissingprofileContentRouteData))]
+        [MemberData(nameof(MissingProfileContentRouteData))]
         public async Task GetProfileHtmlContentEndpointsReturnNotFound(string url)
+        {
+            // Arrange
+            var uri = new Uri(url, UriKind.Relative);
+            var client = factory.CreateClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            // Act
+            var response = await client.GetAsync(uri).ConfigureAwait(false);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Theory]
+        [MemberData(nameof(ProfileContentRedirectRouteData))]
+        public async Task GetProfileHtmlContentEndpointsReturnRedirection(string url)
         {
             // Arrange
             var uri = new Uri(url, UriKind.Relative);

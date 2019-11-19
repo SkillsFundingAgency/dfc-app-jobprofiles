@@ -10,7 +10,7 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/tags/v1.6.4
+    ref: refs/tags/v1.6.12
     endpoint: 'GitHub (ESFA)'
 
 jobs:
@@ -24,14 +24,14 @@ jobs:
 - job: BuildDotNetCore
   displayName: Build-DotNetCore
   pool:
-    name: Continuous Integration 02 - SSD - 160ACU
+    name: NCS - CI and CD
     demands:
     - msbuild
     - visualstudio
 
   steps:
   # Build DFC.App.JobProfile
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-sonar.yml@dfc-devops
     parameters:
       SolutionBaseName: $(SolutionBaseName)
       BuildPlatform: $(BuildPlatform)
@@ -39,20 +39,3 @@ jobs:
       DotNetCoreVersion: 2.2.402
       PublishWebApp: true
       TestSuffix: UnitTests
-
-  # Build DFC.App.JobProfile.MessageFunctionApp
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-notests.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).MessageFunctionApp
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration)
-      DotNetCoreVersion: 2.2.402
-
-  # Test DFC.App.JobProfile.ProfileService (an artifact will be built but isn't consumed in the release) 
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build.yml@dfc-devops
-    parameters:
-      SolutionBaseName: $(SolutionBaseName).ProfileService
-      BuildPlatform: $(BuildPlatform)
-      BuildConfiguration: $(BuildConfiguration)
-      DotNetCoreVersion: 2.2.402
-      TestSuffix: UnitTests      

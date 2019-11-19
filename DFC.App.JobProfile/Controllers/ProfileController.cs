@@ -215,6 +215,15 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
+        [Route("profile/contents")]
+        public IActionResult Contents()
+        {
+            logger.LogInformation($"{nameof(Contents)} has been called");
+
+            return Redirect("/explore-careers");
+        }
+
+        [HttpGet]
         [Route("profile/{article}/contents")]
         public async Task<IActionResult> Body(string article)
         {

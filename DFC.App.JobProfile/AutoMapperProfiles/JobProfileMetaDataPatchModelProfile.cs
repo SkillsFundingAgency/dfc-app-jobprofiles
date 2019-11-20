@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
+    [ExcludeFromCodeCoverage]
     public class JobProfileMetaDataPatchModelProfile : Profile
     {
         public JobProfileMetaDataPatchModelProfile()

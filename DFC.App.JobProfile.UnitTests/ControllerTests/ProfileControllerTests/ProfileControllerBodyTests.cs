@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.Segments;
 using DFC.App.JobProfile.ViewModels;
 using FakeItEasy;
 using FluentAssertions;

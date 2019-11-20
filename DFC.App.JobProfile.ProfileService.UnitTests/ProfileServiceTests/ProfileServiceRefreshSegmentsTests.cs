@@ -16,8 +16,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "RefreshSegments Tests")]
     public class ProfileServiceRefreshSegmentsTests
     {
-        private readonly Uri dummyBaseAddressUri = new Uri("https://localhost:12345/");
-        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
+        private readonly ICosmosRepository<JobProfileModel> repository;
 
         private readonly ISegmentService segmentService;
         private readonly IMapper mapper;

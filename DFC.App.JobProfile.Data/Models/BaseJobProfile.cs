@@ -14,6 +14,5 @@ namespace DFC.App.JobProfile.Data
 
         [Required]
         public long SequenceNumber { get; set; }
-
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
 {
+    [ExcludeFromCodeCoverage]
     public class JobProfileMessage
     {
         [Required]

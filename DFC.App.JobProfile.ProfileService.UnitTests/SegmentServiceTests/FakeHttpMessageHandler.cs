@@ -19,9 +19,12 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         {
             var memStream = new MemoryStream();
 
-            var sw = new StreamWriter(memStream);
-            sw.Write(content);
-            sw.Flush();
+            using (var sw = new StreamWriter(memStream))
+            {
+                sw.Write(content);
+                sw.Flush();
+            }
+
             memStream.Position = 0;
 
             var httpContent = new StreamContent(memStream);

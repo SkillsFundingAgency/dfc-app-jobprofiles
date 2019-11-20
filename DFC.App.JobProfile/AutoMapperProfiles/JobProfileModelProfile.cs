@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ViewModels;
-using Microsoft.AspNetCore.Html;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
+    [ExcludeFromCodeCoverage]
     public class JobProfileModelProfile : Profile
     {
         public JobProfileModelProfile()

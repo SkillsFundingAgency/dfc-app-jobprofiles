@@ -29,7 +29,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             new object[] { "/profile" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/htmlhead" },
-            //new object[] { $"/profile/{DataSeeding.DefaultArticleName}/breadcrumb" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/breadcrumb" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/contents" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleGuid}/profile" },
         };
@@ -134,7 +134,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                     Keywords = "some keywords or other",
                 },
                 SequenceNumber = 1,
-
             };
             var client = factory.CreateClient();
 
@@ -169,7 +168,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                     Keywords = "some keywords or other",
                 },
                 SequenceNumber = 1,
-
             };
             var client = factory.CreateClient();
 
@@ -272,7 +270,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                     Keywords = "some keywords or other",
                 },
                 SequenceNumber = 1,
-
             };
             var jobProfileMetaDataPatchModel = new JobProfileModel()
             {
@@ -338,7 +335,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             client.DefaultRequestHeaders.Accept.Clear();
 
-            var request = new HttpRequestMessage(HttpMethod.Patch, url);
+            using var request = new HttpRequestMessage(HttpMethod.Patch, url);
 
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));

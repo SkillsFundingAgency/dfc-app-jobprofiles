@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.AutoMapperProfile
 {
+    [ExcludeFromCodeCoverage]
     public class SitefinityMessagesMapperProfile : Profile
     {
         public SitefinityMessagesMapperProfile()

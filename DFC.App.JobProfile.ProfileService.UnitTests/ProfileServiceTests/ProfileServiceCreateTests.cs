@@ -54,7 +54,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             // arrange
             var jobProfileModel = A.Fake<JobProfileModel>();
             var expectedResult = HttpStatusCode.AlreadyReported;
-            JobProfileModel nullModel = null;
 
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(jobProfileModel);
 

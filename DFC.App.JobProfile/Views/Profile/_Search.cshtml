@@ -1,0 +1,13 @@
+﻿<div class="job-profile-sidebar">
+    <h3 id="job-profile-search" class="govuk-heading-m">Not what you're looking for?</h3>
+    <div class="job-profile-search">
+        <h4>Search further careers</h4>
+        <form action="/search-results" class="js-live-search-form site-search ui-front" id="job-profile-search-box" method="get">
+            <label for="search-main"> Enter a job title</label>
+            <div class="search-input-wrapper">
+                <input id="search-main" name="SearchTerm" type="search" class="search-input js-search-focus js-autocomplete ui-autocomplete-input" data-autocomplete-fuzzysearch="True" data-autocomplete-maxlength="7" data-autocomplete-maxnumberdisplyed="5" data-autocomplete-minlength="2" data-autocomplete-source="/searchautocomplete" value="" autocomplete="off">
+            </div>
+            <button class="submit" type="submit" value="Search">Search</button>
+        </form>
+    </div>
+</div>

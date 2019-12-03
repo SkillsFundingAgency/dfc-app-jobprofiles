@@ -29,7 +29,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             new object[] { "/profile" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/htmlhead" },
-            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/breadcrumb" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/contents" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleGuid}/profile" },
         };

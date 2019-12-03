@@ -203,19 +203,6 @@ namespace DFC.App.JobProfile.Controllers
             return this.NegotiateContentResult(viewModel);
         }
 
-        [Route("profile/{article}/breadcrumb")]
-        public async Task<IActionResult> Breadcrumb(string article)
-        {
-            logger.LogInformation($"{nameof(Breadcrumb)} has been called");
-
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
-            var viewModel = BuildBreadcrumb(jobProfileModel);
-
-            logger.LogInformation($"{nameof(Breadcrumb)} has returned content for: {article}");
-
-            return this.NegotiateContentResult(viewModel);
-        }
-
         [HttpGet]
         [Route("profile/contents")]
         public IActionResult Contents()

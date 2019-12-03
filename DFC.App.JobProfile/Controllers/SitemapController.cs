@@ -28,7 +28,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 logger.LogInformation("Generating Sitemap");
 
-                var sitemapUrlPrefix = $"{Request.GetBaseAddress()}/{ProfileController.ProfilePathRoot}";
+                var sitemapUrlPrefix = GenerateSitemapUrlPrefix();
                 var sitemap = new Sitemap();
 
                 var jobProfileModels = await jobProfileService.GetAllAsync().ConfigureAwait(false);
@@ -67,6 +67,28 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             return null;
+        }
+
+        private string GenerateSitemapUrlPrefix()
+        {
+            const string xForwardedProto = "x-forwarded-prot";
+            const string xOriginalHost = "x-original-host";
+
+            Request.Headers.TryGetValue(xForwardedProto, out var xForwardedProtoValue);
+            Request.Headers.TryGetValue(xOriginalHost, out var xOriginalHostValue);
+
+            string jpBaseName;
+
+            if (!string.IsNullOrWhiteSpace(xForwardedProtoValue) && !string.IsNullOrWhiteSpace(xOriginalHostValue))
+            {
+                jpBaseName = $"{xForwardedProtoValue}://{xOriginalHostValue}";
+            }
+            else
+            {
+                jpBaseName = Request.GetBaseAddress().ToString();
+            }
+
+            return $"{jpBaseName.TrimEnd('/')}/{ProfileController.ProfilePathRoot}";
         }
     }
 }

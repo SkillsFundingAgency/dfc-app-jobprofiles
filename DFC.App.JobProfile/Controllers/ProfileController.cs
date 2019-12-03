@@ -193,7 +193,24 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
 
-                viewModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
+                const string xForwardedProto = "x-forwarded-prot";
+                const string xOriginalHost = "x-original-host";
+
+                Request.Headers.TryGetValue(xForwardedProto, out var xForwardedProtoValue);
+                Request.Headers.TryGetValue(xOriginalHost, out var xOriginalHostValue);
+
+                string jpBaseName;
+
+                if (!string.IsNullOrWhiteSpace(xForwardedProtoValue) && !string.IsNullOrWhiteSpace(xOriginalHostValue))
+                {
+                    jpBaseName = $"{xForwardedProtoValue}://{xOriginalHostValue}";
+                }
+                else
+                {
+                    jpBaseName = Request.GetBaseAddress().ToString();
+                }
+
+                viewModel.CanonicalUrl = $"{jpBaseName.TrimEnd('/')}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
 
             logger.LogInformation($"{nameof(Head)} has returned content for: {article}");

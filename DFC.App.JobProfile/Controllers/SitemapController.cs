@@ -85,7 +85,7 @@ namespace DFC.App.JobProfile.Controllers
             }
             else
             {
-                jpBaseName = Request.GetBaseAddress().ToString();
+                jpBaseName = Request.GetBaseAddress()?.ToString() ?? string.Empty;
             }
 
             return $"{jpBaseName.TrimEnd('/')}/{ProfileController.ProfilePathRoot}";

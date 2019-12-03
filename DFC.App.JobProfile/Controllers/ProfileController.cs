@@ -207,7 +207,7 @@ namespace DFC.App.JobProfile.Controllers
                 }
                 else
                 {
-                    jpBaseName = Request.GetBaseAddress().ToString();
+                    jpBaseName = Request.GetBaseAddress()?.ToString() ?? string.Empty;
                 }
 
                 viewModel.CanonicalUrl = $"{jpBaseName.TrimEnd('/')}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";

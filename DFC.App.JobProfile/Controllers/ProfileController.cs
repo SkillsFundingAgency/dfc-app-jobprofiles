@@ -193,23 +193,12 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
 
-                viewModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
+                var jpBaseName = Request.GetBaseAddress()?.ToString().TrimEnd('/');
+
+                viewModel.CanonicalUrl = $"{jpBaseName}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
 
             logger.LogInformation($"{nameof(Head)} has returned content for: {article}");
-
-            return this.NegotiateContentResult(viewModel);
-        }
-
-        [Route("profile/{article}/breadcrumb")]
-        public async Task<IActionResult> Breadcrumb(string article)
-        {
-            logger.LogInformation($"{nameof(Breadcrumb)} has been called");
-
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
-            var viewModel = BuildBreadcrumb(jobProfileModel);
-
-            logger.LogInformation($"{nameof(Breadcrumb)} has returned content for: {article}");
 
             return this.NegotiateContentResult(viewModel);
         }

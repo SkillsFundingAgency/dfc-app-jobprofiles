@@ -12,8 +12,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
         public JobProfileModelProfile()
         {
             CreateMap<JobProfileModel, JobProfileModel>();
-            CreateMap<JobProfileModel, BodyViewModel>()
-                ;
+            CreateMap<JobProfileModel, BodyViewModel>();
+            CreateMap<JobProfileModel, HeroViewModel>();
 
             CreateMap<JobProfileModel, DocumentViewModel>()
                 .ForMember(d => d.Breadcrumb, s => s.Ignore())

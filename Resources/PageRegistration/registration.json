@@ -18,6 +18,11 @@
 				"RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/profile/{0}/contents",
 				"OfflineHtml": "<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>",
 				"HealthCheckRequired": true
+			},
+			{
+				"PageRegion": 8,
+				"RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/profile/{0}/hero",
+				"OfflineHtml": "<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>"
 			}
 		]
 	}

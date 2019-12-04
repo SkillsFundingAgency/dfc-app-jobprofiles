@@ -204,6 +204,29 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
+        [Route("profile/{article}/hero")]
+        public async Task<IActionResult> Hero(string article)
+        {
+            logger.LogInformation($"{nameof(Hero)} has been called");
+
+            var viewModel = new HeroViewModel();
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+
+                logger.LogInformation($"{nameof(Hero)} has returned content for: {article}");
+
+                return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
+            }
+
+            logger.LogWarning($"{nameof(Hero)} has not returned any content for: {article}");
+
+            return NotFound();
+        }
+
+        [HttpGet]
         [Route("profile/contents")]
         public IActionResult Contents()
         {

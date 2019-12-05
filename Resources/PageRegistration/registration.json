@@ -1,7 +1,7 @@
 [
 	{	
 		"Path": "job-profiles",
-		"TopNavigationText": null,
+		"TopNavigationText": "Explore careers",
 		"TopNavigationOrder": 400,
 		"Layout": 1,
 		"OfflineHtml": "<div class=\"govuk-width-container\"><H2>Job Profile Service Unavailable</H2></div>",

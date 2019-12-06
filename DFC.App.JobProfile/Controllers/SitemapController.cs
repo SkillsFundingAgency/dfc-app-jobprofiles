@@ -28,8 +28,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 logger.LogInformation("Generating Sitemap");
 
-                var jpBaseName = Request.GetBaseAddress()?.ToString().TrimEnd('/');
-                var sitemapUrlPrefix = $"{jpBaseName}/{ProfileController.ProfilePathRoot}";
+                var sitemapUrlPrefix = $"{Request.GetBaseAddress()}{ProfileController.ProfilePathRoot}";
                 var sitemap = new Sitemap();
 
                 var jobProfileModels = await jobProfileService.GetAllAsync().ConfigureAwait(false);

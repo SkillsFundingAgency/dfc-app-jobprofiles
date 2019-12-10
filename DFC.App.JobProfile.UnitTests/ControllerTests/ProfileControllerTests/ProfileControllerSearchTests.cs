@@ -1,12 +1,8 @@
 ﻿using DFC.App.JobProfile.Controllers;
-using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.ViewModels;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using System.Net.Mime;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -15,7 +11,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     public class ProfileControllerSearchTests : BaseProfileController
     {
         [Fact]
-        public async Task JobProfileControllerSearchRedirectsToSearchResults()
+        public void JobProfileControllerSearchRedirectsToSearchResults()
         {
             // Arrange
             const string jobProfileUrl = "an-article";
@@ -23,7 +19,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(MediaTypeNames.Text.Html);
 
             // Act
-            var result = await controller.Search(jobProfileUrl, searchTerm).ConfigureAwait(false);
+            var result = controller.Search(jobProfileUrl, searchTerm);
 
             // Assert
             var statusResult = Assert.IsType<RedirectResult>(result);
@@ -36,7 +32,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         }
 
         [Fact]
-        public async Task JobProfileControllerSearchRedirectsToSelfForNullSearchTerm()
+        public void JobProfileControllerSearchRedirectsToSelfForNullSearchTerm()
         {
             // Arrange
             const string jobProfileUrl = "an-article";
@@ -44,7 +40,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(MediaTypeNames.Text.Html);
 
             // Act
-            var result = await controller.Search(jobProfileUrl, searchTerm).ConfigureAwait(false);
+            var result = controller.Search(jobProfileUrl, searchTerm);
 
             // Assert
             var statusResult = Assert.IsType<RedirectResult>(result);

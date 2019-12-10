@@ -286,6 +286,23 @@ namespace DFC.App.JobProfile.Controllers
             return NoContent();
         }
 
+        [HttpGet]
+        [Route("profile/search/action")]
+        public async Task<IActionResult> Search(string jobProfileUrl, string searchTerm)
+        {
+            logger.LogInformation($"{nameof(Search)} has been called");
+
+            jobProfileUrl = jobProfileUrl?.Split('/').FirstOrDefault();
+
+            var redirectTo = string.IsNullOrWhiteSpace(searchTerm)
+                ? $"/{ProfilePathRoot}/{jobProfileUrl}"
+                : $"/search-results?{nameof(searchTerm)}={searchTerm}";
+
+            logger.LogInformation($"{nameof(Search)} redirecting to: {redirectTo}");
+
+            return Redirect(redirectTo);
+        }
+
         #region Define helper methods
 
         private static BreadcrumbViewModel BuildBreadcrumb(Data.Models.JobProfileModel jobProfileModel)

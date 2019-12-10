@@ -42,6 +42,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         public static IEnumerable<object[]> ProfileContentRedirectRouteData => new List<object[]>
         {
             new object[] { $"/profile/contents" },
+            new object[] { $"/profile/search/action" },
         };
 
         [Theory]

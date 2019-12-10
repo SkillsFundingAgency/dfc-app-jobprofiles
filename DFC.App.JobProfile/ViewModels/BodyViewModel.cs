@@ -5,6 +5,8 @@ namespace DFC.App.JobProfile.ViewModels
 {
     public class BodyViewModel
     {
+        public string CanonicalName { get; set; }
+
         public IList<SegmentModel> Segments { get; set; }
     }
 }

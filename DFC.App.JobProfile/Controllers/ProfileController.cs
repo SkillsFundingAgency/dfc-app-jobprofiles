@@ -193,9 +193,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
 
-                var jpBaseName = Request.GetBaseAddress()?.ToString().TrimEnd('/');
-
-                viewModel.CanonicalUrl = $"{jpBaseName}/{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
+                viewModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
 
             logger.LogInformation($"{nameof(Head)} has returned content for: {article}");
@@ -255,7 +253,7 @@ namespace DFC.App.JobProfile.Controllers
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
             if (alternateJobProfileModel != null)
             {
-                var alternateUrl = $"{Request.GetBaseAddress()}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                var alternateUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
                 logger.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
                 return RedirectPermanentPreserveMethod(alternateUrl);

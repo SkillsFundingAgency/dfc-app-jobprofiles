@@ -288,7 +288,7 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpGet]
         [Route("profile/search/action")]
-        public async Task<IActionResult> Search(string jobProfileUrl, string searchTerm)
+        public IActionResult Search(string jobProfileUrl, string searchTerm)
         {
             logger.LogInformation($"{nameof(Search)} has been called");
 

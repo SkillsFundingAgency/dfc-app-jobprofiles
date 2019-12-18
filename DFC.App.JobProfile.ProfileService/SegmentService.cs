@@ -3,8 +3,8 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
+using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ namespace DFC.App.JobProfile.ProfileService
 {
     public class SegmentService : Data.Contracts.ISegmentService
     {
-        private readonly ILogger<SegmentService> logger;
+        private readonly ILogService logService;
         private readonly ISegmentRefreshService<OverviewBannerSegmentClientOptions> overviewBannerSegmentService;
         private readonly ISegmentRefreshService<HowToBecomeSegmentClientOptions> howToBecomeSegmentService;
         private readonly ISegmentRefreshService<WhatItTakesSegmentClientOptions> whatItTakesSegmentService;
@@ -23,7 +23,7 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ISegmentRefreshService<RelatedCareersSegmentClientOptions> relatedCareersSegmentService;
 
         public SegmentService(
-            ILogger<SegmentService> logger,
+            ILogService logService,
             ISegmentRefreshService<OverviewBannerSegmentClientOptions> overviewBannerSegmentService,
             ISegmentRefreshService<HowToBecomeSegmentClientOptions> howToBecomeSegmentService,
             ISegmentRefreshService<WhatItTakesSegmentClientOptions> whatItTakesSegmentService,
@@ -32,7 +32,7 @@ namespace DFC.App.JobProfile.ProfileService
             ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions> currentOpportunitiesSegmentService,
             ISegmentRefreshService<RelatedCareersSegmentClientOptions> relatedCareersSegmentService)
         {
-            this.logger = logger;
+            this.logService = logService;
             this.overviewBannerSegmentService = overviewBannerSegmentService;
             this.howToBecomeSegmentService = howToBecomeSegmentService;
             this.whatItTakesSegmentService = whatItTakesSegmentService;

@@ -1,8 +1,8 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
+using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Net.Mime;
@@ -12,12 +12,12 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class SitemapController : Controller
     {
-        private readonly ILogger<SitemapController> logger;
+        private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
 
-        public SitemapController(ILogger<SitemapController> logger, IJobProfileService jobProfileService)
+        public SitemapController(ILogService logService, IJobProfileService jobProfileService)
         {
-            this.logger = logger;
+            this.logService = logService;
             this.jobProfileService = jobProfileService;
         }
 
@@ -26,7 +26,7 @@ namespace DFC.App.JobProfile.Controllers
         {
             try
             {
-                logger.LogInformation("Generating Sitemap");
+                logService.LogInformation("Generating Sitemap");
 
                 var sitemapUrlPrefix = $"{Request.GetBaseAddress()}{ProfileController.ProfilePathRoot}";
                 var sitemap = new Sitemap();
@@ -57,13 +57,13 @@ namespace DFC.App.JobProfile.Controllers
                 // extract the sitemap
                 var xmlString = sitemap.WriteSitemapToString();
 
-                logger.LogInformation("Generated Sitemap");
+                logService.LogInformation("Generated Sitemap");
 
                 return Content(xmlString, MediaTypeNames.Application.Xml);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{nameof(Sitemap)}: {ex.Message}");
+                logService.LogError($"{nameof(Sitemap)}: {ex.Message}");
             }
 
             return null;

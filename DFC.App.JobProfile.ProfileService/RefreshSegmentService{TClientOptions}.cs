@@ -1,8 +1,7 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Contracts.SegmentServices;
-using DFC.App.JobProfile.Data.HttpClientPolicies;
+﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
-using Microsoft.Extensions.Logging;
+using DFC.Logger.AppInsights.Constants;
+using DFC.Logger.AppInsights.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,13 +15,15 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
         where TClientOptions : SegmentClientOptions
     {
         private readonly HttpClient httpClient;
-        private readonly ILogger<TClientOptions> logger;
+        private readonly ILogService logService;
+        private readonly ICorrelationIdProvider correlationIdProvider;
 
-        public RefreshSegmentService(HttpClient httpClient, ILogger<TClientOptions> logger, TClientOptions segmentClientOptions)
+        public RefreshSegmentService(HttpClient httpClient, ILogService logService, TClientOptions segmentClientOptions, ICorrelationIdProvider correlationIdProvider)
         {
             this.httpClient = httpClient;
-            this.logger = logger;
+            this.logService = logService;
             this.SegmentClientOptions = segmentClientOptions;
+            this.correlationIdProvider = correlationIdProvider;
         }
 
         public TClientOptions SegmentClientOptions { get; set; }
@@ -31,7 +32,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
         {
             var url = $"{SegmentClientOptions.BaseAddress}health";
 
-            logger.LogInformation($"{nameof(HealthCheckAsync)}: Checking health for {url}");
+            logService.LogInformation($"{nameof(HealthCheckAsync)}: Checking health for {url}");
 
             try
             {
@@ -39,6 +40,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
                 request.Headers.Accept.Clear();
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                ConfigureHttpClient();
 
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
@@ -50,13 +52,13 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
                     result.Source = SegmentClientOptions.BaseAddress;
 
-                    logger.LogInformation($"{nameof(HealthCheckAsync)}: Checked health for {url}");
+                    logService.LogInformation($"{nameof(HealthCheckAsync)}: Checked health for {url}");
 
                     return result;
                 }
                 else
                 {
-                    logger.LogError($"{nameof(HealthCheckAsync)}: Error loading health data from {url}: {response.StatusCode}");
+                    logService.LogError($"{nameof(HealthCheckAsync)}: Error loading health data from {url}: {response.StatusCode}");
 
                     var result = new HealthCheckItems
                     {
@@ -76,7 +78,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{nameof(HealthCheckAsync)}: {ex.Message}");
+                logService.LogError($"{nameof(HealthCheckAsync)}: {ex.Message}");
 
                 var result = new HealthCheckItems
                 {
@@ -104,27 +106,36 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
             var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
             var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
 
-            logger.LogInformation($"{nameof(GetJsonAsync)}: Loading data segment from {url}");
+            logService.LogInformation($"{nameof(GetJsonAsync)}: Loading data segment from {url}");
 
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
                 request.Headers.Accept.Clear();
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(acceptHeader));
+                ConfigureHttpClient();
 
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
                 var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    logger.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : {responseString}");
+                    logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : {responseString}");
                 }
                 else if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    logger.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
+                    logService.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
                     return null;
                 }
 
                 return responseString;
+            }
+        }
+
+        private void ConfigureHttpClient()
+        {
+            if (!httpClient.DefaultRequestHeaders.Contains(HeaderName.CorrelationId))
+            {
+                httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
             }
         }
     }

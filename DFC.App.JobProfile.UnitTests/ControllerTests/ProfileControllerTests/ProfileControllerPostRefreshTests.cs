@@ -1,8 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.ServiceBusModels;
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Net;
 using Xunit;
 

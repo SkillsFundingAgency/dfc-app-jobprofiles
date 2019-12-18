@@ -10,6 +10,7 @@ using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ProfileService.SegmentServices;
 using DFC.App.JobProfile.Repository.CosmosDb;
+using DFC.Logger.AppInsights.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -114,6 +115,7 @@ namespace DFC.App.JobProfile
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<Data.Contracts.ISegmentService, SegmentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
+            services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
 
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());

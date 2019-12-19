@@ -1,7 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Models;
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Net;
 using Xunit;
 

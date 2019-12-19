@@ -1,8 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
+﻿using System.Net;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Services

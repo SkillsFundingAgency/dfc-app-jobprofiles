@@ -181,6 +181,14 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
+        [Route("profile/hero")]
+        [Route("profile/htmlhead")]
+        public IActionResult NoContentResponses()
+        {
+            return NoContent();
+        }
+
+        [HttpGet]
         [Route("profile/{article}/htmlhead")]
         public async Task<IActionResult> Head(string article)
         {
@@ -221,14 +229,14 @@ namespace DFC.App.JobProfile.Controllers
 
             logService.LogWarning($"{nameof(Hero)} has not returned any content for: {article}");
 
-            return NotFound();
+            return NoContent();
         }
 
         [HttpGet]
         [Route("profile/contents")]
-        public IActionResult Contents()
+        public IActionResult Body()
         {
-            logService.LogInformation($"{nameof(Contents)} has been called");
+            logService.LogInformation($"{nameof(Body)} has been called");
 
             return Redirect("/explore-careers");
         }

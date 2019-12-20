@@ -13,7 +13,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         private const string MessageAction = "ActionType";
         private const string MessageContentType = "CType";
         private const string MessageContentId = "Id";
-        private readonly string ThisClassPath = typeof(SitefinityMessageHandler).FullName;
+        private readonly string thisClassPath = typeof(SitefinityMessageHandler).FullName;
         private readonly ILogService logService;
         private readonly IMessageProcessor processor;
         private readonly ICorrelationIdProvider correlationIdProvider;
@@ -51,22 +51,22 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             sitefinityMessage.UserProperties.TryGetValue(MessageContentId, out var messageContentId);
 
             // loggger should allow setting up correlation id and should be picked up from message
-            logService.LogInformation($"{ThisClassPath}: Received message sequence {sitefinityMessage.SystemProperties.SequenceNumber}, action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {sitefinityMessage.CorrelationId}");
+            logService.LogInformation($"{thisClassPath}: Received message sequence {sitefinityMessage.SystemProperties.SequenceNumber}, action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {sitefinityMessage.CorrelationId}");
 
             var message = Encoding.UTF8.GetString(sitefinityMessage.Body);
             var result = await processor.ProcessSitefinityMessageAsync(message, messageAction.ToString(), messageCtype.ToString(), messageContentId.ToString(), sitefinityMessage.SystemProperties.SequenceNumber).ConfigureAwait(false);
 
             if (result == HttpStatusCode.OK)
             {
-                logService.LogInformation($"{ThisClassPath}: JobProfile Id: {messageContentId}: Updated profile");
+                logService.LogInformation($"{thisClassPath}: JobProfile Id: {messageContentId}: Updated profile");
             }
             else if (result == HttpStatusCode.Created)
             {
-                logService.LogInformation($"{ThisClassPath}: JobProfile Id: {messageContentId}: Created profile");
+                logService.LogInformation($"{thisClassPath}: JobProfile Id: {messageContentId}: Created profile");
             }
             else
             {
-                logService.LogWarning($"{ThisClassPath}: JobProfile Id: {messageContentId}: Profile not Posted: Status: {result}");
+                logService.LogWarning($"{thisClassPath}: JobProfile Id: {messageContentId}: Profile not Posted: Status: {result}");
             }
         }
     }

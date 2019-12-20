@@ -42,38 +42,38 @@ namespace DFC.App.JobProfile.ProfileService
             this.relatedCareersSegmentService = relatedCareersSegmentService;
         }
 
-        public async Task<SegmentModel> RefreshSegmentAsync(RefreshJobProfileSegment toRefresh)
+        public async Task<SegmentModel> RefreshSegmentAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel)
         {
-            if (toRefresh is null)
+            if (refreshJobProfileSegmentModel is null)
             {
-                throw new ArgumentNullException(nameof(toRefresh));
+                throw new ArgumentNullException(nameof(refreshJobProfileSegmentModel));
             }
 
-            switch (toRefresh.Segment)
+            switch (refreshJobProfileSegmentModel.Segment)
             {
                 case JobProfileSegment.Overview:
-                    return await GetSegmentDataAsync(overviewBannerSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(overviewBannerSegmentService, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
                 case JobProfileSegment.HowToBecome:
-                    return await GetSegmentDataAsync(howToBecomeSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(howToBecomeSegmentService, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
                 case JobProfileSegment.WhatItTakes:
-                    return await GetSegmentDataAsync(whatItTakesSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(whatItTakesSegmentService, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
                 case JobProfileSegment.WhatYouWillDo:
-                    return await GetSegmentDataAsync(whatYouWillDoSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(whatYouWillDoSegmentService, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
                 case JobProfileSegment.CareerPathsAndProgression:
-                    return await GetSegmentDataAsync(careerPathSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(careerPathSegmentService, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
                 case JobProfileSegment.CurrentOpportunities:
-                    return await GetSegmentDataAsync(currentOpportunitiesSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(currentOpportunitiesSegmentService, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
                 case JobProfileSegment.RelatedCareers:
-                    return await GetSegmentDataAsync(relatedCareersSegmentService, toRefresh).ConfigureAwait(false);
+                    return await GetSegmentDataAsync(relatedCareersSegmentService, refreshJobProfileSegmentModel).ConfigureAwait(false);
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(toRefresh), $"Segment to be refreshed should be one of {Enum.GetNames(typeof(JobProfileSegment))}");
+                    throw new ArgumentOutOfRangeException(nameof(refreshJobProfileSegmentModel), $"Segment to be refreshed should be one of {Enum.GetNames(typeof(JobProfileSegment))}");
             }
         }
 
@@ -148,20 +148,6 @@ namespace DFC.App.JobProfile.ProfileService
                 default:
                     throw new ArgumentOutOfRangeException(nameof(segment), $"Segment should be one of {Enum.GetNames(typeof(JobProfileSegment))}");
             }
-        }
-
-        private TModel GetDataResult<TModel>(Task<TModel> task)
-            where TModel : ISegmentDataModel
-        {
-            if (task != null)
-            {
-                if (task.IsCompletedSuccessfully && task.Result != null)
-                {
-                    return task.Result;
-                }
-            }
-
-            return default(TModel);
         }
 
         private IList<HealthCheckItem> GetHealthResults(Task<HealthCheckItems> task)

@@ -146,6 +146,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 JobProfileId = documentId,
                 CanonicalName = canonicalName,
+                SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
                 BreadcrumbTitle = "This is my breadcrumb title",
                 IncludeInSitemap = true,
@@ -166,7 +167,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             // Assert
             response.EnsureSuccessStatusCode();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
         }
 
         [Fact]
@@ -180,6 +181,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 JobProfileId = documentId,
                 CanonicalName = canonicalName,
+                SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
                 BreadcrumbTitle = "This is my breadcrumb title",
                 IncludeInSitemap = true,
@@ -202,7 +204,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             // Assert
             response1.EnsureSuccessStatusCode();
             response2.EnsureSuccessStatusCode();
-            response1.StatusCode.Should().Be(HttpStatusCode.OK);
+            response1.StatusCode.Should().Be(HttpStatusCode.Created);
             response2.StatusCode.Should().Be(HttpStatusCode.AlreadyReported);
         }
 
@@ -283,6 +285,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 JobProfileId = documentId,
                 CanonicalName = canonicalName,
+                SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
                 BreadcrumbTitle = "This is my breadcrumb title",
                 IncludeInSitemap = true,
@@ -299,6 +302,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             {
                 JobProfileId = documentId,
                 CanonicalName = canonicalName,
+                SocLevelTwo = "12",
                 LastReviewed = DateTime.UtcNow,
                 BreadcrumbTitle = "This is my patched breadcrumb title",
                 IncludeInSitemap = true,
@@ -309,7 +313,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
                     Description = "This is a patch description",
                     Keywords = "some keywords or other",
                 },
-                SequenceNumber = 1,
+                SequenceNumber = jobProfileModel.SequenceNumber - 1,
             };
             var client = factory.CreateClient();
 
@@ -319,7 +323,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             using (var request = new HttpRequestMessage(HttpMethod.Patch, patchUrl))
             {
-                jobProfileMetaDataPatchModel.SequenceNumber++;
                 request.Headers.Accept.Clear();
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
                 request.Content = new ObjectContent(typeof(JobProfileModel), jobProfileMetaDataPatchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json);

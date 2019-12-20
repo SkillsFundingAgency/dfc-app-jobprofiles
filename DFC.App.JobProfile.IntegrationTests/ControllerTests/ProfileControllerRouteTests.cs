@@ -132,7 +132,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var response = await client.GetAsync(uri).ConfigureAwait(false);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         }
 
         [Fact]

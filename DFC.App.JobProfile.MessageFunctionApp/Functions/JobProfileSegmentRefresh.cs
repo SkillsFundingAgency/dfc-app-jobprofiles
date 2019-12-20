@@ -12,7 +12,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         private const string MessageAction = "ActionType";
         private const string MessageContentType = "CType";
         private const string MessageContentId = "Id";
-        private readonly string ThisClassPath = typeof(JobProfileSegmentRefresh).FullName;
+        private readonly string thisClassPath = typeof(JobProfileSegmentRefresh).FullName;
 
         private readonly ILogService logService;
         private readonly IMessageProcessor processor;
@@ -51,7 +51,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             segmentRefreshMessage.UserProperties.TryGetValue(MessageContentId, out var messageContentId);
 
             // loggger should allow setting up correlation id and should be picked up from message
-            logService.LogInformation($"{ThisClassPath}: Received message action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {segmentRefreshMessage.CorrelationId}");
+            logService.LogInformation($"{thisClassPath}: Received message action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {segmentRefreshMessage.CorrelationId}");
 
             var message = Encoding.UTF8.GetString(segmentRefreshMessage.Body);
 

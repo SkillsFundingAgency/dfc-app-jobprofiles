@@ -34,6 +34,12 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             new object[] { $"/profile/{DataSeeding.DefaultArticleGuid}/profile" },
         };
 
+        public static IEnumerable<object[]> ProfileNoContentRouteData => new List<object[]>
+        {
+            new object[] { $"/profile/htmlhead" },
+            new object[] { $"/profile/hero" },
+        };
+
         public static IEnumerable<object[]> MissingProfileContentRouteData => new List<object[]>
         {
             new object[] { $"/profile/invalid-profile-name" },
@@ -82,6 +88,22 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Theory]
+        [MemberData(nameof(ProfileNoContentRouteData))]
+        public async Task GetProfileHtmlContentEndpointsReturnNoContent(string url)
+        {
+            // Arrange
+            var uri = new Uri(url, UriKind.Relative);
+            var client = factory.CreateClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            // Act
+            var response = await client.GetAsync(uri).ConfigureAwait(false);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Theory]
         [MemberData(nameof(MissingProfileContentRouteData))]
         public async Task GetProfileHtmlContentEndpointsReturnNotFound(string url)
         {
@@ -110,16 +132,16 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var response = await client.GetAsync(uri).ConfigureAwait(false);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         }
 
+        [Fact]
         public async Task PostProfileEndpointsForNewArticleMetaDataReturnsOk()
         {
             // Arrange
             var documentId = Guid.NewGuid();
             string canonicalName = documentId.ToString().ToUpperInvariant();
             const string postUrl = "/profile";
-            string patchUrl = $"/profile/{documentId}/metadata";
             var jobProfileModel = new Data.Models.JobProfileModel()
             {
                 JobProfileId = documentId,
@@ -147,13 +169,13 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
+        [Fact]
         public async Task PostProfileEndpointsForNewArticleMetaDataReturnsAlreadyReported()
         {
             // Arrange
             var documentId = Guid.NewGuid();
             string canonicalName = documentId.ToString().ToUpperInvariant();
             const string postUrl = "/profile";
-            string patchUrl = $"/profile/{documentId}/metadata";
             var jobProfileModel = new Data.Models.JobProfileModel()
             {
                 JobProfileId = documentId,
@@ -249,6 +271,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             }
         }
 
+        [Fact]
         public async Task PatchProfileEndpointsForNewArticleMetaDataPatchReturnsAlreadyReported()
         {
             // Arrange
@@ -348,45 +371,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
-
-        /* ***********
-         * Integration test with segment apps yet to be finalised on approach
-         * ************
-        [Fact]
-        public async Task PutProfileEndpointsForNewArticleRefreshOverviewBannerReturnOk()
-        {
-            // Arrange
-            const string postUrl = "/profile";
-            const string putUrl = "/refresh";
-            var documentId = Guid.NewGuid();
-            var jobProfileModel = new Data.Models.JobProfileModel()
-            {
-                DocumentId = documentId,
-                CanonicalName = documentId.ToString().ToUpperInvariant(),
-                SocLevelTwo = 12,
-                LastReviewed = DateTime.UtcNow,
-            };
-            var refreshJobProfileSegmentModel = new RefreshJobProfileSegment()
-            {
-                JobProfileId = jobProfileModel.DocumentId,
-                CanonicalName = jobProfileModel.CanonicalName,
-                Segment = Data.JobProfileSegment.Overview,
-                LastReviewed = DateTime.UtcNow,
-            };
-            var client = factory.CreateClient();
-
-            client.DefaultRequestHeaders.Accept.Clear();
-
-            _ = await client.PostAsync(postUrl, jobProfileModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
-
-            // Act
-            var response = await client.PutAsync(putUrl, refreshJobProfileSegmentModel, new JsonMediaTypeFormatter()).ConfigureAwait(false);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-        */
 
         [Fact]
         public async Task DeleteProfileEndpointsReturnSuccessWhenFound()

@@ -4,6 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -13,7 +14,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void JobProfileControllerHeadHtmlReturnsSuccess(string mediaTypeName)
+        public async Task JobProfileControllerHeadHtmlReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -40,7 +41,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void JobProfileControllerHeadJsonReturnsSuccess(string mediaTypeName)
+        public async Task JobProfileControllerHeadJsonReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -67,7 +68,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void JobProfileControllerHeadHtmlReturnsSuccessWhenNoData(string mediaTypeName)
+        public async Task JobProfileControllerHeadHtmlReturnsSuccessWhenNoData(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -92,7 +93,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void JobProfileControllerHeadJsonReturnsSuccessWhenNoData(string mediaTypeName)
+        public async Task JobProfileControllerHeadJsonReturnsSuccessWhenNoData(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -117,7 +118,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(InvalidMediaTypes))]
-        public async void JobProfileControllerHeadReturnsNotAcceptable(string mediaTypeName)
+        public async Task JobProfileControllerHeadReturnsNotAcceptable(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";

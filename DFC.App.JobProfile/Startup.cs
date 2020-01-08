@@ -97,7 +97,7 @@ namespace DFC.App.JobProfile
                 // add the default route
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Profile}/{action=Index}");
+                    template: "{controller=health}/{action=ping}");
             });
 
             mapper?.ConfigurationProvider.AssertConfigurationIsValid();

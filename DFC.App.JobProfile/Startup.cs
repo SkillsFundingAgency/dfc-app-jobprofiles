@@ -94,10 +94,10 @@ namespace DFC.App.JobProfile
                     template: "Robots.txt",
                     defaults: new { controller = "Robot", action = "Robot" });
 
-                // add the default route
+                // add the default route as health/ping
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=health}/{action=ping}");
+                    template: "{controller=Health}/{action=Ping}");
             });
 
             mapper?.ConfigurationProvider.AssertConfigurationIsValid();

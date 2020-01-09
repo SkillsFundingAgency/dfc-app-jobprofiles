@@ -64,7 +64,6 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("health/ping")]
         public IActionResult Ping()
         {
             logService.LogVerbose($"{nameof(Ping)} has been called");

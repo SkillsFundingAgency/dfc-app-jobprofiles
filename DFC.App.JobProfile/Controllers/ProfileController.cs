@@ -72,7 +72,7 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPost]
         [Route("profile")]
-        public async Task<IActionResult> Create([FromBody] Data.Models.JobProfileModel jobProfileModel)
+        public async Task<IActionResult> Create([FromBody] JobProfileModel jobProfileModel)
         {
             //AOP: These should be coded as an Aspect
             logService.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
@@ -94,7 +94,7 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPut]
         [Route("profile")]
-        public async Task<IActionResult> Update([FromBody] Data.Models.JobProfileModel jobProfileModel)
+        public async Task<IActionResult> Update([FromBody] JobProfileModel jobProfileModel)
         {
             //AOP: These should be coded as an Aspect
             logService.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
@@ -183,6 +183,7 @@ namespace DFC.App.JobProfile.Controllers
         [HttpGet]
         [Route("profile/hero")]
         [Route("profile/htmlhead")]
+        [Route("/search-results")]
         public IActionResult NoContentResponses()
         {
             return NoContent();
@@ -294,26 +295,9 @@ namespace DFC.App.JobProfile.Controllers
             return NoContent();
         }
 
-        [HttpGet]
-        [Route("profile/search/action")]
-        public IActionResult Search(string jobProfileUrl, string searchTerm)
-        {
-            logService.LogInformation($"{nameof(Search)} has been called");
-
-            jobProfileUrl = jobProfileUrl?.Split('/').FirstOrDefault();
-
-            var redirectTo = string.IsNullOrWhiteSpace(searchTerm)
-                ? $"/{ProfilePathRoot}/{jobProfileUrl}"
-                : $"/search-results?{nameof(searchTerm)}={searchTerm}";
-
-            logService.LogInformation($"{nameof(Search)} redirecting to: {redirectTo}");
-
-            return Redirect(redirectTo);
-        }
-
         #region Define helper methods
 
-        private static BreadcrumbViewModel BuildBreadcrumb(Data.Models.JobProfileModel jobProfileModel)
+        private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)
         {
             var viewModel = new BreadcrumbViewModel
             {

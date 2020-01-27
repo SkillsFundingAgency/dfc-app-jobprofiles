@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Models;
 
 namespace DFC.App.JobProfile.Controllers
 {
@@ -18,12 +19,14 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
+        private readonly FeedbackLinks feedbackLinks;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
+            this.feedbackLinks = feedbackLinks;
         }
 
         [HttpGet]
@@ -255,6 +258,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
+                viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
 
                 return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
             }

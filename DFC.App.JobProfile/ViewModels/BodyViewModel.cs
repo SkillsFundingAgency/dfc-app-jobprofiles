@@ -10,6 +10,5 @@ namespace DFC.App.JobProfile.ViewModels
         public IList<SegmentModel> Segments { get; set; }
 
         public string SmartSurveyJP { get; set; }
-
     }
 }

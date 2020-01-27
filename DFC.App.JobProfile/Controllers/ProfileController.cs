@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
+using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +19,14 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
+        private readonly FeedbackLinks feedbackLinks;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
+            this.feedbackLinks = feedbackLinks;
         }
 
         [HttpGet]
@@ -255,6 +258,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
+                viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
 
                 return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
             }

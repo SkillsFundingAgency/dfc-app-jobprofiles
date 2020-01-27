@@ -8,5 +8,7 @@ namespace DFC.App.JobProfile.ViewModels
         public string CanonicalName { get; set; }
 
         public IList<SegmentModel> Segments { get; set; }
+
+        public string SmartSurveyJP { get; set; }
     }
 }

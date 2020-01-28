@@ -80,6 +80,12 @@
             "metadata": {
                 "description": "Name of job profile refresh topic"
             }
+        },
+        "surveyUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "URL of customer survey"
+            }
         }
     },
     "variables": {
@@ -351,6 +357,10 @@
                             {
                                 "name": "WhatYouWillDoSegmentClientOptions__OfflineHtml",
                                 "value": "<section id=\"WhatYouWillDo\"><h2 class=\"job-profile-heading\">What you'll do</h2><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
+                            },
+                            {
+                                "name": "FeedbackLinks__SmartSurveyJP",
+                                "value": "[parameters('surveyUrl')]"
                             },
                             {
                                 "name": "Logging__ApplicationInsights__LogLevel__Default",

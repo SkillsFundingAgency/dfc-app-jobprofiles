@@ -1,4 +1,6 @@
-﻿<div class="job-profile-sidebar">
+﻿@model string
+
+<div class="job-profile-sidebar">
     <h3 id="job-profile-search" class="govuk-heading-m">Not what you're looking for?</h3>
     <div class="job-profile-search">
         <h4>Search further careers</h4>
@@ -6,11 +8,11 @@
             <div class="job-profile-search-content">
                 <label for="search-main"> Enter a job title</label>
                 <div class="search-input-wrapper">
-                    <input class="search-input js-search-focus js-autocomplete ui-autocomplete-input" data-autocomplete-fuzzysearch="True" data-autocomplete-maxlength="7" data-autocomplete-maxnumberdisplyed="5" data-autocomplete-minlength="2" data-autocomplete-source="/searchautocomplete" id="search-main" name="SearchTerm" type="search" value="" autocomplete="off">
+                    <input class="govuk-input search-input js-search-focus js-autocomplete ui-autocomplete-input" data-autocomplete-fuzzysearch="True" data-autocomplete-maxlength="7" data-autocomplete-maxnumberdisplyed="5" data-autocomplete-minlength="2" data-autocomplete-source="/searchautocomplete" id="search-main" name="SearchTerm" type="search" value="" autocomplete="off">
                 </div>
                 <button class="submit" type="submit" value="Search">Search</button>
             </div>
-            <input id="JobProfileUrl" name="JobProfileUrl" type="hidden" value="nurse">
+            <input id="JobProfileUrl" name="JobProfileUrl" type="hidden" value="@Model">
             <ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" style="display: none;"></ul>
         </form>
     </div>

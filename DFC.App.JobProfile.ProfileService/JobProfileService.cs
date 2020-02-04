@@ -97,6 +97,11 @@ namespace DFC.App.JobProfile.ProfileService
                 return HttpStatusCode.NotFound;
             }
 
+            if (existingRecord.SequenceNumber > jobProfileMetadata.SequenceNumber)
+            {
+                return HttpStatusCode.AlreadyReported;
+            }
+
             var mappedRecord = mapper.Map(jobProfileMetadata, existingRecord);
             return await repository.UpsertAsync(mappedRecord).ConfigureAwait(false);
         }
@@ -114,32 +119,37 @@ namespace DFC.App.JobProfile.ProfileService
                 return HttpStatusCode.NotFound;
             }
 
+            if (existingRecord.SequenceNumber > jobProfileModel.SequenceNumber)
+            {
+                return HttpStatusCode.AlreadyReported;
+            }
+
             var mappedRecord = mapper.Map(jobProfileModel, existingRecord);
             return await repository.UpsertAsync(mappedRecord).ConfigureAwait(false);
         }
 
-        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment segmentRefresh)
+        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel)
         {
-            if (segmentRefresh is null)
+            if (refreshJobProfileSegmentModel is null)
             {
-                throw new ArgumentNullException(nameof(segmentRefresh));
+                throw new ArgumentNullException(nameof(refreshJobProfileSegmentModel));
             }
 
             //Check existing document
-            var existingJobProfile = await GetByIdAsync(segmentRefresh.JobProfileId).ConfigureAwait(false);
+            var existingJobProfile = await GetByIdAsync(refreshJobProfileSegmentModel.JobProfileId).ConfigureAwait(false);
             if (existingJobProfile is null)
             {
                 return HttpStatusCode.NotFound;
             }
 
-            var existingItem = existingJobProfile.Segments.SingleOrDefault(s => s.Segment == segmentRefresh.Segment);
-            if (existingItem?.RefreshSequence > segmentRefresh.SequenceNumber)
+            var existingItem = existingJobProfile.Segments.SingleOrDefault(s => s.Segment == refreshJobProfileSegmentModel.Segment);
+            if (existingItem?.RefreshSequence > refreshJobProfileSegmentModel.SequenceNumber)
             {
                 return HttpStatusCode.AlreadyReported;
             }
 
-            var offlineSegmentData = segmentService.GetOfflineSegment(segmentRefresh.Segment);
-            var segmentData = await segmentService.RefreshSegmentAsync(segmentRefresh).ConfigureAwait(false);
+            var offlineSegmentData = segmentService.GetOfflineSegment(refreshJobProfileSegmentModel.Segment);
+            var segmentData = await segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
             if (existingItem is null)
             {
                 segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : offlineSegmentData.OfflineMarkup;

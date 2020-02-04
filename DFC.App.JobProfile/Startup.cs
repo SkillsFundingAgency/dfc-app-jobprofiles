@@ -7,9 +7,11 @@ using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.HttpClientPolicies;
+using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ProfileService.SegmentServices;
 using DFC.App.JobProfile.Repository.CosmosDb;
+using DFC.Logger.AppInsights.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,9 +21,11 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
@@ -91,10 +95,10 @@ namespace DFC.App.JobProfile
                     template: "Robots.txt",
                     defaults: new { controller = "Robot", action = "Robot" });
 
-                // add the default route
+                // add the default route as health/ping
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Profile}/{action=Index}");
+                    template: "{controller=Health}/{action=Ping}");
             });
 
             mapper?.ConfigurationProvider.AssertConfigurationIsValid();
@@ -112,9 +116,11 @@ namespace DFC.App.JobProfile
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<Data.Contracts.ISegmentService, SegmentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
+            services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
 
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());
+            services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
             services.AddSingleton(configuration.GetSection(nameof(HowToBecomeSegmentClientOptions)).Get<HowToBecomeSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(OverviewBannerSegmentClientOptions)).Get<OverviewBannerSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(RelatedCareersSegmentClientOptions)).Get<RelatedCareersSegmentClientOptions>());

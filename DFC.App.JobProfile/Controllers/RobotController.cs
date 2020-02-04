@@ -1,7 +1,7 @@
 ﻿using DFC.App.JobProfile.Models.Robots;
+using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Mime;
 
@@ -9,12 +9,12 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class RobotController : Controller
     {
-        private readonly ILogger<RobotController> logger;
+        private readonly ILogService logService;
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public RobotController(ILogger<RobotController> logger, IHostingEnvironment hostingEnvironment)
+        public RobotController(ILogService logService, IHostingEnvironment hostingEnvironment)
         {
-            this.logger = logger;
+            this.logService = logService;
             this.hostingEnvironment = hostingEnvironment;
         }
 
@@ -23,17 +23,17 @@ namespace DFC.App.JobProfile.Controllers
         {
             try
             {
-                logger.LogInformation("Generating Robots.txt");
+                logService.LogInformation("Generating Robots.txt");
 
                 var robot = GenerateThisSiteRobot();
 
-                logger.LogInformation("Generated Robots.txt");
+                logService.LogInformation("Generated Robots.txt");
 
                 return Content(robot.Data, MediaTypeNames.Text.Plain);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{nameof(Robot)}: {ex.Message}");
+                logService.LogError($"{nameof(Robot)}: {ex.Message}");
             }
 
             // fall through from errors

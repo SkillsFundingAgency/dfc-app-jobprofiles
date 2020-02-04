@@ -1,8 +1,8 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,13 +12,13 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class HealthController : Controller
     {
-        private readonly ILogger<HealthController> logger;
+        private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
 
-        public HealthController(ILogger<HealthController> logger, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public HealthController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
         {
-            this.logger = logger;
+            this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
         }
@@ -30,7 +30,7 @@ namespace DFC.App.JobProfile.Controllers
             string resourceName = typeof(Program).Namespace;
             string message;
 
-            logger.LogInformation($"{nameof(Health)} has been called");
+            logService.LogInformation($"{nameof(Health)} has been called");
 
             try
             {
@@ -39,7 +39,7 @@ namespace DFC.App.JobProfile.Controllers
                 if (isHealthy)
                 {
                     message = "Document store is available";
-                    logger.LogInformation($"{nameof(Health)} responded with: {resourceName} - {message}");
+                    logService.LogInformation($"{nameof(Health)} responded with: {resourceName} - {message}");
 
                     var viewModel = CreateHealthViewModel(resourceName, message);
 
@@ -52,22 +52,21 @@ namespace DFC.App.JobProfile.Controllers
                 }
 
                 message = $"Ping to {resourceName} has failed";
-                logger.LogError($"{nameof(Health)}: {message}");
+                logService.LogError($"{nameof(Health)}: {message}");
             }
             catch (Exception ex)
             {
                 message = $"{resourceName} exception: {ex.Message}";
-                logger.LogError(ex, $"{nameof(Health)}: {message}");
+                logService.LogError($"{nameof(Health)}: {message}");
             }
 
             return StatusCode((int)HttpStatusCode.ServiceUnavailable);
         }
 
         [HttpGet]
-        [Route("health/ping")]
         public IActionResult Ping()
         {
-            logger.LogInformation($"{nameof(Ping)} has been called");
+            logService.LogVerbose($"{nameof(Ping)} has been called");
 
             return Ok();
         }

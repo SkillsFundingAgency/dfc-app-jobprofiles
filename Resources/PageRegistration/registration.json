@@ -1,7 +1,7 @@
 [
 	{	
 		"Path": "job-profiles",
-		"TopNavigationText": null,
+		"TopNavigationText": "Explore careers",
 		"TopNavigationOrder": 400,
 		"Layout": 1,
 		"OfflineHtml": "<div class=\"govuk-width-container\"><H2>Job Profile Service Unavailable</H2></div>",
@@ -18,6 +18,11 @@
 				"RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/profile/{0}/contents",
 				"OfflineHtml": "<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>",
 				"HealthCheckRequired": true
+			},
+			{
+				"PageRegion": 8,
+				"RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/profile/{0}/hero",
+				"OfflineHtml": "<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>"
 			}
 		]
 	}

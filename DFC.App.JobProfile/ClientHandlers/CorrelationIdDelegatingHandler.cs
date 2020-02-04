@@ -1,5 +1,5 @@
 ﻿using CorrelationId;
-using Microsoft.Extensions.Logging;
+using DFC.Logger.AppInsights.Contracts;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading;
@@ -11,14 +11,14 @@ namespace DFC.App.JobProfile.ClientHandlers
     public class CorrelationIdDelegatingHandler : DelegatingHandler
     {
         private readonly ICorrelationContextAccessor correlationContextAccessor;
-        private readonly ILogger<CorrelationIdDelegatingHandler> logger;
+        private readonly ILogService logService;
 
         public CorrelationIdDelegatingHandler(
             ICorrelationContextAccessor correlationContextAccessor,
-            ILogger<CorrelationIdDelegatingHandler> logger)
+            ILogService logService)
         {
             this.correlationContextAccessor = correlationContextAccessor;
-            this.logger = logger;
+            this.logService = logService;
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ namespace DFC.App.JobProfile.ClientHandlers
                 !request.Headers.Contains(correlationContextAccessor.CorrelationContext.Header))
             {
                 request.Headers.Add(correlationContextAccessor.CorrelationContext.Header, correlationContextAccessor.CorrelationContext.CorrelationId);
-                logger.Log(LogLevel.Information, $"Added CorrelationID header with name {correlationContextAccessor.CorrelationContext.Header} and value {correlationContextAccessor.CorrelationContext.CorrelationId}");
+                logService.LogInformation($"Added CorrelationID header with name {correlationContextAccessor.CorrelationContext.Header} and value {correlationContextAccessor.CorrelationContext.CorrelationId}");
             }
 
             return base.SendAsync(request, cancellationToken);

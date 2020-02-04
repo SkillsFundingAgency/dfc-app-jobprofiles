@@ -1,6 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using FakeItEasy;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
@@ -14,11 +12,10 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public void JobProfileControllerContentsHtmlReturnsSuccess(string mediaTypeName)
         {
             // Arrange
-            var expectedResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
             // Act
-            var result = controller.Contents();
+            var result = controller.Body();
 
             // Assert
             var viewResult = Assert.IsType<RedirectResult>(result);

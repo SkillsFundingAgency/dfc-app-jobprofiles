@@ -1,14 +1,13 @@
 ﻿using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Models;
+using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Net.Mime;
+using DFC.App.JobProfile.Models;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 {
@@ -16,7 +15,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         public BaseProfileController()
         {
-            FakeLogger = A.Fake<ILogger<ProfileController>>();
+            FakeLogger = A.Fake<ILogService>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
             FakeMapper = A.Fake<AutoMapper.IMapper>();
         }
@@ -37,7 +36,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             new string[] { MediaTypeNames.Application.Json },
         };
 
-        protected ILogger<ProfileController> FakeLogger { get; }
+        protected ILogService FakeLogger { get; }
 
         protected IJobProfileService FakeJobProfileService { get; }
 
@@ -46,10 +45,10 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         protected ProfileController BuildProfileController(string mediaTypeName)
         {
             var httpContext = new DefaultHttpContext();
-
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
 
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeMapper)
+            var feedbackLinks = A.Fake<FeedbackLinks>();
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeMapper, feedbackLinks)
             {
                 ControllerContext = new ControllerContext()
                 {

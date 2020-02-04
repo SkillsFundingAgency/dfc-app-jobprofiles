@@ -3,11 +3,13 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Functions.DI.Standard;
+using DFC.Logger.AppInsights.Contracts;
+using DFC.Logger.AppInsights.CorrelationIdProviders;
+using DFC.Logger.AppInsights.Extensions;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
@@ -29,11 +31,12 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Startup
 
             builder?.AddDependencyInjection();
             builder?.Services.AddSingleton(configuration.GetSection("jobProfileClientOptions").Get<JobProfileClientOptions>());
-            builder?.Services.AddSingleton(new HttpClient());
+            builder?.Services.AddScoped(sp => new HttpClient());
             builder?.Services.AddAutoMapper(typeof(WebJobsExtensionStartup).Assembly);
-            builder?.Services.AddSingleton<IMessageProcessor, MessageProcessor>();
-            builder?.Services.AddSingleton<ILogger, Logger<JobProfileModel>>();
-            builder?.Services.AddSingleton<IHttpClientService<JobProfileModel>, HttpClientService<JobProfileModel>>();
+            builder?.Services.AddScoped<IMessageProcessor, MessageProcessor>();
+            builder?.Services.AddScoped<IHttpClientService<JobProfileModel>, HttpClientService<JobProfileModel>>();
+            builder?.Services.AddDFCLogging(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            builder?.Services.AddScoped<ICorrelationIdProvider, InMemoryCorrelationIdProvider>();
         }
     }
 }

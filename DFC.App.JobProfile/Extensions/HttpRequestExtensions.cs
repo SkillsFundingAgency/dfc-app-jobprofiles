@@ -13,7 +13,7 @@ namespace DFC.App.JobProfile.Extensions
                 if (request.Headers.TryGetValue("x-forwarded-proto", out var forwardedProtocol)
                     && request.Headers.TryGetValue("x-original-host", out var originalHost))
                 {
-                    return new Uri($"{forwardedProtocol}://{originalHost}/");
+                    return new Uri($"{forwardedProtocol}://{originalHost}");
                 }
 
                 return string.IsNullOrWhiteSpace(request.Scheme) ? null : new Uri($"{request.Scheme}://{request.Host}{urlHelper?.Content("~")}");

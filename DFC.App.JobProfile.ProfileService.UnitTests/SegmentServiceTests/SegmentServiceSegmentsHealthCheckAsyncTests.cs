@@ -1,9 +1,9 @@
 ﻿using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
+using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
     {
         private const int NumberOfSegmentServices = 7;
 
-        private readonly ILogger<SegmentService> logger;
+        private readonly ILogService logService;
         private readonly ISegmentRefreshService<CareerPathSegmentClientOptions> careerPathSegmentService;
         private readonly ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions> currentOpportunitiesSegmentService;
         private readonly ISegmentRefreshService<HowToBecomeSegmentClientOptions> howToBecomeSegmentService;
@@ -27,7 +27,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
 
         public SegmentServiceSegmentsHealthCheckAsyncTests()
         {
-            logger = A.Fake<ILogger<SegmentService>>();
+            logService = A.Fake<ILogService>();
             careerPathSegmentService = A.Fake<ISegmentRefreshService<CareerPathSegmentClientOptions>>();
             currentOpportunitiesSegmentService = A.Fake<ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions>>();
             howToBecomeSegmentService = A.Fake<ISegmentRefreshService<HowToBecomeSegmentClientOptions>>();
@@ -88,7 +88,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
         {
             // arrange
             var segmentService = new SegmentService(
-                logger,
+                logService,
                 overviewBannerSegmentService,
                 howToBecomeSegmentService,
                 whatItTakesSegmentService,

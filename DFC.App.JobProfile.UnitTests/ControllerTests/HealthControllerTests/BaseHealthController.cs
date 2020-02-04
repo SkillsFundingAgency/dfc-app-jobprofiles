@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
@@ -13,12 +13,12 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
     {
         public BaseHealthController()
         {
-            FakeLogger = A.Fake<ILogger<HealthController>>();
+            FakeLogger = A.Fake<ILogService>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
             FakeAutoMapper = A.Fake<IMapper>();
         }
 
-        protected ILogger<HealthController> FakeLogger { get; }
+        protected ILogService FakeLogger { get; }
 
         protected IJobProfileService FakeJobProfileService { get; }
 

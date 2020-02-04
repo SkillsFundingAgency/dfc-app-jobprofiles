@@ -1,9 +1,10 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
+using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,36 +16,38 @@ namespace DFC.App.JobProfile.Controllers
     {
         public const string ProfilePathRoot = "job-profiles";
 
-        private readonly ILogger<ProfileController> logger;
+        private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
+        private readonly FeedbackLinks feedbackLinks;
 
-        public ProfileController(ILogger<ProfileController> logger, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks)
         {
-            this.logger = logger;
+            this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
+            this.feedbackLinks = feedbackLinks;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             //AOP: These should be coded as an Aspect
-            logger.LogInformation($"{nameof(Index)} has been called");
+            logService.LogInformation($"{nameof(Index)} has been called");
 
             var viewModel = new IndexViewModel();
             var jobProfileModels = await jobProfileService.GetAllAsync().ConfigureAwait(false);
 
             if (jobProfileModels is null)
             {
-                logger.LogWarning($"{nameof(Index)} has returned with no results");
+                logService.LogWarning($"{nameof(Index)} has returned with no results");
             }
             else
             {
                 viewModel.Documents = (from a in jobProfileModels.OrderBy(o => o.CanonicalName)
                                        select mapper.Map<IndexDocumentViewModel>(a)).ToList();
 
-                logger.LogInformation($"{nameof(Index)} has succeeded");
+                logService.LogInformation($"{nameof(Index)} has succeeded");
             }
 
             return this.NegotiateContentResult(viewModel);
@@ -55,27 +58,27 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Document(string article)
         {
             //AOP: These should be coded as an Aspect
-            logger.LogInformation($"{nameof(Document)} has been called with: {article}");
+            logService.LogInformation($"{nameof(Document)} has been called with: {article}");
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             if (jobProfileModel is null)
             {
-                logger.LogWarning($"{nameof(Document)} has returned not found: {article}");
+                logService.LogWarning($"{nameof(Document)} has returned not found: {article}");
                 return NotFound();
             }
 
             var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
             viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
-            logger.LogInformation($"{nameof(Document)} has succeeded for: {article}");
+            logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
             return this.NegotiateContentResult(viewModel);
         }
 
         [HttpPost]
         [Route("profile")]
-        public async Task<IActionResult> Create([FromBody] Data.Models.JobProfileModel jobProfileModel)
+        public async Task<IActionResult> Create([FromBody] JobProfileModel jobProfileModel)
         {
             //AOP: These should be coded as an Aspect
-            logger.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
+            logService.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
 
             if (jobProfileModel is null)
             {
@@ -88,16 +91,16 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             var response = await jobProfileService.Create(jobProfileModel).ConfigureAwait(false);
-            logger.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
+            logService.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
             return new StatusCodeResult((int)response);
         }
 
         [HttpPut]
         [Route("profile")]
-        public async Task<IActionResult> Update([FromBody] Data.Models.JobProfileModel jobProfileModel)
+        public async Task<IActionResult> Update([FromBody] JobProfileModel jobProfileModel)
         {
             //AOP: These should be coded as an Aspect
-            logger.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
+            logService.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
 
             if (jobProfileModel is null)
             {
@@ -110,7 +113,7 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             var response = await jobProfileService.Update(jobProfileModel).ConfigureAwait(false);
-            logger.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
+            logService.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
             return new StatusCodeResult((int)response);
         }
 
@@ -118,7 +121,7 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{documentId}/metadata")]
         public async Task<IActionResult> Patch([FromBody]JobProfileMetadata jobProfileMetaDataPatchModel, Guid documentId)
         {
-            logger.LogInformation($"{nameof(Patch)} has been called with {documentId} for {jobProfileMetaDataPatchModel?.CanonicalName} with seq number {jobProfileMetaDataPatchModel?.SequenceNumber}");
+            logService.LogInformation($"{nameof(Patch)} has been called with {documentId} for {jobProfileMetaDataPatchModel?.CanonicalName} with seq number {jobProfileMetaDataPatchModel?.SequenceNumber}");
 
             if (jobProfileMetaDataPatchModel == null)
             {
@@ -131,7 +134,7 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             var response = await jobProfileService.Update(jobProfileMetaDataPatchModel).ConfigureAwait(false);
-            logger.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileMetaDataPatchModel.CanonicalName}. Response status - {response}");
+            logService.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileMetaDataPatchModel.CanonicalName}. Response status - {response}");
 
             return new StatusCodeResult((int)response);
         }
@@ -141,7 +144,7 @@ namespace DFC.App.JobProfile.Controllers
         [Route("refresh")]
         public async Task<IActionResult> Refresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
         {
-            logger.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}");
+            logService.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}");
 
             if (refreshJobProfileSegmentModel == null)
             {
@@ -154,7 +157,7 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
-            logger.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
+            logService.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
             return new StatusCodeResult((int)response);
         }
 
@@ -162,29 +165,38 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{documentId}")]
         public async Task<IActionResult> Delete(Guid documentId)
         {
-            logger.LogInformation($"{nameof(Delete)} has been called");
+            logService.LogInformation($"{nameof(Delete)} has been called");
 
             var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
 
             if (jobProfileModel == null)
             {
-                logger.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
+                logService.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
 
                 return NotFound();
             }
 
             await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
 
-            logger.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
+            logService.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("profile/hero")]
+        [Route("profile/htmlhead")]
+        [Route("/search-results")]
+        public IActionResult NoContentResponses()
+        {
+            return NoContent();
         }
 
         [HttpGet]
         [Route("profile/{article}/htmlhead")]
         public async Task<IActionResult> Head(string article)
         {
-            logger.LogInformation($"{nameof(Head)} has been called");
+            logService.LogInformation($"{nameof(Head)} has been called");
 
             var viewModel = new HeadViewModel();
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
@@ -196,29 +208,39 @@ namespace DFC.App.JobProfile.Controllers
                 viewModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             }
 
-            logger.LogInformation($"{nameof(Head)} has returned content for: {article}");
-
-            return this.NegotiateContentResult(viewModel);
-        }
-
-        [Route("profile/{article}/breadcrumb")]
-        public async Task<IActionResult> Breadcrumb(string article)
-        {
-            logger.LogInformation($"{nameof(Breadcrumb)} has been called");
-
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
-            var viewModel = BuildBreadcrumb(jobProfileModel);
-
-            logger.LogInformation($"{nameof(Breadcrumb)} has returned content for: {article}");
+            logService.LogInformation($"{nameof(Head)} has returned content for: {article}");
 
             return this.NegotiateContentResult(viewModel);
         }
 
         [HttpGet]
-        [Route("profile/contents")]
-        public IActionResult Contents()
+        [Route("profile/{article}/hero")]
+        public async Task<IActionResult> Hero(string article)
         {
-            logger.LogInformation($"{nameof(Contents)} has been called");
+            logService.LogInformation($"{nameof(Hero)} has been called");
+
+            var viewModel = new HeroViewModel();
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+
+                logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
+
+                return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
+            }
+
+            logService.LogWarning($"{nameof(Hero)} has not returned any content for: {article}");
+
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("profile/contents")]
+        public IActionResult Body()
+        {
+            logService.LogInformation($"{nameof(Body)} has been called");
 
             return Redirect("/explore-careers");
         }
@@ -227,7 +249,7 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{article}/contents")]
         public async Task<IActionResult> Body(string article)
         {
-            logger.LogInformation($"{nameof(Body)} has been called");
+            logService.LogInformation($"{nameof(Body)} has been called");
 
             var viewModel = new BodyViewModel();
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
@@ -235,7 +257,8 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 mapper.Map(jobProfileModel, viewModel);
-                logger.LogInformation($"{nameof(Body)} has returned content for: {article}");
+                logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
+                viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
 
                 return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
             }
@@ -243,13 +266,13 @@ namespace DFC.App.JobProfile.Controllers
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
             if (alternateJobProfileModel != null)
             {
-                var alternateUrl = $"{Request.GetBaseAddress()}/{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                logger.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
+                var alternateUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
                 return RedirectPermanentPreserveMethod(alternateUrl);
             }
 
-            logger.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
+            logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
             return NotFound();
         }
 
@@ -257,7 +280,7 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{documentId}/profile")]
         public async Task<IActionResult> Profile(Guid documentId)
         {
-            logger.LogInformation($"{nameof(Profile)} has been called");
+            logService.LogInformation($"{nameof(Profile)} has been called");
 
             var viewModel = new BodyViewModel();
             var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
@@ -266,19 +289,19 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
 
-                logger.LogInformation($"{nameof(Profile)} has returned a profile for: {documentId}");
+                logService.LogInformation($"{nameof(Profile)} has returned a profile for: {documentId}");
 
                 return this.NegotiateContentResult(viewModel, jobProfileModel);
             }
 
-            logger.LogWarning($"{nameof(Profile)} has not returned a profile for: {documentId}");
+            logService.LogWarning($"{nameof(Profile)} has not returned a profile for: {documentId}");
 
             return NoContent();
         }
 
         #region Define helper methods
 
-        private static BreadcrumbViewModel BuildBreadcrumb(Data.Models.JobProfileModel jobProfileModel)
+        private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)
         {
             var viewModel = new BreadcrumbViewModel
             {

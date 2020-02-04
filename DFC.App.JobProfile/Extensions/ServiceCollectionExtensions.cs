@@ -1,6 +1,8 @@
 ﻿using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.HttpClientPolicies;
+using DFC.Logger.AppInsights.Constants;
+using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

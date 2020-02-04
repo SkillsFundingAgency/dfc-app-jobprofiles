@@ -1,6 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.ServiceBusModels;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

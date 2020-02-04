@@ -2,7 +2,7 @@
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ServiceBusModels;
-using Microsoft.Extensions.Logging;
+using DFC.Logger.AppInsights.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -14,14 +14,17 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
     {
         private readonly IMapper mapper;
         private readonly IHttpClientService<JobProfileModel> httpClientService;
-        private readonly ILogger log;
+        private readonly ILogService logService;
 
-        public MessageProcessor(IMapper mapper, IHttpClientService<JobProfileModel> httpClientService, ILogger log)
+        public MessageProcessor(IMapper mapper, IHttpClientService<JobProfileModel> httpClientService, ILogService logService)
         {
             this.mapper = mapper;
             this.httpClientService = httpClientService;
-            this.log = log;
+            LogService = logService;
+            this.logService = logService;
         }
+
+        public ILogService LogService { get; }
 
         public async Task<HttpStatusCode> ProcessSegmentRefresEventAsync(string eventData, long sequenceNumber)
         {
@@ -36,11 +39,11 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             var result = await httpClientService.PostAsync(refreshPayload, "refresh").ConfigureAwait(false);
             if (result == HttpStatusCode.OK)
             {
-                log.LogInformation($"{nameof(ProcessSegmentRefresEventAsync)}: Segment: {refreshPayload.Segment} of job profile: '{refreshPayload.CanonicalName} - {refreshPayload.JobProfileId}' updated.");
+                logService.LogInformation($"{nameof(ProcessSegmentRefresEventAsync)}: Segment: {refreshPayload.Segment} of job profile: '{refreshPayload.CanonicalName} - {refreshPayload.JobProfileId}' updated.");
             }
             else
             {
-                log.LogWarning($"{nameof(ProcessSegmentRefresEventAsync)}: Segment: {refreshPayload.Segment} of job profile: '{refreshPayload.CanonicalName} - {refreshPayload.JobProfileId}' NOT updated : Status: {result}");
+                logService.LogWarning($"{nameof(ProcessSegmentRefresEventAsync)}: Segment: {refreshPayload.Segment} of job profile: '{refreshPayload.CanonicalName} - {refreshPayload.JobProfileId}' NOT updated : Status: {result}");
             }
 
             return result;

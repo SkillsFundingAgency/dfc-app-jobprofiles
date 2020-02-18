@@ -2,6 +2,7 @@
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -11,29 +12,27 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerPostRefreshReturnsSuccessForUpdate(string mediaTypeName)
+        public async Task ProfileControllerPostRefreshReturnsSuccessForUpdate(string mediaTypeName)
         {
             // Arrange
             var refreshJobProfileSegmentModel = A.Fake<RefreshJobProfileSegment>();
-            var existingRefreshJobProfileSegment = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
+            A.CallTo(() => FakeJobProfileService.RefreshSegmentsAsync(A<RefreshJobProfileSegment>.Ignored)).Returns(HttpStatusCode.OK);
 
             // Act
             var result = await controller.Refresh(refreshJobProfileSegmentModel).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.RefreshSegmentsAsync(A<RefreshJobProfileSegment>.Ignored)).MustHaveHappenedOnceExactly();
-
             var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
-
-            A.Equals((int)HttpStatusCode.OK, statusCodeResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.OK, statusCodeResult.StatusCode);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerPostRefreshReturnsBadResultWhenModelIsNull(string mediaTypeName)
+        public async Task ProfileControllerPostRefreshReturnsBadResultWhenModelIsNull(string mediaTypeName)
         {
             // Arrange
             RefreshJobProfileSegment refreshJobProfileSegmentModel = null;
@@ -44,15 +43,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             // Assert
             var statusResult = Assert.IsType<BadRequestResult>(result);
-
-            A.Equals((int)HttpStatusCode.BadRequest, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.BadRequest, statusResult.StatusCode);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerPostRefreshReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
+        public async Task ProfileControllerPostRefreshReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
         {
             // Arrange
             var refreshJobProfileSegmentModel = new RefreshJobProfileSegment();
@@ -65,8 +63,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             // Assert
             var statusResult = Assert.IsType<BadRequestObjectResult>(result);
-
-            A.Equals((int)HttpStatusCode.BadRequest, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.BadRequest, statusResult.StatusCode);
 
             controller.Dispose();
         }

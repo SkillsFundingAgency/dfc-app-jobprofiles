@@ -1,13 +1,16 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
@@ -15,6 +18,7 @@ namespace DFC.App.JobProfile.Controllers
     public class ProfileController : Controller
     {
         public const string ProfilePathRoot = "job-profiles";
+        private readonly HtmlString emptySegmentMarkup = new HtmlString("<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>");
 
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
@@ -251,16 +255,14 @@ namespace DFC.App.JobProfile.Controllers
         {
             logService.LogInformation($"{nameof(Body)} has been called");
 
-            var viewModel = new BodyViewModel();
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
-
             if (jobProfileModel != null)
             {
-                mapper.Map(jobProfileModel, viewModel);
+                var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
                 viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
 
-                return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
+                return ValidateJobProfile(viewModel, jobProfileModel);
             }
 
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
@@ -334,6 +336,41 @@ namespace DFC.App.JobProfile.Controllers
             viewModel.Paths.Last().AddHyperlink = false;
 
             return viewModel;
+        }
+
+        private IActionResult ValidateJobProfile(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
+        {
+            if (bodyViewModel.Segments != null)
+            {
+                foreach (var segmentModel in bodyViewModel.Segments)
+                {
+                    var markup = segmentModel.Markup.Value;
+
+                    if (!string.IsNullOrWhiteSpace(markup))
+                    {
+                        continue;
+                    }
+
+                    switch (segmentModel.Segment)
+                    {
+                        case JobProfileSegment.Overview:
+                        case JobProfileSegment.HowToBecome:
+                        case JobProfileSegment.WhatItTakes:
+                            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+
+                        case JobProfileSegment.RelatedCareers:
+                        case JobProfileSegment.CurrentOpportunities:
+                        case JobProfileSegment.WhatYouWillDo:
+                        case JobProfileSegment.CareerPathsAndProgression:
+                            {
+                                segmentModel.Markup = emptySegmentMarkup;
+                                break;
+                            }
+                    }
+                }
+            }
+
+            return this.NegotiateContentResult(bodyViewModel, jobProfileModel.Segments);
         }
 
         #endregion Define helper methods

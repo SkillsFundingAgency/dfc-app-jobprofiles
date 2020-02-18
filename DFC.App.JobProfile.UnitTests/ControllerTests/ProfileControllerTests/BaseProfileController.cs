@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Models;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Net.Mime;
-using DFC.App.JobProfile.Models;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 {

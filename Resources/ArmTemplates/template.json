@@ -260,7 +260,7 @@
                             },
                             {
                                 "name": "OverviewBannerSegmentClientOptions__OfflineHtml",
-                                "value": "<header class=\"job-profile-hero\"><div class=\"govuk-width-container\"><div class=\"govuk-grid-row\"><div class=\"govuk-grid-column-two-thirds\"><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></div></div></div></header>"
+                                "value": ""
                             },
                             {
                                 "name": "CurrentOpportunitiesSegmentClientOptions__Timeout",
@@ -308,7 +308,7 @@
                             },
                             {
                                 "name": "HowToBecomeSegmentClientOptions__OfflineHtml",
-                                "value": "<section id=\"HowToBecome\"><h2 class=\"job-profile-heading\">How to become</h2><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
+                                "value": ""
                             },
                             {
                                 "name": "RelatedCareersSegmentClientOptions__Timeout",
@@ -340,7 +340,7 @@
                             },
                             {
                                 "name": "WhatItTakesSegmentClientOptions__OfflineHtml",
-                                "value": "<section id=\"WhatItTakes\"><h2 class=\"job-profile-heading\">What it takes</h2><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
+                                "value": ""
                             },
                             {
                                 "name": "WhatYouWillDoSegmentClientOptions__Timeout",
@@ -422,7 +422,7 @@
                     },
                     "appServiceAppSettings": {
                         "value": [
-                             {
+                            {
                                 "name": "FUNCTIONS_EXTENSION_VERSION",
                                 "value": "~2"
                             },
@@ -581,7 +581,7 @@
             "name": "[concat('monitor-',parameters('refreshTopicName'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('appSharedResourceGroup')]",
-            "condition" : "[not(variables('productionEnvironment'))]",
+            "condition": "[not(variables('productionEnvironment'))]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -639,5 +639,6 @@
             ]
         }
     ],
-        "outputs": {}
+    "outputs": {
     }
+}

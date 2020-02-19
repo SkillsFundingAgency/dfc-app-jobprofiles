@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
 using Newtonsoft.Json;
+using Polly.CircuitBreaker;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -114,20 +115,28 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(acceptHeader));
                 ConfigureHttpClient();
 
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                    var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : {responseString}");
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : {responseString}");
+                    }
+                    else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        logService.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
+                        return null;
+                    }
+
+                    return responseString;
                 }
-                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                catch (BrokenCircuitException e)
                 {
-                    logService.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
+                    logService.LogInformation($"Error received refreshing segment data '{e.InnerException?.Message}'. Received for {jobProfileId} from {url}, Returning empty content.");
                     return null;
                 }
-
-                return responseString;
             }
         }
 

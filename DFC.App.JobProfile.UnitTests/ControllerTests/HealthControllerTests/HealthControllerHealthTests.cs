@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
@@ -15,12 +16,11 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
     public class HealthControllerHealthTests : BaseHealthController
     {
         [Fact]
-        public async void HealthControllerHealthReturnsSuccessWhenhealthy()
+        public async Task HealthControllerHealthReturnsSuccessWhenhealthy()
         {
             // Arrange
-            bool expectedResult = true;
+            const bool expectedResult = true;
             var controller = BuildHealthController(MediaTypeNames.Application.Json);
-
             A.CallTo(() => FakeJobProfileService.PingAsync()).Returns(expectedResult);
 
             // Act
@@ -40,12 +40,11 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
         }
 
         [Fact]
-        public async void HealthControllerHealthReturnsServiceUnavailableWhenUnhealthy()
+        public async Task HealthControllerHealthReturnsServiceUnavailableWhenUnhealthy()
         {
             // Arrange
-            bool expectedResult = false;
+            const bool expectedResult = false;
             var controller = BuildHealthController(MediaTypeNames.Application.Json);
-
             A.CallTo(() => FakeJobProfileService.PingAsync()).Returns(expectedResult);
 
             // Act
@@ -53,20 +52,17 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
 
             // Assert
             A.CallTo(() => FakeJobProfileService.PingAsync()).MustHaveHappenedOnceExactly();
-
             var statusResult = Assert.IsType<StatusCodeResult>(result);
-
-            A.Equals((int)HttpStatusCode.ServiceUnavailable, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.ServiceUnavailable, statusResult.StatusCode);
 
             controller.Dispose();
         }
 
         [Fact]
-        public async void HealthControllerHealthReturnsServiceUnavailableWhenException()
+        public async Task HealthControllerHealthReturnsServiceUnavailableWhenException()
         {
             // Arrange
             var controller = BuildHealthController(MediaTypeNames.Application.Json);
-
             A.CallTo(() => FakeJobProfileService.PingAsync()).Throws<Exception>();
 
             // Act
@@ -74,10 +70,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
 
             // Assert
             A.CallTo(() => FakeJobProfileService.PingAsync()).MustHaveHappenedOnceExactly();
-
             var statusResult = Assert.IsType<StatusCodeResult>(result);
-
-            A.Equals((int)HttpStatusCode.ServiceUnavailable, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.ServiceUnavailable, statusResult.StatusCode);
 
             controller.Dispose();
         }

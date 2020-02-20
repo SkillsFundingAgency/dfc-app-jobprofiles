@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
@@ -340,6 +340,20 @@ namespace DFC.App.JobProfile.Controllers
 
         private IActionResult ValidateJobProfile(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
         {
+            var overviewExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
+            var howToBecomeExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.HowToBecome);
+            var whatItTakesExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatItTakes);
+
+            if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
+            {
+                throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
+            }
+
+            return this.ValidateMarkup(bodyViewModel, jobProfileModel);
+        }
+
+        private IActionResult ValidateMarkup(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
+        {
             if (bodyViewModel.Segments != null)
             {
                 foreach (var segmentModel in bodyViewModel.Segments)
@@ -356,7 +370,7 @@ namespace DFC.App.JobProfile.Controllers
                         case JobProfileSegment.Overview:
                         case JobProfileSegment.HowToBecome:
                         case JobProfileSegment.WhatItTakes:
-                            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}");
 
                         case JobProfileSegment.RelatedCareers:
                         case JobProfileSegment.CurrentOpportunities:

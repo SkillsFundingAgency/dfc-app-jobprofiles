@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.ViewModels;
 using FakeItEasy;
 using FluentAssertions;
@@ -18,32 +19,95 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     public class ProfileControllerBodyTests : BaseProfileController
     {
         private const string FakeArticleName = "an-article-name";
+
         private readonly HtmlString emptySegmentMarkup = new HtmlString("<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>");
+
+        private static BodyViewModel DefaultBodyViewModel => new BodyViewModel
+        {
+            CanonicalName = FakeArticleName,
+            Segments = new List<SegmentModel>
+            {
+                new SegmentModel
+                {
+                    Segment = JobProfileSegment.Overview,
+                    Markup = new HtmlString("someContent"),
+                },
+                new SegmentModel
+                {
+                    Segment = JobProfileSegment.WhatItTakes,
+                    Markup = new HtmlString("someContent"),
+                },
+                new SegmentModel
+                {
+                    Segment = JobProfileSegment.HowToBecome,
+                    Markup = new HtmlString("someContent"),
+                },
+            },
+        };
 
         public static IEnumerable<object[]> EmptyCriticalSegmentModelInput()
         {
             yield return new object[]
             {
-                new SegmentModel
+                new List<SegmentModel>
                 {
-                    Segment = JobProfileSegment.Overview,
-                    Markup = new HtmlString(string.Empty),
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.Overview,
+                        Markup = new HtmlString(string.Empty),
+                    },
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.HowToBecome,
+                        Markup = new HtmlString("someContent"),
+                    },
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.WhatItTakes,
+                        Markup = new HtmlString("someContent"),
+                    },
                 },
             };
             yield return new object[]
             {
-                new SegmentModel
+                new List<SegmentModel>
                 {
-                    Segment = JobProfileSegment.HowToBecome,
-                    Markup = new HtmlString(string.Empty),
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.Overview,
+                        Markup = new HtmlString("someContent"),
+                    },
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.HowToBecome,
+                        Markup = new HtmlString(string.Empty),
+                    },
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.WhatItTakes,
+                        Markup = new HtmlString("someContent"),
+                    },
                 },
             };
             yield return new object[]
             {
-                new SegmentModel
+                new List<SegmentModel>
                 {
-                    Segment = JobProfileSegment.WhatItTakes,
-                    Markup = new HtmlString(string.Empty),
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.Overview,
+                        Markup = new HtmlString("someContent"),
+                    },
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.HowToBecome,
+                        Markup = new HtmlString("someContent"),
+                    },
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.WhatItTakes,
+                        Markup = new HtmlString(string.Empty),
+                    },
                 },
             };
         }
@@ -52,35 +116,35 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             yield return new object[]
             {
-                new SegmentModel
+                DefaultBodyViewModel.Segments.Append(new SegmentModel
                 {
                     Segment = JobProfileSegment.RelatedCareers,
                     Markup = new HtmlString(string.Empty),
-                },
+                }).ToList(),
             };
             yield return new object[]
             {
-                new SegmentModel
+                DefaultBodyViewModel.Segments.Append(new SegmentModel
                 {
                     Segment = JobProfileSegment.CurrentOpportunities,
                     Markup = new HtmlString(string.Empty),
-                },
+                }).ToList(),
             };
             yield return new object[]
             {
-                new SegmentModel
+                DefaultBodyViewModel.Segments.Append(new SegmentModel
                 {
                     Segment = JobProfileSegment.WhatYouWillDo,
                     Markup = new HtmlString(string.Empty),
-                },
+                }).ToList(),
             };
             yield return new object[]
             {
-                new SegmentModel
+                DefaultBodyViewModel.Segments.Append(new SegmentModel
                 {
                     Segment = JobProfileSegment.CareerPathsAndProgression,
                     Markup = new HtmlString(string.Empty),
-                },
+                }).ToList(),
             };
         }
 
@@ -95,7 +159,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.CanonicalName = FakeArticleName;
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<BodyViewModel>());
+            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
@@ -122,7 +186,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.Segments = new List<SegmentModel>();
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<BodyViewModel>());
+            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
@@ -140,21 +204,24 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async Task JobProfileControllerBodyJsonAndHtmlReturnsRedirectWhenAlternateArticleExists(string mediaTypeName)
+        public async Task JobProfileControllerBodyJsonAndHtmlReturnsRedirectWhenAlternateArticleExists(
+            string mediaTypeName)
         {
             // Arrange
             var expectedAlternativeResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns(expectedAlternativeResult);
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
+                .Returns(expectedAlternativeResult);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
+                .MustHaveHappenedOnceExactly();
 
             var statusResult = Assert.IsType<RedirectResult>(result);
             statusResult.Url.Should().NotBeNullOrWhiteSpace();
@@ -166,20 +233,23 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
         [MemberData(nameof(JsonMediaTypes))]
-        public async Task JobProfileControllerBodyHtmlAndJsonReturnsNoContentWhenNoAlternateArticle(string mediaTypeName)
+        public async Task JobProfileControllerBodyHtmlAndJsonReturnsNoContentWhenNoAlternateArticle(
+            string mediaTypeName)
         {
             // Arrange
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
+                .Returns((JobProfileModel)null);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
+                .MustHaveHappenedOnceExactly();
             Assert.IsType<NotFoundResult>(result);
 
             controller.Dispose();
@@ -196,7 +266,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.CanonicalName = FakeArticleName;
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<BodyViewModel>());
+            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
@@ -212,16 +282,27 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             controller.Dispose();
         }
 
-        [Theory]
-        [MemberData(nameof(EmptyCriticalSegmentModelInput))]
-        public async Task BodyReturnsInternalServerErrorWhenCriticalSegmentsHaveNoMarkup(SegmentModel segment)
+        [Fact]
+        public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentDoesNotExist()
         {
             // Arrange
             var controller = BuildProfileController(MediaTypeNames.Application.Json);
             var bodyViewModel = new BodyViewModel
             {
                 CanonicalName = FakeArticleName,
-                Segments = new List<SegmentModel> { segment },
+                Segments = new List<SegmentModel>
+                {
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.WhatItTakes,
+                        Markup = new HtmlString("someContent"),
+                    },
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.HowToBecome,
+                        Markup = new HtmlString("someContent"),
+                    },
+                },
             };
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
@@ -229,25 +310,43 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
 
             // Act
-            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
-            var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
-
-            // Assert
-            Assert.Equal((int)HttpStatusCode.InternalServerError, statusCodeResult?.StatusCode);
+            await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
 
             controller.Dispose();
         }
 
         [Theory]
-        [MemberData(nameof(EmptyNonCriticalSegmentModelInput))]
-        public async Task BodyReturnsEmptyMarkupWhenNonCriticalSegmentsHaveNoMarkup(SegmentModel segment)
+        [MemberData(nameof(EmptyCriticalSegmentModelInput))]
+        public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
         {
             // Arrange
             var controller = BuildProfileController(MediaTypeNames.Application.Json);
             var bodyViewModel = new BodyViewModel
             {
                 CanonicalName = FakeArticleName,
-                Segments = new List<SegmentModel> { segment },
+                Segments = segments,
+            };
+
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
+            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
+
+            // Act
+            await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
+
+            controller.Dispose();
+        }
+
+        [Theory]
+        [MemberData(nameof(EmptyNonCriticalSegmentModelInput))]
+        public async Task BodyReturnsEmptyMarkupWhenNonCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
+        {
+            // Arrange
+            var controller = BuildProfileController(MediaTypeNames.Application.Json);
+            var bodyViewModel = new BodyViewModel
+            {
+                CanonicalName = FakeArticleName,
+                Segments = segments,
             };
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
@@ -260,7 +359,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             // Assert
             var okObjectResult = result as OkObjectResult;
             var resultViewModel = Assert.IsAssignableFrom<BodyViewModel>(okObjectResult?.Value);
-            var resultSegmentModel = resultViewModel.Segments.FirstOrDefault(s => s.Segment == segment.Segment);
+            var nonCriticalSegment = segments.FirstOrDefault(s => s.Segment != JobProfileSegment.Overview && s.Segment != JobProfileSegment.HowToBecome && s.Segment != JobProfileSegment.WhatItTakes);
+            var resultSegmentModel = resultViewModel.Segments.FirstOrDefault(s => s.Segment == nonCriticalSegment?.Segment);
 
             Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
             resultSegmentModel?.Markup.Should().BeEquivalentTo(emptySegmentMarkup);

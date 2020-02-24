@@ -38,7 +38,7 @@ stages:
 
       steps:
       # Build DFC.App.JobProfile
-      - template: AzureDevOpsTemplates\Build\StepTemplates\dfc-dotnetcore-build.yml@dfc-devops
+      - template: AzureDevOpsTemplates\Build\StepTemplates\dfc-dotnetcore-build-sonar.yml@dfc-devops
         parameters:
           SolutionBaseName: $(SolutionBaseName)
           BuildPlatform: $(BuildPlatform)

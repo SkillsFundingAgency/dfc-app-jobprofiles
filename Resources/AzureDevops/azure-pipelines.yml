@@ -1,5 +1,5 @@
 variables:
-    ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'     
+    ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'
     SolutionBaseName: 'DFC.App.JobProfile'
     BuildPlatform: 'any cpu'
     BuildConfiguration: 'release'
@@ -30,6 +30,12 @@ stages:
           parameters:
             ArmTemplateRoot: '${{ variables.ArmTemplateRoot }}'
             SolutionBaseName: '${{ variables.SolutionBaseName }}'
+
+        - task: PublishPipelineArtifact@0
+          displayName: Publish Page Registration artifact
+          inputs:
+            targetPath: '$(Build.SourcesDirectory)/Resources/PageRegistration'
+            artifactName: ${{ variables.SolutionBaseName }}.PageRegistrations
 
     #Build and test application
     - job: BuildDotNetCore

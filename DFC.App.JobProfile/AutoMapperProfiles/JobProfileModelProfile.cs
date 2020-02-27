@@ -18,6 +18,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileModel, DocumentViewModel>()
                 .ForMember(d => d.Breadcrumb, s => s.Ignore())
+                .ForMember(d => d.Head, s => s.Ignore())
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.MetaTags.Title))
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.MetaTags.Description))
                 .ForMember(d => d.Keywords, s => s.MapFrom(a => a.MetaTags.Keywords))

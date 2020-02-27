@@ -42,7 +42,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected AutoMapper.IMapper FakeMapper { get; }
 
-        protected ProfileController BuildProfileController(string mediaTypeName)
+        protected ProfileController BuildProfileController(string mediaTypeName = MediaTypeNames.Application.Json)
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;

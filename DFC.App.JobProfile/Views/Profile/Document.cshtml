@@ -3,22 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    @if (!string.IsNullOrWhiteSpace(Model.BreadcrumbTitle))
-    {
-        ViewData["Title"] = Model.BreadcrumbTitle;
-
-        <title>@ViewData["Title"]</title>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(Model.Description))
-    {
-        <meta name="description" Markup="@Model.Description">
-    }
-
-    @if (!string.IsNullOrWhiteSpace(Model.Description))
-    {
-        <meta name="keywords" Markup="@Model.Keywords">
-    }
+<partial name="_Head" model=@Model.Head />
 </head>
 <body>
     <div>
@@ -36,148 +21,40 @@
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.CanonicalName)
             </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Title)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.BreadcrumbTitle)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.BreadcrumbTitle)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.IncludeInSitemap)
-            </dt>
-
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.IncludeInSitemap)
-            </dd>
-
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.LastReviewed)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.LastReviewed)
             </dd>
-
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.OverviewBannerSegmentMarkup)
+                @Html.DisplayNameFor(model => model.SequenceNumber)
             </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SequenceNumber)
+            </dd>
+
             <dd class="col-sm-10">
                 @Html.Raw(Model.OverviewBannerSegmentMarkup)
             </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.OverviewBannerSegmentUpdated)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.OverviewBannerSegmentUpdated)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentMarkup)
-            </dt>
             <dd class="col-sm-10">
                 @Html.Raw(Model.CurrentOpportunitiesSegmentMarkup)
             </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CurrentOpportunitiesSegmentUpdated)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CurrentOpportunitiesSegmentUpdated)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.RelatedCareersSegmentMarkup)
-            </dt>
             <dd class="col-sm-10">
                 @Html.Raw(Model.RelatedCareersSegmentMarkup)
             </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.RelatedCareersSegmentUpdated)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.RelatedCareersSegmentUpdated)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CareerPathSegmentMarkup)
-            </dt>
             <dd class="col-sm-10">
                 @Html.Raw(Model.CareerPathSegmentMarkup)
             </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CareerPathSegmentUpdated)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CareerPathSegmentUpdated)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.HowToBecomeSegmentMarkup)
-            </dt>
             <dd class="col-sm-10">
                 @Html.Raw(Model.HowToBecomeSegmentMarkup)
             </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.HowToBecomeSegmentUpdated)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.HowToBecomeSegmentUpdated)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WhatItTakesSegmentMarkup)
-            </dt>
             <dd class="col-sm-10">
                 @Html.Raw(Model.WhatItTakesSegmentMarkup)
             </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WhatItTakesSegmentUpdated)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.WhatItTakesSegmentUpdated)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WhatYouWillDoSegmentMarkup)
-            </dt>
             <dd class="col-sm-10">
                 @Html.Raw(Model.WhatYouWillDoSegmentMarkup)
             </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WhatYouWillDoSegmentUpdated)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.WhatYouWillDoSegmentUpdated)
-            </dd>
-
-            @if (Model.AlternativeNames?.Count() > 0)
-            {
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.AlternativeNames)
-                </dt>
-                <dd class="col-sm-10">
-                    <ol>
-                        @foreach (var alternativeName in Model.AlternativeNames)
-                        {
-                            <li><a href="/profile/@alternativeName">@alternativeName</a></li>
-                        }
-                    </ol>
-                </dd>
-            }
         </dl>
     </div>
     <div>

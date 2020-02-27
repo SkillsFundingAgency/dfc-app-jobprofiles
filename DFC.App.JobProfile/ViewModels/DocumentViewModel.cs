@@ -6,6 +6,8 @@ namespace DFC.App.JobProfile.ViewModels
 {
     public class DocumentViewModel
     {
+        public HeadViewModel Head { get; set; }
+
         public BreadcrumbViewModel Breadcrumb { get; set; }
 
         [Display(Name = "Document Id")]
@@ -26,7 +28,10 @@ namespace DFC.App.JobProfile.ViewModels
 
         public string Keywords { get; set; }
 
+        [Display(Name = "Last Updated")]
         public DateTime LastReviewed { get; set; }
+
+        public int? SequenceNumber { get; set; }
 
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -14,7 +15,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void ProfileControllerIndexHtmlReturnsSuccess(string mediaTypeName)
+        public async Task ProfileControllerIndexHtmlReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             const int resultsCount = 2;
@@ -34,14 +35,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
 
-            A.Equals(resultsCount, model.Documents.Count());
+            Assert.Equal(resultsCount, model.Documents.Count());
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerIndexJsonReturnsSuccess(string mediaTypeName)
+        public async Task ProfileControllerIndexJsonReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             const int resultsCount = 2;
@@ -61,14 +62,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(jsonResult.Value);
 
-            A.Equals(resultsCount, model.Documents.Count());
+            Assert.Equal(resultsCount, model.Documents.Count());
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void ProfileControllerIndexHtmlReturnsSuccessWhenNoData(string mediaTypeName)
+        public async Task ProfileControllerIndexHtmlReturnsSuccessWhenNoData(string mediaTypeName)
         {
             // Arrange
             const int resultsCount = 0;
@@ -88,14 +89,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
 
-            A.Equals(null, model.Documents);
+            Assert.Null(model.Documents);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerIndexJsonReturnsSuccessWhenNoData(string mediaTypeName)
+        public async Task ProfileControllerIndexJsonReturnsSuccessWhenNoData(string mediaTypeName)
         {
             // Arrange
             const int resultsCount = 0;
@@ -115,14 +116,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(jsonResult.Value);
 
-            A.Equals(null, model.Documents);
+            Assert.Null(model.Documents);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(InvalidMediaTypes))]
-        public async void ProfileControllerIndexReturnsNotAcceptable(string mediaTypeName)
+        public async Task ProfileControllerIndexReturnsNotAcceptable(string mediaTypeName)
         {
             // Arrange
             const int resultsCount = 0;
@@ -141,7 +142,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             var statusResult = Assert.IsType<StatusCodeResult>(result);
 
-            A.Equals((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
 
             controller.Dispose();
         }

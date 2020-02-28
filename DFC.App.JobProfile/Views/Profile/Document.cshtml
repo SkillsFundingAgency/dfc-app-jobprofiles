@@ -3,10 +3,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    @if (!string.IsNullOrWhiteSpace(Model.BreadcrumbTitle))
+    {
+        ViewData["Title"] = Model.BreadcrumbTitle;
+
+        <title>@ViewData["Title"]</title>
+    }
     <partial name="_Head" model=@Model.Head />
 </head>
 <body>
-
     <div>
         <dl class="row">
             <dt class="col-sm-2">
@@ -37,6 +42,7 @@
         </dl>
     </div>
 
+    <partial name="_Hero" model=@Model.Body.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview)?.Markup />
     <partial name="_BodyContent" model=@Model.Body />
 
     <div>

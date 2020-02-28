@@ -153,14 +153,15 @@ namespace DFC.App.JobProfile.ProfileService
             if (existingItem is null)
             {
                 segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : offlineSegmentData.OfflineMarkup;
-                segmentData.Json = segmentData.Json ?? offlineSegmentData.OfflineJson;
+                segmentData.Json ??= offlineSegmentData.OfflineJson;
                 existingJobProfile.Segments.Add(segmentData);
             }
             else
             {
                 var index = existingJobProfile.Segments.IndexOf(existingItem);
-                segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : (!string.IsNullOrEmpty(existingItem.Markup?.Value) ? existingItem.Markup : offlineSegmentData.OfflineMarkup);
-                segmentData.Json = segmentData.Json is null ? existingItem.Json ?? offlineSegmentData.OfflineJson : segmentData.Json;
+                var fallbackMarkup = !string.IsNullOrEmpty(existingItem.Markup?.Value) ? existingItem.Markup : offlineSegmentData.OfflineMarkup;
+                segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : fallbackMarkup;
+                segmentData.Json ??= existingItem.Json ?? offlineSegmentData.OfflineJson;
 
                 existingJobProfile.Segments[index] = segmentData;
             }

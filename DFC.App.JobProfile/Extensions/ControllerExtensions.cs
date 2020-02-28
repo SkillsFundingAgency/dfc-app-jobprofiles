@@ -18,16 +18,16 @@ namespace DFC.App.JobProfile.Extensions
 
             if (controller.Request.Headers.Keys.Contains(HeaderNames.Accept))
             {
-                var acceptHeaders = controller.Request.Headers[HeaderNames.Accept].ToString().ToLowerInvariant().Split(';');
+                var acceptHeaders = controller.Request.Headers[HeaderNames.Accept].ToString().ToUpperInvariant().Split(';');
                 foreach (var acceptHeader in acceptHeaders)
                 {
                     var items = acceptHeader.Split(',');
-                    if (items.Contains(MediaTypeNames.Application.Json))
+                    if (items.Contains(MediaTypeNames.Application.Json.ToUpperInvariant()))
                     {
                         return controller.Ok(dataModel ?? viewModel);
                     }
 
-                    if (items.Contains(MediaTypeNames.Text.Html) || items.Contains("*/*"))
+                    if (items.Contains(MediaTypeNames.Text.Html.ToUpperInvariant()) || items.Contains("*/*"))
                     {
                         return controller.View(viewModel);
                     }

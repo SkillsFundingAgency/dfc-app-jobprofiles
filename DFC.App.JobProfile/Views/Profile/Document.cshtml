@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<partial name="_Head" model=@Model.Head />
+    <partial name="_Head" model=@Model.Head />
 </head>
 <body>
+
     <div>
         <dl class="row">
             <dt class="col-sm-2">
@@ -33,30 +34,11 @@
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.SequenceNumber)
             </dd>
-
-            <dd class="col-sm-10">
-                @Html.Raw(Model.OverviewBannerSegmentMarkup)
-            </dd>
-            <dd class="col-sm-10">
-                @Html.Raw(Model.CurrentOpportunitiesSegmentMarkup)
-            </dd>
-            <dd class="col-sm-10">
-                @Html.Raw(Model.RelatedCareersSegmentMarkup)
-            </dd>
-            <dd class="col-sm-10">
-                @Html.Raw(Model.CareerPathSegmentMarkup)
-            </dd>
-            <dd class="col-sm-10">
-                @Html.Raw(Model.HowToBecomeSegmentMarkup)
-            </dd>
-            <dd class="col-sm-10">
-                @Html.Raw(Model.WhatItTakesSegmentMarkup)
-            </dd>
-            <dd class="col-sm-10">
-                @Html.Raw(Model.WhatYouWillDoSegmentMarkup)
-            </dd>
         </dl>
     </div>
+
+    <partial name="_BodyContent" model=@Model.Body />
+
     <div>
         <a asp-action="Index">Back to List</a>
     </div>

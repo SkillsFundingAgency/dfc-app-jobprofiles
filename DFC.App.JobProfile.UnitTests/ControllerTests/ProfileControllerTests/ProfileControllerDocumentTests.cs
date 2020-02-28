@@ -1,8 +1,17 @@
-﻿using DFC.App.JobProfile.Data.Models;
+﻿using AutoMapper;
+using DFC.App.JobProfile.AutoMapperProfiles;
+using DFC.App.JobProfile.Controllers;
+using DFC.App.JobProfile.Data;
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ViewModels;
 using FakeItEasy;
+using FluentAssertions;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -107,15 +116,37 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         }
 
         [Fact]
-        public async Task ProfileControllerDocumentReturnsWithCorrectlyMappedHeadContent()
+        public async Task ProfileControllerDocumentReturnsWithCorrectlyMappedHeadAndBodyContent()
         {
             // Arrange
             const string article = "an-article-name";
             const string headDescription = "HeadDescription";
             const string headTitle = "HeadTitle";
             const string headKeywords = "some keywords";
+            var jobProfileId = Guid.NewGuid();
 
-            var expectedJobProfileModel = new JobProfileModel
+            var controller = BuildControllerWithMapper();
+            var jobProfileModel = CreateJobProfileModel(headTitle, headDescription, headKeywords, jobProfileId);
+            var expectedViewModel = CreateDocumentViewModel(headTitle, headDescription, headKeywords, jobProfileId);
+
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(jobProfileModel);
+
+            // Act
+            var result = await controller.Document(article).ConfigureAwait(false);
+
+            // Assert
+            var jsonResult = Assert.IsType<OkObjectResult>(result);
+            var resultModel = Assert.IsAssignableFrom<DocumentViewModel>(jsonResult.Value);
+            Assert.NotNull(resultModel.Head);
+            Assert.NotNull(resultModel.Body);
+            resultModel.Should().BeEquivalentTo(expectedViewModel);
+
+            controller.Dispose();
+        }
+
+        private static JobProfileModel CreateJobProfileModel(string headTitle, string headDescription, string headKeywords, Guid jobProfileId)
+        {
+            return new JobProfileModel
             {
                 MetaTags = new MetaTags
                 {
@@ -123,33 +154,94 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                     Description = headDescription,
                     Keywords = headKeywords,
                 },
+                DocumentId = jobProfileId,
+                Segments = new List<SegmentModel>
+                {
+                    new SegmentModel
+                    {
+                        Markup = new HtmlString("some markup"),
+                        Segment = JobProfileSegment.HowToBecome,
+                    },
+                    new SegmentModel
+                    {
+                        Markup = new HtmlString("some markup"),
+                        Segment = JobProfileSegment.Overview,
+                    },
+                },
+                SequenceNumber = 123,
+                AlternativeNames = new List<string>(),
             };
+        }
 
-            var expectedHeadModel = new HeadViewModel
+        private static DocumentViewModel CreateDocumentViewModel(string headTitle, string headDescription, string headKeywords, Guid jobProfileId)
+        {
+            return new DocumentViewModel
             {
-                Title = headTitle,
+                DocumentId = jobProfileId,
+                Head = new HeadViewModel
+                {
+                    Title = $"{headTitle} | Explore careers | National Careers Service",
+                    Description = headDescription,
+                    Keywords = headKeywords,
+                },
                 Description = headDescription,
                 Keywords = headKeywords,
+                Title = headTitle,
+                SequenceNumber = 123,
+                AlternativeNames = Array.Empty<string>(),
+                Body = new BodyViewModel
+                {
+                    Segments = new List<SegmentModel>
+                    {
+                        new SegmentModel
+                        {
+                            Markup = new HtmlString("some markup"),
+                            Segment = JobProfileSegment.HowToBecome,
+                        },
+                        new SegmentModel
+                        {
+                            Markup = new HtmlString("some markup"),
+                            Segment = JobProfileSegment.Overview,
+                        },
+                    },
+                },
+                Breadcrumb = new BreadcrumbViewModel
+                {
+                    Paths = new List<BreadcrumbPathViewModel>
+                    {
+                        new BreadcrumbPathViewModel
+                        {
+                            AddHyperlink = true,
+                            Route = "/",
+                            Title = "Home",
+                        },
+                        new BreadcrumbPathViewModel
+                        {
+                            AddHyperlink = true,
+                            Route = "/job-profiles",
+                            Title = "Job Profiles",
+                        },
+                        new BreadcrumbPathViewModel
+                        {
+                            AddHyperlink = false,
+                            Route = "/job-profiles/",
+                            Title = null,
+                        },
+                    },
+                },
             };
+        }
 
-            var controller = BuildProfileController();
+        private ProfileController BuildControllerWithMapper()
+        {
+            var config = new MapperConfiguration(opts =>
+            {
+                opts.AddProfile(new JobProfileModelProfile());
+            });
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedJobProfileModel);
-            A.CallTo(() => FakeMapper.Map<DocumentViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<DocumentViewModel>());
-            A.CallTo(() => FakeMapper.Map<HeadViewModel>(A<JobProfileModel>.Ignored)).Returns(expectedHeadModel);
+            var mapper = new Mapper(config);
 
-            // Act
-            var result = await controller.Document(article).ConfigureAwait(false);
-
-            // Assert
-            var jsonResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<DocumentViewModel>(jsonResult.Value);
-
-            A.CallTo(() => FakeMapper.Map<HeadViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
-            Assert.NotNull(model.Head);
-            Assert.True(model.Head.Title == headTitle && model.Head.Description == headDescription && model.Head.Keywords == headKeywords);
-
-            controller.Dispose();
+            return BuildProfileController(MediaTypeNames.Application.Json, mapper);
         }
     }
 }

@@ -73,7 +73,6 @@ namespace DFC.App.JobProfile.Controllers
 
             var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
             viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
-            viewModel.Head = BuildHeadViewModel(jobProfileModel);
             logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
             return this.NegotiateContentResult(viewModel);
         }

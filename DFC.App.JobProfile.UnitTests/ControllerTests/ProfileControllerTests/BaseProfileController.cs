@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.Controllers;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Models;
 using DFC.Logger.AppInsights.Contracts;
@@ -42,13 +43,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected AutoMapper.IMapper FakeMapper { get; }
 
-        protected ProfileController BuildProfileController(string mediaTypeName = MediaTypeNames.Application.Json)
+        protected ProfileController BuildProfileController(string mediaTypeName = MediaTypeNames.Application.Json, IMapper mapper = null)
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
-
+            
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeMapper, feedbackLinks)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks)
             {
                 ControllerContext = new ControllerContext()
                 {

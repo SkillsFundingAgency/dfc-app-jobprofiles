@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Html;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.ViewModels
@@ -9,6 +8,8 @@ namespace DFC.App.JobProfile.ViewModels
         public HeadViewModel Head { get; set; }
 
         public BreadcrumbViewModel Breadcrumb { get; set; }
+
+        public BodyViewModel Body { get; set; }
 
         [Display(Name = "Document Id")]
         public Guid? DocumentId { get; set; }
@@ -35,47 +36,5 @@ namespace DFC.App.JobProfile.ViewModels
 
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }
-
-        [Display(Name = "Overview Banner Markup")]
-        public HtmlString OverviewBannerSegmentMarkup { get; set; }
-
-        [Display(Name = "Overview Banner Updated")]
-        public DateTime OverviewBannerSegmentUpdated { get; set; }
-
-        [Display(Name = "Current Opportunities Markup")]
-        public HtmlString CurrentOpportunitiesSegmentMarkup { get; set; }
-
-        [Display(Name = "Current Opportunities Updated")]
-        public DateTime CurrentOpportunitiesSegmentUpdated { get; set; }
-
-        [Display(Name = "Related Careers Markup")]
-        public HtmlString RelatedCareersSegmentMarkup { get; set; }
-
-        [Display(Name = "Related Careers Updated")]
-        public DateTime RelatedCareersSegmentUpdated { get; set; }
-
-        [Display(Name = "Career Path Markup")]
-        public HtmlString CareerPathSegmentMarkup { get; set; }
-
-        [Display(Name = "Career Path Updated")]
-        public DateTime CareerPathSegmentUpdated { get; set; }
-
-        [Display(Name = "How To Become Markup")]
-        public HtmlString HowToBecomeSegmentMarkup { get; set; }
-
-        [Display(Name = "How To Become Updated")]
-        public DateTime HowToBecomeSegmentUpdated { get; set; }
-
-        [Display(Name = "What It Takes Markup")]
-        public HtmlString WhatItTakesSegmentMarkup { get; set; }
-
-        [Display(Name = "What It Takes Updated")]
-        public DateTime WhatItTakesSegmentUpdated { get; set; }
-
-        [Display(Name = "What You Will Do Markup")]
-        public HtmlString WhatYouWillDoSegmentMarkup { get; set; }
-
-        [Display(Name = "What You Will Do Updated")]
-        public DateTime WhatYouWillDoSegmentUpdated { get; set; }
     }
 }

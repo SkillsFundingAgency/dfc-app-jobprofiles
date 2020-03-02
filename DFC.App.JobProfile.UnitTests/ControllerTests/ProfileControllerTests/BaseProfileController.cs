@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.Controllers;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Models;
 using DFC.Logger.AppInsights.Contracts;
@@ -13,27 +14,27 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 {
     public abstract class BaseProfileController
     {
-        public BaseProfileController()
+        protected BaseProfileController()
         {
             FakeLogger = A.Fake<ILogService>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
             FakeMapper = A.Fake<AutoMapper.IMapper>();
         }
 
-        public static IEnumerable<object[]> HtmlMediaTypes => new List<object[]>
+        public static IEnumerable<object[]> HtmlMediaTypes => new List<string[]>
         {
-            new string[] { "*/*" },
-            new string[] { MediaTypeNames.Text.Html },
+            new[] { "*/*" },
+            new[] { MediaTypeNames.Text.Html },
         };
 
-        public static IEnumerable<object[]> InvalidMediaTypes => new List<object[]>
+        public static IEnumerable<object[]> InvalidMediaTypes => new List<string[]>
         {
-            new string[] { MediaTypeNames.Text.Plain },
+            new[] { MediaTypeNames.Text.Plain },
         };
 
-        public static IEnumerable<object[]> JsonMediaTypes => new List<object[]>
+        public static IEnumerable<object[]> JsonMediaTypes => new List<string[]>
         {
-            new string[] { MediaTypeNames.Application.Json },
+            new[] { MediaTypeNames.Application.Json },
         };
 
         protected ILogService FakeLogger { get; }
@@ -42,13 +43,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected AutoMapper.IMapper FakeMapper { get; }
 
-        protected ProfileController BuildProfileController(string mediaTypeName)
+        protected ProfileController BuildProfileController(string mediaTypeName = MediaTypeNames.Application.Json, IMapper mapper = null)
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeMapper, feedbackLinks)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks)
             {
                 ControllerContext = new ControllerContext()
                 {

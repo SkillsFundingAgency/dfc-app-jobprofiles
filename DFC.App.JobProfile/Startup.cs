@@ -38,26 +38,8 @@ namespace DFC.App.JobProfile
             this.configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddApplicationInsightsTelemetry();
-            services.AddAutoMapper(typeof(Startup).Assembly);
-            services.AddCorrelationId();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            AddApplicationSpecificDependencyInjectionConfiguration(services);
-        }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper mapper)
+        public static void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper mapper)
         {
             app.UseCorrelationId(new CorrelationIdOptions
             {
@@ -104,6 +86,24 @@ namespace DFC.App.JobProfile
             mapper?.ConfigurationProvider.AssertConfigurationIsValid();
         }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddApplicationInsightsTelemetry();
+            services.AddAutoMapper(typeof(Startup).Assembly);
+            services.AddCorrelationId();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            AddApplicationSpecificDependencyInjectionConfiguration(services);
+        }
+
         private void AddApplicationSpecificDependencyInjectionConfiguration(IServiceCollection services)
         {
             var cosmosDbConnection = configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
@@ -114,7 +114,7 @@ namespace DFC.App.JobProfile
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
 
             services.AddScoped<IJobProfileService, JobProfileService>();
-            services.AddScoped<Data.Contracts.ISegmentService, SegmentService>();
+            services.AddScoped<ISegmentService, SegmentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
 

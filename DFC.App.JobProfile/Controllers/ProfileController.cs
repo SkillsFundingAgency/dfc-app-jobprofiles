@@ -202,18 +202,10 @@ namespace DFC.App.JobProfile.Controllers
         {
             logService.LogInformation($"{nameof(Head)} has been called");
 
-            var viewModel = new HeadViewModel();
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
 
-            if (jobProfileModel != null)
-            {
-                mapper.Map(jobProfileModel, viewModel);
-
-                viewModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
-            }
-
+            var viewModel = BuildHeadViewModel(jobProfileModel);
             logService.LogInformation($"{nameof(Head)} has returned content for: {article}");
-
             return this.NegotiateContentResult(viewModel);
         }
 
@@ -385,6 +377,19 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             return this.NegotiateContentResult(bodyViewModel, jobProfileModel.Segments);
+        }
+
+        private HeadViewModel BuildHeadViewModel(JobProfileModel jobProfileModel)
+        {
+            var headModel = new HeadViewModel();
+            if (jobProfileModel == null)
+            {
+                return headModel;
+            }
+
+            headModel = mapper.Map<HeadViewModel>(jobProfileModel);
+            headModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
+            return headModel;
         }
 
         #endregion Define helper methods

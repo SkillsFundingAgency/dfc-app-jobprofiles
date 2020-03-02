@@ -22,14 +22,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeadViewModel>.Ignored)).Returns(A.Fake<HeadViewModel>());
+            A.CallTo(() => FakeMapper.Map<HeadViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<HeadViewModel>());
 
             // Act
             var result = await controller.Head(article).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeadViewModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeMapper.Map<HeadViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<HeadViewModel>(viewResult.ViewData.Model);
@@ -49,14 +49,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeadViewModel>.Ignored)).Returns(A.Fake<HeadViewModel>());
+            A.CallTo(() => FakeMapper.Map<HeadViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<HeadViewModel>());
 
             // Act
             var result = await controller.Head(article).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeadViewModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeMapper.Map<HeadViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<HeadViewModel>(jsonResult.Value);
@@ -126,14 +126,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeadViewModel>.Ignored)).Returns(A.Fake<HeadViewModel>());
+            A.CallTo(() => FakeMapper.Map<HeadViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<HeadViewModel>());
 
             // Act
             var result = await controller.Head(article).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeadViewModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeMapper.Map<HeadViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var statusResult = Assert.IsType<StatusCodeResult>(result);
 

@@ -20,8 +20,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         private const string FakeArticleName = "an-article-name";
 
-        private readonly HtmlString emptySegmentMarkup = new HtmlString("<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>");
-
         private static BodyViewModel DefaultBodyViewModel => new BodyViewModel
         {
             CanonicalName = FakeArticleName,
@@ -339,7 +337,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         [Theory]
         [MemberData(nameof(EmptyNonCriticalSegmentModelInput))]
-        public async Task BodyReturnsEmptyMarkupWhenNonCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
+        public async Task BodyReturnsOfflineMarkupWhenNonCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
         {
             // Arrange
             var controller = BuildProfileController(MediaTypeNames.Application.Json);
@@ -349,9 +347,15 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                 Segments = segments,
             };
 
+            var offlineSegmentModel = new OfflineSegmentModel
+            {
+                OfflineMarkup = new HtmlString("<h1>Some offline markup for this non-critical segment</h1>"),
+            };
+
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
             A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
+            A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).Returns(offlineSegmentModel);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
@@ -363,7 +367,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var resultSegmentModel = resultViewModel.Segments.FirstOrDefault(s => s.Segment == nonCriticalSegment?.Segment);
 
             Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
-            resultSegmentModel?.Markup.Should().BeEquivalentTo(emptySegmentMarkup);
+            A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).MustHaveHappenedOnceExactly();
+            Assert.Equal(offlineSegmentModel.OfflineMarkup.Value, resultSegmentModel?.Markup.Value);
 
             controller.Dispose();
         }

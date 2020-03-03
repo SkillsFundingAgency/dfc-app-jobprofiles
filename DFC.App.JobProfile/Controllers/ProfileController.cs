@@ -6,7 +6,6 @@ using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -18,19 +17,20 @@ namespace DFC.App.JobProfile.Controllers
     public class ProfileController : Controller
     {
         public const string ProfilePathRoot = "job-profiles";
-        private readonly HtmlString emptySegmentMarkup = new HtmlString("<div class=\"govuk-width-container\"><H3>Service Unavailable</H3></div>");
 
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
+        private readonly ISegmentService segmentService;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
             this.feedbackLinks = feedbackLinks;
+            this.segmentService = segmentService;
         }
 
         [HttpGet]
@@ -369,7 +369,7 @@ namespace DFC.App.JobProfile.Controllers
                         case JobProfileSegment.WhatYouWillDo:
                         case JobProfileSegment.CareerPathsAndProgression:
                             {
-                                segmentModel.Markup = emptySegmentMarkup;
+                                segmentModel.Markup = segmentService.GetOfflineSegment(segmentModel.Segment).OfflineMarkup;
                                 break;
                             }
                     }

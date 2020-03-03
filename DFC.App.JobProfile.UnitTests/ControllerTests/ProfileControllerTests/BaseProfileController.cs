@@ -18,7 +18,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             FakeLogger = A.Fake<ILogService>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
-            FakeMapper = A.Fake<AutoMapper.IMapper>();
+            FakeMapper = A.Fake<IMapper>();
+            FakeSegmentService = A.Fake<ISegmentService>();
         }
 
         public static IEnumerable<object[]> HtmlMediaTypes => new List<string[]>
@@ -41,7 +42,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected IJobProfileService FakeJobProfileService { get; }
 
-        protected AutoMapper.IMapper FakeMapper { get; }
+        protected IMapper FakeMapper { get; }
+
+        protected ISegmentService FakeSegmentService { get; }
 
         protected ProfileController BuildProfileController(string mediaTypeName = MediaTypeNames.Application.Json, IMapper mapper = null)
         {
@@ -49,7 +52,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks, FakeSegmentService)
             {
                 ControllerContext = new ControllerContext()
                 {

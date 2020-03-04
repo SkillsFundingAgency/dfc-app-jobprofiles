@@ -122,12 +122,13 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : {responseString}");
+                    logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : '{responseString}', Returning empty content.");
+                    responseString = null;
                 }
                 else if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    logService.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
-                    return null;
+                    logService.LogInformation($"Status - {response.StatusCode} with response '{responseString}' received for {jobProfileId} from {url}, Returning empty content.");
+                    responseString = null;
                 }
 
                 return responseString;

@@ -557,62 +557,6 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[parameters('refreshTopicName')]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('appSharedResourceGroup')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "serviceBusNamespaceName": {
-                        "value": "[parameters('appSharedServiceBusName')]"
-                    },
-                    "serviceBusTopicName": {
-                        "value": "[parameters('refreshTopicName')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "[concat('monitor-',parameters('refreshTopicName'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('appSharedResourceGroup')]",
-            "condition": "[not(variables('productionEnvironment'))]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-authrule.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "authorizationRuleName": {
-                        "value": "[concat('monitor-',parameters('refreshTopicName'))]"
-                    },
-                    "topicName": {
-                        "value": "[parameters('refreshTopicName')]"
-                    },
-                    "rights": {
-                        "value": [
-                            "manage",
-                            "send",
-                            "listen"
-                        ]
-                    },
-                    "servicebusName": {
-                        "value": "[parameters('appSharedServiceBusName')]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[parameters('refreshTopicName')]"
-            ]
-        },
-        {
-            "apiVersion": "2017-05-10",
             "name": "[variables('refreshSubscriptionName')]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('appSharedResourceGroup')]",
@@ -633,10 +577,7 @@
                         "value": "[variables('refreshSubscriptionName')]"
                     }
                 }
-            },
-            "dependsOn": [
-                "[parameters('refreshTopicName')]"
-            ]
+            }
         }
     ],
     "outputs": {

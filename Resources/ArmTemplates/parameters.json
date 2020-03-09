@@ -58,6 +58,9 @@
         },
         "surveyUrl": {
             "value": "__surveyFeedbackUrl__"
+        },
+        "enableAlerts": {
+            "value": __EnableAzureMonitorAlerting__
         }
     }
 }

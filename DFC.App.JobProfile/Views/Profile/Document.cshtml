@@ -12,7 +12,7 @@
     <partial name="_Head" model=@Model.Head />
 </head>
 <body>
-    <div>
+    <section id="additionalProps">
         <dl class="row">
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.DocumentId)
@@ -40,10 +40,13 @@
                 @Html.DisplayFor(model => model.SequenceNumber)
             </dd>
         </dl>
-    </div>
+    </section>
 
-    <partial name="_Hero" model=@Model.Body.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview)?.Markup />
-    <partial name="_BodyContent" model=@Model.Body />
+    <section id="appContents">
+        <partial name="_Hero" model=@Model.Body.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview)?.Markup />
+        <partial name="_BodyContent" model=@Model.Body />
+
+    </section>
 
     <div>
         <a asp-action="Index">Back to List</a>

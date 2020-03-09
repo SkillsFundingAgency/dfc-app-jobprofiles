@@ -577,10 +577,7 @@
                         "value": "[variables('refreshSubscriptionName')]"
                     }
                 }
-            },
-            "dependsOn": [
-                "[parameters('refreshTopicName')]"
-            ]
+            }
         }
     ],
     "outputs": {

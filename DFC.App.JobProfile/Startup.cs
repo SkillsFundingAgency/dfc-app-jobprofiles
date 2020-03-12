@@ -95,7 +95,7 @@ namespace DFC.App.JobProfile
             services.AddApplicationInsightsTelemetry();
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddCorrelationId();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.Configure<CookiePolicyOptions>(options =>
             {

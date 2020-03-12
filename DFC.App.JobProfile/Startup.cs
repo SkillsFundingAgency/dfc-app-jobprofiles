@@ -20,6 +20,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -39,7 +40,7 @@ namespace DFC.App.JobProfile
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper mapper)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
         {
             app.UseCorrelationId(new CorrelationIdOptions
             {
@@ -63,24 +64,26 @@ namespace DFC.App.JobProfile
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
             {
                 // add the site map route
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "Sitemap",
-                    template: "Sitemap.xml",
+                    pattern: "Sitemap.xml",
                     defaults: new { controller = "Sitemap", action = "Sitemap" });
 
                 // add the robots.txt route
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "Robots",
-                    template: "Robots.txt",
+                    pattern: "Robots.txt",
                     defaults: new { controller = "Robot", action = "Robot" });
 
                 // add the default route as health/ping
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Health}/{action=Ping}");
+                    pattern: "{controller=Health}/{action=Ping}");
             });
 
             mapper?.ConfigurationProvider.AssertConfigurationIsValid();
@@ -92,7 +95,7 @@ namespace DFC.App.JobProfile
             services.AddApplicationInsightsTelemetry();
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddCorrelationId();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.Configure<CookiePolicyOptions>(options =>
             {

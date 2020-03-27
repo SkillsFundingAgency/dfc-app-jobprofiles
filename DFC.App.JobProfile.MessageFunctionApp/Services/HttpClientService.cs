@@ -46,7 +46,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return default;
         }
 
-        public async Task<HttpStatusCode> PatchAsync<TInput>(TInput patchModel, string patchTypeEndpoint)
+        public async Task<HttpStatusCode> PatchAsync<TInput>(TInput patchModel, string patchTypeEndpoint = "metadata", int retryCount = 0)
             where TInput : BaseJobProfile
         {
             if (patchModel is null)
@@ -70,8 +70,12 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for patch type {typeof(T)}, Id: {patchModel.JobProfileId}");
 
-                    response.EnsureSuccessStatusCode();
+                    if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
+                    {
+                        return await PatchAsync(patchModel, patchTypeEndpoint, retryCount++).ConfigureAwait(false);
+                    }
                 }
+                response.EnsureSuccessStatusCode();
 
                 return response.StatusCode;
             }
@@ -95,7 +99,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return response.StatusCode;
         }
 
-        public async Task<HttpStatusCode> PostAsync<TInput>(TInput postModel, string postEndpoint)
+        public async Task<HttpStatusCode> PostAsync<TInput>(TInput postModel, string postEndpoint = "profile", int retryCount = 0)
             where TInput : BaseJobProfile
         {
             if (postModel is null)
@@ -113,6 +117,11 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                 {
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST type {typeof(T)}, Id: {postModel.JobProfileId}.");
+
+                    if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
+                    {
+                        return await PostAsync(postModel, postEndpoint, retryCount++).ConfigureAwait(false);
+                    }
 
                     response.EnsureSuccessStatusCode();
                 }

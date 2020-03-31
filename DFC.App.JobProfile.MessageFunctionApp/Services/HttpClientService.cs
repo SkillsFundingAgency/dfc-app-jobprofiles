@@ -74,8 +74,9 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                     {
                         return await PatchAsync(patchModel, patchTypeEndpoint, retryCount++).ConfigureAwait(false);
                     }
+
+                    response.EnsureSuccessStatusCode();
                 }
-                response.EnsureSuccessStatusCode();
 
                 return response.StatusCode;
             }

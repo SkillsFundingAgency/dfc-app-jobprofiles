@@ -62,6 +62,8 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
                 {
                     logService.LogError($"{nameof(HealthCheckAsync)}: Error loading health data from {url}: {response.StatusCode}");
 
+                    var aa = SegmentClientOptions.BaseAddress;
+
                     var result = new HealthCheckItems
                     {
                         Source = SegmentClientOptions.BaseAddress,
@@ -69,7 +71,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
                         {
                             new HealthCheckItem
                             {
-                                Service = SegmentClientOptions.BaseAddress.ToString(),
+                                Service = SegmentClientOptions.Name,
                                 Message = $"No health response from {SegmentClientOptions.BaseAddress.ToString()} app",
                             },
                         },
@@ -89,7 +91,7 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
                     {
                         new HealthCheckItem
                         {
-                            Service = SegmentClientOptions.BaseAddress.ToString(),
+                            Service = SegmentClientOptions.Name,
                             Message = $"{ex.GetType().Name}: {ex.Message}",
                         },
                     },

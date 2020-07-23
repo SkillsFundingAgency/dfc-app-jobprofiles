@@ -147,13 +147,5 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
                 httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
             }
         }
-
-        private void ConfigureHttpClient()
-        {
-            if (!httpClient.DefaultRequestHeaders.Contains(HeaderName.CorrelationId))
-            {
-                httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
-            }
-        }
     }
 }

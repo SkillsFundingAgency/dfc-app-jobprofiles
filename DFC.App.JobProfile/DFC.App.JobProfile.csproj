@@ -44,7 +44,6 @@
 
 
   <ItemGroup>
-    <None Include="appsettings.json" />
     <None Include="appsettings-template.json" />
   </ItemGroup>
 

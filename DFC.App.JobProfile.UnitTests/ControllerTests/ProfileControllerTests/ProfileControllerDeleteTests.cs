@@ -3,6 +3,7 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -12,10 +13,10 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerDeleteReturnsSuccess(string mediaTypeName)
+        public async Task ProfileControllerDeleteReturnsSuccess(string mediaTypeName)
         {
             // Arrange
-            Guid documentId = Guid.NewGuid();
+            var documentId = Guid.NewGuid();
             var expectedResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 
@@ -29,18 +30,18 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             var okResult = Assert.IsType<OkResult>(result);
 
-            A.Equals((int)HttpStatusCode.OK, okResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerDeleteReturnsNotFound(string mediaTypeName)
+        public async Task ProfileControllerDeleteReturnsNotFound(string mediaTypeName)
         {
             // Arrange
-            Guid documentId = Guid.NewGuid();
-            Data.Models.JobProfileModel expectedResult = null;
+            var documentId = Guid.NewGuid();
+            JobProfileModel expectedResult = null;
             var controller = BuildProfileController(mediaTypeName);
 
             A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
@@ -53,7 +54,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             var statusResult = Assert.IsType<NotFoundResult>(result);
 
-            A.Equals((int)HttpStatusCode.NotFound, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.NotFound, statusResult.StatusCode);
 
             controller.Dispose();
         }

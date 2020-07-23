@@ -52,7 +52,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.GetByAlternativeNameAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
-            Assert.Equal("Value cannot be null.\r\nParameter name: alternativeName", exceptionResult.Message);
+            Assert.Equal("Value cannot be null. (Parameter 'alternativeName')", exceptionResult.Message);
         }
 
         [Fact]

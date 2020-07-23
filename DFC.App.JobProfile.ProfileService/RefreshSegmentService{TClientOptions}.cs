@@ -3,8 +3,10 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
 using Newtonsoft.Json;
+using Polly.CircuitBreaker;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -103,31 +105,46 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
 
         private async Task<string> GetAsync(Guid jobProfileId, string acceptHeader)
         {
-            var endpoint = string.Format(SegmentClientOptions.Endpoint, jobProfileId.ToString());
+            var endpoint = string.Format(CultureInfo.InvariantCulture, SegmentClientOptions.Endpoint, jobProfileId.ToString());
             var url = $"{SegmentClientOptions.BaseAddress}{endpoint}";
 
             logService.LogInformation($"{nameof(GetJsonAsync)}: Loading data segment from {url}");
 
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-            {
-                request.Headers.Accept.Clear();
-                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(acceptHeader));
-                ConfigureHttpClient();
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Accept.Clear();
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(acceptHeader));
+            ConfigureHttpClient();
 
+            try
+            {
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
                 var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : {responseString}");
+                    logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : '{responseString}', Returning empty content.");
+                    responseString = null;
                 }
                 else if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    logService.LogInformation($"Status - {response.StatusCode} received for {jobProfileId} from {url}, Returning empty content.");
-                    return null;
+                    logService.LogInformation($"Status - {response.StatusCode} with response '{responseString}' received for {jobProfileId} from {url}, Returning empty content.");
+                    responseString = null;
                 }
 
                 return responseString;
+            }
+            catch (BrokenCircuitException e)
+            {
+                logService.LogInformation($"Error received refreshing segment data '{e.InnerException?.Message}'. Received for {jobProfileId} from {url}, Returning empty content.");
+                return null;
+            }
+        }
+
+        private void ConfigureHttpClient()
+        {
+            if (!httpClient.DefaultRequestHeaders.Contains(HeaderName.CorrelationId))
+            {
+                httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
             }
         }
 

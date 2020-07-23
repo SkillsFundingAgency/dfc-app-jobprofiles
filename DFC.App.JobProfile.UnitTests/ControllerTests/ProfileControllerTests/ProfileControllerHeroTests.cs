@@ -4,6 +4,7 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -13,7 +14,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void JobProfileControllerHeroHtmlReturnsSuccess(string mediaTypeName)
+        public async Task JobProfileControllerHeroHtmlReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -33,14 +34,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<HeroViewModel>(viewResult.ViewData.Model);
+            Assert.IsAssignableFrom<HeroViewModel>(viewResult.ViewData.Model);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void JobProfileControllerHeroJsonReturnsSuccess(string mediaTypeName)
+        public async Task JobProfileControllerHeroJsonReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -61,14 +62,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<List<SegmentModel>>(jsonResult.Value);
+            Assert.IsAssignableFrom<List<SegmentModel>>(jsonResult.Value);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(InvalidMediaTypes))]
-        public async void JobProfileControllerHeroReturnsNotAcceptable(string mediaTypeName)
+        public async Task JobProfileControllerHeroReturnsNotAcceptable(string mediaTypeName)
         {
             // Arrange
             const string article = "an-article-name";
@@ -89,7 +90,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             var statusResult = Assert.IsType<StatusCodeResult>(result);
 
-            A.Equals((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
 
             controller.Dispose();
         }

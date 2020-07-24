@@ -23,6 +23,7 @@ namespace DFC.App.JobProfile.Controllers
         private readonly AutoMapper.IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
         private readonly ISegmentService segmentService;
+        private readonly string[] redirectionHostWhitelist = { "735e2faf4b890af126ee588c44ff0c9e", "3a401750b016afd2180f755d247e3b28" };
 
         public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService)
         {
@@ -260,7 +261,13 @@ namespace DFC.App.JobProfile.Controllers
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
             if (alternateJobProfileModel != null)
             {
-                var alternateUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                var host = Request.GetBaseAddress();
+                if (!IsValidHost(host))
+                {
+                    return NotFound();
+                }
+
+                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
                 logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
                 return RedirectPermanentPreserveMethod(alternateUrl);
@@ -294,6 +301,31 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         #region Define helper methods
+
+        private bool IsValidHost(Uri host)
+        {
+            return host.IsLoopback || host.Segments.Any(s => redirectionHostWhitelist.Contains(CreateMD5(s)));
+        }
+
+        // At the moment this is the only place we need this functionality,
+        // when it is required elsewhere on this project this shall be moved to helper
+        private static string CreateMD5(string input)
+        {
+            // Use input string to calculate MD5 hash
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // Convert the byte array to hexadecimal string
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
+            }
+        }
 
         private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)
         {

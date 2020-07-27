@@ -50,6 +50,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
+            httpContext.Request.Scheme = "https";
+            httpContext.Request.Host = new HostString("localhost");
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
             var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks, FakeSegmentService)

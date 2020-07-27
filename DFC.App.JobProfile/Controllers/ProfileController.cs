@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,7 +25,7 @@ namespace DFC.App.JobProfile.Controllers
         private readonly AutoMapper.IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
         private readonly ISegmentService segmentService;
-        private readonly string[] redirectionHostWhitelist = { "735e2faf4b890af126ee588c44ff0c9e", "3a401750b016afd2180f755d247e3b28" };
+        private readonly string[] redirectionHostWhitelist = { "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0", "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474" };
 
         public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService)
         {
@@ -301,30 +302,24 @@ namespace DFC.App.JobProfile.Controllers
             return NoContent();
         }
 
-        #region Define helper methods
+        #region Static helper methods
 
-        private bool IsValidHost(Uri host)
+        private static string ComputeSha256Hash(string rawData)
         {
-            return host.IsLoopback || host.Segments.Any(s => redirectionHostWhitelist.Contains(CreateMD5(s)));
-        }
-
-        // At the moment this is the only place we need this functionality,
-        // when it is required elsewhere on this project this shall be moved to helper
-        private static string CreateMD5(string input)
-        {
-            // Use input string to calculate MD5 hash
-            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            // Create a SHA256
+            using (SHA256 sha256Hash = SHA256.Create())
             {
-                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                // ComputeHash - returns byte array
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
 
-                // Convert the byte array to hexadecimal string
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hashBytes.Length; i++)
+                // Convert byte array to a string
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
                 {
-                    sb.Append(hashBytes[i].ToString("X2"));
+                    builder.Append(bytes[i].ToString("x2"));
                 }
-                return sb.ToString();
+
+                return builder.ToString();
             }
         }
 
@@ -425,6 +420,15 @@ namespace DFC.App.JobProfile.Controllers
             return headModel;
         }
 
-        #endregion Define helper methods
+        #endregion Static helper methods
+
+        #region Helper methods
+
+        private bool IsValidHost(Uri host)
+        {
+            return host.IsLoopback || host.Host.Split(".").Any(s => redirectionHostWhitelist.Contains(ComputeSha256Hash(s)));
+        }
+
+        #endregion Helper methods
     }
 }

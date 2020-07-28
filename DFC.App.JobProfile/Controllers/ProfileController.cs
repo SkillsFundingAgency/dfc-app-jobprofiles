@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
@@ -23,14 +25,16 @@ namespace DFC.App.JobProfile.Controllers
         private readonly AutoMapper.IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
         private readonly ISegmentService segmentService;
+        private readonly string[] redirectionHostWhitelist = { "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0", "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474" };
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService, string[] redirectionHostWhitelist = null)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
             this.feedbackLinks = feedbackLinks;
             this.segmentService = segmentService;
+            this.redirectionHostWhitelist = redirectionHostWhitelist ?? this.redirectionHostWhitelist;
         }
 
         [HttpGet]
@@ -246,6 +250,12 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Body(string article)
         {
             logService.LogInformation($"{nameof(Body)} has been called");
+            var host = Request.GetBaseAddress();
+            if (!IsValidHost(host))
+            {
+                logService.LogWarning($"Invalid host {host}.");
+                return BadRequest($"Invalid host {host}.");
+            }
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             if (jobProfileModel != null)
@@ -260,7 +270,7 @@ namespace DFC.App.JobProfile.Controllers
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
             if (alternateJobProfileModel != null)
             {
-                var alternateUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
                 logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
                 return RedirectPermanentPreserveMethod(alternateUrl);
@@ -293,7 +303,26 @@ namespace DFC.App.JobProfile.Controllers
             return NoContent();
         }
 
-        #region Define helper methods
+        #region Static helper methods
+
+        private static string ComputeSha256Hash(string rawData)
+        {
+            // Create a SHA256
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                // ComputeHash - returns byte array
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                // Convert byte array to a string
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+
+                return builder.ToString();
+            }
+        }
 
         private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)
         {
@@ -392,6 +421,15 @@ namespace DFC.App.JobProfile.Controllers
             return headModel;
         }
 
-        #endregion Define helper methods
+        #endregion Static helper methods
+
+        #region Helper methods
+
+        private bool IsValidHost(Uri host)
+        {
+            return host.IsLoopback || host.Host.Split(".").Any(s => redirectionHostWhitelist.Contains(ComputeSha256Hash(s.ToLower())));
+        }
+
+        #endregion Helper methods
     }
 }

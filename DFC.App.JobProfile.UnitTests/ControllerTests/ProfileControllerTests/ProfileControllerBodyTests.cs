@@ -229,6 +229,35 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         }
 
         [Theory]
+        [MemberData(nameof(JsonMediaTypes))]
+        [MemberData(nameof(HtmlMediaTypes))]
+        public async Task JobProfileControllerBodyJsonAndHtmlReturnsRedirectWhenAlternateArticleExistsWithValidHost(string mediaTypeName)
+        {
+            // Arrange
+            var expectedAlternativeResult = A.Fake<JobProfileModel>();
+            var controller = BuildProfileController(mediaTypeName, host: "localhosttest", whitelist: new string[] { "6357b4c93a1bfd4901871836a03602586222c6a9ae05a48d67dda806d2c2eca6" });
+
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
+                .Returns(expectedAlternativeResult);
+
+            // Act
+            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
+
+            // Assert
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
+                .MustHaveHappenedOnceExactly();
+
+            var statusResult = Assert.IsType<RedirectResult>(result);
+            statusResult.Url.Should().NotBeNullOrWhiteSpace();
+            Assert.True(statusResult.Permanent);
+
+            controller.Dispose();
+        }
+
+
+        [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
         [MemberData(nameof(JsonMediaTypes))]
         public async Task JobProfileControllerBodyHtmlAndJsonReturnsNoContentWhenNoAlternateArticle(
@@ -249,6 +278,27 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
                 .MustHaveHappenedOnceExactly();
             Assert.IsType<NotFoundResult>(result);
+
+            controller.Dispose();
+        }
+
+        [Theory]
+        [MemberData(nameof(HtmlMediaTypes))]
+        [MemberData(nameof(JsonMediaTypes))]
+        public async Task JobProfileControllerBodyHtmlAndJsonReturnsBadRequestWhenHostIsInvalid (string mediaTypeName)
+        {
+            // Arrange
+            var controller = BuildProfileController(mediaTypeName, host: "notlocalhost");
+
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
+
+            // Act
+            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
+
+            // Assert
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustNotHaveHappened();
+            Assert.IsType<BadRequestObjectResult>(result);
 
             controller.Dispose();
         }

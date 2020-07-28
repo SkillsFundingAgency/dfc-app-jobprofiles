@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data;
-using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
@@ -152,26 +151,26 @@ namespace DFC.App.JobProfile.ProfileService
 
         private IList<HealthCheckItem> GetHealthResults(Task<HealthCheckItems> task)
         {
-            if (task != null)
+            if (task == null)
             {
-                if (task.IsCompletedSuccessfully && task.Result?.HealthItems?.Count > 0)
-                {
-                    return task.Result.HealthItems;
-                }
-                else
-                {
-                    return new List<HealthCheckItem>()
-                    {
-                        new HealthCheckItem
-                        {
-                            Service = task.Result.Source.ToString(),
-                            Message = $"No health response from {task.Result.Source.ToString()} app",
-                        },
-                    };
-                }
+                return new List<HealthCheckItem>();
             }
 
-            return null;
+            if (task.IsCompletedSuccessfully && task.Result?.HealthItems?.Count > 0)
+            {
+                return task.Result.HealthItems;
+            }
+            else
+            {
+                return new List<HealthCheckItem>
+                {
+                    new HealthCheckItem
+                    {
+                        Service = task.GetAwaiter().GetResult().Source.ToString(),
+                        Message = $"No health response from {task.Result.Source.ToString()} app",
+                    },
+                };
+            }
         }
 
         private async Task<SegmentModel> GetSegmentDataAsync<T>(ISegmentRefreshService<T> segmentService, RefreshJobProfileSegment toRefresh)

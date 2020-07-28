@@ -1,5 +1,7 @@
-﻿using DFC.App.JobProfile.Controllers;
+﻿using AutoMapper;
+using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Models;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
@@ -7,48 +9,56 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Net.Mime;
-using DFC.App.JobProfile.Models;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 {
     public abstract class BaseProfileController
     {
-        public BaseProfileController()
+        protected BaseProfileController()
         {
             FakeLogger = A.Fake<ILogService>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
-            FakeMapper = A.Fake<AutoMapper.IMapper>();
+            FakeMapper = A.Fake<IMapper>();
+            FakeSegmentService = A.Fake<ISegmentService>();
         }
 
-        public static IEnumerable<object[]> HtmlMediaTypes => new List<object[]>
+        public static IEnumerable<object[]> HtmlMediaTypes => new List<string[]>
         {
-            new string[] { "*/*" },
-            new string[] { MediaTypeNames.Text.Html },
+            new[] { "*/*" },
+            new[] { MediaTypeNames.Text.Html },
         };
 
-        public static IEnumerable<object[]> InvalidMediaTypes => new List<object[]>
+        public static IEnumerable<object[]> InvalidMediaTypes => new List<string[]>
         {
-            new string[] { MediaTypeNames.Text.Plain },
+            new[] { MediaTypeNames.Text.Plain },
         };
 
-        public static IEnumerable<object[]> JsonMediaTypes => new List<object[]>
+        public static IEnumerable<object[]> JsonMediaTypes => new List<string[]>
         {
-            new string[] { MediaTypeNames.Application.Json },
+            new[] { MediaTypeNames.Application.Json },
         };
 
         protected ILogService FakeLogger { get; }
 
         protected IJobProfileService FakeJobProfileService { get; }
 
-        protected AutoMapper.IMapper FakeMapper { get; }
+        protected IMapper FakeMapper { get; }
 
-        protected ProfileController BuildProfileController(string mediaTypeName)
+        protected ISegmentService FakeSegmentService { get; }
+
+        protected ProfileController BuildProfileController(
+            string mediaTypeName = MediaTypeNames.Application.Json,
+            IMapper mapper = null,
+            string host = "localhost",
+            string[] whitelist = null)
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
+            httpContext.Request.Scheme = "https";
+            httpContext.Request.Host = new HostString(host);
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeMapper, feedbackLinks)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks, FakeSegmentService, whitelist)
             {
                 ControllerContext = new ControllerContext()
                 {

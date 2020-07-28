@@ -80,9 +80,16 @@ namespace DFC.App.JobProfile.Repository.CosmosDb
             var ac = new AccessCondition { Condition = model.Etag, Type = AccessConditionType.IfMatch };
             var pk = new PartitionKey(model.PartitionKey);
 
-            var result = await documentClient.UpsertDocumentAsync(DocumentCollectionUri, model, new RequestOptions { AccessCondition = ac, PartitionKey = pk }).ConfigureAwait(false);
+            try
+            {
+                var result = await documentClient.UpsertDocumentAsync(DocumentCollectionUri, model, new RequestOptions { AccessCondition = ac, PartitionKey = pk }).ConfigureAwait(false);
 
-            return result.StatusCode;
+                return result.StatusCode;
+            }
+            catch (DocumentClientException e) when (e.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return HttpStatusCode.PreconditionFailed;
+            }
         }
 
         public async Task<HttpStatusCode> DeleteAsync(Guid documentId)

@@ -4,6 +4,7 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -13,7 +14,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void JobProfileControllerProfileHtmlReturnsSuccess(string mediaTypeName)
+        public async Task JobProfileControllerProfileHtmlReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             var documentId = Guid.NewGuid();
@@ -33,14 +34,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<BodyViewModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<BodyViewModel>(viewResult.ViewData.Model);
+            Assert.IsAssignableFrom<BodyViewModel>(viewResult.ViewData.Model);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void JobProfileControllerProfileJsonReturnsSuccess(string mediaTypeName)
+        public async Task JobProfileControllerProfileJsonReturnsSuccess(string mediaTypeName)
         {
             // Arrange
             var documentId = Guid.NewGuid();
@@ -62,38 +63,15 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<JobProfileModel>(jsonResult.Value);
 
-            A.Equals(model.DocumentId, documentId);
+            Assert.Equal(model.DocumentId, documentId);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(HtmlMediaTypes))]
-        public async void ProfileControllerDocumentHtmlReturnsNoContentWhenNoData(string mediaTypeName)
-        {
-            // Arrange
-            var documentId = Guid.NewGuid();
-            Data.Models.JobProfileModel expectedResult = null;
-            var controller = BuildProfileController(mediaTypeName);
-
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).Returns(expectedResult);
-
-            // Act
-            var result = await controller.Profile(documentId).ConfigureAwait(false);
-
-            // Assert
-            A.CallTo(() => FakeJobProfileService.GetByIdAsync(A<Guid>.Ignored)).MustHaveHappenedOnceExactly();
-
-            var statusResult = Assert.IsType<NoContentResult>(result);
-
-            A.Equals((int)HttpStatusCode.NoContent, statusResult.StatusCode);
-
-            controller.Dispose();
-        }
-
-        [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerDocumentJsonReturnsNoContentWhenNoData(string mediaTypeName)
+        public async Task ProfileControllerDocumentHtmlAndJsonReturnsNoContentWhenNoData(string mediaTypeName)
         {
             // Arrange
             var documentId = Guid.NewGuid();
@@ -110,14 +88,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             var statusResult = Assert.IsType<NoContentResult>(result);
 
-            A.Equals((int)HttpStatusCode.NoContent, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.NoContent, statusResult.StatusCode);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(InvalidMediaTypes))]
-        public async void JobProfileControllerProfileReturnsNotAcceptable(string mediaTypeName)
+        public async Task JobProfileControllerProfileReturnsNotAcceptable(string mediaTypeName)
         {
             // Arrange
             var documentId = Guid.NewGuid();
@@ -138,7 +116,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             var statusResult = Assert.IsType<StatusCodeResult>(result);
 
-            A.Equals((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
 
             controller.Dispose();
         }

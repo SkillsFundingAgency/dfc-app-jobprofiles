@@ -2,6 +2,7 @@
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -11,7 +12,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerCreateOrUpdateReturnsSuccessForCreate(string mediaTypeName)
+        public async Task ProfileControllerCreateOrUpdateReturnsSuccessForCreate(string mediaTypeName)
         {
             // Arrange
             var jobProfileModel = A.Fake<JobProfileModel>();
@@ -27,14 +28,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
 
-            A.Equals((int)HttpStatusCode.Created, statusCodeResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.Created, statusCodeResult.StatusCode);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerCreateOrUpdateReturnsSuccessForUpdate(string mediaTypeName)
+        public async Task ProfileControllerCreateOrUpdateReturnsSuccessForUpdate(string mediaTypeName)
         {
             // Arrange
             var jobProfileModel = A.Fake<JobProfileModel>();
@@ -50,17 +51,17 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
 
-            A.Equals((int)HttpStatusCode.OK, statusCodeResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.OK, statusCodeResult.StatusCode);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsNull(string mediaTypeName)
+        public async Task ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsNull(string mediaTypeName)
         {
             // Arrange
-            Data.Models.JobProfileModel jobProfileModel = null;
+            JobProfileModel jobProfileModel = null;
             var controller = BuildProfileController(mediaTypeName);
 
             // Act
@@ -69,17 +70,17 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             // Assert
             var statusResult = Assert.IsType<BadRequestResult>(result);
 
-            A.Equals((int)HttpStatusCode.BadRequest, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.BadRequest, statusResult.StatusCode);
 
             controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
-        public async void ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
+        public async Task ProfileControllerCreateOrUpdateReturnsBadResultWhenModelIsInvalid(string mediaTypeName)
         {
             // Arrange
-            var jobProfileModel = new Data.Models.JobProfileModel();
+            var jobProfileModel = new JobProfileModel();
             var controller = BuildProfileController(mediaTypeName);
 
             controller.ModelState.AddModelError(string.Empty, "Model is not valid");
@@ -90,7 +91,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             // Assert
             var statusResult = Assert.IsType<BadRequestObjectResult>(result);
 
-            A.Equals((int)HttpStatusCode.BadRequest, statusResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.BadRequest, statusResult.StatusCode);
 
             controller.Dispose();
         }

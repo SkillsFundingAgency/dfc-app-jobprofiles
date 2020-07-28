@@ -1,8 +1,6 @@
 ﻿using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.HttpClientPolicies;
-using DFC.Logger.AppInsights.Constants;
-using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -24,7 +22,7 @@ namespace DFC.App.JobProfile.Extensions
             string keyPrefix,
             PolicyOptions policyOptions)
         {
-            policyRegistry.Add(
+            policyRegistry?.Add(
                 $"{keyPrefix}_{nameof(PolicyOptions.HttpRetry)}",
                 HttpPolicyExtensions
                     .HandleTransientHttpError()
@@ -32,7 +30,7 @@ namespace DFC.App.JobProfile.Extensions
                         policyOptions.HttpRetry.Count,
                         retryAttempt => TimeSpan.FromSeconds(Math.Pow(policyOptions.HttpRetry.BackoffPower, retryAttempt))));
 
-            policyRegistry.Add(
+            policyRegistry?.Add(
                 $"{keyPrefix}_{nameof(PolicyOptions.HttpCircuitBreaker)}",
                 HttpPolicyExtensions
                     .HandleTransientHttpError()
@@ -53,7 +51,7 @@ namespace DFC.App.JobProfile.Extensions
                     where TImplementation : class, TClient
                     where TClientOptions : SegmentClientOptions, new() =>
                     services
-                        .Configure<TClientOptions>(configuration.GetSection(configurationSectionName))
+                        .Configure<TClientOptions>(configuration?.GetSection(configurationSectionName))
                         .AddHttpClient<TClient, TImplementation>()
                         .ConfigureHttpClient((sp, options) =>
                         {
@@ -65,12 +63,9 @@ namespace DFC.App.JobProfile.Extensions
                             options.DefaultRequestHeaders.Clear();
                             options.DefaultRequestHeaders.Add(HeaderNames.Accept, MediaTypeNames.Application.Json);
                         })
-                        .ConfigurePrimaryHttpMessageHandler(() =>
+                        .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
                         {
-                            return new HttpClientHandler()
-                            {
-                                AllowAutoRedirect = false,
-                            };
+                            AllowAutoRedirect = false,
                         })
                         .AddPolicyHandlerFromRegistry($"{configurationSectionName}_{retryPolicyName}")
                         .AddPolicyHandlerFromRegistry($"{configurationSectionName}_{circuitBreakerPolicyName}")

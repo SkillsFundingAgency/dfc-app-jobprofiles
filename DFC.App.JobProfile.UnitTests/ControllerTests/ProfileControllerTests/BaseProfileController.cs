@@ -46,13 +46,19 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected ISegmentService FakeSegmentService { get; }
 
-        protected ProfileController BuildProfileController(string mediaTypeName = MediaTypeNames.Application.Json, IMapper mapper = null)
+        protected ProfileController BuildProfileController(
+            string mediaTypeName = MediaTypeNames.Application.Json,
+            IMapper mapper = null,
+            string host = "localhost",
+            string[] whitelist = null)
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
+            httpContext.Request.Scheme = "https";
+            httpContext.Request.Host = new HostString(host);
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks, FakeSegmentService)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks, FakeSegmentService, whitelist)
             {
                 ControllerContext = new ControllerContext()
                 {

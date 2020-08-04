@@ -180,7 +180,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service.json')]",
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service-staging.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -195,9 +195,6 @@
                     },
                     "appServiceType": {
                         "value": "app"
-                    },
-                    "deployStagingSlot": {
-                        "value": true
                     },
                     "appServiceAppSettings": {
                         "value": [
@@ -270,6 +267,10 @@
                                 "value": ""
                             },
                             {
+                                "name": "OverviewBannerSegmentClientOptions__Name",
+                                "value": "DFC.App.JobProfileOverview"
+                            },
+                            {
                                 "name": "CurrentOpportunitiesSegmentClientOptions__Timeout",
                                 "value": "00:00:10"
                             },
@@ -284,6 +285,10 @@
                             {
                                 "name": "CurrentOpportunitiesSegmentClientOptions__OfflineHtml",
                                 "value": "<section id=\"CurrentOpportunities\"> <h2 class=\"job-profile-heading\">Current opportunities</h2> <div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
+                            },
+                            {
+                                "name": "CurrentOpportunitiesSegmentClientOptions__Name",
+                                "value": "DFC.App.JobProfile.CurrentOpportunities"
                             },
                             {
                                 "name": "CareerPathSegmentClientOptions__Timeout",
@@ -302,6 +307,10 @@
                                 "value": "<section id=\"CareerPathAndProgression\"> <h2 class=\"job-profile-heading\">Career path and progression</h2> <div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
                             },
                             {
+                                "name": "CareerPathSegmentClientOptions__Name",
+                                "value": "DFC.App.CareerPath"
+                            },
+                            {
                                 "name": "HowToBecomeSegmentClientOptions__Timeout",
                                 "value": "00:00:10"
                             },
@@ -316,6 +325,10 @@
                             {
                                 "name": "HowToBecomeSegmentClientOptions__OfflineHtml",
                                 "value": ""
+                            },
+                            {
+                                "name": "HowToBecomeSegmentClientOptions__Name",
+                                "value": "DFC.App.JobProfiles.HowToBecome"
                             },
                             {
                                 "name": "RelatedCareersSegmentClientOptions__Timeout",
@@ -334,6 +347,10 @@
                                 "value": "<div class=\"job-profile-related\"> <h3 class=\"govuk-heading-m\">Related careers</h3><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></div>"
                             },
                             {
+                                "name": "RelatedCareersSegmentClientOptions__Name",
+                                "value": "DFC.App.RelatedCareers"
+                            },
+                            {
                                 "name": "WhatItTakesSegmentClientOptions__Timeout",
                                 "value": "00:00:10"
                             },
@@ -350,6 +367,10 @@
                                 "value": ""
                             },
                             {
+                                "name": "WhatItTakesSegmentClientOptions__Name",
+                                "value": "DFC.App.JobProfileSkills"
+                            },
+                            {
                                 "name": "WhatYouWillDoSegmentClientOptions__Timeout",
                                 "value": "00:00:10"
                             },
@@ -364,6 +385,10 @@
                             {
                                 "name": "WhatYouWillDoSegmentClientOptions__OfflineHtml",
                                 "value": "<section id=\"WhatYouWillDo\"><h2 class=\"job-profile-heading\">What you'll do</h2><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
+                            },
+                            {
+                                "name": "WhatYouWillDoSegmentClientOptions__Name",
+                                "value": "DFC.App.JobProfileTasks"
                             },
                             {
                                 "name": "FeedbackLinks__SmartSurveyJP",
@@ -425,7 +450,10 @@
                         "value": "functionapp"
                     },
                     "deployStagingSlot": {
-                        "value": false
+                        "value": true
+                    },
+                    "clientAffinity": {
+                        "value": true
                     },
                     "appServiceAppSettings": {
                         "value": [
@@ -587,168 +615,168 @@
             }
         },
         {
-          "apiVersion": "2019-05-01",
-          "name": "[concat(variables('webAppInsightsName'), '-metric-exceptions')]",
-          "type": "Microsoft.Resources/deployments",
-          "dependsOn": [
-              "[variables('webAppInsightsName')]"
-          ],
-          "properties": {
-              "mode": "Incremental",
-              "templateLink": {
-                  "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                  "contentVersion": "1.0.0.0"
-              },
-              "parameters": {
-                  "enabled": {
-                      "value": "[parameters('enableAlerts')]"
-                  },
-                  "alertName": {
-                      "value": "[concat(variables('webAppInsightsName'), '-metric-exceptions')]"
-                  },
-                  "alertSeverity": {
-                      "value": 3
-                  },
-                  "metricName": {
-                      "value": "exceptions/count"
-                  },
-                  "operator": {
-                      "value": "GreaterThan"
-                  },
-                  "threshold": {
-                      "value": "0"
-                  },
-                  "aggregation": {
-                      "value": "Count"
-                  },
-                  "windowSize": {
-                      "value": "PT5M"
-                  },
-                  "evaluationFrequency": {
-                      "value": "PT1M"
-                  },
-                  "actionGroupName": {
-                      "value": "[variables('ActionGroupName')]"
-                  },
-                  "actionGroupResourceGroup": {
-                      "value": "[parameters('appSharedResourceGroup')]"
-                  },
-                  "resourceId": {
-                      "value": "[resourceId('Microsoft.Insights/Components', variables('webAppInsightsName'))]"
-                  }
-              }
-          }
+            "apiVersion": "2019-05-01",
+            "name": "[concat(variables('webAppInsightsName'), '-metric-exceptions')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[variables('webAppInsightsName')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "alertName": {
+                        "value": "[concat(variables('webAppInsightsName'), '-metric-exceptions')]"
+                    },
+                    "alertSeverity": {
+                        "value": 3
+                    },
+                    "metricName": {
+                        "value": "exceptions/count"
+                    },
+                    "operator": {
+                        "value": "GreaterThan"
+                    },
+                    "threshold": {
+                        "value": "0"
+                    },
+                    "aggregation": {
+                        "value": "Count"
+                    },
+                    "windowSize": {
+                        "value": "PT5M"
+                    },
+                    "evaluationFrequency": {
+                        "value": "PT1M"
+                    },
+                    "actionGroupName": {
+                        "value": "[variables('ActionGroupName')]"
+                    },
+                    "actionGroupResourceGroup": {
+                        "value": "[parameters('appSharedResourceGroup')]"
+                    },
+                    "resourceId": {
+                        "value": "[resourceId('Microsoft.Insights/Components', variables('webAppInsightsName'))]"
+                    }
+                }
+            }
         },
         {
-          "apiVersion": "2019-05-01",
-          "name": "[concat(variables('webAppInsightsName'), '-failure-anomaly-v2')]",
-          "type": "Microsoft.Resources/deployments",
-          "dependsOn": [
-              "[variables('webAppInsightsName')]"
-          ],
-          "properties": {
-              "mode": "Incremental",
-              "templateLink": {
-                  "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/failure-anomaly-rule.json')]",
-                  "contentVersion": "1.0.0.0"
-              },
-              "parameters": {
-                  "alertName": {
-                      "value": "[concat(variables('webAppInsightsName'), '-failure-anomaly-v2')]"
-                  },
-                  "enabled": {
-                      "value": "[parameters('enableAlerts')]"
-                  },
-                  "resourceId": {
-                      "value": "[resourceId('Microsoft.Insights/Components', variables('webAppInsightsName'))]"
-                  },
-                  "actionGroupId": {
-                      "value": "[resourceId(parameters('appSharedResourceGroup'), 'microsoft.insights/actionGroups', variables('ActionGroupName'))]"
-                  }
-              }
-          }
+            "apiVersion": "2019-05-01",
+            "name": "[concat(variables('webAppInsightsName'), '-failure-anomaly-v2')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[variables('webAppInsightsName')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/failure-anomaly-rule.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "alertName": {
+                        "value": "[concat(variables('webAppInsightsName'), '-failure-anomaly-v2')]"
+                    },
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "resourceId": {
+                        "value": "[resourceId('Microsoft.Insights/Components', variables('webAppInsightsName'))]"
+                    },
+                    "actionGroupId": {
+                        "value": "[resourceId(parameters('appSharedResourceGroup'), 'microsoft.insights/actionGroups', variables('ActionGroupName'))]"
+                    }
+                }
+            }
         },
         {
-          "apiVersion": "2019-05-01",
-          "name": "[concat(variables('functionAppInsightsName'), '-metric-exceptions')]",
-          "type": "Microsoft.Resources/deployments",
-          "dependsOn": [
-              "[variables('webAppInsightsName')]"
-          ],
-          "properties": {
-              "mode": "Incremental",
-              "templateLink": {
-                  "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                  "contentVersion": "1.0.0.0"
-              },
-              "parameters": {
-                  "enabled": {
-                      "value": "[parameters('enableAlerts')]"
-                  },
-                  "alertName": {
-                      "value": "[concat(variables('functionAppInsightsName'), '-metric-exceptions')]"
-                  },
-                  "alertSeverity": {
-                      "value": 3
-                  },
-                  "metricName": {
-                      "value": "exceptions/count"
-                  },
-                  "operator": {
-                      "value": "GreaterThan"
-                  },
-                  "threshold": {
-                      "value": "0"
-                  },
-                  "aggregation": {
-                      "value": "Count"
-                  },
-                  "windowSize": {
-                      "value": "PT5M"
-                  },
-                  "evaluationFrequency": {
-                      "value": "PT1M"
-                  },
-                  "actionGroupName": {
-                      "value": "[variables('ActionGroupName')]"
-                  },
-                  "actionGroupResourceGroup": {
-                      "value": "[parameters('appSharedResourceGroup')]"
-                  },
-                  "resourceId": {
-                      "value": "[resourceId('Microsoft.Insights/Components', variables('functionAppInsightsName'))]"
-                  }
-              }
-          }
+            "apiVersion": "2019-05-01",
+            "name": "[concat(variables('functionAppInsightsName'), '-metric-exceptions')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[variables('webAppInsightsName')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "alertName": {
+                        "value": "[concat(variables('functionAppInsightsName'), '-metric-exceptions')]"
+                    },
+                    "alertSeverity": {
+                        "value": 3
+                    },
+                    "metricName": {
+                        "value": "exceptions/count"
+                    },
+                    "operator": {
+                        "value": "GreaterThan"
+                    },
+                    "threshold": {
+                        "value": "0"
+                    },
+                    "aggregation": {
+                        "value": "Count"
+                    },
+                    "windowSize": {
+                        "value": "PT5M"
+                    },
+                    "evaluationFrequency": {
+                        "value": "PT1M"
+                    },
+                    "actionGroupName": {
+                        "value": "[variables('ActionGroupName')]"
+                    },
+                    "actionGroupResourceGroup": {
+                        "value": "[parameters('appSharedResourceGroup')]"
+                    },
+                    "resourceId": {
+                        "value": "[resourceId('Microsoft.Insights/Components', variables('functionAppInsightsName'))]"
+                    }
+                }
+            }
         },
         {
-          "apiVersion": "2019-05-01",
-          "name": "[concat(variables('functionAppInsightsName'), '-failure-anomaly-v2')]",
-          "type": "Microsoft.Resources/deployments",
-          "dependsOn": [
-              "[variables('functionAppInsightsName')]"
-          ],
-          "properties": {
-              "mode": "Incremental",
-              "templateLink": {
-                  "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/failure-anomaly-rule.json')]",
-                  "contentVersion": "1.0.0.0"
-              },
-              "parameters": {
-                  "alertName": {
-                      "value": "[concat(variables('functionAppInsightsName'), '-failure-anomaly-v2')]"
-                  },
-                  "enabled": {
-                      "value": "[parameters('enableAlerts')]"
-                  },
-                  "resourceId": {
-                      "value": "[resourceId('Microsoft.Insights/Components', variables('functionAppInsightsName'))]"
-                  },
-                  "actionGroupId": {
-                      "value": "[resourceId(parameters('appSharedResourceGroup'), 'microsoft.insights/actionGroups', variables('ActionGroupName'))]"
-                  }
-              }
-          }
+            "apiVersion": "2019-05-01",
+            "name": "[concat(variables('functionAppInsightsName'), '-failure-anomaly-v2')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[variables('functionAppInsightsName')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/failure-anomaly-rule.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "alertName": {
+                        "value": "[concat(variables('functionAppInsightsName'), '-failure-anomaly-v2')]"
+                    },
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "resourceId": {
+                        "value": "[resourceId('Microsoft.Insights/Components', variables('functionAppInsightsName'))]"
+                    },
+                    "actionGroupId": {
+                        "value": "[resourceId(parameters('appSharedResourceGroup'), 'microsoft.insights/actionGroups', variables('ActionGroupName'))]"
+                    }
+                }
+            }
         }
     ],
     "outputs": {

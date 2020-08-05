@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Content Remove="appsettings-template.json" />
+    <Content Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,12 +45,17 @@
 
 
   <ItemGroup>
+    <None Include="appsettings.json" />
     <None Include="appsettings-template.json" />
   </ItemGroup>
 
 
   <ItemGroup>
+    <ProjectReference Include="..\DFC.App.JobProfile.ApiProcessorService\DFC.App.JobProfile.ApiProcessorService.csproj" />
+    <ProjectReference Include="..\DFC.App.JobProfile.CacheContentService\DFC.App.JobProfile.CacheContentService.csproj" />
+    <ProjectReference Include="..\DFC.App.JobProfile.CmsApiProcessorService\DFC.App.JobProfile.CmsApiProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
+    <ProjectReference Include="..\DFC.App.JobProfile.EventProcessorService\DFC.App.JobProfile.EventProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.ProfileService\DFC.App.JobProfile.ProfileService.csproj" />
   </ItemGroup>
 

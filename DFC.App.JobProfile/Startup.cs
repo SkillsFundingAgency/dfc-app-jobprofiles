@@ -1,16 +1,24 @@
 ﻿using AutoMapper;
 using CorrelationId;
+using DFC.App.JobProfile.ApiProcessorService;
+using DFC.App.JobProfile.CacheContentService;
 using DFC.App.JobProfile.ClientHandlers;
+using DFC.App.JobProfile.CmsApiProcessorService;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.ClientOptions;
+using DFC.App.JobProfile.EventProcessorService;
 using DFC.App.JobProfile.Extensions;
+using DFC.App.JobProfile.HostedServices;
 using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ProfileService.SegmentServices;
 using DFC.App.JobProfile.Repository.CosmosDb;
+using DFC.Compui.Cosmos;
+using DFC.Compui.Telemetry;
 using DFC.Logger.AppInsights.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,10 +41,12 @@ namespace DFC.App.JobProfile
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
 
         private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment env;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             this.configuration = configuration;
+            this.env = env;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -130,9 +140,25 @@ namespace DFC.App.JobProfile
             services.AddSingleton(configuration.GetSection(nameof(WhatItTakesSegmentClientOptions)).Get<WhatItTakesSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(WhatYouWillDoSegmentClientOptions)).Get<WhatYouWillDoSegmentClientOptions>());
 
+            services.AddApplicationInsightsTelemetry();
+            var cosmosDbConnectionContentPages = configuration.GetSection(CosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
+            services.AddContentPageServices<ContentPageModel>(cosmosDbConnectionContentPages, env.IsDevelopment());
+            services.AddSingleton<IContentCacheService>(new ContentCacheService());
+            services.AddTransient<IEventMessageService<ContentPageModel>, EventMessageService<ContentPageModel>>();
+            services.AddTransient<ICacheReloadService, CacheReloadService>();
+            services.AddTransient<IApiService, ApiService>();
+            services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
+            services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
+            services.AddHostedServiceTelemetryWrapper();
+            services.AddHostedService<CacheReloadBackgroundService>();
+
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
             var policyRegistry = services.AddPolicyRegistry();
+
+            services
+               .AddPolicies(policyRegistry, nameof(CmsApiClientOptions), policyOptions)
+               .AddHttpClient<ICmsApiService, CmsApiService, CmsApiClientOptions>(configuration, nameof(CmsApiClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
 
             services
                 .AddPolicies(policyRegistry, nameof(CareerPathSegmentClientOptions), policyOptions)

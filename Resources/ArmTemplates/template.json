@@ -92,6 +92,9 @@
             "metadata": {
                 "description": "Enable or disable alerting"
             }
+        },
+        "ExceptionCountThreshold": {
+            "type": "string"
         }
     },
     "variables": {
@@ -726,7 +729,7 @@
                         "value": "GreaterThan"
                     },
                     "threshold": {
-                        "value": "0"
+                        "value": "[parameters('ExceptionCountThreshold')]"
                     },
                     "aggregation": {
                         "value": "Count"

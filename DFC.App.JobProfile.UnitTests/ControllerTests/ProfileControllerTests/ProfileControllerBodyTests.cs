@@ -296,8 +296,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
             Assert.IsType<BadRequestObjectResult>(result);
 
             controller.Dispose();

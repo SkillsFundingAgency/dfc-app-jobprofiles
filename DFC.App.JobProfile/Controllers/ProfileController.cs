@@ -270,11 +270,13 @@ namespace DFC.App.JobProfile.Controllers
                     logService.LogWarning($"Invalid host {host}.");
                     return BadRequest($"Invalid host {host}.");
                 }
+                else
+                {
+                    var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                    logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
-                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
-
-                return RedirectPermanentPreserveMethod(alternateUrl);
+                    return RedirectPermanentPreserveMethod(alternateUrl);
+                }
             }
 
             logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");

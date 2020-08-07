@@ -250,12 +250,6 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Body(string article)
         {
             logService.LogInformation($"{nameof(Body)} has been called");
-            var host = Request.GetBaseAddress();
-            if (!IsValidHost(host))
-            {
-                logService.LogWarning($"Invalid host {host}.");
-                return BadRequest($"Invalid host {host}.");
-            }
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             if (jobProfileModel != null)
@@ -270,10 +264,19 @@ namespace DFC.App.JobProfile.Controllers
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
             if (alternateJobProfileModel != null)
             {
-                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
+                var host = Request.GetBaseAddress();
+                if (!IsValidHost(host))
+                {
+                    logService.LogWarning($"Invalid host {host}.");
+                    return BadRequest($"Invalid host {host}.");
+                }
+                else
+                {
+                    var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                    logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
-                return RedirectPermanentPreserveMethod(alternateUrl);
+                    return RedirectPermanentPreserveMethod(alternateUrl);
+                }
             }
 
             logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");

@@ -40,6 +40,9 @@
         },
         "enableAlerts": {
             "value": false
+        },
+        "ExceptionCountThreshold":{
+            "value": "0"
         }
     }
 }

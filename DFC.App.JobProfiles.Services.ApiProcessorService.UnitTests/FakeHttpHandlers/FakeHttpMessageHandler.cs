@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DFC.App.JobProfile.ApiProcessorService.UnitTests.FakeHttpHandlers
+namespace DFC.App.JobProfile.Services.ApiProcessorService.UnitTests.FakeHttpHandlers
 {
     public class FakeHttpMessageHandler : HttpMessageHandler
     {

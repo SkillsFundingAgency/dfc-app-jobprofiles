@@ -51,21 +51,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.MessageFunctionApp", "DFC.App.JobProfile.MessageFunctionApp\DFC.App.JobProfile.MessageFunctionApp.csproj", "{BDE8E24D-A5C5-428B-AAA9-9A597BD8CC17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.CacheContentService", "DFC.App.JobProfile.CacheContentService\DFC.App.JobProfile.CacheContentService.csproj", "{017252A7-6774-40F6-A3CC-234EC2FC5ED0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.CacheContentService", "DFC.App.JobProfile.CacheContentService\DFC.App.JobProfile.CacheContentService.csproj", "{017252A7-6774-40F6-A3CC-234EC2FC5ED0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.EventProcessorService", "DFC.App.JobProfile.EventProcessorService\DFC.App.JobProfile.EventProcessorService.csproj", "{2AE100F6-E08E-49BA-8A6C-891E0C2B68AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.EventProcessorService", "DFC.App.JobProfile.EventProcessorService\DFC.App.JobProfile.EventProcessorService.csproj", "{2AE100F6-E08E-49BA-8A6C-891E0C2B68AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.CmsApiProcessorService", "DFC.App.JobProfile.CmsApiProcessorService\DFC.App.JobProfile.CmsApiProcessorService.csproj", "{C60BD455-BDD8-4A59-AE39-AD3959FF7DC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.CmsApiProcessorService", "DFC.App.JobProfile.CmsApiProcessorService\DFC.App.JobProfile.CmsApiProcessorService.csproj", "{C60BD455-BDD8-4A59-AE39-AD3959FF7DC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.ApiProcessorService", "DFC.App.JobProfile.ApiProcessorService\DFC.App.JobProfile.ApiProcessorService.csproj", "{1FC5EC41-3EEF-4778-92EA-8D0F98FCAB3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.ApiProcessorService", "DFC.App.JobProfile.ApiProcessorService\DFC.App.JobProfile.ApiProcessorService.csproj", "{1FC5EC41-3EEF-4778-92EA-8D0F98FCAB3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.ApiProcessorService.UnitTests", "DFC.App.JobProfile.ApiProcessorService.UnitTests\DFC.App.JobProfile.ApiProcessorService.UnitTests.csproj", "{BE9F3905-8F7F-421A-8097-574102064906}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.Services.ApiProcessorService.UnitTests", "DFC.App.JobProfiles.Services.ApiProcessorService.UnitTests\DFC.App.JobProfile.Services.ApiProcessorService.UnitTests.csproj", "{031410A9-DEA9-410C-A2AC-6634E059DB4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.CacheContentService.UnitTests", "DFC.App.JobProfile.CacheContentService.UnitTests\DFC.App.JobProfile.CacheContentService.UnitTests.csproj", "{861D576F-4DFA-4D78-946D-6AE3653D5902}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.CmsApiProcessorService.UnitTests", "DFC.App.JobProfile.CmsApiProcessorService.UnitTests\DFC.App.JobProfile.CmsApiProcessorService.UnitTests.csproj", "{B9094916-E12B-41EF-8F44-2ECC6BC780D1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.EventProcessorService.UnitTests", "DFC.App.JobProfile.EventProcessorService.UnitTests\DFC.App.JobProfile.EventProcessorService.UnitTests.csproj", "{C2085FF9-0617-4386-BE0E-EC914B85B4A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.Services.CacheContentService.UnitTests", "DFC.App.JobProfile.Services.CacheContentService.UnitTests\DFC.App.JobProfile.Services.CacheContentService.UnitTests.csproj", "{180D41F4-E172-4FCA-945D-2368C3090CB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,22 +117,14 @@ Global
 		{1FC5EC41-3EEF-4778-92EA-8D0F98FCAB3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FC5EC41-3EEF-4778-92EA-8D0F98FCAB3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FC5EC41-3EEF-4778-92EA-8D0F98FCAB3E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE9F3905-8F7F-421A-8097-574102064906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE9F3905-8F7F-421A-8097-574102064906}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE9F3905-8F7F-421A-8097-574102064906}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE9F3905-8F7F-421A-8097-574102064906}.Release|Any CPU.Build.0 = Release|Any CPU
-		{861D576F-4DFA-4D78-946D-6AE3653D5902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{861D576F-4DFA-4D78-946D-6AE3653D5902}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{861D576F-4DFA-4D78-946D-6AE3653D5902}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{861D576F-4DFA-4D78-946D-6AE3653D5902}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9094916-E12B-41EF-8F44-2ECC6BC780D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9094916-E12B-41EF-8F44-2ECC6BC780D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9094916-E12B-41EF-8F44-2ECC6BC780D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9094916-E12B-41EF-8F44-2ECC6BC780D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2085FF9-0617-4386-BE0E-EC914B85B4A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2085FF9-0617-4386-BE0E-EC914B85B4A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2085FF9-0617-4386-BE0E-EC914B85B4A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2085FF9-0617-4386-BE0E-EC914B85B4A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{031410A9-DEA9-410C-A2AC-6634E059DB4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{031410A9-DEA9-410C-A2AC-6634E059DB4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{031410A9-DEA9-410C-A2AC-6634E059DB4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{031410A9-DEA9-410C-A2AC-6634E059DB4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{180D41F4-E172-4FCA-945D-2368C3090CB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{180D41F4-E172-4FCA-945D-2368C3090CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{180D41F4-E172-4FCA-945D-2368C3090CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{180D41F4-E172-4FCA-945D-2368C3090CB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,10 +146,8 @@ Global
 		{2AE100F6-E08E-49BA-8A6C-891E0C2B68AC} = {6474977B-CDD8-4429-ADFB-81C3CBC83CD5}
 		{C60BD455-BDD8-4A59-AE39-AD3959FF7DC0} = {6474977B-CDD8-4429-ADFB-81C3CBC83CD5}
 		{1FC5EC41-3EEF-4778-92EA-8D0F98FCAB3E} = {6474977B-CDD8-4429-ADFB-81C3CBC83CD5}
-		{BE9F3905-8F7F-421A-8097-574102064906} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
-		{861D576F-4DFA-4D78-946D-6AE3653D5902} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
-		{B9094916-E12B-41EF-8F44-2ECC6BC780D1} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
-		{C2085FF9-0617-4386-BE0E-EC914B85B4A6} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
+		{031410A9-DEA9-410C-A2AC-6634E059DB4F} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
+		{180D41F4-E172-4FCA-945D-2368C3090CB7} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED3C7131-FE57-4FB5-ADDB-18D199004BEE}

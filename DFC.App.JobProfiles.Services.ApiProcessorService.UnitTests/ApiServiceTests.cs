@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.ApiProcessorService.UnitTests.FakeHttpHandlers;
+﻿using DFC.App.JobProfile.ApiProcessorService;
+using DFC.App.JobProfile.Services.ApiProcessorService.UnitTests.FakeHttpHandlers;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,9 +8,8 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Xunit;
-using FakeHttpMessageHandler = DFC.App.JobProfile.ApiProcessorService.UnitTests.FakeHttpHandlers.FakeHttpMessageHandler;
 
-namespace DFC.App.JobProfile.ApiProcessorService.UnitTests
+namespace DFC.App.JobProfile.Services.ApiProcessorService.UnitTests
 {
     [Trait("Category", "CMS API Processor Service Unit Tests")]
     public class ApiServiceTests

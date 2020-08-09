@@ -63,6 +63,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.Services
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.Services.CacheContentService.UnitTests", "DFC.App.JobProfile.Services.CacheContentService.UnitTests\DFC.App.JobProfile.Services.CacheContentService.UnitTests.csproj", "{180D41F4-E172-4FCA-945D-2368C3090CB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests", "DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests\DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests.csproj", "{6A2632F8-2B8F-4381-9355-0E2CE624C0CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{180D41F4-E172-4FCA-945D-2368C3090CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{180D41F4-E172-4FCA-945D-2368C3090CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{180D41F4-E172-4FCA-945D-2368C3090CB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A2632F8-2B8F-4381-9355-0E2CE624C0CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A2632F8-2B8F-4381-9355-0E2CE624C0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A2632F8-2B8F-4381-9355-0E2CE624C0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A2632F8-2B8F-4381-9355-0E2CE624C0CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,6 +154,7 @@ Global
 		{1FC5EC41-3EEF-4778-92EA-8D0F98FCAB3E} = {6474977B-CDD8-4429-ADFB-81C3CBC83CD5}
 		{031410A9-DEA9-410C-A2AC-6634E059DB4F} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
 		{180D41F4-E172-4FCA-945D-2368C3090CB7} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
+		{6A2632F8-2B8F-4381-9355-0E2CE624C0CA} = {BA7F529F-8FA5-41AE-B4C7-B1966160D931}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED3C7131-FE57-4FB5-ADDB-18D199004BEE}

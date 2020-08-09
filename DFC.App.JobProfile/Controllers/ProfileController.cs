@@ -52,7 +52,7 @@ namespace DFC.App.JobProfile.Controllers
             }
             else
             {
-                viewModel.Documents = (from a in jobProfileModels.OrderBy(o => o.CanonicalName)
+                viewModel.Documents = (from a in jobProfileModels.OrderBy(o => o.JobProfileWebsiteUrl)
                                        select mapper.Map<IndexDocumentViewModel>(a)).ToList();
 
                 logService.LogInformation($"{nameof(Index)} has succeeded");
@@ -245,40 +245,40 @@ namespace DFC.App.JobProfile.Controllers
             return Redirect("/explore-careers");
         }
 
-        [HttpGet]
-        [Route("profile/{article}/contents")]
-        public async Task<IActionResult> Body(string article)
-        {
-            logService.LogInformation($"{nameof(Body)} has been called");
-            var host = Request.GetBaseAddress();
-            if (!IsValidHost(host))
-            {
-                logService.LogWarning($"Invalid host {host}.");
-                return BadRequest($"Invalid host {host}.");
-            }
+        //[HttpGet]
+        //[Route("profile/{article}/contents")]
+        //public async Task<IActionResult> Body(string article)
+        //{
+        //    logService.LogInformation($"{nameof(Body)} has been called");
+        //    var host = Request.GetBaseAddress();
+        //    if (!IsValidHost(host))
+        //    {
+        //        logService.LogWarning($"Invalid host {host}.");
+        //        return BadRequest($"Invalid host {host}.");
+        //    }
 
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
-            if (jobProfileModel != null)
-            {
-                var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
-                viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
+        //    var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
+        //    if (jobProfileModel != null)
+        //    {
+        //        var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
+        //        logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
+        //        viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
 
-                return ValidateJobProfile(viewModel, jobProfileModel);
-            }
+        //        return ValidateJobProfile(viewModel, jobProfileModel);
+        //    }
 
-            var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
-            if (alternateJobProfileModel != null)
-            {
-                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
+        //    var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
+        //    if (alternateJobProfileModel != null)
+        //    {
+        //        var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+        //        logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
-                return RedirectPermanentPreserveMethod(alternateUrl);
-            }
+        //        return RedirectPermanentPreserveMethod(alternateUrl);
+        //    }
 
-            logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
-            return NotFound();
-        }
+        //    logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
+        //    return NotFound();
+        //}
 
         [HttpGet]
         [Route("profile/{documentId}/profile")]

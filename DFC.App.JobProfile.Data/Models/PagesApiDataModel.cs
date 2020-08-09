@@ -68,11 +68,47 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string RedirectLocations { get; set; } = string.Empty;
 
-        private ContentLinksModel? PrivateLinksModel { get; set; }
-
         public List<string> Redirects()
         {
             return string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList();
         }
+
+
+        //////////////////////
+        public string SalaryStarter { get; set; }
+
+        public string SalaryExperienced { get; set; }
+
+        public decimal MinimumHours { get; set; }
+
+        public string? HtbCareerTips { get; set; }
+
+        public string HtbBodies { get; set; }
+
+        public Uri JobProfileWebsiteUrl { get; set; }
+
+        public string WitDigitalSkillsLevel { get; set; }
+
+        public string WorkingPattern { get; set; }
+
+        ////public DateTime ModifiedDate { get; set; }
+
+        public string WorkingHoursDetails { get; set; }
+
+        public string TitleOptions { get; set; }
+
+        public decimal MaximumHours { get; set; }
+
+        public string WorkingPatternDetails { get; set; }
+
+        public string CareerPathAndProgression { get; set; }
+
+        public string HtbFurtherInformation { get; set; }
+
+        private ContentLinksModel? PrivateLinksModel { get; set; }
+
+        public string FurtherInfo { get; set; }
+
+        public string RelevantSubjects { get; set; }
     }
 }

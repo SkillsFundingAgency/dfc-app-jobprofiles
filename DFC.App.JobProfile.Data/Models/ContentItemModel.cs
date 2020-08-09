@@ -32,5 +32,6 @@ namespace DFC.App.JobProfile.Data.Models
         public string? HtmlBody { get; set; }
 
         public IList<SharedContentItemModel>? ContentItems { get; set; }
+
     }
 }

@@ -126,14 +126,14 @@ namespace DFC.App.JobProfile.CacheContentService
                     return;
                 }
 
-                var contentPageModel = mapper.Map<Data.Models.ContentPageModel>(apiDataModel);
+                var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
 
-                if (!TryValidateModel(contentPageModel))
-                {
-                    logger.LogError($"Validation failure for {item.Title} - {item.Url}");
+                //if (!TryValidateModel(contentPageModel))
+                //{
+                //    logger.LogError($"Validation failure for {item.Title} - {item.Url}");
 
-                    return;
-                }
+                //    return;
+                //}
 
                 logger.LogInformation($"Updating cache with {item.Title} - {item.Url}");
 

@@ -96,7 +96,7 @@ namespace DFC.App.JobProfile
                     pattern: "{controller=Health}/{action=Ping}");
             });
 
-            mapper?.ConfigurationProvider.AssertConfigurationIsValid();
+            //mapper?.ConfigurationProvider.AssertConfigurationIsValid();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.

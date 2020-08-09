@@ -29,7 +29,7 @@ namespace DFC.App.JobProfile.CmsApiProcessorService
             this.mapper = mapper;
         }
 
-        public async Task<IList<PagesSummaryItemModel>?> GetSummaryAsync()
+        public async Task<IList<PagesSummaryItemModel>> GetSummaryAsync()
         {
             var url = new Uri(
                 $"{cmsApiClientOptions.BaseAddress}{cmsApiClientOptions.SummaryEndpoint}",
@@ -39,7 +39,7 @@ namespace DFC.App.JobProfile.CmsApiProcessorService
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagesApiDataModel?> GetItemAsync(Uri url)
+        public async Task<PagesApiDataModel> GetItemAsync(Uri url)
         {
             var pagesApiDataModel = await apiDataProcessorService.GetAsync<PagesApiDataModel>(httpClient, url)
                 .ConfigureAwait(false);
@@ -49,19 +49,19 @@ namespace DFC.App.JobProfile.CmsApiProcessorService
             return pagesApiDataModel;
         }
 
-        public async Task<PagesApiContentItemModel?> GetContentItemAsync(LinkDetails details)
+        public async Task<PagesApiContentItemModel> GetContentItemAsync(LinkDetails details)
         {
             return await apiDataProcessorService.GetAsync<PagesApiContentItemModel>(httpClient, details.Uri)
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagesApiContentItemModel?> GetContentItemAsync(Uri uri)
+        public async Task<PagesApiContentItemModel> GetContentItemAsync(Uri uri)
         {
             return await apiDataProcessorService.GetAsync<PagesApiContentItemModel>(httpClient, uri)
                 .ConfigureAwait(false);
         }
 
-        private async Task GetSharedChildContentItems(ContentLinksModel? model, IList<PagesApiContentItemModel> contentItem)
+        private async Task GetSharedChildContentItems(ContentLinksModel model, IList<PagesApiContentItemModel> contentItem)
         {
             if (model != null && model.ContentLinks.Any())
             {

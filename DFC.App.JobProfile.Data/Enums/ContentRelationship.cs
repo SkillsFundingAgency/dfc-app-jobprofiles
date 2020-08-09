@@ -2,9 +2,20 @@
 {
     public enum ContentRelationship
     {
-        Undefined,
-        HasHTMLShared,
-        HasHTML,
-        HasSharedContent,
+        hasWitRestriction,
+        hasWorkingLocation,
+        hasHtbDirectRoute,
+        hasWorkingEnvironment,
+        hasHtbOtherRoute,
+        hasDayToDayTask,
+        hasHtbApprenticeshipRoute,
+        hasONetOccupationalCode,
+        relatedOccupation,
+        hasHtbWorkRoute,
+        hasSocCode,
+        hasWorkingUniform,
+        hasApprenticeshipLink,
+        hasApprenticeshipRequirement,
+        hasRequirementsPrefix
     }
 }

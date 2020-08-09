@@ -83,7 +83,7 @@ namespace DFC.App.JobProfile.Data.Models
 
                 Enum.TryParse(typeof(ContentRelationship), relationShipKey, true, out var type);
 
-                if (type == null || (ContentRelationship)type == ContentRelationship.Undefined)
+                if (type == null)
                 {
                     continue;
                 }

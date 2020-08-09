@@ -52,7 +52,7 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
-            return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            return await repository.GetAsync(d => d.JobProfileWebsiteUrl == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
         }
 
         public async Task<Data.Models.JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

@@ -12,8 +12,12 @@ namespace DFC.App.JobProfile.Data.Models
         [JsonProperty(PropertyName = "skos__prefLabel")]
         public string? Title { get; set; }
 
-        [JsonProperty(PropertyName = "alias_alias")]
-        public string? CanonicalName { get; set; }
+        public string? CanonicalName
+        {
+            get => Title;
+
+            set => Title = value;
+        }
 
         public DateTime? CreatedDate { get; set; }
 

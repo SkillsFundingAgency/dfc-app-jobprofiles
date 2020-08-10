@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.Compui.Telemetry.HostedService;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;

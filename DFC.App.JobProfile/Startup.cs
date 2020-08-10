@@ -9,6 +9,7 @@ using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ClientOptions;
+using DFC.App.JobProfile.Data.Models.SubscriptionModels;
 using DFC.App.JobProfile.EventProcessorService;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.HostedServices;
@@ -119,6 +120,9 @@ namespace DFC.App.JobProfile
 
         private void AddApplicationSpecificDependencyInjectionConfiguration(IServiceCollection services)
         {
+            var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel();
+            eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase));
+            services.AddSingleton(eventGridSubscriptionModel);
             var cosmosDbConnection = configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
             var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
 
@@ -147,10 +151,13 @@ namespace DFC.App.JobProfile
             services.AddTransient<IEventMessageService<ContentPageModel>, EventMessageService<ContentPageModel>>();
             services.AddTransient<ICacheReloadService, CacheReloadService>();
             services.AddTransient<IApiService, ApiService>();
+            services.AddTransient<IWebhooksService, WebhooksService>();
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
             services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
+            services.AddSingleton(configuration.GetSection(nameof(EventGridSubscriptionClientOptions)).Get<EventGridSubscriptionClientOptions>() ?? new EventGridSubscriptionClientOptions());
             services.AddHostedServiceTelemetryWrapper();
             services.AddHostedService<CacheReloadBackgroundService>();
+            services.AddHostedService<CreateSubscriptionBackgroundService>();
 
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
@@ -159,6 +166,10 @@ namespace DFC.App.JobProfile
             services
                .AddPolicies(policyRegistry, nameof(CmsApiClientOptions), policyOptions)
                .AddHttpClient<ICmsApiService, CmsApiService, CmsApiClientOptions>(configuration, nameof(CmsApiClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            services
+               .AddPolicies(policyRegistry, nameof(EventGridSubscriptionClientOptions), policyOptions)
+               .AddHttpClient<IEventGridSubscriptionService, EventGridSubscriptionService, EventGridSubscriptionClientOptions>(configuration, nameof(EventGridSubscriptionClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
 
             services
                 .AddPolicies(policyRegistry, nameof(CareerPathSegmentClientOptions), policyOptions)

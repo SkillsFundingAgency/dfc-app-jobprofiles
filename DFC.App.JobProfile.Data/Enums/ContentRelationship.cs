@@ -3,6 +3,7 @@
     public enum ContentRelationship
     {
         hasWitRestriction,
+        hasWitOtherRequirement,
         hasWorkingLocation,
         hasHtbDirectRoute,
         hasWorkingEnvironment,
@@ -16,6 +17,15 @@
         hasWorkingUniform,
         hasApprenticeshipLink,
         hasApprenticeshipRequirement,
-        hasRequirementsPrefix
+        hasHtbCollegeRoute,
+        hasHtbUniversityRoute,
+        hasHtbVolunteeringRoute,
+        requiresHtbRegistration,
+        hasCollegeRequirement,
+        hasCollegeLink,
+        hasRequirementsPrefix,
+        hasUniversityLink,
+        hasUniversityRequirement,
+        hasApprenticeshipStandard
     }
 }

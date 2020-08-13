@@ -12,7 +12,7 @@
     <partial name="_Head" model=@Model.Head />
 </head>
 <body>
-    <div>
+    @*<div>
         <dl class="row">
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.DocumentId)
@@ -40,9 +40,9 @@
                 @Html.DisplayFor(model => model.SequenceNumber)
             </dd>
         </dl>
-    </div>
+    </div>*@
 
-    <partial name="_Hero" model="@Model" />
+    @*<partial name="_Hero" model="@Model" />*@
     <partial name="_BodyContent" model="@Model" />
 
     <div>

@@ -13,7 +13,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<JobProfileModel, JobProfileModel>();
             CreateMap<JobProfileModel, BodyViewModel>()
                 .ForMember(d => d.SmartSurveyJP, s => s.Ignore());
-            CreateMap<JobProfileModel, HeroViewModel>();
+            CreateMap<JobProfileModel, HeroViewModel>()
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.skos__prefLabel));
 
             CreateMap<JobProfileModel, DocumentViewModel>()
                 .ForMember(d => d.Breadcrumb, s => s.Ignore())

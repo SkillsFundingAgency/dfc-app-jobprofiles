@@ -1,161 +1,57 @@
 ﻿@model DocumentViewModel
 @{
-    var directApplication = Model.ContentItems.Where(x => x.ContentType == "DirectRoute").SingleOrDefault();
+    var directRoute = Model.ContentItems.Where(x => x.ContentType == "DirectRoute").SingleOrDefault();
     var apprenticeshipRoute = Model.ContentItems.Where(x => x.ContentType == "ApprenticeshipRoute").SingleOrDefault();
-
+    var collegeRoute = Model.ContentItems.Where(x => x.ContentType == "CollegeRoute").SingleOrDefault();
+    var otherRoute = Model.ContentItems.Where(x => x.ContentType == "OtherRoute").SingleOrDefault();
+    var registration = Model.ContentItems.Where(x => x.ContentType == "Registration").SingleOrDefault();
+    var universityRoute = Model.ContentItems.Where(x => x.ContentType == "UniversityRoute").SingleOrDefault();
+    var volunteeringRoute = Model.ContentItems.Where(x => x.ContentType == "VolunteeringRoute").SingleOrDefault();
+    var workRoute = Model.ContentItems.Where(x => x.ContentType == "WorkRoute").SingleOrDefault();
 }
 
     <section id="HowToBecome" data-gtm-vis-recent-on-screen-8675592_54="32785" data-gtm-vis-first-on-screen-8675592_54="32785" data-gtm-vis-total-visible-time-8675592_54="100" data-gtm-vis-has-fired-8675592_54="1">
         <h2 class="heading-large job-profile-heading">How to become an @Model.Title</h2>
         @Html.Raw(Model.HtbBodies)
 
-        @*Has College Section*@
-        <section class="job-profile-subsection" id="College">
-            <h3>College</h3>
-            <div class="job-profile-subsection-content">
+        @if (collegeRoute != null)
+        {
+            <partial name="_jbHtbCollegeRoute" model="@collegeRoute" />
+        }
 
-                <p>There is no set entry route to become an accounting technician but it may be useful to do a relevant qualification like:</p>
-                <ul>
-                    <li>Level 2 Foundation Certificate in Accounting accredited by the <a href="http://www.aatqualificationsnavigator.org.uk/navigator.html">Association of Accounting Technicians</a> (AAT)</li>
-                    <li>Foundations in Accountancy accredited by the <a href="https://www.accaglobal.com/uk/en/qualifications/glance/foundation-level/foundations-professionalism.html">Association of Chartered Certified Accountants</a> (ACCA)</li>
-                </ul>
+        @if (apprenticeshipRoute != null)
+        {
+            <partial name="_jbHtbApprenticeshipRoute" model="@apprenticeshipRoute" />
+        }
 
+        @if (directRoute != null)
+        {
+            <partial name="_jbHtbDirectRoute" model="@directRoute" />
+        }
 
+        @if (otherRoute != null)
+        {
+            <partial name="_jbHtbOtherRoute" model="@otherRoute" />
+        }
 
-                <h4>Entry requirements</h4>
-                <p>Entry requirements for these courses vary.</p>
-                <ul class="list-reqs">
-                </ul>
+        @if (volunteeringRoute != null)
+        {
+            <partial name="_jbHtbVolunteeringRoute" model="@volunteeringRoute" />
+        }
 
-                <h4>More information</h4>
-                <ul class="list-link">
-                    <li><a class="htb-feature" href="https://www.gov.uk/further-education-courses/financial-help">funding advice</a></li>
-                    <li><a class="htb-feature" href="/find-a-course">search for courses</a></li>
-                </ul>
-            </div>
-        </section>
+        @if (registration != null)
+        {
+            <partial name="_jbHtbRegistration" model="@registration" />
+        }
 
-        @*Has Apprenticeship Section*@
-        <section class="job-profile-subsection" id="Apprenticeship">
-            <h3>Apprenticeship</h3>
-            <div class="job-profile-subsection-content">
+        @if (Model.HtbFurtherInformation != null)
+        {
+            <partial name="_jbHtbMoreInformation" model="@Model.HtbFurtherInformation" />
+        }
 
-                <p>
-                    You could get into this job through:
-                </p>
-                @Html.Raw(apprenticeshipRoute.RelevantSubjects)
+        @if (workRoute != null)
+        {
+            <partial name="_jbHtbWorkRoute" model="@workRoute" />
+        }
 
-                <h4>Entry requirements</h4>
-                <p>There are no set entry requirements but it may help you to get in if you have:</p>
-                <ul class="list-reqs">
-                    <li>5 GCSEs at grades 9 to 4 (A* to C), or equivalent, including English and maths, for an advanced apprenticeship</li>
-                    <li>4 or 5 GCSEs at grades 9 to 4 (A* to C) and A levels, or equivalent, for a higher or degree apprenticeship</li>
-                </ul>
-
-                <h4>More information</h4>
-                <ul class="list-link">
-                    <li><a class="htb-feature" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels">equivalent entry requirements</a></li>
-                    <li><a class="htb-feature" href="https://www.gov.uk/apprenticeships-guide">guide to apprenticeships</a></li>
-                </ul>
-            </div>
-        </section>
-
-
-        <section class="job-profile-subsection" id="work">
-            <h3>Work</h3>
-            <div class="job-profile-subsection-content">
-                <p>You could start as an accounts clerk or bookkeeper while you study to become an accounting technician. </p>
-                <p>The <a href="https://www.aat.org.uk/">Association of Accounting Technicians</a> (AAT) and the <a href="http://www.accaglobal.com">Association of Chartered Certified Accountants</a> (ACCA) have information on accounting courses.</p>
-            </div>
-        </section>
-
-
-        <section class="job-profile-subsection" id="directapplication">
-            <h3>Direct application</h3>
-            <div class="job-profile-subsection-content">
-                @Html.Raw(directApplication.Description)
-            </div>
-        </section>
-
-        <section class="job-profile-subsection" id="moreinfo">
-            <h3>More information</h3>
-            <div class="job-profile-subsection-content">
-
-                <h4>Further information</h4>
-                @Html.Raw(Model.HtbFurtherInformation)
-            </div>
-        </section>
     </section>
-<section class="job-profile-subsection" id="Skills" data-gtm-vis-recent-on-screen-8675592_55="99917386" data-gtm-vis-first-on-screen-8675592_55="99917386" data-gtm-vis-total-visible-time-8675592_55="100" data-gtm-vis-has-fired-8675592_55="1">
-    <h2 class="heading-large">What it takes</h2>
-    <section class="job-profile-subsection">
-        <h3>Skills and knowledge</h3>
-        <div class="job-profile-subsection-content">
-            <p>You'll need:</p>
-            <ul>
-                <li>
-                    to be thorough and pay attention to detail
-                </li>
-                <li>
-                    the ability to work well with others
-                </li>
-                <li>
-                    administration skills
-                </li>
-                <li>
-                    customer service skills
-                </li>
-                <li>
-                    the ability to use your initiative
-                </li>
-                <li>
-                    to be flexible and open to change
-                </li>
-                <li>
-                    maths knowledge
-                </li>
-                <li>
-                    excellent verbal communication skills
-                </li>
-                <li>to be able to use a computer and the main software packages confidently</li>
-            </ul>
-        </div>
-    </section>
-</section>
-<section id="WhatYouWillDo">
-    <h2 class="heading-large">What you'll do</h2>
-    <section class="job-profile-subsection">
-        <h3>Day-to-day tasks</h3>
-        <div class="job-profile-subsection-content">
-            <p>
-                On a typical day you could:
-            </p>
-            <ul>
-                <li>process and pay invoices</li>
-                <li>record receipts and payments</li>
-                <li>prepare and check ledger balances and other monthly accounts</li>
-                <li>complete and submit tax returns, VAT returns and National Insurance contributions</li>
-                <li>handle company expenses</li>
-                <li>update computerised accounting systems</li>
-            </ul>
-        </div>
-    </section>
-    <section class="job-profile-subsection" id="workingenvironment">
-        <h3>Working environment</h3>
-        <div class="job-profile-subsection-content">
-            <p>You could work in an office.</p>
-        </div>
-    </section>
-
-</section>
-<section id="CareerPathAndProgression">
-    <h2 class="heading-large">Career path and progression</h2>
-
-    <p>
-        With experience, you could move into management or become self-employed and work on accounts for small businesses. You could also study to become a qualified accountant.
-    </p>
-    <p>
-        <a href="https://www.aat.org.uk/">AAT</a> and <a href="http://www.accaglobal.com/uk/en.html">ACCA</a> qualifications are recognised across the world, so you could work overseas.
-    </p>
-
-</section>

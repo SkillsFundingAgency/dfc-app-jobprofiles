@@ -1,3 +1,25 @@
 ﻿@model HeroViewModel
 
-<partial name="_Hero" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview)?.Markup />
+    <header class="job-profile-hero">
+        <div class="govuk-width-container">
+
+            <div class="govuk-breadcrumbs">
+                <ol class="govuk-breadcrumbs__list">
+                    <li class="govuk-breadcrumbs__list-item">
+                        <a class="govuk-breadcrumbs__link" href="/explore-careers">Home: Explore careers</a>
+                    </li>
+                    <li class="govuk-breadcrumbs__list-item" aria-current="page">@Model.Title</li>
+                </ol>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h1>@Model.Title</h1>
+                    <h2 class="govuk-!-margin-top-5 govuk-!-margin-bottom-3"><span class="sr-hidden">Alternative titles for this job include </span></h2>
+
+                    <p>@Html.Raw(Model.Description)</p>
+                </div>
+            </div>
+            <partial name="_jbOverviewSegment.cshtml" model="@Model" />
+        </div>
+    </header>

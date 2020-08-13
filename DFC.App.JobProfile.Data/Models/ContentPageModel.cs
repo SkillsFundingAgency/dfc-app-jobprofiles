@@ -50,6 +50,7 @@ namespace DFC.App.JobProfile.Data.Models
         public string? Keywords { get; set; }
 
         [JsonProperty("_links")]
+        [JsonIgnore]
         public JObject? Links { get; set; }
 
         [JsonIgnore]
@@ -99,8 +100,6 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string WorkingPattern { get; set; }
 
-        ////public DateTime ModifiedDate { get; set; }
-
         public string WorkingHoursDetails { get; set; }
 
         public string TitleOptions { get; set; }
@@ -113,6 +112,7 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string HtbFurtherInformation { get; set; }
 
+        [JsonIgnore]
         private ContentLinksModel? PrivateLinksModel { get; set; }
     }
 }

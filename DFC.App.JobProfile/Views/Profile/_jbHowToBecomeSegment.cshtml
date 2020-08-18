@@ -1,0 +1,57 @@
+﻿@model DocumentViewModel
+@{
+    var directRoute = Model.ContentItems.Where(x => x.ContentType == "DirectRoute").SingleOrDefault();
+    var apprenticeshipRoute = Model.ContentItems.Where(x => x.ContentType == "ApprenticeshipRoute").SingleOrDefault();
+    var collegeRoute = Model.ContentItems.Where(x => x.ContentType == "CollegeRoute").SingleOrDefault();
+    var otherRoute = Model.ContentItems.Where(x => x.ContentType == "OtherRoute").SingleOrDefault();
+    var registration = Model.ContentItems.Where(x => x.ContentType == "Registration").SingleOrDefault();
+    var universityRoute = Model.ContentItems.Where(x => x.ContentType == "UniversityRoute").SingleOrDefault();
+    var volunteeringRoute = Model.ContentItems.Where(x => x.ContentType == "VolunteeringRoute").SingleOrDefault();
+    var workRoute = Model.ContentItems.Where(x => x.ContentType == "WorkRoute").SingleOrDefault();
+}
+
+    <section id="HowToBecome" data-gtm-vis-recent-on-screen-8675592_54="32785" data-gtm-vis-first-on-screen-8675592_54="32785" data-gtm-vis-total-visible-time-8675592_54="100" data-gtm-vis-has-fired-8675592_54="1">
+        <h2 class="heading-large job-profile-heading">How to become an @Model.Title</h2>
+        @Html.Raw(Model.HtbBodies)
+
+        @if (collegeRoute != null)
+        {
+            <partial name="_jbHtbCollegeRoute" model="@collegeRoute" />
+        }
+
+        @if (apprenticeshipRoute != null)
+        {
+            <partial name="_jbHtbApprenticeshipRoute" model="@apprenticeshipRoute" />
+        }
+
+        @if (directRoute != null)
+        {
+            <partial name="_jbHtbDirectRoute" model="@directRoute" />
+        }
+
+        @if (otherRoute != null)
+        {
+            <partial name="_jbHtbOtherRoute" model="@otherRoute" />
+        }
+
+        @if (volunteeringRoute != null)
+        {
+            <partial name="_jbHtbVolunteeringRoute" model="@volunteeringRoute" />
+        }
+
+        @if (registration != null)
+        {
+            <partial name="_jbHtbRegistration" model="@registration" />
+        }
+
+        @if (Model.HtbFurtherInformation != null)
+        {
+            <partial name="_jbHtbMoreInformation" model="@Model.HtbFurtherInformation" />
+        }
+
+        @if (workRoute != null)
+        {
+            <partial name="_jbHtbWorkRoute" model="@workRoute" />
+        }
+
+    </section>

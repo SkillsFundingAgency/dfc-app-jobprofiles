@@ -1,0 +1,42 @@
+﻿@model DocumentViewModel
+@{
+    var restrictions = Model.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
+    var otherRequirement = Model.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
+}
+
+    <section id="WhatItTakes" data-gtm-vis-recent-on-screen-8675592_55="3291489" data-gtm-vis-first-on-screen-8675592_55="3291489" data-gtm-vis-total-visible-time-8675592_55="100" data-gtm-vis-has-fired-8675592_55="1">
+        <h2 class="job-profile-headings">What it takes</h2>
+
+        <section class="job-profile-subsection">
+            <h3>Skills and knowledge</h3>
+            <div class="job-profile-subsection-content">
+                @Html.Raw(Model.WitDigitalSkillsLevel)
+            </div>
+        </section>
+
+        @if (restrictions.Any())
+        {
+            <section class="job-profile-subsection">
+                <h3>Restrictions</h3>
+                <ul>
+                    @foreach (var restriction in restrictions)
+                    {
+                        <li>@restriction.Content</li>
+                    }
+                </ul>
+            </section>
+        }
+
+        @if (otherRequirement.Any())
+        {
+            <section class="job-profile-subsection">
+                <h3>Other Requirements</h3>
+                <ul>
+                    @foreach (var requirement in otherRequirement)
+                    {
+                        <li>@requirement.Content</li>
+                    }
+                </ul>
+            </section>
+        }
+    </section>

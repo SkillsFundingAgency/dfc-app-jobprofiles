@@ -8,7 +8,7 @@ using System.Text;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles.ValuerConverters
 {
-    public class ContentItemsConverter : IValueConverter<IList<ContentItemModel>?, HtmlString?>
+    public class ContentItemsConverter : IValueConverter<IList<ContentItemModel>, HtmlString>
     {
         private readonly Dictionary<int, string> columnWidthClasses = new Dictionary<int, string>
         {
@@ -27,7 +27,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.ValuerConverters
             { "Justify", "dfc-app-pages-alignment-justify" },
         };
 
-        public HtmlString? Convert(IList<ContentItemModel>? sourceMember, ResolutionContext context)
+        public HtmlString? Convert(IList<ContentItemModel> sourceMember, ResolutionContext context)
         {
             if (sourceMember == null || !sourceMember.Any())
             {

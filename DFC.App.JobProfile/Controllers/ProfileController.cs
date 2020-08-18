@@ -246,7 +246,6 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-      //  [Route("profile/{article}/contents")]
         public async Task<IActionResult> Body(string article)
         {
             logService.LogInformation($"{nameof(Body)} has been called");
@@ -262,8 +261,6 @@ namespace DFC.App.JobProfile.Controllers
                 viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
                 logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
                 return this.NegotiateContentResult(viewModel);
-                //return this.NegotiateContentResult(viewModel);
-                // return ValidateJobProfile(viewModel, jobProfileModel);
             }
 
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);

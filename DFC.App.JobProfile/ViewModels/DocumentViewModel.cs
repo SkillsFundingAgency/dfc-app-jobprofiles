@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DFC.App.JobProfile.Data.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.ViewModels
@@ -36,5 +38,44 @@ namespace DFC.App.JobProfile.ViewModels
 
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }
+
+        public string JobProfileWebsiteUrl { get; set; }
+
+        public string PageLocation { get; set; }
+
+        public string skos__prefLabel { get; set; }
+
+        public DateTime ModifiedDate { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public string? SalaryStarter { get; set; }
+
+        public string? SalaryExperienced { get; set; }
+
+        public int? MinimumHours { get; set; }
+
+        public string HtbCareerTips { get; set; }
+
+        public string HtbBodies { get; set; }
+
+        public string WitDigitalSkillsLevel { get; set; }
+
+        public string WorkingPattern { get; set; }
+
+        public string WorkingHoursDetails { get; set; }
+
+        public string TitleOptions { get; set; }
+
+        public int? MaximumHours { get; set; }
+                    
+        public string WorkingPatternDetails { get; set; }
+
+        public string CareerPathAndProgression { get; set; }
+
+        public string HtbFurtherInformation { get; set; }
+
+        public IList<PagesApiContentItemModel> ContentItems { get; set; }
+
     }
 }

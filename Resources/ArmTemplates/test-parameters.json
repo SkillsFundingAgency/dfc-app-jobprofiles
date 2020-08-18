@@ -43,6 +43,21 @@
         },
         "ExceptionCountThreshold":{
             "value": "0"
+        },
+        "EventGridSubscriptionModelEndpoint": {
+            "value": "foo"
+        },
+        "EventGridSubscriptionClientOptionsEndpoint": {
+            "value": "foo"
+        },
+        "apimCompositeApiKey": {
+            "value": "FakeKey"
+        },
+        "apimProxyAddress": {
+            "value": "https://foo"
+        },
+        "apimContentApiKey": {
+            "value": "FakeKey"
         }
     }
 }

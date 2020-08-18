@@ -64,6 +64,21 @@
         },
         "ExceptionCountThreshold":{
             "value": "__ExceptionCountThreshold__"
+        },
+        "EventGridSubscriptionModelEndpoint": {
+            "value": "__EventGridSubscriptionModelEndpoint__"
+        },
+        "EventGridSubscriptionClientOptionsEndpoint": {
+            "value": "__EventGridSubscriptionClientOptionsEndpoint__"
+        },
+        "apimCompositeApiKey": {
+            "value": "__apimCompositeApiKey__"
+        },
+        "apimProxyAddress": {
+            "value": "__apimProxyAddress__"
+        },
+        "apimContentApiKey": {
+            "value": "__apimContentApiKey__"
         }
     }
 }

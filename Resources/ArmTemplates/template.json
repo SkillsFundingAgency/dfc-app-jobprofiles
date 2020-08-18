@@ -440,7 +440,7 @@
                             },
                             {
                                 "name": "EventGridSubscriptionModel__Endpoint__Filter__IncludeEventTypes",
-                                "value": ["published", "unpublished", "deleted"]
+                                "value": "published"
                             },
                             {
                                 "name": "EventGridSubscriptionClientOptions__Timeout",

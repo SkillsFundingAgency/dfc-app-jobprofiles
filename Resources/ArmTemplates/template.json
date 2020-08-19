@@ -95,6 +95,21 @@
         },
         "ExceptionCountThreshold": {
             "type": "string"
+        },
+        "EventGridSubscriptionModelEndpoint": {
+            "type": "string"
+        },
+        "EventGridSubscriptionClientOptionsEndpoint": {
+            "type": "string"
+        },
+        "apimCompositeApiKey": {
+            "type": "securestring"
+        },
+        "apimProxyAddress": {
+            "type": "string"
+        },
+        "apimContentApiKey": {
+            "type": "securestring"
         }
     },
     "variables": {
@@ -183,7 +198,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service-staging.json')]",
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -198,6 +213,12 @@
                     },
                     "appServiceType": {
                         "value": "app"
+                    },
+                    "deployStagingSlot": {
+                        "value": true
+                    },
+                    "clientAffinity": {
+                        "value": true
                     },
                     "appServiceAppSettings": {
                         "value": [
@@ -399,8 +420,61 @@
                             },
                             {
                                 "name": "Logging__ApplicationInsights__LogLevel__Default",
+                                "value": "Error"
+                            },
+                            {
+                                "name": "ApplicationInsights__LogLevel__Default",
                                 "value": "Information"
+                            },
+                            {
+                                "name": "Configuration__ApplicationName",
+                                "value": "DFC-App-Job-Profiles"
+                            },
+                            {
+                                "name": "EventGridSubscriptionModel__Endpoint",
+                                "value": "[parameters('EventGridSubscriptionModelEndpoint')]"
+                            },
+                            {
+                                "name": "EventGridSubscriptionModel__Endpoint__Filter__BeginsWith",
+                                "value": "/job-profile/"
+                            },
+                            {
+                                "name": "EventGridSubscriptionModel__Endpoint__Filter__IncludeEventTypes",
+                                "value": "published"
+                            },
+                            {
+                                "name": "EventGridSubscriptionClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "EventGridSubscriptionClientOptions__ApiKey",
+                                "value": "[parameters('apimCompositeApiKey')]"
+                            },
+                            {
+                                "name": "EventGridSubscriptionClientOptions__BaseAddress",
+                                "value": "[concat(parameters('apimProxyAddress'),'/content/Subscription/')]"
+                            },
+                            {
+                                "name": "EventGridSubscriptionClientOptions__Endpoint",
+                                "value": "[parameters('EventGridSubscriptionClientOptionsEndpoint')]"
+                            },
+                            {
+                                "name": "CmsApiClientOptions__Timeout",
+                                "value": "00:00:30"
+                            },
+                            {
+                                "name": "CmsApiClientOptions__ApiKey",
+                                "value": "[parameters('apimContentApiKey')]"
+                            },
+                            {
+                                "name": "CmsApiClientOptions__BaseAddress",
+                                "value": "[parameters('apimProxyAddress')]"
+                            },
+                            {
+                                "name": "CmsApiClientOptions__SummaryEndpoint",
+                                "value": "content/getcontent/api/execute/jobprofile"
                             }
+
                         ]
                     }
                 }

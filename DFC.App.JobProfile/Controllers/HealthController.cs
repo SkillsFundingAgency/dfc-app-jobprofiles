@@ -43,11 +43,6 @@ namespace DFC.App.JobProfile.Controllers
 
                     var viewModel = CreateHealthViewModel(resourceName, message);
 
-                    var segmentData = await jobProfileService.SegmentsHealthCheckAsync().ConfigureAwait(false);
-                    var segmentHealthItemViewModels = mapper.Map<List<HealthItemViewModel>>(segmentData);
-
-                    viewModel.HealthItems.AddRange(segmentHealthItemViewModels);
-
                     return this.NegotiateContentResult(viewModel, viewModel.HealthItems);
                 }
 

@@ -43,18 +43,18 @@ namespace DFC.App.JobProfile.IntegrationTests.AutoMapperTests
             Assert.True(true);
         }
 
-        //[Fact]
-        //public void AutoMapperProfileConfigurationForAllProfilesReturnSuccess()
-        //{
-        //    // Arrange
-        //    _ = factory.CreateClient();
-        //    var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
+        [Fact]
+        public void AutoMapperProfileConfigurationForAllProfilesReturnSuccess()
+        {
+            // Arrange
+            _ = factory.CreateClient();
+            var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
 
-        //    // Act
-        //    mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            // Act
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
-        //    // Assert
-        //    Assert.True(true);
-        //}
+            // Assert
+            Assert.True(true);
+        }
     }
 }

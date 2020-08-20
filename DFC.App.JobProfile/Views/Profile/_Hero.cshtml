@@ -1,11 +1,3 @@
-﻿@model DocumentViewModel
+﻿@model HtmlString
 
-<div class="grid-row">
-    <div class="column-desktop-two-thirds">
-        <h1 class="heading-xlarge">@Model.Title</h1>
-
-        @Html.Raw(Model.Description)
-    </div>
-</div>
-
-@*<partial name="_jbOverviewSegment" model="@Model" />*@
+<partial name="_OverviewBannerSegment" model=@Model />

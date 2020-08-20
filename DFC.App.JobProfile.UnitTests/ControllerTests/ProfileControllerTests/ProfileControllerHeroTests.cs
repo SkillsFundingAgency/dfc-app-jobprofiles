@@ -61,7 +61,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).MustHaveHappenedOnceExactly();
 
-            Assert.IsType<OkObjectResult>(result);
+            var jsonResult = Assert.IsType<OkObjectResult>(result);
+            Assert.IsAssignableFrom<List<SegmentModel>>(jsonResult.Value);
 
             controller.Dispose();
         }

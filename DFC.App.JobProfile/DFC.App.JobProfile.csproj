@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Content Remove="appsettings-template.json" />
-    <Content Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,13 +29,12 @@
     <PackageReference Include="CorrelationId" Version="2.1.0" />
     <PackageReference Include="DFC.Logger.AppInsights" Version="1.0.7" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />
-    <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.1.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.96" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -46,17 +44,12 @@
 
 
   <ItemGroup>
-    <None Include="appsettings.json" />
     <None Include="appsettings-template.json" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <ProjectReference Include="..\DFC.App.JobProfile.ApiProcessorService\DFC.App.JobProfile.ApiProcessorService.csproj" />
-    <ProjectReference Include="..\DFC.App.JobProfile.CacheContentService\DFC.App.JobProfile.CacheContentService.csproj" />
-    <ProjectReference Include="..\DFC.App.JobProfile.CmsApiProcessorService\DFC.App.JobProfile.CmsApiProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
-    <ProjectReference Include="..\DFC.App.JobProfile.EventProcessorService\DFC.App.JobProfile.EventProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.ProfileService\DFC.App.JobProfile.ProfileService.csproj" />
   </ItemGroup>
 

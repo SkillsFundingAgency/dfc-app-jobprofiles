@@ -13,7 +13,7 @@
             @foreach (var document in Model.Documents)
             {
                 <li>
-                    <a href="/profile/@document.JobProfileWebsiteUrl">@document.JobProfileWebsiteUrl</a>
+                    <a href="/profile/@document.CanonicalName">@document.CanonicalName</a>
                 </li>
             }
         </ul>

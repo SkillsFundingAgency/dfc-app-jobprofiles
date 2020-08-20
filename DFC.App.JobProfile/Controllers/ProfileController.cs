@@ -52,7 +52,7 @@ namespace DFC.App.JobProfile.Controllers
             }
             else
             {
-                viewModel.Documents = (from a in jobProfileModels.OrderBy(o => o.JobProfileWebsiteUrl)
+                viewModel.Documents = (from a in jobProfileModels.OrderBy(o => o.CanonicalName)
                                        select mapper.Map<IndexDocumentViewModel>(a)).ToList();
 
                 logService.LogInformation($"{nameof(Index)} has succeeded");
@@ -63,9 +63,9 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpGet]
         [Route("profile/{article}")]
-        [Route("profile/{article}/contents")]
         public async Task<IActionResult> Document(string article)
         {
+            //AOP: These should be coded as an Aspect
             logService.LogInformation($"{nameof(Document)} has been called with: {article}");
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
@@ -228,7 +228,7 @@ namespace DFC.App.JobProfile.Controllers
 
                 logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
 
-                return this.NegotiateContentResult(viewModel);
+                return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
             }
 
             logService.LogWarning($"{nameof(Hero)} has not returned any content for: {article}");
@@ -246,6 +246,7 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
+        [Route("profile/{article}/contents")]
         public async Task<IActionResult> Body(string article)
         {
             logService.LogInformation($"{nameof(Body)} has been called");
@@ -259,14 +260,11 @@ namespace DFC.App.JobProfile.Controllers
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             if (jobProfileModel != null)
             {
-                //var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                //logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
-                //viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
+                var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
+                logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
+                viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
 
-                var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
-                viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
-                logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
-                return this.NegotiateContentResult(viewModel);
+                return ValidateJobProfile(viewModel, jobProfileModel);
             }
 
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);

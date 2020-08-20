@@ -38,47 +38,5 @@ namespace DFC.App.JobProfile.Data.Models
         public MetaTags MetaTags { get; set; }
 
         public IList<SegmentModel> Segments { get; set; }
-
-        public IList<PagesApiContentItemModel> ContentItems { get; set; }
-
-        public string JobProfileWebsiteUrl { get; set; }
-
-        public string PageLocation { get; set; }
-
-        public string skos__prefLabel { get; set; }
-
-        public string Description { get; set; }
-
-        public DateTime ModifiedDate { get; set; }
-
-        public DateTime CreatedDate { get; set; }
-
-        public string? SalaryStarter { get; set; }
-
-        public string? SalaryExperienced { get; set; }
-
-        public int? MinimumHours { get; set; }
-
-        public string HtbCareerTips { get; set; }
-
-        public string HtbBodies { get; set; }
-
-        public string WitDigitalSkillsLevel { get; set; }
-
-        public string WorkingPattern { get; set; }
-
-        public string WorkingHoursDetails { get; set; }
-
-        public string TitleOptions { get; set; }
-
-        public int? MaximumHours { get; set; }
-
-        public string WorkingPatternDetails { get; set; }
-
-        public string CareerPathAndProgression { get; set; }
-
-        public string HtbFurtherInformation { get; set; }
-
-
     }
 }

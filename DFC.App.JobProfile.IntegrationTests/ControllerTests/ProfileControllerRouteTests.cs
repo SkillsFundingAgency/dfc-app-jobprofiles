@@ -51,41 +51,41 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             new object[] { $"/profile/search/action" },
         };
 
-        //[Theory]
-        //[MemberData(nameof(ProfileContentRouteData))]
-        //public async Task GetProfileHtmlContentEndpointsReturnSuccessAndCorrectContentType(string url)
-        //{
-        //    // Arrange
-        //    var uri = new Uri(url, UriKind.Relative);
-        //    var client = factory.CreateClient();
-        //    client.DefaultRequestHeaders.Accept.Clear();
-        //    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
+        [Theory]
+        [MemberData(nameof(ProfileContentRouteData))]
+        public async Task GetProfileHtmlContentEndpointsReturnSuccessAndCorrectContentType(string url)
+        {
+            // Arrange
+            var uri = new Uri(url, UriKind.Relative);
+            var client = factory.CreateClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
 
-        //    // Act
-        //    var response = await client.GetAsync(uri).ConfigureAwait(false);
+            // Act
+            var response = await client.GetAsync(uri).ConfigureAwait(false);
 
-        //    // Assert
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal($"{MediaTypeNames.Text.Html}; charset={Encoding.UTF8.WebName}", response.Content.Headers.ContentType.ToString());
-        //}
+            // Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal($"{MediaTypeNames.Text.Html}; charset={Encoding.UTF8.WebName}", response.Content.Headers.ContentType.ToString());
+        }
 
-        //[Theory]
-        //[MemberData(nameof(ProfileContentRouteData))]
-        //public async Task GetProfileJsonContentEndpointsReturnSuccessAndCorrectContentType(string url)
-        //{
-        //    // Arrange
-        //    var uri = new Uri(url, UriKind.Relative);
-        //    var client = factory.CreateClient();
-        //    client.DefaultRequestHeaders.Accept.Clear();
-        //    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+        [Theory]
+        [MemberData(nameof(ProfileContentRouteData))]
+        public async Task GetProfileJsonContentEndpointsReturnSuccessAndCorrectContentType(string url)
+        {
+            // Arrange
+            var uri = new Uri(url, UriKind.Relative);
+            var client = factory.CreateClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
 
-        //    // Act
-        //    var response = await client.GetAsync(uri).ConfigureAwait(false);
+            // Act
+            var response = await client.GetAsync(uri).ConfigureAwait(false);
 
-        //    // Assert
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal($"{MediaTypeNames.Application.Json}; charset={Encoding.UTF8.WebName}", response.Content.Headers.ContentType.ToString());
-        //}
+            // Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal($"{MediaTypeNames.Application.Json}; charset={Encoding.UTF8.WebName}", response.Content.Headers.ContentType.ToString());
+        }
 
         [Theory]
         [MemberData(nameof(ProfileNoContentRouteData))]
@@ -119,21 +119,21 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        //[Theory]
-        //[MemberData(nameof(ProfileContentRedirectRouteData))]
-        //public async Task GetProfileHtmlContentEndpointsReturnRedirection(string url)
-        //{
-        //    // Arrange
-        //    var uri = new Uri(url, UriKind.Relative);
-        //    var client = factory.CreateClient();
-        //    client.DefaultRequestHeaders.Accept.Clear();
+        [Theory]
+        [MemberData(nameof(ProfileContentRedirectRouteData))]
+        public async Task GetProfileHtmlContentEndpointsReturnRedirection(string url)
+        {
+            // Arrange
+            var uri = new Uri(url, UriKind.Relative);
+            var client = factory.CreateClient();
+            client.DefaultRequestHeaders.Accept.Clear();
 
-        //    // Act
-        //    var response = await client.GetAsync(uri).ConfigureAwait(false);
+            // Act
+            var response = await client.GetAsync(uri).ConfigureAwait(false);
 
-        //    // Assert
-        //    Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-        //}
+            // Assert
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        }
 
         [Fact]
         public async Task PostProfileEndpointsForNewArticleMetaDataReturnsOk()

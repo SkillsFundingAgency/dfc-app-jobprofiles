@@ -115,6 +115,35 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             controller.Dispose();
         }
 
+        [Fact]
+        public async Task ProfileControllerDocumentReturnsWithCorrectlyMappedHeadAndBodyContent()
+        {
+            // Arrange
+            const string article = "an-article-name";
+            const string headDescription = "HeadDescription";
+            const string headTitle = "HeadTitle";
+            const string headKeywords = "some keywords";
+            var jobProfileId = Guid.NewGuid();
+
+            var controller = BuildControllerWithMapper();
+            var jobProfileModel = CreateJobProfileModel(headTitle, headDescription, headKeywords, jobProfileId);
+            var expectedViewModel = CreateDocumentViewModel(headTitle, headDescription, headKeywords, jobProfileId);
+
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(jobProfileModel);
+
+            // Act
+            var result = await controller.Document(article).ConfigureAwait(false);
+
+            // Assert
+            var jsonResult = Assert.IsType<OkObjectResult>(result);
+            var resultModel = Assert.IsAssignableFrom<DocumentViewModel>(jsonResult.Value);
+            Assert.NotNull(resultModel.Head);
+            Assert.NotNull(resultModel.Body);
+            resultModel.Should().BeEquivalentTo(expectedViewModel);
+
+            controller.Dispose();
+        }
+
         private static JobProfileModel CreateJobProfileModel(string headTitle, string headDescription, string headKeywords, Guid jobProfileId)
         {
             return new JobProfileModel
@@ -126,7 +155,19 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                     Keywords = headKeywords,
                 },
                 DocumentId = jobProfileId,
-                Description = headDescription,
+                Segments = new List<SegmentModel>
+                {
+                    new SegmentModel
+                    {
+                        Markup = new HtmlString("some markup"),
+                        Segment = JobProfileSegment.HowToBecome,
+                    },
+                    new SegmentModel
+                    {
+                        Markup = new HtmlString("some markup"),
+                        Segment = JobProfileSegment.Overview,
+                    },
+                },
                 SequenceNumber = 123,
                 AlternativeNames = new List<string>(),
             };

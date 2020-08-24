@@ -12,27 +12,19 @@ namespace DFC.App.JobProfile.ProfileService
     public class JobProfileService : IJobProfileService
     {
         private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
-        private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
 
         public JobProfileService(
             ICosmosRepository<Data.Models.JobProfileModel> repository,
-            ISegmentService segmentService,
             IMapper mapper)
         {
             this.repository = repository;
-            this.segmentService = segmentService;
             this.mapper = mapper;
         }
 
         public async Task<bool> PingAsync()
         {
             return await repository.PingAsync().ConfigureAwait(false);
-        }
-
-        public async Task<IList<HealthCheckItem>> SegmentsHealthCheckAsync()
-        {
-            return await segmentService.SegmentsHealthCheckAsync().ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<Data.Models.JobProfileModel>> GetAllAsync()
@@ -126,48 +118,6 @@ namespace DFC.App.JobProfile.ProfileService
 
             var mappedRecord = mapper.Map(jobProfileModel, existingRecord);
             return await repository.UpsertAsync(mappedRecord).ConfigureAwait(false);
-        }
-
-        public async Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel)
-        {
-            if (refreshJobProfileSegmentModel is null)
-            {
-                throw new ArgumentNullException(nameof(refreshJobProfileSegmentModel));
-            }
-
-            //Check existing document
-            var existingJobProfile = await GetByIdAsync(refreshJobProfileSegmentModel.JobProfileId).ConfigureAwait(false);
-            if (existingJobProfile is null)
-            {
-                return HttpStatusCode.NotFound;
-            }
-
-            var existingItem = existingJobProfile.Segments.SingleOrDefault(s => s.Segment == refreshJobProfileSegmentModel.Segment);
-            if (existingItem?.RefreshSequence > refreshJobProfileSegmentModel.SequenceNumber)
-            {
-                return HttpStatusCode.AlreadyReported;
-            }
-
-            var offlineSegmentData = segmentService.GetOfflineSegment(refreshJobProfileSegmentModel.Segment);
-            var segmentData = await segmentService.RefreshSegmentAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
-            if (existingItem is null)
-            {
-                segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : offlineSegmentData.OfflineMarkup;
-                segmentData.Json ??= offlineSegmentData.OfflineJson;
-                existingJobProfile.Segments.Add(segmentData);
-            }
-            else
-            {
-                var index = existingJobProfile.Segments.IndexOf(existingItem);
-                var fallbackMarkup = !string.IsNullOrEmpty(existingItem.Markup?.Value) ? existingItem.Markup : offlineSegmentData.OfflineMarkup;
-                segmentData.Markup = !string.IsNullOrEmpty(segmentData.Markup?.Value) ? segmentData.Markup : fallbackMarkup;
-                segmentData.Json ??= existingItem.Json ?? offlineSegmentData.OfflineJson;
-
-                existingJobProfile.Segments[index] = segmentData;
-            }
-
-            var result = await repository.UpsertAsync(existingJobProfile).ConfigureAwait(false);
-            return segmentData.RefreshStatus == Data.Enums.RefreshStatus.Success ? result : HttpStatusCode.FailedDependency;
         }
 
         public async Task<bool> DeleteAsync(Guid documentId)

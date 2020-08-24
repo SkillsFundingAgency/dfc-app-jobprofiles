@@ -5,8 +5,6 @@ using DFC.App.JobProfile.CacheContentService;
 using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.CmsApiProcessorService;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Contracts.SegmentServices;
-using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ClientOptions;
 using DFC.App.JobProfile.Data.Models.SubscriptionModels;
@@ -16,7 +14,6 @@ using DFC.App.JobProfile.HostedServices;
 using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
-using DFC.App.JobProfile.ProfileService.SegmentServices;
 using DFC.App.JobProfile.Repository.CosmosDb;
 using DFC.Compui.Cosmos;
 using DFC.Compui.Telemetry;
@@ -137,18 +134,9 @@ namespace DFC.App.JobProfile
 
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<ISharedContentService, SharedContentService>();
-            services.AddScoped<ISegmentService, SegmentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
-
-            services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
-            services.AddSingleton(configuration.GetSection(nameof(HowToBecomeSegmentClientOptions)).Get<HowToBecomeSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(OverviewBannerSegmentClientOptions)).Get<OverviewBannerSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(RelatedCareersSegmentClientOptions)).Get<RelatedCareersSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(WhatItTakesSegmentClientOptions)).Get<WhatItTakesSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(WhatYouWillDoSegmentClientOptions)).Get<WhatYouWillDoSegmentClientOptions>());
 
             services.AddApplicationInsightsTelemetry();
             var cosmosDbConnectionContentPages = configuration.GetSection(CosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
@@ -181,34 +169,6 @@ namespace DFC.App.JobProfile
             services
                .AddPolicies(policyRegistry, nameof(EventGridSubscriptionClientOptions), policyOptions)
                .AddHttpClient<IEventGridSubscriptionService, EventGridSubscriptionService, EventGridSubscriptionClientOptions>(configuration, nameof(EventGridSubscriptionClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(CareerPathSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<CareerPathSegmentClientOptions>, RefreshSegmentService<CareerPathSegmentClientOptions>, CareerPathSegmentClientOptions>(configuration, nameof(CareerPathSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(CurrentOpportunitiesSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions>, RefreshSegmentService<CurrentOpportunitiesSegmentClientOptions>, CurrentOpportunitiesSegmentClientOptions>(configuration, nameof(CurrentOpportunitiesSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(HowToBecomeSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<HowToBecomeSegmentClientOptions>, RefreshSegmentService<HowToBecomeSegmentClientOptions>, HowToBecomeSegmentClientOptions>(configuration, nameof(HowToBecomeSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(OverviewBannerSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<OverviewBannerSegmentClientOptions>, RefreshSegmentService<OverviewBannerSegmentClientOptions>, OverviewBannerSegmentClientOptions>(configuration, nameof(OverviewBannerSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(RelatedCareersSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<RelatedCareersSegmentClientOptions>, RefreshSegmentService<RelatedCareersSegmentClientOptions>, RelatedCareersSegmentClientOptions>(configuration, nameof(RelatedCareersSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(WhatItTakesSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<WhatItTakesSegmentClientOptions>, RefreshSegmentService<WhatItTakesSegmentClientOptions>, WhatItTakesSegmentClientOptions>(configuration, nameof(WhatItTakesSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(WhatYouWillDoSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<WhatYouWillDoSegmentClientOptions>, RefreshSegmentService<WhatYouWillDoSegmentClientOptions>, WhatYouWillDoSegmentClientOptions>(configuration, nameof(WhatYouWillDoSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
         }
     }
 }

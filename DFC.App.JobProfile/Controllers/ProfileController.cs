@@ -1,10 +1,7 @@
-﻿using DFC.App.JobProfile.Data;
-using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
-using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -26,17 +23,15 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ISharedContentService sharedContentService;
         private readonly AutoMapper.IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
-        private readonly ISegmentService segmentService;
         private readonly string[] redirectionHostWhitelist = { "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0", "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474" };
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, ISharedContentService sharedContentService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService, string[] redirectionHostWhitelist = null)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, ISharedContentService sharedContentService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, string[] redirectionHostWhitelist = null)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.sharedContentService = sharedContentService;
             this.mapper = mapper;
             this.feedbackLinks = feedbackLinks;
-            this.segmentService = segmentService;
             this.redirectionHostWhitelist = redirectionHostWhitelist ?? this.redirectionHostWhitelist;
             this.sharedContentService = sharedContentService;
         }
@@ -155,27 +150,27 @@ namespace DFC.App.JobProfile.Controllers
             return new StatusCodeResult((int)response);
         }
 
-        [HttpPut]
-        [HttpPost]
-        [Route("refresh")]
-        public async Task<IActionResult> Refresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
-        {
-            logService.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}");
+        //[HttpPut]
+        //[HttpPost]
+        //[Route("refresh")]
+        //public async Task<IActionResult> Refresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
+        //{
+        //    logService.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}");
 
-            if (refreshJobProfileSegmentModel == null)
-            {
-                return BadRequest();
-            }
+        //    if (refreshJobProfileSegmentModel == null)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
-            logService.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
-            return new StatusCodeResult((int)response);
-        }
+        //    //var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
+        //    logService.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
+        //    return new StatusCodeResult((int)response);
+        //}
 
         [HttpDelete]
         [Route("profile/{documentId}")]
@@ -370,55 +365,6 @@ namespace DFC.App.JobProfile.Controllers
             viewModel.Paths.Last().AddHyperlink = false;
 
             return viewModel;
-        }
-
-        private IActionResult ValidateJobProfile(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
-        {
-            var overviewExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
-            var howToBecomeExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.HowToBecome);
-            var whatItTakesExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatItTakes);
-
-            if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
-            {
-                throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
-            }
-
-            return this.ValidateMarkup(bodyViewModel, jobProfileModel);
-        }
-
-        private IActionResult ValidateMarkup(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
-        {
-            if (bodyViewModel.Segments != null)
-            {
-                foreach (var segmentModel in bodyViewModel.Segments)
-                {
-                    var markup = segmentModel.Markup.Value;
-
-                    if (!string.IsNullOrWhiteSpace(markup))
-                    {
-                        continue;
-                    }
-
-                    switch (segmentModel.Segment)
-                    {
-                        case JobProfileSegment.Overview:
-                        case JobProfileSegment.HowToBecome:
-                        case JobProfileSegment.WhatItTakes:
-                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}");
-
-                        case JobProfileSegment.RelatedCareers:
-                        case JobProfileSegment.CurrentOpportunities:
-                        case JobProfileSegment.WhatYouWillDo:
-                        case JobProfileSegment.CareerPathsAndProgression:
-                            {
-                                segmentModel.Markup = segmentService.GetOfflineSegment(segmentModel.Segment).OfflineMarkup;
-                                break;
-                            }
-                    }
-                }
-            }
-
-            return this.NegotiateContentResult(bodyViewModel, jobProfileModel.Segments);
         }
 
         private HeadViewModel BuildHeadViewModel(JobProfileModel jobProfileModel)

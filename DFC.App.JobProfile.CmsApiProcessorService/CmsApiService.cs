@@ -79,5 +79,26 @@ namespace DFC.App.JobProfile.CmsApiProcessorService
                 }
             }
         }
+
+        public async Task<List<StaticContentItemModel>> GetContentAsync()
+        {
+            var contentList = new List<StaticContentItemModel>();
+
+            var ids = cmsApiClientOptions.ContentIds.Split(",").ToList();
+
+            foreach (var id in ids) {
+                var url = new Uri(
+                    $"{cmsApiClientOptions.BaseAddress}{cmsApiClientOptions.StaticContentEndpoint}{id}",
+                    UriKind.Absolute);
+
+                var content = await apiDataProcessorService.GetAsync<StaticContentItemModel>(httpClient, url).ConfigureAwait(false);
+
+                if (content != null) {
+                    contentList.Add(content);
+                }
+            }
+
+            return contentList;
+        }
     }
 }

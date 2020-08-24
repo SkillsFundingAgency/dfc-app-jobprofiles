@@ -4,6 +4,7 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
+using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -22,19 +23,22 @@ namespace DFC.App.JobProfile.Controllers
 
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
+        private readonly ISharedContentService sharedContentService;
         private readonly AutoMapper.IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
         private readonly ISegmentService segmentService;
         private readonly string[] redirectionHostWhitelist = { "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0", "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474" };
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService, string[] redirectionHostWhitelist = null)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, ISharedContentService sharedContentService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService, string[] redirectionHostWhitelist = null)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
+            this.sharedContentService = sharedContentService;
             this.mapper = mapper;
             this.feedbackLinks = feedbackLinks;
             this.segmentService = segmentService;
             this.redirectionHostWhitelist = redirectionHostWhitelist ?? this.redirectionHostWhitelist;
+            this.sharedContentService = sharedContentService;
         }
 
         [HttpGet]
@@ -67,6 +71,7 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Document(string article)
         {
             logService.LogInformation($"{nameof(Document)} has been called with: {article}");
+            var contentList = new List<string>() { "speaktoanadvisor", "skillsassessment", "notwhatyourlookingfor" };
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             if (jobProfileModel is null)
@@ -74,6 +79,9 @@ namespace DFC.App.JobProfile.Controllers
                 logService.LogWarning($"{nameof(Document)} has returned not found: {article}");
                 return NotFound();
             }
+
+            var sharedContent = await sharedContentService.GetByNamesAsync(contentList).ConfigureAwait(false);
+            jobProfileModel.SharedContent = sharedContent;
 
             var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
             viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);

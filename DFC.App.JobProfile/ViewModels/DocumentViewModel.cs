@@ -77,5 +77,6 @@ namespace DFC.App.JobProfile.ViewModels
 
         public IList<PagesApiContentItemModel> ContentItems { get; set; }
 
+        public List<StaticContentItemModel> SharedContent { get; set; }
     }
 }

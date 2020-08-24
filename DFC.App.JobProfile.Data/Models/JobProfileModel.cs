@@ -79,6 +79,6 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string HtbFurtherInformation { get; set; }
 
-
+        public List<StaticContentItemModel> SharedContent { get; set; }
     }
 }

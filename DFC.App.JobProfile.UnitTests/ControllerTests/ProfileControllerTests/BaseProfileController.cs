@@ -18,6 +18,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         {
             FakeLogger = A.Fake<ILogService>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
+            FakeSharedContentService = A.Fake<ISharedContentService>();
             FakeMapper = A.Fake<IMapper>();
             FakeSegmentService = A.Fake<ISegmentService>();
         }
@@ -42,6 +43,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected IJobProfileService FakeJobProfileService { get; }
 
+        protected ISharedContentService FakeSharedContentService { get; }
+
         protected IMapper FakeMapper { get; }
 
         protected ISegmentService FakeSegmentService { get; }
@@ -58,7 +61,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             httpContext.Request.Host = new HostString(host);
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks, FakeSegmentService, whitelist)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeSharedContentService, mapper ?? FakeMapper, feedbackLinks, FakeSegmentService, whitelist)
             {
                 ControllerContext = new ControllerContext()
                 {

@@ -70,7 +70,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public async Task<IList<PagesSummaryItemModel>?> GetSummaryListAsync()
+        public async Task<IList<PagesSummaryItemModel>> GetSummaryListAsync()
         {
             logger.LogInformation("Get summary list");
 
@@ -127,13 +127,6 @@ namespace DFC.App.JobProfile.CacheContentService
                 }
 
                 var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
-
-                //if (!TryValidateModel(contentPageModel))
-                //{
-                //    logger.LogError($"Validation failure for {item.Title} - {item.Url}");
-
-                //    return;
-                //}
 
                 logger.LogInformation($"Updating cache with {item.Title} - {item.Url}");
 

@@ -15,5 +15,7 @@ namespace DFC.App.JobProfile.Data.Contracts
         Task<PagesApiContentItemModel> GetContentItemAsync(LinkDetails details);
 
         Task<PagesApiContentItemModel> GetContentItemAsync(Uri uri);
+
+        Task<List<StaticContentItemModel>> GetContentAsync();
     }
 }

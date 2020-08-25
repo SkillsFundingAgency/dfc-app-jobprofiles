@@ -82,57 +82,5 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.SegmentServiceTests
                 OfflineHtml = $"<h3>{whatYouWillDoSegmentService.GetType().Name} is offline</h3>",
             };
         }
-
-        [Fact]
-        public async Task SegmentServiceSegmentsHealthCheckAsyncReturnsSuccess()
-        {
-            // arrange
-            var segmentService = new SegmentService(
-                logService,
-                overviewBannerSegmentService,
-                howToBecomeSegmentService,
-                whatItTakesSegmentService,
-                whatYouWillDoSegmentService,
-                careerPathSegmentService,
-                currentOpportunitiesSegmentService,
-                relatedCareersSegmentService);
-
-            var expectedResult = new HealthCheckItems
-            {
-                Source = new Uri("http://somewhere.com"),
-                HealthItems = new List<HealthCheckItem>
-                {
-                    new HealthCheckItem
-                    {
-                        Service = "Unit test",
-                        Message = "All ok",
-                    },
-                },
-            };
-
-            A.CallTo(() => careerPathSegmentService.HealthCheckAsync()).Returns(Task.FromResult(expectedResult));
-            A.CallTo(() => currentOpportunitiesSegmentService.HealthCheckAsync()).Returns(Task.FromResult(expectedResult));
-            A.CallTo(() => howToBecomeSegmentService.HealthCheckAsync()).Returns(Task.FromResult(expectedResult));
-            A.CallTo(() => overviewBannerSegmentService.HealthCheckAsync()).Returns(Task.FromResult(expectedResult));
-            A.CallTo(() => relatedCareersSegmentService.HealthCheckAsync()).Returns(Task.FromResult(expectedResult));
-            A.CallTo(() => whatItTakesSegmentService.HealthCheckAsync()).Returns(Task.FromResult(expectedResult));
-            A.CallTo(() => whatYouWillDoSegmentService.HealthCheckAsync()).Returns(Task.FromResult(expectedResult));
-
-            // act
-            var results = await segmentService.SegmentsHealthCheckAsync().ConfigureAwait(false);
-
-            // assert
-            A.CallTo(() => careerPathSegmentService.HealthCheckAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => currentOpportunitiesSegmentService.HealthCheckAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => howToBecomeSegmentService.HealthCheckAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => overviewBannerSegmentService.HealthCheckAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => relatedCareersSegmentService.HealthCheckAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => whatItTakesSegmentService.HealthCheckAsync()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => whatYouWillDoSegmentService.HealthCheckAsync()).MustHaveHappenedOnceExactly();
-
-            results.Count.Should().Be(NumberOfSegmentServices);
-            results[0].Service.Should().Be(expectedResult.HealthItems[0].Service);
-            results[0].Message.Should().Be(expectedResult.HealthItems[0].Message);
-        }
     }
 }

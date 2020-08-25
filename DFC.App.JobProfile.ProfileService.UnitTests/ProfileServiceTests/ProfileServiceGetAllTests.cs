@@ -12,18 +12,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     public class ProfileServiceGetAllTests
     {
         private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
-
-        private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
         private readonly IJobProfileService jobProfileService;
 
         public ProfileServiceGetAllTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-
-            segmentService = A.Fake<ISegmentService>();
             mapper = A.Fake<IMapper>();
-            jobProfileService = new JobProfileService(repository, segmentService, mapper);
+            jobProfileService = new JobProfileService(repository, mapper);
         }
 
         [Fact]

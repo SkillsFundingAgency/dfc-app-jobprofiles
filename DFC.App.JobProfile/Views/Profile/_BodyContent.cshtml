@@ -1,21 +1,21 @@
 ﻿@model DocumentViewModel
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <div class="job-profile-sections">
-            <partial name="_SegmentLinks" />
-            <partial name="_jbHowToBecomeSegment" model="@Model" />
-            <partial name="_jbWhatItTakesSegment" model="@Model" />
-            <partial name="_jbWhatYouWillDoSegment" model="@Model" />
-            <partial name="_jbCareerPathSegment" model="@Model" />
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="job-profile-sections">
+                <partial name="_SegmentLinks" />
+                <partial name="_jbHowToBecomeSegment" model="@Model" />
+                <partial name="_jbWhatItTakesSegment" model="@Model" />
+                <partial name="_jbWhatYouWillDoSegment" model="@Model" />
+                <partial name="_jbCareerPathSegment" model="@Model" />
+            </div>
+        </div>
+        
+        <div class="govuk-grid-column-one-third">
+            <partial name="_Search" model="@Model.SharedContent.Where(x => x.CanonicalName == "notwhatyourlookingfor").FirstOrDefault()" />
+            <partial name="_jbRelatedCareersSegment" model="@Model" />
+            <partial name="_SkillsAssessmentSnippet" model="@Model.SharedContent.Where(x => x.CanonicalName == "skillsassessment").FirstOrDefault()" />
+            <partial name="_speakToAnAdvisor" model="@Model.SharedContent.Where(x => x.CanonicalName == "speaktoanadvisor").FirstOrDefault()" />
         </div>
     </div>
-
-    <div class="govuk-grid-column-one-third">
-        <partial name="_Search" model=@Model.JobProfileWebsiteUrl />
-        <partial name="_jbRelatedCareersSegment" model="@Model" />
-        <partial name="_SkillsAssessmentSnippet" />
-        <partial name="_ContactUsSnippet" />
-    </div>
-</div>
 <partial name="_FeedbackYesOrNo"/>

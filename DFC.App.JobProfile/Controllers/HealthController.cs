@@ -15,6 +15,7 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
+        private readonly string resourceName = typeof(Program).Namespace!;
 
         public HealthController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
         {
@@ -41,13 +42,12 @@ namespace DFC.App.JobProfile.Controllers
                     message = "Document store is available";
                     logService.LogInformation($"{nameof(Health)} responded with: {resourceName} - {message}");
 
-                    var viewModel = CreateHealthViewModel(resourceName, message);
+                    var viewModel = CreateHealthViewModel(message);
 
                     return this.NegotiateContentResult(viewModel, viewModel.HealthItems);
                 }
 
-                message = $"Ping to {resourceName} has failed";
-                logService.LogError($"{nameof(Health)}: {message}");
+                logService.LogError($"{nameof(Health)}: Ping to {resourceName} has failed");
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace DFC.App.JobProfile.Controllers
             return Ok();
         }
 
-        private static HealthViewModel CreateHealthViewModel(string resourceName, string message)
+        private HealthViewModel CreateHealthViewModel(string message)
         {
             return new HealthViewModel
             {

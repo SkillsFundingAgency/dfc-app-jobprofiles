@@ -13,16 +13,15 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.ItemId))
                 .ForMember(d => d.Links, s => s.Ignore());
 
-            CreateMap<PagesApiContentItemModel, ContentItemModel>()
+            CreateMap<PagesApiDataModel, ContentItemModel>()
                 .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
 
-            CreateMap<PagesApiContentItemModel, SharedContentItemModel>()
+            CreateMap<PagesApiDataModel, SharedContentItemModel>()
                 .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
 
-            CreateMap<LinkDetails, PagesApiContentItemModel>()
+            CreateMap<LinkDetails, PagesApiDataModel>()
                 .ForMember(d => d.Url, s => s.Ignore())
                 .ForMember(d => d.ItemId, s => s.Ignore())
-                .ForMember(d => d.Content, s => s.Ignore())
                 .ForMember(d => d.Published, s => s.Ignore())
                 .ForMember(d => d.CreatedDate, s => s.Ignore())
                 .ForMember(d => d.Links, s => s.Ignore())

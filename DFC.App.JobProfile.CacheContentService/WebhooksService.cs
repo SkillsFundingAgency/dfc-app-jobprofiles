@@ -72,7 +72,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessContentAsync(Uri url, Guid contentId)
         {
-            var apiDataModel = await cmsApiService.GetItemAsync(url).ConfigureAwait(false);
+            var apiDataModel = await cmsApiService.GetItemAsync<PagesApiDataModel>(url).ConfigureAwait(false);
             var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
 
             if (contentPageModel == null)

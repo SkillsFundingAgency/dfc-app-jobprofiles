@@ -1,4 +1,4 @@
-﻿@model PagesApiContentItemModel
+﻿@model ApiContentItemModel
 @{ 
     var requirementPrefix = Model.ContentItems.Where(x => x.ContentType == "RequirementsPrefix").SingleOrDefault();
     var apprenticeshipRequirement = Model.ContentItems.Where(x => x.ContentType == "ApprenticeshipRequirement").SingleOrDefault();

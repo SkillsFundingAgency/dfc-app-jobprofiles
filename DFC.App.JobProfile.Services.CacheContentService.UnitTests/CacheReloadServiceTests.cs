@@ -49,8 +49,8 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             var fakeCachedContentPageModels = BuldFakeContentPageModels(NumberOfDeletions);
 
             A.CallTo(() => fakeContentCacheService.Clear());
-            A.CallTo(() => fakeCmsApiService.GetSummaryAsync()).Returns(fakePagesSummaryItemModels);
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).Returns(A.Fake<PagesApiDataModel>());
+            A.CallTo(() => fakeCmsApiService.GetSummaryAsync<PagesSummaryItemModel>()).Returns(fakePagesSummaryItemModels);
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).Returns(A.Fake<PagesApiDataModel>());
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).Returns(expectedValidContentPageModel);
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).Returns(HttpStatusCode.NotFound);
             A.CallTo(() => fakeEventMessageService.CreateAsync(A<ContentPageModel>.Ignored)).Returns(HttpStatusCode.Created);
@@ -64,9 +64,9 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             await cacheReloadService.Reload(cancellationToken).ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => fakeCmsApiService.GetSummaryAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeCmsApiService.GetSummaryAsync<PagesSummaryItemModel>()).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeContentCacheService.Clear()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
             A.CallTo(() => fakeEventMessageService.CreateAsync(A<ContentPageModel>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
@@ -87,8 +87,8 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             var fakeCachedContentPageModels = BuldFakeContentPageModels(NumberOfDeletions);
 
             A.CallTo(() => fakeContentCacheService.Clear());
-            A.CallTo(() => fakeCmsApiService.GetSummaryAsync()).Returns(fakePagesSummaryItemModels);
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).Returns(A.Fake<PagesApiDataModel>());
+            A.CallTo(() => fakeCmsApiService.GetSummaryAsync<PagesSummaryItemModel>()).Returns(fakePagesSummaryItemModels);
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).Returns(A.Fake<PagesApiDataModel>());
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).Returns(expectedValidContentPageModel);
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).Returns(HttpStatusCode.OK);
             A.CallTo(() => fakeEventMessageService.GetAllCachedCanonicalNamesAsync()).Returns(fakeCachedContentPageModels);
@@ -101,9 +101,9 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             await cacheReloadService.Reload(cancellationToken).ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => fakeCmsApiService.GetSummaryAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeCmsApiService.GetSummaryAsync<PagesSummaryItemModel>()).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeContentCacheService.Clear()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).MustHaveHappened(NumerOfSummaryItems, Times.Exactly);
             A.CallTo(() => fakeEventMessageService.CreateAsync(A<ContentPageModel>.Ignored)).MustNotHaveHappened();
@@ -120,7 +120,7 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             var cancellationToken = new CancellationToken(true);
             var fakePagesSummaryItemModels = BuldFakePagesSummaryItemModel(NumerOfSummaryItems);
 
-            A.CallTo(() => fakeCmsApiService.GetSummaryAsync()).Returns(fakePagesSummaryItemModels);
+            A.CallTo(() => fakeCmsApiService.GetSummaryAsync<PagesSummaryItemModel>()).Returns(fakePagesSummaryItemModels);
 
             var cacheReloadService = new CacheReloadService(fakeLogger, fakeMapper, fakeEventMessageService, fakeCmsApiService, fakeContentCacheService);
 
@@ -128,9 +128,9 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             await cacheReloadService.Reload(cancellationToken).ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => fakeCmsApiService.GetSummaryAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeCmsApiService.GetSummaryAsync<PagesSummaryItemModel>()).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeContentCacheService.Clear()).MustNotHaveHappened();
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).MustNotHaveHappened();
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).MustNotHaveHappened();
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).MustNotHaveHappened();
             A.CallTo(() => fakeEventMessageService.CreateAsync(A<ContentPageModel>.Ignored)).MustNotHaveHappened();
@@ -148,7 +148,7 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             var expectedValidPagesApiDataModel = BuildValidPagesApiDataModel();
             var expectedValidContentPageModel = BuildValidContentPageModel();
 
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).Returns(expectedValidPagesApiDataModel);
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).Returns(expectedValidPagesApiDataModel);
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).Returns(expectedValidContentPageModel);
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).Returns(HttpStatusCode.NotFound);
             A.CallTo(() => fakeContentCacheService.AddOrReplace(A<Guid>.Ignored, A<List<Guid>>.Ignored));
@@ -159,7 +159,7 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             await cacheReloadService.GetAndSaveItemAsync(expectedValidPagesSummaryItemModel, cancellationToken).ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeEventMessageService.CreateAsync(A<ContentPageModel>.Ignored)).MustHaveHappenedOnceExactly();
@@ -175,7 +175,7 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             var expectedValidPagesApiDataModel = BuildValidPagesApiDataModel();
             var expectedValidContentPageModel = BuildValidContentPageModel();
 
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).Returns(expectedValidPagesApiDataModel);
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).Returns(expectedValidPagesApiDataModel);
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).Returns(expectedValidContentPageModel);
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).Returns(HttpStatusCode.OK);
             A.CallTo(() => fakeContentCacheService.AddOrReplace(A<Guid>.Ignored, A<List<Guid>>.Ignored));
@@ -186,7 +186,7 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             await cacheReloadService.GetAndSaveItemAsync(expectedValidPagesSummaryItemModel, cancellationToken).ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeEventMessageService.CreateAsync(A<ContentPageModel>.Ignored)).MustNotHaveHappened();
@@ -201,7 +201,7 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             var expectedValidPagesSummaryItemModel = BuildValidPagesSummaryItemModel();
             var expectedValidPagesApiDataModel = BuildValidPagesApiDataModel();
 
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).Returns(expectedValidPagesApiDataModel);
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).Returns(expectedValidPagesApiDataModel);
 
             var cacheReloadService = new CacheReloadService(fakeLogger, fakeMapper, fakeEventMessageService, fakeCmsApiService, fakeContentCacheService);
 
@@ -209,7 +209,7 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
             await cacheReloadService.GetAndSaveItemAsync(expectedValidPagesSummaryItemModel, cancellationToken).ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => fakeCmsApiService.GetItemAsync(A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeCmsApiService.GetItemAsync<PagesApiDataModel>(A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeMapper.Map<ContentPageModel>(A<PagesApiDataModel>.Ignored)).MustNotHaveHappened();
             A.CallTo(() => fakeEventMessageService.UpdateAsync(A<ContentPageModel>.Ignored)).MustNotHaveHappened();
             A.CallTo(() => fakeEventMessageService.CreateAsync(A<ContentPageModel>.Ignored)).MustNotHaveHappened();
@@ -380,9 +380,9 @@ namespace DFC.App.JobProfile.Services.CacheContentService.UnitTests
                             }),
                     },
                 },
-                ContentItems = new List<PagesApiContentItemModel>
+                ContentItems = new List<ApiContentItemModel>
                 {
-                    new PagesApiContentItemModel { Content = "<h1>A document</h1>", },
+                    new ApiContentItemModel { Content = "<h1>A document</h1>", },
                 },
                 Published = DateTime.UtcNow,
             };

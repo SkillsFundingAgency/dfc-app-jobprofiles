@@ -8,14 +8,17 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface ICmsApiService
     {
-        Task<IList<PagesSummaryItemModel>> GetSummaryAsync();
+        Task<IList<T>> GetSummaryAsync<T>()
+            where T : class;
 
-        Task<PagesApiDataModel> GetItemAsync(Uri url);
+        Task<T> GetItemAsync<T>(Uri url)
+            where T : class, IPagesApiDataModel;
 
-        Task<PagesApiContentItemModel> GetContentItemAsync(LinkDetails details);
+        Task<ApiContentItemModel> GetContentItemAsync(LinkDetails details);
 
-        Task<PagesApiContentItemModel> GetContentItemAsync(Uri uri);
+        Task<ApiContentItemModel> GetContentItemAsync(Uri uri);
 
-        Task<List<StaticContentItemModel>> GetContentAsync();
+        Task<List<T>> GetContentAsync<T>()
+            where T : class;
     }
 }

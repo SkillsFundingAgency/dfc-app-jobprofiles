@@ -68,14 +68,14 @@ namespace DFC.App.JobProfile.ViewModels
         public string TitleOptions { get; set; }
 
         public int? MaximumHours { get; set; }
-                    
+
         public string WorkingPatternDetails { get; set; }
 
         public string CareerPathAndProgression { get; set; }
 
         public string HtbFurtherInformation { get; set; }
 
-        public IList<PagesApiContentItemModel> ContentItems { get; set; }
+        public IList<ApiContentItemModel> ContentItems { get; set; }
 
         public List<StaticContentItemModel> SharedContent { get; set; }
     }

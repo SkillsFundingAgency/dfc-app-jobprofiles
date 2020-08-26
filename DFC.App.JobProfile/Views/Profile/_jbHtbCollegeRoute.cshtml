@@ -1,4 +1,4 @@
-﻿@model PagesApiContentItemModel
+﻿@model ApiContentItemModel
 @{ 
     var collegeRrquirements = Model.ContentItems.Where(x => x.ContentType == "CollegeRequirement").ToList();
     var collegeLinks = Model.ContentItems.Where(x => x.ContentType == "CollegeLink").ToList();

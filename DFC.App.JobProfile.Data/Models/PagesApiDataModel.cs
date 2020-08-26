@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class PagesApiDataModel : IApiDataModel
+    public class PagesApiDataModel : IApiDataModel, IPagesApiDataModel
     {
         [JsonProperty("id")]
         public Guid? ItemId { get; set; }
@@ -53,7 +53,7 @@ namespace DFC.App.JobProfile.Data.Models
             set => PrivateLinksModel = value;
         }
 
-        public IList<PagesApiContentItemModel> ContentItems { get; set; } = new List<PagesApiContentItemModel>();
+        public IList<ApiContentItemModel> ContentItems { get; set; } = new List<ApiContentItemModel>();
 
         [JsonProperty(PropertyName = "ModifiedDate")]
         public DateTime Published { get; set; }
@@ -73,8 +73,6 @@ namespace DFC.App.JobProfile.Data.Models
             return string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList();
         }
 
-
-        //////////////////////
         public string SalaryStarter { get; set; }
 
         public string SalaryExperienced { get; set; }

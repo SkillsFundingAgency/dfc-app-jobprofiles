@@ -43,7 +43,7 @@ namespace DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests
             var cmsApiService = new CmsApiService(CmsApiClientOptions, fakeApiDataProcessorService, fakeHttpClient, mapper);
 
             // act
-            var result = await cmsApiService.GetSummaryAsync().ConfigureAwait(false);
+            var result = await cmsApiService.GetSummaryAsync<PagesSummaryItemModel>().ConfigureAwait(false);
 
             // assert
             A.CallTo(() => fakeApiDataProcessorService.GetAsync<IList<PagesSummaryItemModel>>(A<HttpClient>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
@@ -55,13 +55,13 @@ namespace DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests
         {
             // arrange
             var expectedResult = A.Fake<PagesApiDataModel>();
-            var expectedItemResult = A.Fake<PagesApiContentItemModel>();
+            var expectedItemResult = A.Fake<ApiContentItemModel>();
             var url = new Uri($"{CmsApiClientOptions.BaseAddress}api/someitem", UriKind.Absolute);
             var contentUrl = new Uri("http://www.test.com");
             var childContentUrl = new Uri("http://www.testChild.com");
             A.CallTo(() => fakeApiDataProcessorService.GetAsync<PagesApiDataModel>(A<HttpClient>.Ignored, A<Uri>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => fakeApiDataProcessorService.GetAsync<PagesApiContentItemModel>(A<HttpClient>.Ignored, contentUrl)).Returns(expectedItemResult);
-            A.CallTo(() => fakeApiDataProcessorService.GetAsync<PagesApiContentItemModel>(A<HttpClient>.Ignored, childContentUrl)).Returns(new PagesApiContentItemModel());
+            A.CallTo(() => fakeApiDataProcessorService.GetAsync<ApiContentItemModel>(A<HttpClient>.Ignored, contentUrl)).Returns(expectedItemResult);
+            A.CallTo(() => fakeApiDataProcessorService.GetAsync<ApiContentItemModel>(A<HttpClient>.Ignored, childContentUrl)).Returns(new ApiContentItemModel());
             expectedResult.ContentLinks = new ContentLinksModel(new JObject())
             {
                 ContentLinks = new List<KeyValuePair<string, List<LinkDetails>>>()
@@ -98,7 +98,7 @@ namespace DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests
             var cmsApiService = new CmsApiService(CmsApiClientOptions, fakeApiDataProcessorService, fakeHttpClient, mapper);
 
             // act
-            var result = await cmsApiService.GetItemAsync(url).ConfigureAwait(false);
+            var result = await cmsApiService.GetItemAsync<PagesApiDataModel>(url).ConfigureAwait(false);
 
             // assert
 
@@ -107,7 +107,7 @@ namespace DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests
                 expectedItemResult.ContentLinks.ContentLinks.SelectMany(contentLink => contentLink.Value).Count();
 
             A.CallTo(() => fakeApiDataProcessorService.GetAsync<PagesApiDataModel>(A<HttpClient>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => fakeApiDataProcessorService.GetAsync<PagesApiContentItemModel>(A<HttpClient>.Ignored, A<Uri>.Ignored)).MustHaveHappened(expectedCount, Times.Exactly);
+            A.CallTo(() => fakeApiDataProcessorService.GetAsync<ApiContentItemModel>(A<HttpClient>.Ignored, A<Uri>.Ignored)).MustHaveHappened(expectedCount, Times.Exactly);
             A.Equals(result, expectedResult);
         }
 
@@ -115,10 +115,10 @@ namespace DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests
         public async Task CmsApiServiceGetContentItemReturnsSuccess()
         {
             // arrange
-            var expectedResult = A.Fake<PagesApiContentItemModel>();
+            var expectedResult = A.Fake<ApiContentItemModel>();
             var url = new Uri($"{CmsApiClientOptions.BaseAddress}api/someitemcontent", UriKind.Absolute);
 
-            A.CallTo(() => fakeApiDataProcessorService.GetAsync<PagesApiContentItemModel>(A<HttpClient>.Ignored, A<Uri>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => fakeApiDataProcessorService.GetAsync<ApiContentItemModel>(A<HttpClient>.Ignored, A<Uri>.Ignored)).Returns(expectedResult);
 
             var cmsApiService = new CmsApiService(CmsApiClientOptions, fakeApiDataProcessorService, fakeHttpClient, mapper);
 
@@ -126,7 +126,7 @@ namespace DFC.App.JobProfile.Services.CmsApiProcessorService.UnitTests
             var result = await cmsApiService.GetContentItemAsync(url).ConfigureAwait(false);
 
             // assert
-            A.CallTo(() => fakeApiDataProcessorService.GetAsync<PagesApiContentItemModel>(A<HttpClient>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => fakeApiDataProcessorService.GetAsync<ApiContentItemModel>(A<HttpClient>.Ignored, A<Uri>.Ignored)).MustHaveHappenedOnceExactly();
             A.Equals(result, expectedResult);
         }
     }

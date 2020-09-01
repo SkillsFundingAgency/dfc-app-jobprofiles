@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class PagesApiContentItemModel : IApiDataModel
+    public class ApiContentItemModel : IApiDataModel
     {
         public Uri? Url { get; set; }
 
@@ -40,7 +40,7 @@ namespace DFC.App.JobProfile.Data.Models
             set => PrivateLinksModel = value;
         }
 
-        public IList<PagesApiContentItemModel> ContentItems { get; set; } = new List<PagesApiContentItemModel>();
+        public IList<ApiContentItemModel> ContentItems { get; set; } = new List<ApiContentItemModel>();
 
         [JsonIgnore]
         private ContentLinksModel PrivateLinksModel { get; set; }

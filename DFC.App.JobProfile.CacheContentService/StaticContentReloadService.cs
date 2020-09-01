@@ -37,7 +37,7 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 logger.LogInformation("Reload static content started");
 
-                var staticContent = await cmsApiService.GetContentAsync().ConfigureAwait(false);
+                var staticContent = await cmsApiService.GetContentAsync<StaticContentItemModel>().ConfigureAwait(false);
 
                 if (stoppingToken.IsCancellationRequested)
                 {

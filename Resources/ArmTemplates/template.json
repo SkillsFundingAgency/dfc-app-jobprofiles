@@ -120,7 +120,7 @@
         "cosmosDbCollectionPartitionKey": "/PartitionKey",
         "cosmosDbDatabaseName": "dfc-app-jobprofiles",
         "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
-        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
+        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-stax-jobprof'))]",
         "urlJobprofiles": "[toLower(concat('https://', variables('webAppName'), '.', parameters('appServiceDomain')))]",
         "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofover-as.', parameters('appServiceDomain')))]",
         "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofcops-as.', parameters('appServiceDomain')))]",

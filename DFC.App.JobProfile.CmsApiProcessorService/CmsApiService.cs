@@ -29,46 +29,68 @@ namespace DFC.App.JobProfile.CmsApiProcessorService
             this.mapper = mapper;
         }
 
-        public async Task<IList<PagesSummaryItemModel>> GetSummaryAsync()
+        public async Task<IList<T>> GetSummaryAsync<T>() where T : class
         {
             var url = new Uri(
                 $"{cmsApiClientOptions.BaseAddress}{cmsApiClientOptions.SummaryEndpoint}",
                 UriKind.Absolute);
 
-            return await apiDataProcessorService.GetAsync<IList<PagesSummaryItemModel>>(httpClient, url)
+            return await apiDataProcessorService.GetAsync<IList<T>>(httpClient, url)
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagesApiDataModel> GetItemAsync(Uri url)
+        public async Task<T> GetItemAsync<T>(Uri url) where T : class, IPagesApiDataModel
         {
-            var pagesApiDataModel = await apiDataProcessorService.GetAsync<PagesApiDataModel>(httpClient, url)
+            var apiDataModel = await apiDataProcessorService.GetAsync<T>(httpClient, url)
                 .ConfigureAwait(false);
 
-            await GetSharedChildContentItems(pagesApiDataModel.ContentLinks, pagesApiDataModel.ContentItems).ConfigureAwait(false);
+            await GetSharedChildContentItems(apiDataModel.ContentLinks, apiDataModel.ContentItems).ConfigureAwait(false);
 
-            return pagesApiDataModel;
+            return apiDataModel;
         }
 
-        public async Task<PagesApiContentItemModel> GetContentItemAsync(LinkDetails details)
+        public async Task<ApiContentItemModel> GetContentItemAsync(LinkDetails details)
         {
-            return await apiDataProcessorService.GetAsync<PagesApiContentItemModel>(httpClient, details.Uri)
+            return await apiDataProcessorService.GetAsync<ApiContentItemModel>(httpClient, details.Uri)
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagesApiContentItemModel> GetContentItemAsync(Uri uri)
+        public async Task<ApiContentItemModel> GetContentItemAsync(Uri uri)
         {
-            return await apiDataProcessorService.GetAsync<PagesApiContentItemModel>(httpClient, uri)
+            return await apiDataProcessorService.GetAsync<ApiContentItemModel>(httpClient, uri)
                 .ConfigureAwait(false);
         }
 
-        private async Task GetSharedChildContentItems(ContentLinksModel model, IList<PagesApiContentItemModel> contentItem)
+        public async Task<List<T>> GetContentAsync<T>() where T : class
+        {
+            var contentList = new List<T>();
+
+            var ids = cmsApiClientOptions.ContentIds.Split(",").ToList();
+
+            foreach (var id in ids)
+            {
+                var url = new Uri(
+                    $"{cmsApiClientOptions.BaseAddress}{cmsApiClientOptions.StaticContentEndpoint}{id}",
+                    UriKind.Absolute);
+
+                var content = await apiDataProcessorService.GetAsync<T>(httpClient, url).ConfigureAwait(false);
+
+                if (content != null)
+                {
+                    contentList.Add(content);
+                }
+            }
+
+            return contentList;
+        }
+
+        private async Task GetSharedChildContentItems(ContentLinksModel model, IList<ApiContentItemModel> contentItem)
         {
             if (model != null && model.ContentLinks.Any())
             {
                 foreach (var linkDetail in model.ContentLinks.SelectMany(contentLink => contentLink.Value))
                 {
-                    var pagesApiContentItemModel =
-                        await GetContentItemAsync(linkDetail).ConfigureAwait(false);
+                    var pagesApiContentItemModel = await GetContentItemAsync(linkDetail).ConfigureAwait(false);
 
                     if (pagesApiContentItemModel != null)
                     {
@@ -78,27 +100,6 @@ namespace DFC.App.JobProfile.CmsApiProcessorService
                     }
                 }
             }
-        }
-
-        public async Task<List<StaticContentItemModel>> GetContentAsync()
-        {
-            var contentList = new List<StaticContentItemModel>();
-
-            var ids = cmsApiClientOptions.ContentIds.Split(",").ToList();
-
-            foreach (var id in ids) {
-                var url = new Uri(
-                    $"{cmsApiClientOptions.BaseAddress}{cmsApiClientOptions.StaticContentEndpoint}{id}",
-                    UriKind.Absolute);
-
-                var content = await apiDataProcessorService.GetAsync<StaticContentItemModel>(httpClient, url).ConfigureAwait(false);
-
-                if (content != null) {
-                    contentList.Add(content);
-                }
-            }
-
-            return contentList;
         }
     }
 }

@@ -74,8 +74,6 @@ namespace DFC.App.JobProfile.Data.Models
             return string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList();
         }
 
-
-        //////////////////////
         public string SalaryStarter { get; set; }
 
         public string SalaryExperienced { get; set; }

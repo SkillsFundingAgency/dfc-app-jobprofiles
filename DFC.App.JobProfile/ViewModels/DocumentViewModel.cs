@@ -69,7 +69,7 @@ namespace DFC.App.JobProfile.ViewModels
         public string TitleOptions { get; set; }
 
         public int? MaximumHours { get; set; }
-                    
+
         public string WorkingPatternDetails { get; set; }
 
         public string CareerPathAndProgression { get; set; }

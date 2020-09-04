@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using dfc_content_pkg_netcore.models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace DFC.App.JobProfile.Data.Models
 
         public IList<SegmentModel> Segments { get; set; }
 
-        public IList<PagesApiContentItemModel> ContentItems { get; set; }
+        public IList<ApiContentItemModel> ContentItems { get; set; }
 
         public string JobProfileWebsiteUrl { get; set; }
 

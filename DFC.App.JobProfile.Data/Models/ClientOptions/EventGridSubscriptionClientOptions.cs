@@ -1,4 +1,6 @@
-﻿namespace DFC.App.JobProfile.Data.Models.ClientOptions
+﻿using dfc_content_pkg_netcore.models.clientOptions;
+
+namespace DFC.App.JobProfile.Data.Models.ClientOptions
 {
     public class EventGridSubscriptionClientOptions : ClientOptionsModel
     {

@@ -1,5 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using dfc_content_pkg_netcore.contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 logger.LogInformation("Reload static content started");
 
-                var staticContent = await cmsApiService.GetContentAsync().ConfigureAwait(false);
+                var staticContent = await cmsApiService.GetContentAsync<StaticContentItemModel>().ConfigureAwait(false);
 
                 if (stoppingToken.IsCancellationRequested)
                 {

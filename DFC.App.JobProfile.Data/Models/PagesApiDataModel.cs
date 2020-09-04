@@ -1,5 +1,6 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.Compui.Cosmos.Enums;
+﻿using DFC.Compui.Cosmos.Enums;
+using dfc_content_pkg_netcore.contracts;
+using dfc_content_pkg_netcore.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,7 +9,7 @@ using System.Linq;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class PagesApiDataModel : IApiDataModel
+    public class PagesApiDataModel : IApiDataModel, IPagesApiDataModel
     {
         [JsonProperty("id")]
         public Guid? ItemId { get; set; }
@@ -53,7 +54,7 @@ namespace DFC.App.JobProfile.Data.Models
             set => PrivateLinksModel = value;
         }
 
-        public IList<PagesApiContentItemModel> ContentItems { get; set; } = new List<PagesApiContentItemModel>();
+        public IList<ApiContentItemModel> ContentItems { get; set; } = new List<ApiContentItemModel>();
 
         [JsonProperty(PropertyName = "ModifiedDate")]
         public DateTime Published { get; set; }

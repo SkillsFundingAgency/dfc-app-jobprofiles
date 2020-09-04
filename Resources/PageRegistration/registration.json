@@ -1,7 +1,7 @@
 [
 	{
-		"Path": "job-profiles",
-		"TopNavigationText": "Explore careers",
+		"Path": "stax-job-profiles",
+		"TopNavigationText": "Stax-Explore careers",
 		"TopNavigationOrder": 400,
 		"Layout": 1,
 		"IsOnline": true,

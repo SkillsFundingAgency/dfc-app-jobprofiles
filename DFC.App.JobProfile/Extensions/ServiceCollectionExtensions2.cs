@@ -1,17 +1,8 @@
-﻿using DFC.App.JobProfile.ClientHandlers;
-using DFC.App.JobProfile.Data.HttpClientPolicies;
-using DFC.App.JobProfile.Data.Models.ClientOptions;
-using DFC.App.JobProfile.HttpClientPolicies;
+﻿using dfc_content_pkg_netcore.models.clientOptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
-using Polly;
-using Polly.Extensions.Http;
-using Polly.Registry;
-using System;
 using System.Net.Http;
-using System.Net.Mime;
 
 namespace DFC.App.JobProfile.Extensions
 {

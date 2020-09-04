@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using dfc_content_pkg_netcore.models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -75,7 +76,7 @@ namespace DFC.App.JobProfile.ViewModels
 
         public string HtbFurtherInformation { get; set; }
 
-        public IList<PagesApiContentItemModel> ContentItems { get; set; }
+        public IList<ApiContentItemModel> ContentItems { get; set; }
 
         public List<StaticContentItemModel> SharedContent { get; set; }
     }

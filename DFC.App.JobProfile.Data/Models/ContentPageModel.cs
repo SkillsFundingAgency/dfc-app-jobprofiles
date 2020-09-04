@@ -1,4 +1,5 @@
 ﻿using DFC.Compui.Cosmos.Enums;
+using dfc_content_pkg_netcore.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -62,7 +63,7 @@ namespace DFC.App.JobProfile.Data.Models
         }
 
 
-        public IList<PagesApiContentItemModel> ContentItems { get; set; } = new List<PagesApiContentItemModel>();
+        public IList<ApiContentItemModel> ContentItems { get; set; } = new List<ApiContentItemModel>();
 
         [JsonProperty(PropertyName = "ModifiedDate")]
         public DateTime Published { get; set; }

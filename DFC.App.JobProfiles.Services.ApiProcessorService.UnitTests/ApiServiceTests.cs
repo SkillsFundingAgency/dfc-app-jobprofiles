@@ -1,5 +1,5 @@
-﻿using DFC.App.JobProfile.ApiProcessorService;
-using DFC.App.JobProfile.Services.ApiProcessorService.UnitTests.FakeHttpHandlers;
+﻿using DFC.App.JobProfile.Services.ApiProcessorService.UnitTests.FakeHttpHandlers;
+using dfc_content_pkg_netcore.ApiProcessorService;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;

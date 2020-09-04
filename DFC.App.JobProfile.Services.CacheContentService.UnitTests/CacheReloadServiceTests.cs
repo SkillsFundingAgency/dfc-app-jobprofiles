@@ -1,7 +1,9 @@
 using DFC.App.JobProfile.CacheContentService;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.ClientOptions;
+using dfc_content_pkg_netcore.contracts;
+using dfc_content_pkg_netcore.models;
+using dfc_content_pkg_netcore.models.clientOptions;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;

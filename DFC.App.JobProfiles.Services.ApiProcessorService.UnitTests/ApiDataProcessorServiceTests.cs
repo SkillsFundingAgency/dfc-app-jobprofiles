@@ -1,7 +1,6 @@
-﻿using DFC.App.JobProfile.ApiProcessorService;
-using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.SubscriptionModels;
+﻿using dfc_content_pkg_netcore.ApiProcessorService;
+using dfc_content_pkg_netcore.contracts;
+using dfc_content_pkg_netcore.models;
 using FakeItEasy;
 using Newtonsoft.Json;
 using System;

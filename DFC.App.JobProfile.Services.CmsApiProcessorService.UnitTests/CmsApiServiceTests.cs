@@ -1,8 +1,9 @@
 using AutoMapper;
-using DFC.App.JobProfile.CmsApiProcessorService;
-using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.ClientOptions;
+using dfc_content_pkg_netcore.CmsApiProcessorService;
+using dfc_content_pkg_netcore.contracts;
+using dfc_content_pkg_netcore.models;
+using dfc_content_pkg_netcore.models.clientOptions;
 using FakeItEasy;
 using Newtonsoft.Json.Linq;
 using System;

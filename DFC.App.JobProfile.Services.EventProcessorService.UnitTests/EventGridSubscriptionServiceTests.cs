@@ -1,7 +1,7 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models.ClientOptions;
-using DFC.App.JobProfile.Data.Models.SubscriptionModels;
+﻿using DFC.App.JobProfile.Data.Models.ClientOptions;
 using DFC.App.JobProfile.EventProcessorService;
+using dfc_content_pkg_netcore.contracts;
+using dfc_content_pkg_netcore.models;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using System;

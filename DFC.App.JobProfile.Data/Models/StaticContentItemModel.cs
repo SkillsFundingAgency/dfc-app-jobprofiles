@@ -1,8 +1,7 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using dfc_content_pkg_netcore.contracts;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DFC.App.JobProfile.Data.Models
 {

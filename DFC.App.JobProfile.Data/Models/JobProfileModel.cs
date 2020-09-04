@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using dfc_content_pkg_netcore.models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

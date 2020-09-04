@@ -1,6 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models.ClientOptions;
 using DFC.Compui.Telemetry.HostedService;
+using dfc_content_pkg_netcore.models.clientOptions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;

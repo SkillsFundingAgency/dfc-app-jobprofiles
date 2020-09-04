@@ -428,7 +428,7 @@
                             },
                             {
                                 "name": "Configuration__ApplicationName",
-                                "value": "DFC-App-Job-Profiles"
+                                "value": "DFC-App-Stax-Job-Profiles"
                             },
                             {
                                 "name": "EventGridSubscriptionModel__Endpoint",
@@ -469,6 +469,14 @@
                             {
                                 "name": "CmsApiClientOptions__BaseAddress",
                                 "value": "[parameters('apimProxyAddress')]"
+                            },
+                            {
+                                "name": "CmsApiClientOptions__StaticContentEndpoint",
+                                "value": "content/getcontent/api/execute/sharedcontent/"
+                            },
+                            {
+                                "name": "CmsApiClientOptions__ContentIds",
+                                "value": "a33ae1e0-f6fd-4c89-86f4-a490954af266,531ed13a-5659-4a36-a822-9f4795b7b1c8,f30a34c7-cf40-4054-bd4a-96537fc9726b"
                             },
                             {
                                 "name": "CmsApiClientOptions__SummaryEndpoint",

@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Compui.Cosmos.Contracts;
+using dfc_content_pkg_netcore.contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

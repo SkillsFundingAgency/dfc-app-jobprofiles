@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="dfc-content-pkg-netcore" Version="1.0.1" />
     <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.52" />
     <PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Azure.Management.EventGrid" Version="6.0.0" />
@@ -24,6 +25,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\SubscriptionModels\" />
   </ItemGroup>
 
 </Project>

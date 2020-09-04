@@ -1,4 +1,5 @@
 ﻿using DFC.Compui.Cosmos.Enums;
+using dfc_content_pkg_netcore.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DFC.App.JobProfile.ApiProcessorService\DFC.App.JobProfile.ApiProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
   </ItemGroup>
 

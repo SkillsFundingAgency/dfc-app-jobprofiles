@@ -28,6 +28,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="CorrelationId" Version="2.1.0" />
+    <PackageReference Include="dfc-content-pkg-netcore" Version="353740.0.0" />
     <PackageReference Include="DFC.Logger.AppInsights" Version="1.0.7" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />
     <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0" />
@@ -52,9 +53,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\DFC.App.JobProfile.ApiProcessorService\DFC.App.JobProfile.ApiProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.CacheContentService\DFC.App.JobProfile.CacheContentService.csproj" />
-    <ProjectReference Include="..\DFC.App.JobProfile.CmsApiProcessorService\DFC.App.JobProfile.CmsApiProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.EventProcessorService\DFC.App.JobProfile.EventProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.ProfileService\DFC.App.JobProfile.ProfileService.csproj" />

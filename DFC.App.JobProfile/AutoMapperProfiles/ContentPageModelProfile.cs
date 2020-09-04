@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
+using dfc_content_pkg_netcore.models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
@@ -13,15 +14,16 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.ItemId))
                 .ForMember(d => d.Links, s => s.Ignore());
 
-            CreateMap<PagesApiDataModel, ContentItemModel>()
+            CreateMap<ApiContentItemModel, ContentItemModel>()
                 .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
 
-            CreateMap<PagesApiDataModel, SharedContentItemModel>()
+            CreateMap<ApiContentItemModel, SharedContentItemModel>()
                 .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
 
-            CreateMap<LinkDetails, PagesApiDataModel>()
+            CreateMap<LinkDetails, ApiContentItemModel>()
                 .ForMember(d => d.Url, s => s.Ignore())
                 .ForMember(d => d.ItemId, s => s.Ignore())
+                .ForMember(d => d.Content, s => s.Ignore())
                 .ForMember(d => d.Published, s => s.Ignore())
                 .ForMember(d => d.CreatedDate, s => s.Ignore())
                 .ForMember(d => d.Links, s => s.Ignore())

@@ -1,5 +1,6 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.Compui.Cosmos.Enums;
+﻿using DFC.Compui.Cosmos.Enums;
+using dfc_content_pkg_netcore.contracts;
+using dfc_content_pkg_netcore.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

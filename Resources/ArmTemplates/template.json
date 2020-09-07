@@ -46,6 +46,12 @@
         "cosmosDbKey": {
             "type": "securestring"
         },
+        "contentAppDatabaseNeedsCreation": {
+            "type": "bool"
+        },
+        "contentAppDatabaseThroughput": {
+            "type": "int"
+        },
         "environment": {
             "type": "string"
         },
@@ -669,6 +675,12 @@
                     },
                     "useSharedRequestUnits": {
                         "value": true
+                    },
+                    "offerThroughput": {
+                        "value": "[parameters('contentAppDatabaseThroughput')]"
+                    },
+                    "databaseNeedsCreation": {
+                        "value": "[parameters('contentAppDatabaseNeedsCreation')]"
                     }
                 }
             }

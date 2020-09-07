@@ -53,6 +53,15 @@
         "cosmosDbContentCollectionName": {
             "value": "__cosmosDbContentCollectionName__"
         },
+        "contentAppDatabaseNeedsCreation": {
+            "value": __CosmosDbDatabaseDoesntExist__
+        },
+        "contentAppDatabaseThroughput": {
+            "value": __contentAppDatabaseThroughput__
+        },
+        "enableAlerts": {
+            "value": __EnableAzureMonitorAlerting__
+        },
         "cmsTopicName": {
             "value": "__cmsTopicName__"
         },

@@ -47,6 +47,12 @@
         "enableAlerts": {
             "value": false
         },
+        "contentAppDatabaseNeedsCreation": {
+            "value": true
+        },
+        "contentAppDatabaseThroughput": {
+            "value": 2
+        },
         "ExceptionCountThreshold":{
             "value": "0"
         },

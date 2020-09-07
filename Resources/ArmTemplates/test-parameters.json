@@ -35,6 +35,18 @@
         "cosmosDbCollectionName": {
             "value": "a-collection"
         },
+        "cosmosDbNewCollectionName": {
+            "value": "a-test-collection"
+        },
+        "CosmosDbResourceGroup": {
+            "value": "dfc-dev-app-sharedresources-rg"
+        },
+        "accountAppDatabaseNeedsCreation": {
+            "value": true
+        },
+        "accountAppDatabaseThroughput": {
+            "value": 2
+        },
         "surveyUrl": {
             "value": "https://some.survey.site/link/to/survey"
         },

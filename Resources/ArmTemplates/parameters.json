@@ -53,12 +53,6 @@
         "cosmosDbContentCollectionName": {
             "value": "__cosmosDbContentCollectionName__"
         },
-        "contentAppDatabaseNeedsCreation": {
-            "value": __CosmosDbDatabaseDoesntExist__
-        },
-        "contentAppDatabaseThroughput": {
-            "value": __contentAppDatabaseThroughput__
-        },
         "cmsTopicName": {
             "value": "__cmsTopicName__"
         },
@@ -71,10 +65,7 @@
         "surveyUrl": {
             "value": "__surveyFeedbackUrl__"
         },
-        "enableAlerts": {
-            "value": __EnableAzureMonitorAlerting__
-        },
-        "ExceptionCountThreshold":{
+        "ExceptionCountThreshold": {
             "value": "__ExceptionCountThreshold__"
         },
         "EventGridSubscriptionModelEndpoint": {

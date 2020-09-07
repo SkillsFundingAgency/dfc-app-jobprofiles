@@ -41,12 +41,6 @@
         "cosmosDbContentCollectionName": {
             "value": "b-collection"
         },
-        "contentAppDatabaseNeedsCreation": {
-            "value": true
-        },
-        "contentAppDatabaseThroughput": {
-            "value": 2
-        },
         "surveyUrl": {
             "value": "https://some.survey.site/link/to/survey"
         },

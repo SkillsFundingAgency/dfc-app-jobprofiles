@@ -69,12 +69,6 @@
                 "description": "The name of the collection to create"
             }
         },
-        "contentAppDatabaseNeedsCreation": {
-            "type": "bool"
-        },
-        "contentAppDatabaseThroughput": {
-            "type": "int"
-        },
         "cmsTopicName": {
             "type": "string",
             "defaultValue": "cms-messages",
@@ -675,12 +669,6 @@
                     },
                     "useSharedRequestUnits": {
                         "value": true
-                    },
-                    "offerThroughput": {
-                        "value": "[parameters('contentAppDatabaseThroughput')]"
-                    },
-                    "databaseNeedsCreation": {
-                        "value": "[parameters('contentAppDatabaseNeedsCreation')]"
                     }
                 }
             }
@@ -713,7 +701,10 @@
                         "value": "[variables('cosmosDbCollectionPartitionKey')]"
                     }
                 }
-            }
+            },
+            "dependsOn": [
+                "[variables('CosmosDbDatabaseName')]"
+            ]
         },
         {
             "apiVersion": "2017-05-10",
@@ -743,7 +734,10 @@
                         "value": "[variables('cosmosDbContentCollectionPartitionKey')]"
                     }
                 }
-            }
+            },
+            "dependsOn": [
+                "[variables('CosmosDbContentDatabaseName')]"
+            ]
         },
         {
             "apiVersion": "2017-05-10",

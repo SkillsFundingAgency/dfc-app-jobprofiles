@@ -44,8 +44,20 @@
         "sharedAppServicePlanResourceGroup": {
             "value": "__appSharedResourceGroup__"
         },
+        "CosmosDbResourceGroup": {
+            "value": "__appSharedResourceGroup__"
+        },
         "cosmosDbCollectionName": {
             "value": "__cosmosDbCollectionName__"
+        },
+        "cosmosDbNewCollectionName": {
+            "value": "__cosmosDbCollectionName__"
+        },
+        "SharedContentAppDatabaseNeedsCreation": {
+            "value": __CosmosDbDatabaseDoesntExist__
+        },
+        "SharedContentAppDatabaseThroughput": {
+            "value": __SharedContentAppDatabaseThroughput__
         },
         "cmsTopicName": {
             "value": "__cmsTopicName__"

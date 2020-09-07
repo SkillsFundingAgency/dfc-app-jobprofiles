@@ -69,10 +69,10 @@
                 "description": "The name of the collection to create"
             }
         },
-        "SharedContentAppDatabaseNeedsCreation": {
+        "sharedContentAppDatabaseNeedsCreation": {
             "type": "bool"
         },
-        "SharedContentAppDatabaseThroughput": {
+        "sharedContentAppDatabaseThroughput": {
             "type": "int"
         },
         "cmsTopicName": {
@@ -677,10 +677,10 @@
                         "value": true
                     },
                     "offerThroughput": {
-                        "value": "[parameters('SharedContentAppDatabaseThroughput')]"
+                        "value": "[parameters('sharedContentAppDatabaseThroughput')]"
                     },
                     "databaseNeedsCreation": {
-                        "value": "[parameters('SharedContentAppDatabaseNeedsCreation')]"
+                        "value": "[parameters('sharedContentAppDatabaseNeedsCreation')]"
                     }
                 }
             }

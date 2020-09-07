@@ -36,15 +36,15 @@
             "value": "a-collection"
         },
         "cosmosDbNewCollectionName": {
-            "value": "a-test-collection"
+            "value": "a-collection"
         },
         "CosmosDbResourceGroup": {
             "value": "dfc-dev-app-sharedresources-rg"
         },
-        "SharedContentAppDatabaseNeedsCreation": {
+        "sharedContentAppDatabaseNeedsCreation": {
             "value": true
         },
-        "SharedContentAppDatabaseThroughput": {
+        "sharedContentAppDatabaseThroughput": {
             "value": 2
         },
         "surveyUrl": {
@@ -53,7 +53,7 @@
         "enableAlerts": {
             "value": false
         },
-        "ExceptionCountThreshold":{
+        "ExceptionCountThreshold": {
             "value": "0"
         },
         "EventGridSubscriptionModelEndpoint": {

@@ -51,7 +51,7 @@
             "value": "__cosmosDbCollectionName__"
         },
         "cosmosDbContentCollectionName": {
-            "value": "__cosmosDbNewCollectionName__"
+            "value": "__cosmosDbContentCollectionName__"
         },
         "contentAppDatabaseNeedsCreation": {
             "value": __CosmosDbDatabaseDoesntExist__

@@ -53,7 +53,7 @@
         "enableAlerts": {
             "value": false
         },
-        "ExceptionCountThreshold": {
+        "ExceptionCountThreshold":{
             "value": "0"
         },
         "EventGridSubscriptionModelEndpoint": {

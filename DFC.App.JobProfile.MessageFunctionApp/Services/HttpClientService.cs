@@ -89,6 +89,13 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
             var response = await httpClient.DeleteAsync(url).ConfigureAwait(false);
 
+            //if for any reason we do not find a record to delete, log a warning and continue so thst the message is removed from the subscription.
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                logService.LogWarning($"Status code '{response.StatusCode}' received with content for DELETE, Id: {id}");
+                return HttpStatusCode.OK;
+            }
+
             if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

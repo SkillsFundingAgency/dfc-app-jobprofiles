@@ -69,10 +69,10 @@
                 "description": "The name of the collection to create"
             }
         },
-        "accountAppDatabaseNeedsCreation": {
+        "SharedContentAppDatabaseNeedsCreation": {
             "type": "bool"
         },
-        "accountAppDatabaseThroughput": {
+        "SharedContentAppDatabaseThroughput": {
             "type": "int"
         },
         "cmsTopicName": {

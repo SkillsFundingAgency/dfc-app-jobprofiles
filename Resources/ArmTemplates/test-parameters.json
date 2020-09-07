@@ -41,10 +41,10 @@
         "CosmosDbResourceGroup": {
             "value": "dfc-dev-app-sharedresources-rg"
         },
-        "accountAppDatabaseNeedsCreation": {
+        "SharedContentAppDatabaseNeedsCreation": {
             "value": true
         },
-        "accountAppDatabaseThroughput": {
+        "SharedContentAppDatabaseThroughput": {
             "value": 2
         },
         "surveyUrl": {

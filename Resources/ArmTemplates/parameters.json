@@ -44,20 +44,8 @@
         "sharedAppServicePlanResourceGroup": {
             "value": "__appSharedResourceGroup__"
         },
-        "CosmosDbResourceGroup": {
-            "value": "__appSharedResourceGroup__"
-        },
         "cosmosDbCollectionName": {
             "value": "__cosmosDbCollectionName__"
-        },
-        "cosmosDbContentCollectionName": {
-            "value": "__cosmosDbContentCollectionName__"
-        },
-        "contentAppDatabaseNeedsCreation": {
-            "value": __CosmosDbDatabaseDoesntExist__
-        },
-        "contentAppDatabaseThroughput": {
-            "value": __contentAppDatabaseThroughput__
         },
         "enableAlerts": {
             "value": __EnableAzureMonitorAlerting__

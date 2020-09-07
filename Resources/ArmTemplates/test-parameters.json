@@ -20,9 +20,6 @@
         "cosmosDBName": {
             "value": "dfc-dev-app-sharedresources-cdb"
         },
-        "CosmosDbResourceGroup": {
-            "value": "dfc-dev-app-sharedresources-rg"
-        },
         "cosmosDbKey": {
             "value": "not-a-real-key"
         },
@@ -38,20 +35,11 @@
         "cosmosDbCollectionName": {
             "value": "a-collection"
         },
-        "cosmosDbContentCollectionName": {
-            "value": "b-collection"
-        },
         "surveyUrl": {
             "value": "https://some.survey.site/link/to/survey"
         },
         "enableAlerts": {
             "value": false
-        },
-        "contentAppDatabaseNeedsCreation": {
-            "value": true
-        },
-        "contentAppDatabaseThroughput": {
-            "value": 2
         },
         "ExceptionCountThreshold":{
             "value": "0"

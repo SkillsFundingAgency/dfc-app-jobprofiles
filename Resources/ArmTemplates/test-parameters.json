@@ -38,13 +38,13 @@
         "cosmosDbCollectionName": {
             "value": "a-collection"
         },
-        "cosmosDbContentCollectionName": {
+        "cosmossharedcontentDbCollectionName": {
             "value": "b-collection"
         },
-        "contentAppDatabaseNeedsCreation": {
+        "sharedcontentAppDatabaseNeedsCreation": {
             "value": true
         },
-        "contentAppDatabaseThroughput": {
+        "sharedcontentAppDatabaseThroughput": {
             "value": 2
         },
         "surveyUrl": {

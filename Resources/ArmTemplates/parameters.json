@@ -50,13 +50,13 @@
         "cosmosDbCollectionName": {
             "value": "__cosmosDbCollectionName__"
         },
-        "cosmosDbContentCollectionName": {
-            "value": "__cosmosDbContentCollectionName__"
+        "cosmossharedcontentDbCollectionName": {
+            "value": "__cosmossharedcontentDbCollectionName__"
         },
-        "contentAppDatabaseNeedsCreation": {
+        "sharedcontentAppDatabaseNeedsCreation": {
             "value": __CosmosDbDatabaseDoesntExist__
         },
-        "contentAppDatabaseThroughput": {
+        "sharedcontentAppDatabaseThroughput": {
             "value": __contentAppDatabaseThroughput__
         },
         "cmsTopicName": {

@@ -4,15 +4,49 @@
     var otherRequirement = Model.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
 }
 
-    <section id="WhatItTakes" data-gtm-vis-recent-on-screen-8675592_55="3291489" data-gtm-vis-first-on-screen-8675592_55="3291489" data-gtm-vis-total-visible-time-8675592_55="100" data-gtm-vis-has-fired-8675592_55="1">
+    <section id="WhatItTakes" class="jobprofiles-section" data-gtm-vis-recent-on-screen-8675592_55="3291489" data-gtm-vis-first-on-screen-8675592_55="3291489" data-gtm-vis-total-visible-time-8675592_55="100" data-gtm-vis-has-fired-8675592_55="1">
         <h2 class="job-profile-headings">What it takes</h2>
 
         <section class="job-profile-subsection">
-            <h3>Skills and knowledge</h3>
+            <h3>Essential knowledge</h3>
             <div class="job-profile-subsection-content">
                 @Html.Raw(Model.WitDigitalSkillsLevel)
             </div>
         </section>
+
+        <section class="job-profile-subsection">
+            <h3>Essential Skills</h3>
+            <div class="job-profile-subsection-content">
+                [Content to go here]
+            </div>
+        </section>
+
+        <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+            <div class="govuk-accordion__section ">
+                <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                        <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
+                            Optional knowledge
+                        </span>
+                    </h2>
+                </div>
+                <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+                    <p class='govuk-body'>This is the content for Writing well for the web.</p>
+                </div>
+            </div>
+            <div class="govuk-accordion__section ">
+                <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+                            Optional skills
+                        </span>
+                    </h2>
+                </div>
+                <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
+                    <p class='govuk-body'>This is the content for Writing well for specialists.</p>
+                </div>
+            </div>
+        </div>
 
         @if (restrictions.Any())
         {

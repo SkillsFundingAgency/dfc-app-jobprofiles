@@ -41,10 +41,10 @@
         "cosmossharedcontentDbCollectionName": {
             "value": "b-collection"
         },
-        "sharedcontentAppDatabaseNeedsCreation": {
+        "contentAppDatabaseNeedsCreation": {
             "value": true
         },
-        "sharedcontentAppDatabaseThroughput": {
+        "contentAppDatabaseThroughput": {
             "value": 2
         },
         "surveyUrl": {

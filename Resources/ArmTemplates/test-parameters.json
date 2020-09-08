@@ -38,7 +38,7 @@
         "cosmosDbCollectionName": {
             "value": "a-collection"
         },
-        "cosmosDbContentCollectionName": {
+        "cosmossharedcontentDbCollectionName": {
             "value": "b-collection"
         },
         "contentAppDatabaseNeedsCreation": {

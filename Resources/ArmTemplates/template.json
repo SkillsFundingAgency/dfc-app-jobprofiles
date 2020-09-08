@@ -63,7 +63,7 @@
                 "description": "The name of the collection to create"
             }
         },
-        "cosmosDbContentCollectionName": {
+        "cosmossharedcontentDbCollectionName": {
             "type": "string",
             "metadata": {
                 "description": "The name of the collection to create"
@@ -133,7 +133,7 @@
         "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "cosmosDbCollectionPartitionKey": "/PartitionKey",
-        "cosmosDbContentCollectionPartitionKey": "/PartitionKey",
+        "cosmossharedcontentDbCollectionPartitionKey": "/PartitionKey",
         "cosmosDbDatabaseName": "dfc-app-jobprofiles",
         "cosmosDbContentDatabaseName": "dfc-shared-content",
         "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
@@ -277,7 +277,7 @@
                             },
                             {
                                 "name": "Configuration__CosmosDbConnections__StaticContent__PartitionKey",
-                                "value": "[variables('cosmosDbContentCollectionPartitionKey')]"
+                                "value": "[variables('cosmossharedcontentDbCollectionPartitionKey')]"
                             },
                             {
                                 "name": "Configuration__CosmosDbConnections__StaticContent__AccessKey",
@@ -293,7 +293,7 @@
                             },
                             {
                                 "name": "Configuration__CosmosDbConnections__StaticContent__CollectionId",
-                                "value": "[parameters('cosmosDbContentCollectionName')]"
+                                "value": "[parameters('cosmossharedcontentDbCollectionName')]"
                             },
                             {
                                 "name": "Policies__HttpCircuitBreaker__DurationOfBreak",
@@ -717,7 +717,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[parameters('cosmosDbContentCollectionName')]",
+            "name": "[parameters('cosmossharedcontentDbCollectionName')]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('appSharedResourceGroup')]",
             "properties": {
@@ -734,13 +734,13 @@
                         "value": "[variables('cosmosDbContentDatabaseName')]"
                     },
                     "collectionName": {
-                        "value": "[parameters('cosmosDbContentCollectionName')]"
+                        "value": "[parameters('cosmossharedcontentDbCollectionName')]"
                     },
                     "provisionRequestUnits": {
                         "value": false
                     },
                     "partitionKey": {
-                        "value": "[variables('cosmosDbContentCollectionPartitionKey')]"
+                        "value": "[variables('cosmossharedcontentDbCollectionPartitionKey')]"
                     }
                 }
             }

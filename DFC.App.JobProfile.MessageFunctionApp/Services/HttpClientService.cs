@@ -93,7 +93,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 logService.LogWarning($"Status code '{response.StatusCode}' received with content for DELETE, Id: {id}");
-                return HttpStatusCode.OK;
+                return HttpStatusCode.AlreadyReported;
             }
 
             if (!response.IsSuccessStatusCode)

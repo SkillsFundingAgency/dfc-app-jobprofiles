@@ -73,34 +73,36 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessContentAsync(Uri url, Guid contentId)
         {
-            var apiDataModel = await cmsApiService.GetItemAsync<PagesApiDataModel>(url).ConfigureAwait(false);
-            var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
+            //var apiDataModel = await cmsApiService.GetItemAsync<PagesApiDataModel>(url).ConfigureAwait(false);
+            //var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
 
-            if (contentPageModel == null)
-            {
-                return HttpStatusCode.NoContent;
-            }
+            //if (contentPageModel == null)
+            //{
+            //    return HttpStatusCode.NoContent;
+            //}
 
-            if (!TryValidateModel(contentPageModel))
-            {
-                return HttpStatusCode.BadRequest;
-            }
+            //if (!TryValidateModel(contentPageModel))
+            //{
+            //    return HttpStatusCode.BadRequest;
+            //}
 
-            var contentResult = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+            //var contentResult = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
-            if (contentResult == HttpStatusCode.NotFound)
-            {
-                contentResult = await eventMessageService.CreateAsync(contentPageModel).ConfigureAwait(false);
-            }
+            //if (contentResult == HttpStatusCode.NotFound)
+            //{
+            //    contentResult = await eventMessageService.CreateAsync(contentPageModel).ConfigureAwait(false);
+            //}
 
-            if (contentResult == HttpStatusCode.OK || contentResult == HttpStatusCode.Created)
-            {
-                var contentItemIds = (from a in contentPageModel.ContentItems select a.ItemId!.Value).ToList();
+            //if (contentResult == HttpStatusCode.OK || contentResult == HttpStatusCode.Created)
+            //{
+            //    //var contentItemIds = (from a in contentPageModel.ContentItems select a.ItemId!.Value).ToList();
 
-                contentCacheService.AddOrReplace(contentId, contentItemIds);
-            }
+            //    //contentCacheService.AddOrReplace(contentId, contentItemIds);
+            //}
 
-            return contentResult;
+            //return contentResult;
+
+            return HttpStatusCode.OK;
         }
 
         public async Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId)
@@ -120,14 +122,14 @@ namespace DFC.App.JobProfile.CacheContentService
 
                 if (contentPageModel != null)
                 {
-                    var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
+                    //var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
 
-                    if (contentItemModel != null)
-                    {
-                        mapper.Map(apiDataContentItemModel, contentItemModel);
+                    //if (contentItemModel != null)
+                    //{
+                    //    mapper.Map(apiDataContentItemModel, contentItemModel);
 
-                        await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
-                    }
+                    //    await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+                    //}
                 }
             }
 
@@ -161,19 +163,19 @@ namespace DFC.App.JobProfile.CacheContentService
 
                 if (contentPageModel != null)
                 {
-                    var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
+                    //var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
 
-                    if (contentItemModel != null)
-                    {
-                        contentPageModel.ContentItems!.Remove(contentItemModel);
+                    //if (contentItemModel != null)
+                    //{
+                    //    contentPageModel.ContentItems!.Remove(contentItemModel);
 
-                        var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+                    //    var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
-                        if (result == HttpStatusCode.OK)
-                        {
-                            contentCacheService.RemoveContentItem(contentId, contentItemId);
-                        }
-                    }
+                    //    if (result == HttpStatusCode.OK)
+                    //    {
+                    //        contentCacheService.RemoveContentItem(contentId, contentItemId);
+                    //    }
+                    //}
                 }
             }
 

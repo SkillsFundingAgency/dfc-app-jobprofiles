@@ -1,0 +1,19 @@
+﻿@model BaseContentItemModel
+@{
+    var essentialList = Model.ContentLinks.ContentLinks.Where(x => x.Key == "esco__relatedEssentialSkill").ToList()[0].Value.Select(x => x.Title).ToList();
+    var listToLoop = Model.ContentItems.Where(x => x.ContentType == "esco__Skill").ToList();
+}
+
+<ul>
+    @foreach (var skill in listToLoop)
+    {
+        @if (essentialList.Contains(skill.Content))
+        {
+            @if (skill.ContentLinks.ContentLinks[0].Value[0].Title == "skill")
+            {
+                <li>@skill.Content</li>
+            }
+        }
+    }
+
+</ul>

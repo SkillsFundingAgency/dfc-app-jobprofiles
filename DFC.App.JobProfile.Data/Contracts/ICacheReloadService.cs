@@ -10,14 +10,14 @@ namespace DFC.App.JobProfile.Data.Contracts
     {
         Task Reload(CancellationToken stoppingToken);
 
-        Task<IList<PagesSummaryItemModel>?> GetSummaryListAsync();
+        Task<IList<JobProfileItemModel>?> GetSummaryListAsync();
 
-        Task ProcessSummaryListAsync(IList<PagesSummaryItemModel> summaryList, CancellationToken stoppingToken);
+        Task ProcessSummaryListAsync(IList<JobProfileItemModel> summaryList, CancellationToken stoppingToken);
 
-        Task GetAndSaveItemAsync(PagesSummaryItemModel item, CancellationToken stoppingToken);
+        Task GetAndSaveItemAsync(JobProfileItemModel item, CancellationToken stoppingToken);
 
         Task DeleteStaleItemsAsync(List<ContentPageModel> staleItems, CancellationToken stoppingToken);
 
-        Task DeleteStaleCacheEntriesAsync(IList<PagesSummaryItemModel> summaryList, CancellationToken stoppingToken);
+        Task DeleteStaleCacheEntriesAsync(IList<JobProfileItemModel> summaryList, CancellationToken stoppingToken);
     }
 }

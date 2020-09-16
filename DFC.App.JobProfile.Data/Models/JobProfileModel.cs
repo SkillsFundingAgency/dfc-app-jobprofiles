@@ -40,7 +40,7 @@ namespace DFC.App.JobProfile.Data.Models
 
         public IList<SegmentModel> Segments { get; set; }
 
-        public IList<ApiContentItemModel> ContentItems { get; set; }
+        public IList<BaseContentItemModel> ContentItems { get; set; }
 
         public string JobProfileWebsiteUrl { get; set; }
 

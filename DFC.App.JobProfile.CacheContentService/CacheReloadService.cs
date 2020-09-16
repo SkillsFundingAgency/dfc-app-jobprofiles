@@ -72,18 +72,18 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public async Task<IList<PagesSummaryItemModel>> GetSummaryListAsync()
+        public async Task<IList<JobProfileItemModel>> GetSummaryListAsync()
         {
             logger.LogInformation("Get summary list");
 
-            var summaryList = await cmsApiService.GetSummaryAsync<PagesSummaryItemModel>().ConfigureAwait(false);
+            var summaryList = await cmsApiService.GetSummaryAsync<JobProfileItemModel>().ConfigureAwait(false);
 
             logger.LogInformation("Get summary list completed");
 
             return summaryList;
         }
 
-        public async Task ProcessSummaryListAsync(IList<PagesSummaryItemModel>? summaryList, CancellationToken stoppingToken)
+        public async Task ProcessSummaryListAsync(IList<JobProfileItemModel>? summaryList, CancellationToken stoppingToken)
         {
             logger.LogInformation("Process summary list started");
 
@@ -104,7 +104,7 @@ namespace DFC.App.JobProfile.CacheContentService
             logger.LogInformation("Process summary list completed");
         }
 
-        public async Task GetAndSaveItemAsync(PagesSummaryItemModel item, CancellationToken stoppingToken)
+        public async Task GetAndSaveItemAsync(JobProfileItemModel item, CancellationToken stoppingToken)
         {
             _ = item ?? throw new ArgumentNullException(nameof(item));
 
@@ -163,7 +163,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public async Task DeleteStaleCacheEntriesAsync(IList<PagesSummaryItemModel> summaryList, CancellationToken stoppingToken)
+        public async Task DeleteStaleCacheEntriesAsync(IList<JobProfileItemModel> summaryList, CancellationToken stoppingToken)
         {
             logger.LogInformation("Delete stale cache items started");
 

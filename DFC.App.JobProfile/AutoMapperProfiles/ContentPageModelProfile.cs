@@ -12,15 +12,16 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
         {
             CreateMap<PagesApiDataModel, ContentPageModel>()
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.ItemId))
-                .ForMember(d => d.Links, s => s.Ignore());
+                .ForMember(d => d.Links, s => s.Ignore())
+                .ForMember(d => d.ContentLinks, s => s.Ignore());
 
-            CreateMap<ApiContentItemModel, ContentItemModel>()
-                .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
+            //CreateMap<ApiContentItemModel, ContentItemModel>()
+            //    .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
 
-            CreateMap<ApiContentItemModel, SharedContentItemModel>()
-                .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
+            //CreateMap<ApiContentItemModel, SharedContentItemModel>()
+            //    .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
 
-            CreateMap<LinkDetails, ApiContentItemModel>()
+            CreateMap<LinkDetails, BaseContentItemModel>()
                 .ForMember(d => d.Url, s => s.Ignore())
                 .ForMember(d => d.ItemId, s => s.Ignore())
                 .ForMember(d => d.Content, s => s.Ignore())
@@ -29,6 +30,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Links, s => s.Ignore())
                 .ForMember(d => d.ContentLinks, s => s.Ignore())
                 .ForMember(d => d.ContentItems, s => s.Ignore());
-}
+        }
     }
 }

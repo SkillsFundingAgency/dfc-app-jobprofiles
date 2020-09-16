@@ -120,9 +120,9 @@ namespace DFC.App.JobProfile
 
         private void AddApplicationSpecificDependencyInjectionConfiguration(IServiceCollection services)
         {
-            var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel();
-            eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase));
-            services.AddSingleton(eventGridSubscriptionModel);
+            //var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel();
+            //eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase));
+            //services.AddSingleton(eventGridSubscriptionModel);
             var cosmosDbConnection = configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
             var staticContentDbConnection = configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<StaticCosmosDbConnection>();
             var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
@@ -158,7 +158,7 @@ namespace DFC.App.JobProfile
             services.AddHostedServiceTelemetryWrapper();
             services.AddHostedService<StaticContentReloadBackgroundService>();
             services.AddHostedService<CacheReloadBackgroundService>();
-            services.AddHostedService<CreateSubscriptionBackgroundService>();
+           // services.AddHostedService<CreateSubscriptionBackgroundService>();
 
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
@@ -168,9 +168,9 @@ namespace DFC.App.JobProfile
                .AddPolicies(policyRegistry, nameof(CmsApiClientOptions), policyOptions)
                .AddHttpClient<ICmsApiService, CmsApiService, CmsApiClientOptions>(configuration, nameof(CmsApiClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
 
-            services
-               .AddPolicies(policyRegistry, nameof(EventGridSubscriptionClientOptions), policyOptions)
-               .AddHttpClient<IEventGridSubscriptionService, EventGridSubscriptionService, EventGridSubscriptionClientOptions>(configuration, nameof(EventGridSubscriptionClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+        //    services
+        //       .AddPolicies(policyRegistry, nameof(EventGridSubscriptionClientOptions), policyOptions)
+        //       .AddHttpClient<IEventGridSubscriptionService, EventGridSubscriptionService, EventGridSubscriptionClientOptions>(configuration, nameof(EventGridSubscriptionClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
         }
     }
 }

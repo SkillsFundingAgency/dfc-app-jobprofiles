@@ -2,6 +2,8 @@
 @{
     var restrictions = Model.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
     var otherRequirement = Model.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
+    
+    var Occupation = Model.ContentItems.Where(x => x.ContentType == "esco__Occupation").SingleOrDefault();
 }
 
     <section id="WhatItTakes" class="jobprofiles-section" data-gtm-vis-recent-on-screen-8675592_55="3291489" data-gtm-vis-first-on-screen-8675592_55="3291489" data-gtm-vis-total-visible-time-8675592_55="100" data-gtm-vis-has-fired-8675592_55="1">
@@ -10,14 +12,14 @@
         <section class="job-profile-subsection">
             <h3>Essential knowledge</h3>
             <div class="job-profile-subsection-content">
-                @Html.Raw(Model.WitDigitalSkillsLevel)
+                <partial name="_jbEssentialKnowledge" model="Occupation" />
             </div>
         </section>
 
         <section class="job-profile-subsection">
             <h3>Essential Skills</h3>
             <div class="job-profile-subsection-content">
-                [Content to go here]
+                <partial name="_jbEssentialSkills" model="Occupation" />
             </div>
         </section>
 
@@ -31,7 +33,7 @@
                     </h2>
                 </div>
                 <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-                    <p class='govuk-body'>This is the content for Writing well for the web.</p>
+                    <partial name="_jbOptionalKnowledge" model="Occupation" />
                 </div>
             </div>
             <div class="govuk-accordion__section ">
@@ -43,7 +45,7 @@
                     </h2>
                 </div>
                 <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
-                    <p class='govuk-body'>This is the content for Writing well for specialists.</p>
+                    <partial name="_jbOptionalSkills" model="Occupation" />
                 </div>
             </div>
         </div>

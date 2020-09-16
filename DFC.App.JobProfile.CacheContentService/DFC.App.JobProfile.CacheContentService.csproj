@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="dfc-content-pkg-netcore" Version="353740.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
   </ItemGroup>
 
   <ItemGroup>

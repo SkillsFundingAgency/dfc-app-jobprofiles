@@ -1,4 +1,4 @@
-﻿@model ApiContentItemModel
+﻿@model BaseContentItemModel
 @{ 
     var requirementPrefix = Model.ContentItems.Where(x => x.ContentType == "RequirementsPrefix").SingleOrDefault();
     var apprenticeshipRequirement = Model.ContentItems.Where(x => x.ContentType == "ApprenticeshipRequirement").SingleOrDefault();
@@ -8,7 +8,7 @@
     <section class="job-profile-subsection" id="Apprenticeship">
         <h3>Apprenticeship</h3>
         <div class="job-profile-subsection-content">
-            @Html.Raw(Model.RelevantSubjects)
+            @*@Html.Raw(Model.RelevantSubjects)*@
             <h4>@Html.Raw(requirementPrefix.Content)</h4>
             <p>@Html.Raw(apprenticeshipRequirement.Content)</p>
 

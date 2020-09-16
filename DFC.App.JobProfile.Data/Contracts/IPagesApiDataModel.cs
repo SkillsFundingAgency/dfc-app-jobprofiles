@@ -10,6 +10,6 @@ namespace DFC.App.JobProfile.Data.Contracts
     {
         ContentLinksModel? ContentLinks { get; set; }
 
-        IList<ApiContentItemModel> ContentItems { get; set; }
+        //IList<ApiContentItemModel> ContentItems { get; set; }
     }
 }

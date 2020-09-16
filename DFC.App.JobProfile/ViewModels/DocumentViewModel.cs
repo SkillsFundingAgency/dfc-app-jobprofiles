@@ -76,7 +76,7 @@ namespace DFC.App.JobProfile.ViewModels
 
         public string HtbFurtherInformation { get; set; }
 
-        public IList<ApiContentItemModel> ContentItems { get; set; }
+        public IList<BaseContentItemModel> ContentItems { get; set; }
 
         public List<StaticContentItemModel> SharedContent { get; set; }
     }

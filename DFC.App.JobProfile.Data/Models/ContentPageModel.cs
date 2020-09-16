@@ -63,7 +63,7 @@ namespace DFC.App.JobProfile.Data.Models
         }
 
 
-        public IList<ApiContentItemModel> ContentItems { get; set; } = new List<ApiContentItemModel>();
+        public IList<BaseContentItemModel> ContentItems { get; set; } = new List<BaseContentItemModel>();
 
         [JsonProperty(PropertyName = "ModifiedDate")]
         public DateTime Published { get; set; }

@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.52" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,8 @@
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Compui.Cosmos.Contracts;
-using dfc_content_pkg_netcore.contracts;
+using DFC.Content.Pkg.Netcore.Data.Contracts;
+using DFC.Content.Pkg.Netcore.Data.enums;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -41,12 +42,12 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, Uri url)
         {
-            bool isContentItem = contentCacheService.CheckIsContentItem(contentId);
+            var isContentItem = contentCacheService.CheckIsContentItem(contentId);
 
             switch (webhookCacheOperation)
             {
                 case WebhookCacheOperation.Delete:
-                    if (isContentItem)
+                    if (ContentCacheStatus.ContentItem == isContentItem)
                     {
                         return await DeleteContentItemAsync(contentId).ConfigureAwait(false);
                     }
@@ -56,7 +57,7 @@ namespace DFC.App.JobProfile.CacheContentService
                     }
 
                 case WebhookCacheOperation.CreateOrUpdate:
-                    if (isContentItem)
+                    if (ContentCacheStatus.ContentItem == isContentItem)
                     {
                         return await ProcessContentItemAsync(url, contentId).ConfigureAwait(false);
                     }
@@ -107,31 +108,31 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId)
         {
-            var contentIds = contentCacheService.GetContentIdsContainingContentItemId(contentItemId);
+            //var contentIds = contentCacheService.GetContentIdsContainingContentItemId(contentItemId);
 
-            if (!contentIds.Any())
-            {
-                return HttpStatusCode.NoContent;
-            }
+            //if (!contentIds.Any())
+            //{
+            //    return HttpStatusCode.NoContent;
+            //}
 
-            var apiDataContentItemModel = await cmsApiService.GetContentItemAsync(url).ConfigureAwait(false);
+            //var apiDataContentItemModel = await cmsApiService.GetContentItemAsync(url).ConfigureAwait(false);
 
-            foreach (var contentId in contentIds)
-            {
-                var contentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
+            //foreach (var contentId in contentIds)
+            //{
+            //    var contentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
 
-                if (contentPageModel != null)
-                {
-                    //var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
+            //    if (contentPageModel != null)
+            //    {
+            //        //var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
 
-                    //if (contentItemModel != null)
-                    //{
-                    //    mapper.Map(apiDataContentItemModel, contentItemModel);
+            //        //if (contentItemModel != null)
+            //        //{
+            //        //    mapper.Map(apiDataContentItemModel, contentItemModel);
 
-                    //    await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
-                    //}
-                }
-            }
+            //        //    await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+            //        //}
+            //    }
+            //}
 
             return HttpStatusCode.OK;
         }

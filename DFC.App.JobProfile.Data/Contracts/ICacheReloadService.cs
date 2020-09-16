@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using dfc_content_pkg_netcore.models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

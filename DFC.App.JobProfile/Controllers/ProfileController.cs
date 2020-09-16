@@ -66,6 +66,7 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Document(string article)
         {
             logService.LogInformation($"{nameof(Document)} has been called with: {article}");
+
             var contentList = new List<string>() { "speaktoanadvisor", "skillsassessment", "notwhatyourlookingfor" };
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);

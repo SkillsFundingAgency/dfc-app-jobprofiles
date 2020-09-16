@@ -1,8 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using dfc_content_pkg_netcore.models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DFC.Content.Pkg.Netcore.Data.Models;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {

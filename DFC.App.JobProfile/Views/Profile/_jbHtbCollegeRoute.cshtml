@@ -1,15 +1,14 @@
-﻿@model BaseContentItemModel
+﻿@model JobProfileApiContentItemModel
 @{ 
     var collegeRrquirements = Model.ContentItems.Where(x => x.ContentType == "CollegeRequirement").ToList();
     var collegeLinks = Model.ContentItems.Where(x => x.ContentType == "CollegeLink").ToList();
     var requirementsPrefix = Model.ContentItems.Where(x => x.ContentType == "RequirementsPrefix").SingleOrDefault();
-
 }
 
 <section class="job-profile-subsection" id="College">
     <h3>College</h3>
     <div class="job-profile-subsection-content">
-        @*@Html.Raw(Model.RelevantSubjects)*@
+        @Html.Raw(Model.RelevantSubjects)
 
         <h4>Entry requirements</h4>
         <p>@requirementsPrefix.Content</p>

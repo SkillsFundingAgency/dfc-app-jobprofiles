@@ -1,7 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models.ClientOptions;
-using dfc_content_pkg_netcore.contracts;
-using dfc_content_pkg_netcore.models;
+using DFC.Content.Pkg.Netcore.Data.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;

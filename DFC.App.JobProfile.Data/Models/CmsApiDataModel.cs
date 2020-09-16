@@ -1,16 +1,13 @@
-﻿
-
-using dfc_content_pkg_netcore.contracts;
-using dfc_content_pkg_netcore.models;
-using System;
+﻿using DFC.Content.Pkg.Netcore.Data.Contracts;
+using DFC.Content.Pkg.Netcore.Data.Models;
 using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models
 {
     public class CmsApiDataModel : ICmsApiDataModel
     {
-        public ContentLinksModel ContentLinks { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ContentLinksModel ContentLinks { get; set; }
 
-        public IList<BaseContentItemModel> ContentItems { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IList<BaseContentItemModel> ContentItems { get; set; }
     }
 }

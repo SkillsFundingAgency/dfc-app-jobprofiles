@@ -1,4 +1,4 @@
-﻿@model BaseContentItemModel
+﻿@model JobProfileApiContentItemModel
 @{
     var essentialList = Model.ContentLinks.ContentLinks.Where(x => x.Key == "esco__relatedEssentialSkill").ToList()[0].Value.Select(x => x.Title).ToList();
     var listToLoop = Model.ContentItems.Where(x => x.ContentType == "esco__Skill").ToList();

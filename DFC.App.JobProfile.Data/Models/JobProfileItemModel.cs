@@ -1,4 +1,4 @@
-﻿using dfc_content_pkg_netcore.models;
+﻿using DFC.Content.Pkg.Netcore.Data.Models;
 
 namespace DFC.App.JobProfile.Data.Models
 {

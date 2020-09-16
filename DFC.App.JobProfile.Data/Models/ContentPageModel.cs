@@ -1,5 +1,5 @@
 ﻿using DFC.Compui.Cosmos.Enums;
-using dfc_content_pkg_netcore.models;
+using DFC.Content.Pkg.Netcore.Data.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -62,8 +62,7 @@ namespace DFC.App.JobProfile.Data.Models
             set => PrivateLinksModel = value;
         }
 
-
-        public IList<BaseContentItemModel> ContentItems { get; set; } = new List<BaseContentItemModel>();
+        public IList<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
 
         [JsonProperty(PropertyName = "ModifiedDate")]
         public DateTime Published { get; set; }
@@ -83,8 +82,6 @@ namespace DFC.App.JobProfile.Data.Models
             return string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList();
         }
 
-
-        //////////////////////
         public string SalaryStarter { get; set; }
 
         public string SalaryExperienced { get; set; }

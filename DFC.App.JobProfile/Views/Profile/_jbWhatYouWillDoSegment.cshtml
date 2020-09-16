@@ -21,7 +21,7 @@
                     <ul>
                         @foreach (var d2d in dayToDayTasks)
                         {
-                            <li>@*@Html.Raw(d2d.Description)*@</li>
+                            <li>@Html.Raw(d2d.Description)</li>
                         }
                     </ul>
                 </div>
@@ -36,7 +36,7 @@
                     <ul>
                         @foreach (var workingEnv in dayToDayTasks)
                         {
-                            <li>@*@Html.Raw(workingEnv.Description)*@</li>
+                            <li>@Html.Raw(workingEnv.Description)</li>
                         }
                     </ul>
                 </div>
@@ -48,7 +48,7 @@
             <section class="job-profile-subsection" id="workingenvironment">
                 <h3>Working Location</h3>
                 <div class="job-profile-subsection-content">
-                    @*@Html.Raw(workingLocation.Description)*@
+                    @Html.Raw(workingLocation.Description)
                 </div>
             </section>
         }
@@ -58,7 +58,7 @@
             <section class="job-profile-subsection" id="workingenvironment">
                 <h3>Working Uniform</h3>
                 <div class="job-profile-subsection-content">
-                    @*@Html.Raw(workingUniform.Description)*@
+                    @Html.Raw(workingUniform.Description)
                 </div>
             </section>
         }

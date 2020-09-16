@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.Content.Pkg.Netcore.Data.Contracts;
+using DFC.Content.Pkg.Netcore.Data.enums;
 using System;
 using System.Collections.Generic;
 
@@ -8,17 +9,17 @@ namespace DFC.App.JobProfile.CacheContentService
     {
         private IDictionary<Guid, List<Guid>> ContentItems { get; set; } = new Dictionary<Guid, List<Guid>>();
 
-        public bool CheckIsContentItem(Guid contentItemId)
+        public ContentCacheStatus CheckIsContentItem(Guid contentItemId)
         {
             foreach (var contentId in ContentItems.Keys)
             {
                 if (ContentItems[contentId].Contains(contentItemId))
                 {
-                    return true;
+                    return ContentCacheStatus.ContentItem;
                 }
             }
 
-            return false;
+            return ContentCacheStatus.NotFound;
         }
 
         public void Clear()

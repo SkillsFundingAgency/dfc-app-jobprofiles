@@ -1,5 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
-using dfc_content_pkg_netcore.contracts;
+using DFC.Content.Pkg.Netcore.Data.Contracts;
 using Newtonsoft.Json;
 using System;
 

@@ -23,5 +23,9 @@ namespace DFC.App.JobProfile.ViewModels
         public string WorkingPattern { get; set; }
 
         public int? MaximumHours { get; set; }
+
+        public string WorkingHoursDetails { get; set; }
+
+        public string WorkingPatternDetails { get; set; }
     }
 }

@@ -37,6 +37,8 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
+        [Route("profile/")]
+        [Route("profile/{index}")]
         public async Task<IActionResult> Index()
         {
             //AOP: These should be coded as an Aspect
@@ -229,6 +231,14 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 mapper.Map(jobProfileModel, viewModel);
+
+                decimal.TryParse(viewModel.SalaryStarter, out decimal starterParsed);
+                decimal.TryParse(viewModel.SalaryExperienced, out decimal experiencedParsed);
+                var salaryStarterParsed = starterParsed;
+                var salaryExperiencedParsed = experiencedParsed;
+
+                viewModel.SalaryStarter = (salaryStarterParsed > 0) ? salaryStarterParsed.ToString("C0") : viewModel.SalaryStarter;
+                viewModel.SalaryExperienced = (salaryExperiencedParsed > 0) ? salaryExperiencedParsed.ToString("C0") : viewModel.SalaryExperienced;
 
                 logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
 

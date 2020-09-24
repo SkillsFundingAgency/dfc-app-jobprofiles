@@ -1,5 +1,6 @@
 ﻿using DFC.Content.Pkg.Netcore.Data.Contracts;
-using DFC.Content.Pkg.Netcore.Data.enums;
+using DFC.Content.Pkg.Netcore.Data.Enums;
+using DFC.Content.Pkg.Netcore.Data.Models;
 using System;
 using System.Collections.Generic;
 
@@ -58,7 +59,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public void AddOrReplace(Guid contentId, List<Guid> contentItemIds)
+        public void AddOrReplace(Guid contentId, List<Guid> contentItemIds, string parentContentType = "default")
         {
             if (ContentItems.ContainsKey(contentId))
             {
@@ -68,6 +69,11 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 ContentItems.Add(contentId, contentItemIds);
             }
+        }
+
+        public IEnumerable<ContentCacheResult> GetContentCacheStatus(Guid contentItemId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

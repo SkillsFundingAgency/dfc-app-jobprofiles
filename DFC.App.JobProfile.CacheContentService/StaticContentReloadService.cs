@@ -104,7 +104,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
                         result = await eventMessageService.CreateAsync(item).ConfigureAwait(false);
 
-                        if (result == HttpStatusCode.Created)
+                        if (result == HttpStatusCode.OK)
                         {
                             logger.LogInformation($"Created static content cache with {item.Id} - {item.Url}");
                         }

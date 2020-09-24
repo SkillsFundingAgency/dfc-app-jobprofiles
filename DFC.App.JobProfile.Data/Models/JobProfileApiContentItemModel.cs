@@ -9,6 +9,8 @@ namespace DFC.App.JobProfile.Data.Models
 {
     public class JobProfileApiContentItemModel : IBaseContentItemModel<JobProfileApiContentItemModel>
     {
+
+        [JsonProperty("uri")]
         public Uri Url { get; set; }
 
         public string Description { get; set; }

@@ -111,7 +111,7 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 logger.LogInformation($"Get details for {item.Title} - {item.Url}");
 
-                var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(item.Url!).ConfigureAwait(false);
+                var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(item.Url).ConfigureAwait(false);
 
                 if (apiDataModel == null)
                 {

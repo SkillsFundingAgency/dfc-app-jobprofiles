@@ -13,8 +13,8 @@ namespace DFC.App.JobProfile.Data.Models
         [JsonProperty(PropertyName = "uri")]
         public Uri Url { get; set; }
 
-        [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        //[JsonProperty(PropertyName = "id")]
+        //public string Id { get; set; }
 
         [JsonProperty(PropertyName = "htmlbody_Html")]
         public string Html_Content { get; set; }

@@ -16,6 +16,7 @@ using DFC.Compui.Cosmos;
 using DFC.Compui.Telemetry;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
+using DFC.Content.Pkg.Netcore.Extensions;
 using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
 using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
 using DFC.Logger.AppInsights.Extensions;
@@ -150,6 +151,7 @@ namespace DFC.App.JobProfile
             services.AddTransient<ICacheReloadService, CacheReloadService>();
             services.AddTransient<IStaticContentReloadService, StaticContentReloadService>();
             services.AddTransient<IApiService, ApiService>();
+            services.AddTransient<ICmsApiService, CmsApiService>();
             services.AddTransient<IWebhooksService, WebhooksService>();
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
             services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
@@ -163,13 +165,15 @@ namespace DFC.App.JobProfile
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
             var policyRegistry = services.AddPolicyRegistry();
 
-            services
-               .AddPolicies(policyRegistry, nameof(CmsApiClientOptions), policyOptions)
-               .AddHttpClient<ICmsApiService, CmsApiService, CmsApiClientOptions>(configuration, nameof(CmsApiClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+            services.AddApiServices(configuration, policyRegistry);
 
-        //    services
-        //       .AddPolicies(policyRegistry, nameof(EventGridSubscriptionClientOptions), policyOptions)
-        //       .AddHttpClient<IEventGridSubscriptionService, EventGridSubscriptionService, EventGridSubscriptionClientOptions>(configuration, nameof(EventGridSubscriptionClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+            //services
+            //   .AddPolicies(policyRegistry, nameof(CmsApiClientOptions), policyOptions)
+            //   .AddHttpClient<ICmsApiService, CmsApiService, CmsApiClientOptions>(configuration, nameof(CmsApiClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            //    services
+            //       .AddPolicies(policyRegistry, nameof(EventGridSubscriptionClientOptions), policyOptions)
+            //       .AddHttpClient<IEventGridSubscriptionService, EventGridSubscriptionService, EventGridSubscriptionClientOptions>(configuration, nameof(EventGridSubscriptionClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
         }
     }
 }

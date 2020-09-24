@@ -3,14 +3,13 @@ using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
-using DFC.Content.Pkg.Netcore.Data.enums;
+using DFC.Content.Pkg.Netcore.Data.Enums;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.CacheContentService

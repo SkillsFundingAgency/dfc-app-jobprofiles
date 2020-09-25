@@ -5,9 +5,11 @@ using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Enums;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -22,6 +24,7 @@ namespace DFC.App.JobProfile.CacheContentService
         private readonly ICmsApiService cmsApiService;
         private readonly IContentPageService<ContentPageModel> contentPageService;
         private readonly IContentCacheService contentCacheService;
+        private readonly IEventGridService eventGridService;
 
         public WebhooksService(
             ILogger<WebhooksService> logger,
@@ -29,7 +32,8 @@ namespace DFC.App.JobProfile.CacheContentService
             IEventMessageService<ContentPageModel> eventMessageService,
             ICmsApiService cmsApiService,
             IContentPageService<ContentPageModel> contentPageService,
-            IContentCacheService contentCacheService)
+            IContentCacheService contentCacheService,
+            IEventGridService eventGridService)
         {
             this.logger = logger;
             this.mapper = mapper;
@@ -37,16 +41,17 @@ namespace DFC.App.JobProfile.CacheContentService
             this.cmsApiService = cmsApiService;
             this.contentPageService = contentPageService;
             this.contentCacheService = contentCacheService;
+            this.eventGridService = eventGridService;
         }
 
-        public async Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, Uri url)
+        public async Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, string apiEndpoint)
         {
-            var isContentItem = contentCacheService.CheckIsContentItem(contentId);
+            bool isContentItem = contentCacheService.CheckIsContentItem(contentId);
 
             switch (webhookCacheOperation)
             {
                 case WebhookCacheOperation.Delete:
-                    if (ContentCacheStatus.ContentItem == isContentItem)
+                    if (isContentItem)
                     {
                         return await DeleteContentItemAsync(contentId).ConfigureAwait(false);
                     }
@@ -56,7 +61,13 @@ namespace DFC.App.JobProfile.CacheContentService
                     }
 
                 case WebhookCacheOperation.CreateOrUpdate:
-                    if (ContentCacheStatus.ContentItem == isContentItem)
+
+                    if (!Uri.TryCreate(apiEndpoint, UriKind.Absolute, out Uri? url))
+                    {
+                        throw new InvalidDataException($"Invalid Api url '{apiEndpoint}' received for Event Id: {eventId}");
+                    }
+
+                    if (isContentItem)
                     {
                         return await ProcessContentItemAsync(url, contentId).ConfigureAwait(false);
                     }
@@ -73,75 +84,104 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessContentAsync(Uri url, Guid contentId)
         {
-            //var apiDataModel = await cmsApiService.GetItemAsync<PagesApiDataModel>(url).ConfigureAwait(false);
-            //var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
+            var apiDataModel = await cmsApiService.GetItemAsync<PagesApiDataModel, PagesApiContentItemModel>(url).ConfigureAwait(false);
+            var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
 
-            //if (contentPageModel == null)
-            //{
-            //    return HttpStatusCode.NoContent;
-            //}
+            if (contentPageModel == null)
+            {
+                return HttpStatusCode.NoContent;
+            }
 
-            //if (!TryValidateModel(contentPageModel))
-            //{
-            //    return HttpStatusCode.BadRequest;
-            //}
+            if (!TryValidateModel(contentPageModel))
+            {
+                return HttpStatusCode.BadRequest;
+            }
 
-            //var contentResult = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+            var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
 
-            //if (contentResult == HttpStatusCode.NotFound)
-            //{
-            //    contentResult = await eventMessageService.CreateAsync(contentPageModel).ConfigureAwait(false);
-            //}
+            var contentResult = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
-            //if (contentResult == HttpStatusCode.OK || contentResult == HttpStatusCode.Created)
-            //{
-            //    //var contentItemIds = (from a in contentPageModel.ContentItems select a.ItemId!.Value).ToList();
+            if (contentResult == HttpStatusCode.NotFound)
+            {
+                contentResult = await eventMessageService.CreateAsync(contentPageModel).ConfigureAwait(false);
+            }
 
-            //    //contentCacheService.AddOrReplace(contentId, contentItemIds);
-            //}
+            if (contentResult == HttpStatusCode.OK || contentResult == HttpStatusCode.Created)
+            {
+                await eventGridService.CompareAndSendEventAsync(existingContentPageModel, contentPageModel).ConfigureAwait(false);
 
-            //return contentResult;
+                var contentItemIds = contentPageModel.AllContentItemIds;
 
-            return HttpStatusCode.OK;
+                contentCacheService.AddOrReplace(contentId, contentItemIds);
+            }
+
+            return contentResult;
         }
 
         public async Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId)
         {
-            //var contentIds = contentCacheService.GetContentIdsContainingContentItemId(contentItemId);
+            var contentIds = contentCacheService.GetContentIdsContainingContentItemId(contentItemId);
 
-            //if (!contentIds.Any())
-            //{
-            //    return HttpStatusCode.NoContent;
-            //}
+            if (!contentIds.Any())
+            {
+                return HttpStatusCode.NoContent;
+            }
 
-            //var apiDataContentItemModel = await cmsApiService.GetContentItemAsync(url).ConfigureAwait(false);
+            var apiDataContentItemModel = await cmsApiService.GetContentItemAsync<PagesApiContentItemModel>(url).ConfigureAwait(false);
 
-            //foreach (var contentId in contentIds)
-            //{
-            //    var contentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
+            if (apiDataContentItemModel == null)
+            {
+                return HttpStatusCode.NoContent;
+            }
 
-            //    if (contentPageModel != null)
-            //    {
-            //        //var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
+            foreach (var contentId in contentIds)
+            {
+                var contentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
 
-            //        //if (contentItemModel != null)
-            //        //{
-            //        //    mapper.Map(apiDataContentItemModel, contentItemModel);
+                if (contentPageModel != null)
+                {
+                    var contentItemModel = FindContentItem(contentItemId, contentPageModel.ContentItems);
 
-            //        //    await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
-            //        //}
-            //    }
-            //}
+                    if (contentItemModel != null)
+                    {
+                        switch (contentItemModel.ContentType)
+                        {
+                            case Constants.ContentTypePageLocation:
+                                contentItemModel.BreadcrumbLinkSegment = apiDataContentItemModel.Title;
+                                contentItemModel.BreadcrumbText = apiDataContentItemModel.BreadcrumbText;
+                                break;
+                            case Constants.ContentTypeSharedContent:
+                                contentItemModel.Title = apiDataContentItemModel.Title;
+                                contentItemModel.Content = apiDataContentItemModel.Content;
+                                break;
+                            default:
+                                mapper.Map(apiDataContentItemModel, contentItemModel);
+                                break;
+                        }
+
+                        contentItemModel.LastCached = DateTime.UtcNow;
+
+                        var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
+
+                        await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+
+                        await eventGridService.CompareAndSendEventAsync(existingContentPageModel, contentPageModel).ConfigureAwait(false);
+                    }
+                }
+            }
 
             return HttpStatusCode.OK;
         }
 
         public async Task<HttpStatusCode> DeleteContentAsync(Guid contentId)
         {
+            var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
             var result = await eventMessageService.DeleteAsync(contentId).ConfigureAwait(false);
 
-            if (result == HttpStatusCode.OK)
+            if (result == HttpStatusCode.OK && existingContentPageModel != null)
             {
+                await eventGridService.SendEventAsync(WebhookCacheOperation.Delete, existingContentPageModel).ConfigureAwait(false);
+
                 contentCacheService.Remove(contentId);
             }
 
@@ -163,26 +203,75 @@ namespace DFC.App.JobProfile.CacheContentService
 
                 if (contentPageModel != null)
                 {
-                    //var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
+                    var removedContentitem = RemoveContentItem(contentItemId, contentPageModel.ContentItems);
 
-                    //if (contentItemModel != null)
-                    //{
-                    //    contentPageModel.ContentItems!.Remove(contentItemModel);
+                    if (removedContentitem)
+                    {
+                        var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
-                    //    var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
-
-                    //    if (result == HttpStatusCode.OK)
-                    //    {
-                    //        contentCacheService.RemoveContentItem(contentId, contentItemId);
-                    //    }
-                    //}
+                        if (result == HttpStatusCode.OK)
+                        {
+                            contentCacheService.RemoveContentItem(contentId, contentItemId);
+                        }
+                    }
                 }
             }
 
             return HttpStatusCode.OK;
         }
 
-        public bool TryValidateModel(ContentPageModel contentPageModel)
+        public ContentItemModel? FindContentItem(Guid contentItemId, List<ContentItemModel>? items)
+        {
+            if (items == null || !items.Any())
+            {
+                return default;
+            }
+
+            foreach (var contentItemModel in items)
+            {
+                if (contentItemModel.ItemId == contentItemId)
+                {
+                    return contentItemModel;
+                }
+
+                var childContentItemModel = FindContentItem(contentItemId, contentItemModel.ContentItems);
+
+                if (childContentItemModel != null)
+                {
+                    return childContentItemModel;
+                }
+            }
+
+            return default;
+        }
+
+        public bool RemoveContentItem(Guid contentItemId, List<ContentItemModel>? items)
+        {
+            if (items == null || !items.Any())
+            {
+                return false;
+            }
+
+            foreach (var contentItemModel in items)
+            {
+                if (contentItemModel.ItemId == contentItemId)
+                {
+                    items.Remove(contentItemModel);
+                    return true;
+                }
+
+                var removedContentitem = RemoveContentItem(contentItemId, contentItemModel.ContentItems);
+
+                if (removedContentitem)
+                {
+                    return removedContentitem;
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryValidateModel(ContentPageModel? contentPageModel)
         {
             _ = contentPageModel ?? throw new ArgumentNullException(nameof(contentPageModel));
 

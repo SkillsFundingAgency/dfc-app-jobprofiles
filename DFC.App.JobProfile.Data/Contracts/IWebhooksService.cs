@@ -1,5 +1,7 @@
 ﻿using DFC.App.JobProfile.Data.Enums;
+using DFC.App.JobProfile.Data.Models;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -15,6 +17,10 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId);
 
-        Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, Uri url);
+        Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, string apiEndpoint);
+
+        ContentItemModel? FindContentItem(Guid contentItemId, List<ContentItemModel>? items);
+
+        bool RemoveContentItem(Guid contentItemId, List<ContentItemModel>? items);
     }
 }

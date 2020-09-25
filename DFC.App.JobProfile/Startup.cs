@@ -13,6 +13,7 @@ using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.Repository.CosmosDb;
 using DFC.Compui.Cosmos;
+using DFC.Compui.Subscriptions.Pkg.Netstandard.Extensions;
 using DFC.Compui.Telemetry;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
@@ -157,6 +158,8 @@ namespace DFC.App.JobProfile
             services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
             services.AddSingleton(configuration.GetSection(nameof(EventGridSubscriptionClientOptions)).Get<EventGridSubscriptionClientOptions>() ?? new EventGridSubscriptionClientOptions());
             services.AddHostedServiceTelemetryWrapper();
+
+            services.AddSubscriptionBackgroundService(configuration);
             services.AddHostedService<StaticContentReloadBackgroundService>();
             services.AddHostedService<CacheReloadBackgroundService>();
            // services.AddHostedService<CreateSubscriptionBackgroundService>();

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
-using dfc_content_pkg_netcore.models;
+using DFC.Content.Pkg.Netcore.Data.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
@@ -10,17 +10,26 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public ContentPageModelProfile()
         {
-            CreateMap<PagesApiDataModel, ContentPageModel>()
+            CreateMap<JobProfileApiDataModel, ContentPageModel>()
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.ItemId))
-                .ForMember(d => d.Links, s => s.Ignore());
+                .ForMember(d => d.Links, s => s.Ignore())
+                .ForMember(d => d.ContentLinks, s => s.Ignore());
 
-            CreateMap<ApiContentItemModel, ContentItemModel>()
-                .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
+            CreateMap<JobProfileApiDataModel, ContentPageModel>()
+                .ForMember(d => d.Id, s => s.MapFrom(a => a.ItemId))
+                .ForMember(d => d.PageLocation, s => s.Ignore())
+                .ForMember(d => d.Etag, s => s.Ignore())
+                .ForMember(d => d.PartitionKey, s => s.Ignore())
+                .ForMember(d => d.TraceId, s => s.Ignore())
+                .ForMember(d => d.ParentId, s => s.Ignore())
+                .ForMember(d => d.SiteMapPriority, s => s.MapFrom(a => a.SiteMapPriority / 10))
+                .ForMember(d => d.SiteMapPriority, s => s.MapFrom(a => a.SiteMapPriority / 10))
+                .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published))
+                .ForPath(d => d.MetaTags.Title, s => s.MapFrom(a => a.Title))
+                .ForPath(d => d.MetaTags.Description, s => s.MapFrom(a => a.Description))
+                .ForPath(d => d.MetaTags.Keywords, s => s.MapFrom(a => a.Keywords));
 
-            CreateMap<ApiContentItemModel, SharedContentItemModel>()
-                .ForMember(d => d.LastReviewed, s => s.MapFrom(a => a.Published));
-
-            CreateMap<LinkDetails, ApiContentItemModel>()
+            CreateMap<LinkDetails, JobProfileApiContentItemModel>()
                 .ForMember(d => d.Url, s => s.Ignore())
                 .ForMember(d => d.ItemId, s => s.Ignore())
                 .ForMember(d => d.Content, s => s.Ignore())
@@ -29,6 +38,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Links, s => s.Ignore())
                 .ForMember(d => d.ContentLinks, s => s.Ignore())
                 .ForMember(d => d.ContentItems, s => s.Ignore());
-}
+        }
     }
 }

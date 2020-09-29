@@ -7,6 +7,7 @@ using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -37,6 +38,8 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
+        [Route("profile/")]
+        [Route("profile/{index}")]
         public async Task<IActionResult> Index()
         {
             //AOP: These should be coded as an Aspect
@@ -66,6 +69,7 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Document(string article)
         {
             logService.LogInformation($"{nameof(Document)} has been called with: {article}");
+
             var contentList = new List<string>() { "speaktoanadvisor", "skillsassessment", "notwhatyourlookingfor" };
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
@@ -171,7 +175,6 @@ namespace DFC.App.JobProfile.Controllers
         //    logService.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
         //    return new StatusCodeResult((int)response);
         //}
-
         [HttpDelete]
         [Route("profile/{documentId}")]
         public async Task<IActionResult> Delete(Guid documentId)
@@ -229,6 +232,14 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
 
+                _ = decimal.TryParse(viewModel.SalaryStarter, out decimal starterParsed);
+                _ = decimal.TryParse(viewModel.SalaryExperienced, out decimal experiencedParsed);
+                var salaryStarterParsed = starterParsed;
+                var salaryExperiencedParsed = experiencedParsed;
+
+                viewModel.SalaryStarter = (salaryStarterParsed > 0) ? salaryStarterParsed.ToString("C0", CultureInfo.InvariantCulture) : viewModel.SalaryStarter;
+                viewModel.SalaryExperienced = (salaryExperiencedParsed > 0) ? salaryExperiencedParsed.ToString("C0", CultureInfo.InvariantCulture) : viewModel.SalaryExperienced;
+
                 logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
 
                 return this.NegotiateContentResult(viewModel);
@@ -256,10 +267,9 @@ namespace DFC.App.JobProfile.Controllers
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             if (jobProfileModel != null)
             {
-                //var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                //logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
-                //viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
-
+                // var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
+                // logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
+                // viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
                 var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
                 viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
                 logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
@@ -325,7 +335,7 @@ namespace DFC.App.JobProfile.Controllers
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < bytes.Length; i++)
                 {
-                    builder.Append(bytes[i].ToString("x2"));
+                    builder.Append(bytes[i].ToString("x2", CultureInfo.InvariantCulture));
                 }
 
                 return builder.ToString();
@@ -386,7 +396,7 @@ namespace DFC.App.JobProfile.Controllers
 
         private bool IsValidHost(Uri host)
         {
-            return host.IsLoopback || host.Host.Split(".").Any(s => redirectionHostWhitelist.Contains(ComputeSha256Hash(s.ToLower())));
+            return host.IsLoopback || host.Host.Split(".").Any(s => redirectionHostWhitelist.Contains(ComputeSha256Hash(s.ToLower(CultureInfo.InvariantCulture))));
         }
 
         #endregion Helper methods

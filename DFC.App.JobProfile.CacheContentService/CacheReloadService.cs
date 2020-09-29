@@ -1,7 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using dfc_content_pkg_netcore.contracts;
-using dfc_content_pkg_netcore.models;
+using DFC.Content.Pkg.Netcore.Data.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -19,14 +18,14 @@ namespace DFC.App.JobProfile.CacheContentService
         private readonly AutoMapper.IMapper mapper;
         private readonly IEventMessageService<ContentPageModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
-        private readonly IContentCacheService contentCacheService;
+        private readonly Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService;
          
         public CacheReloadService(
             ILogger<CacheReloadService> logger,
             AutoMapper.IMapper mapper,
             IEventMessageService<ContentPageModel> eventMessageService,
             ICmsApiService cmsApiService,
-            IContentCacheService contentCacheService)
+            Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService)
         {
             this.logger = logger;
             this.mapper = mapper;
@@ -72,18 +71,18 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public async Task<IList<PagesSummaryItemModel>> GetSummaryListAsync()
+        public async Task<IList<JobProfileItemModel>> GetSummaryListAsync()
         {
             logger.LogInformation("Get summary list");
 
-            var summaryList = await cmsApiService.GetSummaryAsync<PagesSummaryItemModel>().ConfigureAwait(false);
+            var summaryList = await cmsApiService.GetSummaryAsync<JobProfileItemModel>().ConfigureAwait(false);
 
             logger.LogInformation("Get summary list completed");
 
             return summaryList;
         }
 
-        public async Task ProcessSummaryListAsync(IList<PagesSummaryItemModel>? summaryList, CancellationToken stoppingToken)
+        public async Task ProcessSummaryListAsync(IList<JobProfileItemModel>? summaryList, CancellationToken stoppingToken)
         {
             logger.LogInformation("Process summary list started");
 
@@ -104,7 +103,7 @@ namespace DFC.App.JobProfile.CacheContentService
             logger.LogInformation("Process summary list completed");
         }
 
-        public async Task GetAndSaveItemAsync(PagesSummaryItemModel item, CancellationToken stoppingToken)
+        public async Task GetAndSaveItemAsync(JobProfileItemModel item, CancellationToken stoppingToken)
         {
             _ = item ?? throw new ArgumentNullException(nameof(item));
 
@@ -112,7 +111,7 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 logger.LogInformation($"Get details for {item.Title} - {item.Url}");
 
-                var apiDataModel = await cmsApiService.GetItemAsync<PagesApiDataModel>(item.Url!).ConfigureAwait(false);
+                var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(item.Url).ConfigureAwait(false);
 
                 if (apiDataModel == null)
                 {
@@ -163,7 +162,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public async Task DeleteStaleCacheEntriesAsync(IList<PagesSummaryItemModel> summaryList, CancellationToken stoppingToken)
+        public async Task DeleteStaleCacheEntriesAsync(IList<JobProfileItemModel> summaryList, CancellationToken stoppingToken)
         {
             logger.LogInformation("Delete stale cache items started");
 

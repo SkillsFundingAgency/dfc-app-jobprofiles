@@ -1,9 +1,8 @@
-﻿@model ApiContentItemModel
+﻿@model JobProfileApiContentItemModel
 @{ 
     var collegeRrquirements = Model.ContentItems.Where(x => x.ContentType == "CollegeRequirement").ToList();
     var collegeLinks = Model.ContentItems.Where(x => x.ContentType == "CollegeLink").ToList();
     var requirementsPrefix = Model.ContentItems.Where(x => x.ContentType == "RequirementsPrefix").SingleOrDefault();
-
 }
 
 <section class="job-profile-subsection" id="College">

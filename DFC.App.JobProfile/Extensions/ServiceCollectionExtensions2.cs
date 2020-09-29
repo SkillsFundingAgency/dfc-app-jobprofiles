@@ -1,4 +1,4 @@
-﻿using dfc_content_pkg_netcore.models.clientOptions;
+﻿using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

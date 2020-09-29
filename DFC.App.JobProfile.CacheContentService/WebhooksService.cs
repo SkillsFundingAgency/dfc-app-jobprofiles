@@ -1,15 +1,16 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Common;
 using DFC.Compui.Cosmos.Contracts;
-using dfc_content_pkg_netcore.contracts;
+using DFC.Content.Pkg.Netcore.Data.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.CacheContentService
@@ -21,7 +22,8 @@ namespace DFC.App.JobProfile.CacheContentService
         private readonly IEventMessageService<ContentPageModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
         private readonly IContentPageService<ContentPageModel> contentPageService;
-        private readonly IContentCacheService contentCacheService;
+        private readonly Data.Contracts.IContentCacheService contentCacheService;
+        private readonly IEventGridService eventGridService;
 
         public WebhooksService(
             ILogger<WebhooksService> logger,
@@ -29,7 +31,8 @@ namespace DFC.App.JobProfile.CacheContentService
             IEventMessageService<ContentPageModel> eventMessageService,
             ICmsApiService cmsApiService,
             IContentPageService<ContentPageModel> contentPageService,
-            IContentCacheService contentCacheService)
+            Data.Contracts.IContentCacheService contentCacheService,
+            IEventGridService eventGridService)
         {
             this.logger = logger;
             this.mapper = mapper;
@@ -37,9 +40,10 @@ namespace DFC.App.JobProfile.CacheContentService
             this.cmsApiService = cmsApiService;
             this.contentPageService = contentPageService;
             this.contentCacheService = contentCacheService;
+            this.eventGridService = eventGridService;
         }
 
-        public async Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, Uri url)
+        public async Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, string apiEndpoint)
         {
             bool isContentItem = contentCacheService.CheckIsContentItem(contentId);
 
@@ -56,6 +60,12 @@ namespace DFC.App.JobProfile.CacheContentService
                     }
 
                 case WebhookCacheOperation.CreateOrUpdate:
+
+                    if (!Uri.TryCreate(apiEndpoint, UriKind.Absolute, out Uri? url))
+                    {
+                        throw new InvalidDataException($"Invalid Api url '{apiEndpoint}' received for Event Id: {eventId}");
+                    }
+
                     if (isContentItem)
                     {
                         return await ProcessContentItemAsync(url, contentId).ConfigureAwait(false);
@@ -73,7 +83,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessContentAsync(Uri url, Guid contentId)
         {
-            var apiDataModel = await cmsApiService.GetItemAsync<PagesApiDataModel>(url).ConfigureAwait(false);
+            var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(url).ConfigureAwait(false);
             var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
 
             if (contentPageModel == null)
@@ -86,6 +96,8 @@ namespace DFC.App.JobProfile.CacheContentService
                 return HttpStatusCode.BadRequest;
             }
 
+            var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
+
             var contentResult = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
             if (contentResult == HttpStatusCode.NotFound)
@@ -95,7 +107,9 @@ namespace DFC.App.JobProfile.CacheContentService
 
             if (contentResult == HttpStatusCode.OK || contentResult == HttpStatusCode.Created)
             {
-                var contentItemIds = (from a in contentPageModel.ContentItems select a.ItemId!.Value).ToList();
+                await eventGridService.CompareAndSendEventAsync(existingContentPageModel, contentPageModel).ConfigureAwait(false);
+
+                var contentItemIds = contentPageModel.AllContentItemIds;
 
                 contentCacheService.AddOrReplace(contentId, contentItemIds);
             }
@@ -112,7 +126,12 @@ namespace DFC.App.JobProfile.CacheContentService
                 return HttpStatusCode.NoContent;
             }
 
-            var apiDataContentItemModel = await cmsApiService.GetContentItemAsync(url).ConfigureAwait(false);
+            var apiDataContentItemModel = await cmsApiService.GetContentItemAsync<JobProfileApiContentItemModel>(url).ConfigureAwait(false);
+
+            if (apiDataContentItemModel == null)
+            {
+                return HttpStatusCode.NoContent;
+            }
 
             foreach (var contentId in contentIds)
             {
@@ -120,13 +139,32 @@ namespace DFC.App.JobProfile.CacheContentService
 
                 if (contentPageModel != null)
                 {
-                    var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
+                    var contentItemModel = FindContentItem(contentItemId, contentPageModel.ContentItems);
 
                     if (contentItemModel != null)
                     {
-                        mapper.Map(apiDataContentItemModel, contentItemModel);
+                        switch (contentItemModel.ContentType)
+                        {
+                            case Constants.ContentTypePageLocation:
+                                contentItemModel.BreadcrumbLinkSegment = apiDataContentItemModel.Title;
+                                contentItemModel.BreadcrumbText = apiDataContentItemModel.BreadcrumbText;
+                                break;
+                            case Constants.ContentTypeSharedContent:
+                                contentItemModel.Title = apiDataContentItemModel.Title;
+                                contentItemModel.Content = apiDataContentItemModel.Content;
+                                break;
+                            default:
+                                mapper.Map(apiDataContentItemModel, contentItemModel);
+                                break;
+                        }
+
+                        contentItemModel.LastCached = DateTime.UtcNow;
+
+                        var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
 
                         await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+
+                        await eventGridService.CompareAndSendEventAsync(existingContentPageModel, contentPageModel).ConfigureAwait(false);
                     }
                 }
             }
@@ -136,10 +174,13 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> DeleteContentAsync(Guid contentId)
         {
+            var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
             var result = await eventMessageService.DeleteAsync(contentId).ConfigureAwait(false);
 
-            if (result == HttpStatusCode.OK)
+            if (result == HttpStatusCode.OK && existingContentPageModel != null)
             {
+                await eventGridService.SendEventAsync(WebhookCacheOperation.Delete, existingContentPageModel).ConfigureAwait(false);
+
                 contentCacheService.Remove(contentId);
             }
 
@@ -161,12 +202,10 @@ namespace DFC.App.JobProfile.CacheContentService
 
                 if (contentPageModel != null)
                 {
-                    var contentItemModel = contentPageModel.ContentItems.FirstOrDefault(f => f.ItemId == contentItemId);
+                    var removedContentitem = RemoveContentItem(contentItemId, contentPageModel.ContentItems);
 
-                    if (contentItemModel != null)
+                    if (removedContentitem)
                     {
-                        contentPageModel.ContentItems!.Remove(contentItemModel);
-
                         var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
                         if (result == HttpStatusCode.OK)
@@ -180,7 +219,58 @@ namespace DFC.App.JobProfile.CacheContentService
             return HttpStatusCode.OK;
         }
 
-        public bool TryValidateModel(ContentPageModel contentPageModel)
+        public JobProfileApiContentItemModel FindContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items)
+        {
+            if (items == null || !items.Any())
+            {
+                return default;
+            }
+
+            foreach (var contentItemModel in items)
+            {
+                if (contentItemModel.ItemId == contentItemId)
+                {
+                    return contentItemModel;
+                }
+
+                var childContentItemModel = FindContentItem(contentItemId, contentItemModel.ContentItems);
+
+                if (childContentItemModel != null)
+                {
+                    return childContentItemModel;
+                }
+            }
+
+            return default;
+        }
+
+        public bool RemoveContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items)
+        {
+            if (items == null || !items.Any())
+            {
+                return false;
+            }
+
+            foreach (var contentItemModel in items)
+            {
+                if (contentItemModel.ItemId == contentItemId)
+                {
+                    items.Remove(contentItemModel);
+                    return true;
+                }
+
+                var removedContentitem = RemoveContentItem(contentItemId, contentItemModel.ContentItems);
+
+                if (removedContentitem)
+                {
+                    return removedContentitem;
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryValidateModel(ContentPageModel? contentPageModel)
         {
             _ = contentPageModel ?? throw new ArgumentNullException(nameof(contentPageModel));
 

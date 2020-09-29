@@ -1,4 +1,4 @@
-﻿@model ApiContentItemModel
+﻿@model JobProfileApiContentItemModel
 @{ 
     var requirementPrefix = Model.ContentItems.Where(x => x.ContentType == "RequirementsPrefix").SingleOrDefault();
     var apprenticeshipRequirement = Model.ContentItems.Where(x => x.ContentType == "ApprenticeshipRequirement").SingleOrDefault();
@@ -16,7 +16,7 @@
             <ul class="list-link">
                 @foreach (var link in apprecticeshipLinks)
                 {
-                    <li><a class="htb-feature" href="#">@link.Content</a></li>
+                    <li><a class="htb-feature" href="#">@link.Title</a></li>
                 }
             </ul>
         </div>

@@ -1,6 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using dfc_content_pkg_netcore.contracts;
+using DFC.Content.Pkg.Netcore.Data.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,14 +16,14 @@ namespace DFC.App.JobProfile.CacheContentService
         private readonly AutoMapper.IMapper mapper;
         private readonly IEventMessageService<StaticContentItemModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
-        private readonly IContentCacheService contentCacheService;
+        private readonly Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService;
 
         public StaticContentReloadService(
             ILogger<StaticContentReloadService> logger,
             AutoMapper.IMapper mapper,
             IEventMessageService<StaticContentItemModel> eventMessageService,
             ICmsApiService cmsApiService,
-            IContentCacheService contentCacheService)
+            Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService)
         {
             this.logger = logger;
             this.mapper = mapper;
@@ -104,7 +104,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
                         result = await eventMessageService.CreateAsync(item).ConfigureAwait(false);
 
-                        if (result == HttpStatusCode.Created)
+                        if (result == HttpStatusCode.OK)
                         {
                             logger.LogInformation($"Created static content cache with {item.Id} - {item.Url}");
                         }

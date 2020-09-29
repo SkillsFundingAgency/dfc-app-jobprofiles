@@ -2,7 +2,6 @@
 using DFC.App.JobProfile.Data.Models;
 using DFC.Content.Pkg.Netcore.Data.Models;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {

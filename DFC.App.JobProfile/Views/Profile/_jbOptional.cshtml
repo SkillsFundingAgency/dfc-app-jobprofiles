@@ -1,6 +1,6 @@
 ﻿@model JobProfileApiContentItemModel
 @{
-    var essentialList = Model.ContentLinks.ContentLinks.Where(x => x.Key == "esco__relatedEssentialSkill").ToList()[0].Value.Select(x => x.Title).ToList();
+    var essentialList = Model.ContentLinks.ContentLinks.Where(x => x.Key == "esco__relatedOptionalSkill").ToList()[0].Value.Select(x => x.Title).ToList();
     var listToLoop = Model.ContentItems.Where(x => x.ContentType == "esco__Skill").ToList();
 }
 
@@ -9,7 +9,7 @@
     {
         @if (essentialList.Contains(skill.Content))
         {
-            @if (skill.ContentLinks.ContentLinks[0].Value[0].Title == "skill")
+            @if (skill.ContentLinks.ContentLinks[0].Value[0].Title == (string)ViewData["Type"])
             {
                 <li>@skill.Content</li>
             }

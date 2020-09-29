@@ -19,8 +19,8 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, string apiEndpoint);
 
-        ContentItemModel? FindContentItem(Guid contentItemId, List<ContentItemModel>? items);
+        JobProfileApiContentItemModel? FindContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items);
 
-        bool RemoveContentItem(Guid contentItemId, List<ContentItemModel>? items);
+        bool RemoveContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items);
     }
 }

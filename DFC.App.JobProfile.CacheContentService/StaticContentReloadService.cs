@@ -16,14 +16,14 @@ namespace DFC.App.JobProfile.CacheContentService
         private readonly AutoMapper.IMapper mapper;
         private readonly IEventMessageService<StaticContentItemModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
-        private readonly IContentCacheService contentCacheService;
+        private readonly Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService;
 
         public StaticContentReloadService(
             ILogger<StaticContentReloadService> logger,
             AutoMapper.IMapper mapper,
             IEventMessageService<StaticContentItemModel> eventMessageService,
             ICmsApiService cmsApiService,
-            IContentCacheService contentCacheService)
+            Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService)
         {
             this.logger = logger;
             this.mapper = mapper;

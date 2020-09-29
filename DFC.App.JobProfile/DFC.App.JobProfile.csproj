@@ -28,6 +28,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="CorrelationId" Version="2.1.0" />
+    <PackageReference Include="DFC.Compui.Subscriptions" Version="1.0.96" />
     <PackageReference Include="DFC.Content.Pkg.Netcore" Version="1.0.47" />
     <PackageReference Include="DFC.Logger.AppInsights" Version="1.0.7" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />

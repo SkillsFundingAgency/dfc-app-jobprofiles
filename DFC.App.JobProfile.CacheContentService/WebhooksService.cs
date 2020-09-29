@@ -1,11 +1,10 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Common;
 using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
-using DFC.Content.Pkg.Netcore.Data.Enums;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +22,7 @@ namespace DFC.App.JobProfile.CacheContentService
         private readonly IEventMessageService<ContentPageModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
         private readonly IContentPageService<ContentPageModel> contentPageService;
-        private readonly IContentCacheService contentCacheService;
+        private readonly Data.Contracts.IContentCacheService contentCacheService;
         private readonly IEventGridService eventGridService;
 
         public WebhooksService(
@@ -32,7 +31,7 @@ namespace DFC.App.JobProfile.CacheContentService
             IEventMessageService<ContentPageModel> eventMessageService,
             ICmsApiService cmsApiService,
             IContentPageService<ContentPageModel> contentPageService,
-            IContentCacheService contentCacheService,
+            Data.Contracts.IContentCacheService contentCacheService,
             IEventGridService eventGridService)
         {
             this.logger = logger;
@@ -84,7 +83,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessContentAsync(Uri url, Guid contentId)
         {
-            var apiDataModel = await cmsApiService.GetItemAsync<PagesApiDataModel, PagesApiContentItemModel>(url).ConfigureAwait(false);
+            var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(url).ConfigureAwait(false);
             var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
 
             if (contentPageModel == null)
@@ -127,7 +126,7 @@ namespace DFC.App.JobProfile.CacheContentService
                 return HttpStatusCode.NoContent;
             }
 
-            var apiDataContentItemModel = await cmsApiService.GetContentItemAsync<PagesApiContentItemModel>(url).ConfigureAwait(false);
+            var apiDataContentItemModel = await cmsApiService.GetContentItemAsync<JobProfileApiContentItemModel>(url).ConfigureAwait(false);
 
             if (apiDataContentItemModel == null)
             {
@@ -220,7 +219,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return HttpStatusCode.OK;
         }
 
-        public ContentItemModel? FindContentItem(Guid contentItemId, List<ContentItemModel>? items)
+        public JobProfileApiContentItemModel FindContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items)
         {
             if (items == null || !items.Any())
             {
@@ -245,7 +244,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return default;
         }
 
-        public bool RemoveContentItem(Guid contentItemId, List<ContentItemModel>? items)
+        public bool RemoveContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items)
         {
             if (items == null || !items.Any())
             {

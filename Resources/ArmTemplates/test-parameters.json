@@ -68,6 +68,12 @@
         "apimProxyAddress": {
             "value": "https://foo"
         },
+        "SubscriptionApiEndpointUrl": {
+            "value": "https://url"
+        },
+        "ApplicationWebhookReceiverEndpointUrl": {
+            "value": "https://url"
+        },
         "apimContentApiKey": {
             "value": "FakeKey"
         }

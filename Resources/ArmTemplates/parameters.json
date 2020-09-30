@@ -89,6 +89,12 @@
         "apimProxyAddress": {
             "value": "__apimProxyAddress__"
         },
+        "SubscriptionApiEndpointUrl": {
+            "value": "__SubscriptionApiEndpointUrl__"
+        },
+        "ApplicationWebhookReceiverEndpointUrl": {
+            "value": "__ApplicationWebhookReceiverEndpointUrl__"
+        },
         "apimContentApiKey": {
             "value": "__apimContentApiKey__"
         }

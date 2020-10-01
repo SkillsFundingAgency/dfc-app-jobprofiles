@@ -237,8 +237,8 @@ namespace DFC.App.JobProfile.Controllers
                 var salaryStarterParsed = starterParsed;
                 var salaryExperiencedParsed = experiencedParsed;
 
-                viewModel.SalaryStarter = (salaryStarterParsed > 0) ? salaryStarterParsed.ToString("C0", CultureInfo.InvariantCulture) : viewModel.SalaryStarter;
-                viewModel.SalaryExperienced = (salaryExperiencedParsed > 0) ? salaryExperiencedParsed.ToString("C0", CultureInfo.InvariantCulture) : viewModel.SalaryExperienced;
+                viewModel.SalaryStarter = (salaryStarterParsed > 0) ? salaryStarterParsed.ToString("C0") : viewModel.SalaryStarter;
+                viewModel.SalaryExperienced = (salaryExperiencedParsed > 0) ? salaryExperiencedParsed.ToString("C0") : viewModel.SalaryExperienced;
 
                 logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
 

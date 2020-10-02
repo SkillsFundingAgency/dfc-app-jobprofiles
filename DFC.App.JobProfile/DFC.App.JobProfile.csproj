@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Content Remove="appsettings-template.json" />
-    <Content Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,7 +47,6 @@
 
 
   <ItemGroup>
-    <None Include="appsettings.json" />
     <None Include="appsettings-template.json" />
   </ItemGroup>
 

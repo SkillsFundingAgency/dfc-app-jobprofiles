@@ -1,7 +1,7 @@
 ﻿@model JobProfileApiContentItemModel
 @{
     var essentialList = Model.ContentLinks.ContentLinks.Where(x => x.Key == "esco__relatedOptionalSkill").ToList()[0].Value.Select(x => x.Title).ToList();
-    var listToLoop = Model.ContentItems.Where(x => x.ContentType == "esco__Skill").ToList();
+    var listToLoop = Model.ContentItems.Where(x => x.ContentType == "skill").ToList();
 }
 
 <ul>

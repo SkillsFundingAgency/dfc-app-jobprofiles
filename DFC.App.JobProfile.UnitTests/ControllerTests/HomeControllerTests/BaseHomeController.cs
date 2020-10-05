@@ -1,8 +1,8 @@
 ﻿using DFC.App.JobProfile.Controllers;
-using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -13,7 +13,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HomeControllerTests
     {
         public BaseHomeController()
         {
-            FakeLogger = A.Fake<ILogService>();
+            FakeLogger = A.Fake<ILogger<HomeController>>();
         }
 
         public static IEnumerable<object[]> HtmlMediaTypes => new List<object[]>
@@ -22,7 +22,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HomeControllerTests
             new string[] { MediaTypeNames.Text.Html },
         };
 
-        protected ILogService FakeLogger { get; }
+        protected ILogger<HomeController> FakeLogger { get; }
 
         protected HomeController BuildHomeController(string mediaTypeName)
         {

@@ -1,7 +1,7 @@
 ﻿using DFC.App.JobProfile.Models.Robots;
-using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Mime;
 
@@ -9,10 +9,10 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class RobotController : Controller
     {
-        private readonly ILogService logService;
+        private readonly ILogger<RobotController> logService;
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public RobotController(ILogService logService, IHostingEnvironment hostingEnvironment)
+        public RobotController(ILogger<RobotController> logService, IHostingEnvironment hostingEnvironment)
         {
             this.logService = logService;
             this.hostingEnvironment = hostingEnvironment;

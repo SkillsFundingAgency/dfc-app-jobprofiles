@@ -1,8 +1,8 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
-using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Net.Mime;
@@ -12,10 +12,10 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class SitemapController : Controller
     {
-        private readonly ILogService logService;
+        private readonly ILogger<SitemapController> logService;
         private readonly IJobProfileService jobProfileService;
 
-        public SitemapController(ILogService logService, IJobProfileService jobProfileService)
+        public SitemapController(ILogger<SitemapController> logService, IJobProfileService jobProfileService)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;

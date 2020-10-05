@@ -1,9 +1,9 @@
 ﻿using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.SitemapControllerTests
 {
@@ -11,11 +11,11 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.SitemapControllerTests
     {
         public BaseSitemapController()
         {
-            FakeLogger = A.Fake<ILogService>();
+            FakeLogger = A.Fake<ILogger<SitemapController>>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
         }
 
-        protected ILogService FakeLogger { get; }
+        protected ILogger<SitemapController> FakeLogger { get; }
 
         protected IJobProfileService FakeJobProfileService { get; }
 

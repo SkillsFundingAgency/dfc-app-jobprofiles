@@ -1,15 +1,15 @@
 ﻿using DFC.App.JobProfile.ViewModels;
-using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace DFC.App.JobProfile.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogService logService;
+        private readonly ILogger<HomeController> logService;
 
-        public HomeController(ILogService logger)
+        public HomeController(ILogger<HomeController> logger)
         {
             this.logService = logger;
         }

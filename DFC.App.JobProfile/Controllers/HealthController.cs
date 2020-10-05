@@ -1,8 +1,8 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.ViewModels;
-using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,12 +12,12 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class HealthController : Controller
     {
-        private readonly ILogService logService;
+        private readonly ILogger<HealthController> logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
         private readonly string resourceName = typeof(Program).Namespace!;
 
-        public HealthController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public HealthController(ILogger<HealthController> logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
@@ -61,7 +61,7 @@ namespace DFC.App.JobProfile.Controllers
         [HttpGet]
         public IActionResult Ping()
         {
-            logService.LogVerbose($"{nameof(Ping)} has been called");
+            logService.LogInformation($"{nameof(Ping)} has been called");
 
             return Ok();
         }

@@ -1,9 +1,9 @@
 ﻿using DFC.App.JobProfile.Controllers;
-using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.RobotControllerTests
 {
@@ -11,11 +11,11 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.RobotControllerTests
     {
         public BaseRobotController()
         {
-            FakeLogger = A.Fake<ILogService>();
+            FakeLogger = A.Fake<ILogger<RobotController>>();
             FakeHostingEnvironment = A.Fake<IHostingEnvironment>();
         }
 
-        protected ILogService FakeLogger { get; }
+        protected ILogger<RobotController> FakeLogger { get; }
 
         protected IHostingEnvironment FakeHostingEnvironment { get; }
 

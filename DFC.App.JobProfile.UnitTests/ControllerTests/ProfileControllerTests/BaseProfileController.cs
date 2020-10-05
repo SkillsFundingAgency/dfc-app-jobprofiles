@@ -2,10 +2,10 @@
 using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Models;
-using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -16,7 +16,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     {
         protected BaseProfileController()
         {
-            FakeLogger = A.Fake<ILogService>();
+            FakeLogger = A.Fake<ILogger<ProfileController>>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
             FakeSharedContentService = A.Fake<ISharedContentService>();
             FakeMapper = A.Fake<IMapper>();
@@ -38,7 +38,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             new[] { MediaTypeNames.Application.Json },
         };
 
-        protected ILogService FakeLogger { get; }
+        protected ILogger<ProfileController> FakeLogger { get; }
 
         protected IJobProfileService FakeJobProfileService { get; }
 

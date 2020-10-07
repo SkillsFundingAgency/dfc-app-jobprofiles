@@ -232,14 +232,6 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
 
-                _ = decimal.TryParse(viewModel.SalaryStarter, out decimal starterParsed);
-                _ = decimal.TryParse(viewModel.SalaryExperienced, out decimal experiencedParsed);
-                var salaryStarterParsed = starterParsed;
-                var salaryExperiencedParsed = experiencedParsed;
-
-                viewModel.SalaryStarter = (salaryStarterParsed > 0) ? salaryStarterParsed.ToString("C0") : viewModel.SalaryStarter;
-                viewModel.SalaryExperienced = (salaryExperiencedParsed > 0) ? salaryExperiencedParsed.ToString("C0") : viewModel.SalaryExperienced;
-
                 logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
 
                 return this.NegotiateContentResult(viewModel);

@@ -39,7 +39,6 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpGet]
         [Route("profile/")]
-        [Route("profile/{index}")]
         public async Task<IActionResult> Index()
         {
             //AOP: These should be coded as an Aspect

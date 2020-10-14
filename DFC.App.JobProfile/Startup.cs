@@ -139,7 +139,7 @@ namespace DFC.App.JobProfile
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<ISharedContentService, SharedContentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
-           // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
+           // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKe"]);
             services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
 
             services.AddApplicationInsightsTelemetry();

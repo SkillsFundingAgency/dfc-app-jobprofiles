@@ -139,33 +139,33 @@ namespace DFC.App.JobProfile.CacheContentService
 
                 if (contentPageModel != null)
                 {
-                    var contentItemModel = FindContentItem(contentItemId, contentPageModel.ContentItems);
+                    //var contentItemModel = FindContentItem(contentItemId, contentPageModel.ContentItems);
 
-                    if (contentItemModel != null)
-                    {
-                        switch (contentItemModel.ContentType)
-                        {
-                            case Constants.ContentTypePageLocation:
-                                contentItemModel.BreadcrumbLinkSegment = apiDataContentItemModel.Title;
-                                contentItemModel.BreadcrumbText = apiDataContentItemModel.BreadcrumbText;
-                                break;
-                            case Constants.ContentTypeSharedContent:
-                                contentItemModel.Title = apiDataContentItemModel.Title;
-                                contentItemModel.Content = apiDataContentItemModel.Content;
-                                break;
-                            default:
-                                mapper.Map(apiDataContentItemModel, contentItemModel);
-                                break;
-                        }
+                    //if (contentItemModel != null)
+                    //{
+                    //    switch (contentItemModel.ContentType)
+                    //    {
+                    //        case Constants.ContentTypePageLocation:
+                    //            contentItemModel.BreadcrumbLinkSegment = apiDataContentItemModel.Title;
+                    //            contentItemModel.BreadcrumbText = apiDataContentItemModel.BreadcrumbText;
+                    //            break;
+                    //        case Constants.ContentTypeSharedContent:
+                    //            contentItemModel.Title = apiDataContentItemModel.Title;
+                    //            contentItemModel.Content = apiDataContentItemModel.Content;
+                    //            break;
+                    //        default:
+                    //            mapper.Map(apiDataContentItemModel, contentItemModel);
+                    //            break;
+                    //    }
 
-                        contentItemModel.LastCached = DateTime.UtcNow;
+                    //    contentItemModel.LastCached = DateTime.UtcNow;
 
-                        var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
+                    //    var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
 
-                        await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+                    //    await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
-                        await eventGridService.CompareAndSendEventAsync(existingContentPageModel, contentPageModel).ConfigureAwait(false);
-                    }
+                    //    await eventGridService.CompareAndSendEventAsync(existingContentPageModel, contentPageModel).ConfigureAwait(false);
+                    //}
                 }
             }
 
@@ -196,25 +196,25 @@ namespace DFC.App.JobProfile.CacheContentService
                 return HttpStatusCode.NoContent;
             }
 
-            foreach (var contentId in contentIds)
-            {
-                var contentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
+            //foreach (var contentId in contentIds)
+            //{
+            //    var contentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
 
-                if (contentPageModel != null)
-                {
-                    var removedContentitem = RemoveContentItem(contentItemId, contentPageModel.ContentItems);
+            //    if (contentPageModel != null)
+            //    {
+            //        var removedContentitem = RemoveContentItem(contentItemId, contentPageModel.ContentItems);
 
-                    if (removedContentitem)
-                    {
-                        var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+            //        if (removedContentitem)
+            //        {
+            //            var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
-                        if (result == HttpStatusCode.OK)
-                        {
-                            contentCacheService.RemoveContentItem(contentId, contentItemId);
-                        }
-                    }
-                }
-            }
+            //            if (result == HttpStatusCode.OK)
+            //            {
+            //                contentCacheService.RemoveContentItem(contentId, contentItemId);
+            //            }
+            //        }
+            //    }
+            //}
 
             return HttpStatusCode.OK;
         }

@@ -48,9 +48,8 @@ namespace DFC.App.JobProfile.Data.Models
 
         public DateTime LastCached { get; set; } = DateTime.UtcNow;
 
-
         [JsonIgnore]
-        public ContentLinksModel? ContentLinks
+        public ContentLinksModel ContentLinks
         {
             get => PrivateLinksModel ??= new ContentLinksModel(Links);
 

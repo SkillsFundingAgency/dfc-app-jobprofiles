@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Extensions;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using Microsoft.Extensions.Logging;
@@ -127,6 +128,7 @@ namespace DFC.App.JobProfile.CacheContentService
                     return;
                 }
 
+                OrganiseSegments(ref apiDataModel);
                 var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
 
                 logger.LogInformation($"Updating cache with {item.Title} - {item.Url}");
@@ -153,7 +155,7 @@ namespace DFC.App.JobProfile.CacheContentService
                     logger.LogInformation($"Updated cache with {item.Title} - {item.Url}");
                 }
 
-                var contentItemIds = contentPageModel.ContentItems.Where(w => w.ItemId.HasValue).Select(s => s.ItemId!.Value).ToList();
+                var contentItemIds = contentPageModel.AllContentItemIds;
                 contentCacheService.AddOrReplace(contentPageModel.Id, contentItemIds);
             }
             catch (Exception ex)
@@ -227,6 +229,47 @@ namespace DFC.App.JobProfile.CacheContentService
             }
 
             return isValid;
+        }
+
+        private void OrganiseSegments(ref JobProfileApiDataModel apiDataModel)
+        {
+            //What You'll Do
+            var whatYoullDoModel = new JobProfileWhatYoullDoModel();
+            whatYoullDoModel.DaytoDayTasks = apiDataModel.ContentItems.Where(x => x.ContentType == "DayToDayTask").ToList();
+            whatYoullDoModel.WorkingEnvironment = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkingEnvironment").ToList();
+            whatYoullDoModel.WorkingLocation = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkingLocation").SingleOrDefault();
+            whatYoullDoModel.WorkingUniform = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkingUniform").SingleOrDefault();
+            apiDataModel.WhatYoullDoSegment = whatYoullDoModel;
+
+            //Career Path
+            var careerPathSegment = new JobProfileCareerPathModel();
+            careerPathSegment.ApprecticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
+            careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
+            apiDataModel.CareerPathSegment = careerPathSegment;
+
+            //How to Become
+            var howToBecomeSegment = new JobProfileHowToBecomeModel();
+            howToBecomeSegment.DirectRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "DirectRoute").SingleOrDefault();
+            howToBecomeSegment.ApprenticeshipRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipRoute").SingleOrDefault();
+            howToBecomeSegment.CollegeRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "CollegeRoute").SingleOrDefault();
+            howToBecomeSegment.OtherRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRoute").SingleOrDefault();
+            howToBecomeSegment.Registration = apiDataModel.ContentItems.Where(x => x.ContentType == "Registration").SingleOrDefault();
+            howToBecomeSegment.UniversityRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "UniversityRoute").SingleOrDefault();
+            howToBecomeSegment.VolunteeringRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "VolunteeringRoute").SingleOrDefault();
+            howToBecomeSegment.WorkRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkRoute").SingleOrDefault();
+            howToBecomeSegment.Title = apiDataModel.Title;
+            howToBecomeSegment.HtbBodies = apiDataModel.HtbBodies;
+            howToBecomeSegment.HtbFurtherInformation = apiDataModel.HtbFurtherInformation;
+            apiDataModel.HowToBecomeSegment = howToBecomeSegment;
+
+            //What it Takes
+            var whatItTakes = new JobProfileWhatItTakesModel();
+            whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
+            whatItTakes.OtherRequirement = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
+            whatItTakes.Occupation = apiDataModel.ContentItems.Where(x => x.ContentType == "occupation").SingleOrDefault();
+            apiDataModel.WhatItTakesSegment = whatItTakes;
+
+            apiDataModel.AllContentItemIds = apiDataModel.ContentItems.Flatten(s => s.ContentItems).Where(w => w.ItemId != null).Select(s => s.ItemId!.Value).ToList();
         }
     }
 }

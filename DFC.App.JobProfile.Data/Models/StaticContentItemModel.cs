@@ -22,7 +22,7 @@ namespace DFC.App.JobProfile.Data.Models
         public DateTime? CreatedDate { get; set; }
 
         [JsonProperty(PropertyName = "ModifiedDate")]
-        public DateTime Published { get; set; }
+        public DateTime? Published { get; set; }
 
         public override string PageLocation { get; set; } = "/shared-content";
 

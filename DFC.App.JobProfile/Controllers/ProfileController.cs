@@ -123,7 +123,6 @@ namespace DFC.App.JobProfile.Controllers
                 return NotFound();
             }
 
-            var overViewModel = jobProfileModel.OverviewSegment;
             var viewModel = mapper.Map<HeroViewModel>(jobProfileModel);
 
             logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");

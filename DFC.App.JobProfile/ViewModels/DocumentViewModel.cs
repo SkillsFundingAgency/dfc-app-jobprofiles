@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.ViewModels
 {
+    [ExcludeFromCodeCoverage]
     public class DocumentViewModel
     {
         public HeadViewModel Head { get; set; }

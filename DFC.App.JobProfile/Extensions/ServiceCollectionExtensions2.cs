@@ -8,7 +8,7 @@ namespace DFC.App.JobProfile.Extensions
 {
     public static class ServiceCollectionExtensions2
     {
-        public static IServiceCollection AddHttpClient<TClient, TImplementation, TClientOptions>(
+        public static IServiceCollection AddHttpClienthh<TClient, TImplementation, TClientOptions>(
                     this IServiceCollection services,
                     IConfiguration configuration,
                     string configurationSectionName,

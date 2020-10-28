@@ -160,6 +160,7 @@ namespace DFC.App.JobProfile
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
             services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
             services.AddSingleton(configuration.GetSection(nameof(EventGridSubscriptionClientOptions)).Get<EventGridSubscriptionClientOptions>() ?? new EventGridSubscriptionClientOptions());
+            services.AddSingleton(configuration.GetSection(nameof(EventGridPublishClientOptions)).Get<EventGridPublishClientOptions>() ?? new EventGridPublishClientOptions());
             services.AddHostedServiceTelemetryWrapper();
 
             services.AddSubscriptionBackgroundService(configuration);
@@ -172,13 +173,6 @@ namespace DFC.App.JobProfile
 
             services.AddApiServices(configuration, policyRegistry);
 
-            //services
-            //   .AddPolicies(policyRegistry, nameof(CmsApiClientOptions), policyOptions)
-            //   .AddHttpClient<ICmsApiService, CmsApiService, CmsApiClientOptions>(configuration, nameof(CmsApiClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            //    services
-            //       .AddPolicies(policyRegistry, nameof(EventGridSubscriptionClientOptions), policyOptions)
-            //       .AddHttpClient<IEventGridSubscriptionService, EventGridSubscriptionService, EventGridSubscriptionClientOptions>(configuration, nameof(EventGridSubscriptionClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
         }
     }
 }

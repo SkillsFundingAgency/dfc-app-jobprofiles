@@ -109,6 +109,27 @@ namespace DFC.App.JobProfile.Controllers
             return new StatusCodeResult((int)response);
         }
 
+        [HttpPost, HttpGet]
+        [Route("profile/overview/{article}")]
+        [Route("profile/overview/{article}/contents")]
+        public async Task<IActionResult> DocumentOverview(string article)
+        {
+            logService.LogInformation($"{nameof(Document)} has been called with: {article}");
+
+            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
+            if (jobProfileModel is null)
+            {
+                logService.LogWarning($"{nameof(Document)} has returned not found: {article}");
+                return NotFound();
+            }
+
+            var overViewModel = jobProfileModel.OverviewSegment;
+            var viewModel = mapper.Map<HeroViewModel>(jobProfileModel);
+
+            logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
+            return PartialView("~/Views/Profile/_jbOverviewSegment.cshtml", viewModel);
+        }
+
         [HttpPut]
         [Route("profile")]
         public async Task<IActionResult> Update([FromBody] JobProfileModel jobProfileModel)

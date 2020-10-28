@@ -16,7 +16,7 @@ namespace DFC.App.JobProfile.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddPolicies(
+        public static IServiceCollection AddPoliciesjj(
             this IServiceCollection services,
             IPolicyRegistry<string> policyRegistry,
             string keyPrefix,

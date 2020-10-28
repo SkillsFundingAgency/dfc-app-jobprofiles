@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using IContentCacheService = DFC.Content.Pkg.Netcore.Data.Contracts.IContentCacheService;
 
 namespace DFC.App.JobProfile.CacheContentService
 {
@@ -22,7 +23,7 @@ namespace DFC.App.JobProfile.CacheContentService
         private readonly IEventMessageService<ContentPageModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
         private readonly IContentPageService<ContentPageModel> contentPageService;
-        private readonly Data.Contracts.IContentCacheService contentCacheService;
+        private readonly IContentCacheService contentCacheService;
         private readonly IEventGridService eventGridService;
 
         public WebhooksService(
@@ -31,7 +32,7 @@ namespace DFC.App.JobProfile.CacheContentService
             IEventMessageService<ContentPageModel> eventMessageService,
             ICmsApiService cmsApiService,
             IContentPageService<ContentPageModel> contentPageService,
-            Data.Contracts.IContentCacheService contentCacheService,
+            IContentCacheService contentCacheService,
             IEventGridService eventGridService)
         {
             this.logger = logger;
@@ -45,19 +46,10 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, string apiEndpoint)
         {
-            bool isContentItem = contentCacheService.CheckIsContentItem(contentId);
-
             switch (webhookCacheOperation)
             {
                 case WebhookCacheOperation.Delete:
-                    if (isContentItem)
-                    {
                         return await DeleteContentItemAsync(contentId).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        return await DeleteContentAsync(contentId).ConfigureAwait(false);
-                    }
 
                 case WebhookCacheOperation.CreateOrUpdate:
 
@@ -66,14 +58,7 @@ namespace DFC.App.JobProfile.CacheContentService
                         throw new InvalidDataException($"Invalid Api url '{apiEndpoint}' received for Event Id: {eventId}");
                     }
 
-                    if (isContentItem)
-                    {
-                        return await ProcessContentItemAsync(url, contentId).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        return await ProcessContentAsync(url, contentId).ConfigureAwait(false);
-                    }
+                    return await ProcessContentItemAsync(url, contentId).ConfigureAwait(false);
 
                 default:
                     logger.LogError($"Event Id: {eventId} got unknown cache operation - {webhookCacheOperation}");
@@ -81,7 +66,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public async Task<HttpStatusCode> ProcessContentAsync(Uri url, Guid contentId)
+        public async Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId)
         {
             var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(url).ConfigureAwait(false);
             var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
@@ -91,12 +76,7 @@ namespace DFC.App.JobProfile.CacheContentService
                 return HttpStatusCode.NoContent;
             }
 
-            if (!TryValidateModel(contentPageModel))
-            {
-                return HttpStatusCode.BadRequest;
-            }
-
-            var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
+            var existingContentPageModel = await contentPageService.GetByIdAsync(contentItemId).ConfigureAwait(false);
 
             var contentResult = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
@@ -111,112 +91,25 @@ namespace DFC.App.JobProfile.CacheContentService
 
                 var contentItemIds = contentPageModel.AllContentItemIds;
 
-                contentCacheService.AddOrReplace(contentId, contentItemIds);
+                contentCacheService.AddOrReplace(contentItemId, contentItemIds);
             }
 
             return contentResult;
         }
 
-        public async Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId)
+        public async Task<HttpStatusCode> DeleteContentItemAsync(Guid contentItemId)
         {
-            var contentIds = contentCacheService.GetContentIdsContainingContentItemId(contentItemId);
-
-            if (!contentIds.Any())
-            {
-                return HttpStatusCode.NoContent;
-            }
-
-            var apiDataContentItemModel = await cmsApiService.GetContentItemAsync<JobProfileApiContentItemModel>(url).ConfigureAwait(false);
-
-            if (apiDataContentItemModel == null)
-            {
-                return HttpStatusCode.NoContent;
-            }
-
-            foreach (var contentId in contentIds)
-            {
-                var contentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
-
-                if (contentPageModel != null)
-                {
-                    //var contentItemModel = FindContentItem(contentItemId, contentPageModel.ContentItems);
-
-                    //if (contentItemModel != null)
-                    //{
-                    //    switch (contentItemModel.ContentType)
-                    //    {
-                    //        case Constants.ContentTypePageLocation:
-                    //            contentItemModel.BreadcrumbLinkSegment = apiDataContentItemModel.Title;
-                    //            contentItemModel.BreadcrumbText = apiDataContentItemModel.BreadcrumbText;
-                    //            break;
-                    //        case Constants.ContentTypeSharedContent:
-                    //            contentItemModel.Title = apiDataContentItemModel.Title;
-                    //            contentItemModel.Content = apiDataContentItemModel.Content;
-                    //            break;
-                    //        default:
-                    //            mapper.Map(apiDataContentItemModel, contentItemModel);
-                    //            break;
-                    //    }
-
-                    //    contentItemModel.LastCached = DateTime.UtcNow;
-
-                    //    var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
-
-                    //    await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
-
-                    //    await eventGridService.CompareAndSendEventAsync(existingContentPageModel, contentPageModel).ConfigureAwait(false);
-                    //}
-                }
-            }
-
-            return HttpStatusCode.OK;
-        }
-
-        public async Task<HttpStatusCode> DeleteContentAsync(Guid contentId)
-        {
-            var existingContentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
-            var result = await eventMessageService.DeleteAsync(contentId).ConfigureAwait(false);
+            var existingContentPageModel = await contentPageService.GetByIdAsync(contentItemId).ConfigureAwait(false);
+            var result = await eventMessageService.DeleteAsync(contentItemId).ConfigureAwait(false);
 
             if (result == HttpStatusCode.OK && existingContentPageModel != null)
             {
                 await eventGridService.SendEventAsync(WebhookCacheOperation.Delete, existingContentPageModel).ConfigureAwait(false);
 
-                contentCacheService.Remove(contentId);
+                contentCacheService.Remove(contentItemId);
             }
 
             return result;
-        }
-
-        public async Task<HttpStatusCode> DeleteContentItemAsync(Guid contentItemId)
-        {
-            var contentIds = contentCacheService.GetContentIdsContainingContentItemId(contentItemId);
-
-            if (!contentIds.Any())
-            {
-                return HttpStatusCode.NoContent;
-            }
-
-            //foreach (var contentId in contentIds)
-            //{
-            //    var contentPageModel = await contentPageService.GetByIdAsync(contentId).ConfigureAwait(false);
-
-            //    if (contentPageModel != null)
-            //    {
-            //        var removedContentitem = RemoveContentItem(contentItemId, contentPageModel.ContentItems);
-
-            //        if (removedContentitem)
-            //        {
-            //            var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
-
-            //            if (result == HttpStatusCode.OK)
-            //            {
-            //                contentCacheService.RemoveContentItem(contentId, contentItemId);
-            //            }
-            //        }
-            //    }
-            //}
-
-            return HttpStatusCode.OK;
         }
 
         public JobProfileApiContentItemModel FindContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items)

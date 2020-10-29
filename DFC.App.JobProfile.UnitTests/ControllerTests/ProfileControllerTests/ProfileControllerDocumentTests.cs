@@ -131,7 +131,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var result = await controller.DocumentOverview(article).ConfigureAwait(false);
 
             // Assert
-            var statusResult = Assert.IsType<PartialViewResult>(result);
+            var statusResult = Assert.IsType<ViewResult>(result);
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 
             controller.Dispose();

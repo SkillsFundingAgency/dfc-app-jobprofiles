@@ -272,45 +272,6 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Body(string article)
-        {
-            logService.LogInformation($"{nameof(Body)} has been called");
-
-            var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
-            if (jobProfileModel != null)
-            {
-                // var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                // logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
-                // viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
-                var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
-                viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
-                logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
-                return this.NegotiateContentResult(viewModel);
-            }
-
-            var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
-            if (alternateJobProfileModel != null)
-            {
-                var host = Request.GetBaseAddress();
-                if (!IsValidHost(host))
-                {
-                    logService.LogWarning($"Invalid host {host}.");
-                    return BadRequest($"Invalid host {host}.");
-                }
-                else
-                {
-                    var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                    logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
-
-                    return RedirectPermanentPreserveMethod(alternateUrl);
-                }
-            }
-
-            logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
-            return NotFound();
-        }
-
-        [HttpGet]
         [Route("profile/{documentId}/profile")]
         public async Task<IActionResult> Profile(Guid documentId)
         {

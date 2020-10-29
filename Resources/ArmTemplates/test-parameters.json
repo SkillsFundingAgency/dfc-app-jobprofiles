@@ -62,6 +62,18 @@
         "EventGridSubscriptionClientOptionsEndpoint": {
             "value": "foo"
         },
+        "EventGridAegSasKey": {
+            "value": "a key"
+        },
+        "EventGridTopicUrl": {
+            "value": "a url"
+        },
+        "EventGridPublishClientOptionsApiEndpoint": {
+            "value": "a url"
+        },
+        "EventGridSubjectPrefix": {
+            "value": "anothervalue"
+        },
         "apimCompositeApiKey": {
             "value": "FakeKey"
         },

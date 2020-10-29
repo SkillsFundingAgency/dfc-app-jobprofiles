@@ -33,6 +33,11 @@ namespace DFC.App.JobProfile.EventProcessorService
                 return true;
             }
 
+            if (!existingContentPageModel.Equals(updatedContentPageModel)) 
+            {
+                return true;
+            }
+
             if (!Equals(existingContentPageModel.IsDefaultForPageLocation, updatedContentPageModel.IsDefaultForPageLocation))
             {
                 return true;
@@ -65,18 +70,6 @@ namespace DFC.App.JobProfile.EventProcessorService
         public static bool IsValidEventGridPublishClientOptions(ILogger<EventGridService> logger, EventGridPublishClientOptions? eventGridPublishClientOptions)
         {
             _ = eventGridPublishClientOptions ?? throw new ArgumentNullException(nameof(eventGridPublishClientOptions));
-
-            if (string.IsNullOrWhiteSpace(eventGridPublishClientOptions.TopicEndpoint))
-            {
-                logger.LogWarning($"EventGridPublishClientOptions is missing a value for: {nameof(eventGridPublishClientOptions.TopicEndpoint)}");
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(eventGridPublishClientOptions.TopicKey))
-            {
-                logger.LogWarning($"EventGridPublishClientOptions is missing a value for: {nameof(eventGridPublishClientOptions.TopicKey)}");
-                return false;
-            }
 
             if (string.IsNullOrWhiteSpace(eventGridPublishClientOptions.SubjectPrefix))
             {
@@ -131,8 +124,8 @@ namespace DFC.App.JobProfile.EventProcessorService
                     Data = new EventGridEventData
                     {
                         ItemId = updatedContentPageModel.Id.ToString(),
-                        Api = $"{eventGridPublishClientOptions.ApiEndpoint}/{updatedContentPageModel.Id}",
-                        DisplayText = updatedContentPageModel.CanonicalName,
+                        Api = $"{eventGridPublishClientOptions.ApiEndpoint}/{updatedContentPageModel.JobProfileWebsiteUrl}",
+                        DisplayText = updatedContentPageModel.JobProfileWebsiteUrl.ToString(),
                         VersionId = updatedContentPageModel.Version.ToString(),
                         Author = eventGridPublishClientOptions.SubjectPrefix,
                     },

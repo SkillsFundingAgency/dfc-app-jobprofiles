@@ -9,11 +9,8 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IWebhooksService
     {
-        Task<HttpStatusCode> DeleteContentAsync(Guid contentId);
-
         Task<HttpStatusCode> DeleteContentItemAsync(Guid contentItemId);
 
-        Task<HttpStatusCode> ProcessContentAsync(Uri url, Guid contentId);
 
         Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId);
 

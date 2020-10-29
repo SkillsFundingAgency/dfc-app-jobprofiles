@@ -37,7 +37,7 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.GetAsync(d => d.DocumentId == documentId).ConfigureAwait(false);
         }
 
-        public async Task<Data.Models.JobProfileModel> GetByNameAsync(string canonicalName)
+        public async Task<JobProfileModel> GetByNameAsync(string canonicalName)
         {
             if (string.IsNullOrWhiteSpace(canonicalName))
             {

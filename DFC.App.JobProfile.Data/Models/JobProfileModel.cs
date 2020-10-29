@@ -53,32 +53,23 @@ namespace DFC.App.JobProfile.Data.Models
 
         public DateTime CreatedDate { get; set; }
 
-        public string? SalaryStarter { get; set; }
-
-        public string? SalaryExperienced { get; set; }
-
-        public int? MinimumHours { get; set; }
-
         public string HtbCareerTips { get; set; }
-
-        public string HtbBodies { get; set; }
 
         public string WitDigitalSkillsLevel { get; set; }
 
-        public string WorkingPattern { get; set; }
-
-        public string WorkingHoursDetails { get; set; }
-
         public string TitleOptions { get; set; }
 
-        public int? MaximumHours { get; set; }
-
-        public string WorkingPatternDetails { get; set; }
-
-        public string CareerPathAndProgression { get; set; }
-
-        public string HtbFurtherInformation { get; set; }
-
         public List<StaticContentItemModel> SharedContent { get; set; }
+
+        public JobProfileOverviewModel OverviewSegment { get; set; }
+
+        public JobProfileWhatYoullDoModel WhatYoullDoSegment { get; set; }
+
+        public JobProfileCareerPathModel CareerPathSegment { get; set; }
+
+        public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
+
+        public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
+
     }
 }

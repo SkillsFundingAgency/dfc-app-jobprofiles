@@ -76,6 +76,8 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string SalaryExperienced { get; set; }
 
+        public string CareerPathAndProgression { get; set; }
+
         public decimal MinimumHours { get; set; }
 
         public string? HtbCareerTips { get; set; }
@@ -96,8 +98,6 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string WorkingPatternDetails { get; set; }
 
-        public string CareerPathAndProgression { get; set; }
-
         public string HtbFurtherInformation { get; set; }
 
         private ContentLinksModel? PrivateLinksModel { get; set; }
@@ -106,6 +106,16 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string RelevantSubjects { get; set; }
 
+        public JobProfileWhatYoullDoModel WhatYoullDoSegment { get; set; }
+
+        public JobProfileCareerPathModel CareerPathSegment { get; set; }
+
+        public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
+
+        public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
+
         public IList<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
+        
+        public List<Guid> AllContentItemIds { get; set; }
     }
 }

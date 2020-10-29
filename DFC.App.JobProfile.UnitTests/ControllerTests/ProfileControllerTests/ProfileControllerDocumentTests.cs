@@ -115,6 +115,51 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             controller.Dispose();
         }
 
+        [Theory]
+        [MemberData(nameof(InvalidMediaTypes))]
+        public async Task ProfileControllerDocumentOverviewReturnsPartialView(string mediaTypeName)
+        {
+            // Arrange
+            const string article = "an-article-namse";
+            var expectedResult = A.Fake<JobProfileModel>();
+            var controller = BuildProfileController(mediaTypeName);
+
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeMapper.Map<DocumentViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<DocumentViewModel>());
+
+            // Act
+            var result = await controller.DocumentOverview(article).ConfigureAwait(false);
+
+            // Assert
+            var statusResult = Assert.IsType<ViewResult>(result);
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+
+            controller.Dispose();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidMediaTypes))]
+        public async Task ProfileControllerDocumentOverviewReturnsNotFound(string mediaTypeName)
+        {
+            // Arrange
+            const string article = "an-article-name";
+            var expectedResult = A.Fake<JobProfileModel>();
+            expectedResult = null;
+            var controller = BuildProfileController(mediaTypeName);
+
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeMapper.Map<DocumentViewModel>(A<JobProfileModel>.Ignored)).Returns(A.Fake<DocumentViewModel>());
+
+            // Act
+            var result = await controller.DocumentOverview(article).ConfigureAwait(false);
+
+            // Assert
+            var statusResult = Assert.IsType<NotFoundResult>(result);
+            Assert.Equal((int)HttpStatusCode.NotFound, statusResult.StatusCode);
+
+            controller.Dispose();
+        }
+
         private static JobProfileModel CreateJobProfileModel(string headTitle, string headDescription, string headKeywords, Guid jobProfileId)
         {
             return new JobProfileModel

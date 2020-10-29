@@ -1,47 +1,37 @@
-﻿@model DocumentViewModel
-@{
-    var directRoute = Model.ContentItems.Where(x => x.ContentType == "DirectRoute").SingleOrDefault();
-    var apprenticeshipRoute = Model.ContentItems.Where(x => x.ContentType == "ApprenticeshipRoute").SingleOrDefault();
-    var collegeRoute = Model.ContentItems.Where(x => x.ContentType == "CollegeRoute").SingleOrDefault();
-    var otherRoute = Model.ContentItems.Where(x => x.ContentType == "OtherRoute").SingleOrDefault();
-    var registration = Model.ContentItems.Where(x => x.ContentType == "Registration").SingleOrDefault();
-    var universityRoute = Model.ContentItems.Where(x => x.ContentType == "UniversityRoute").SingleOrDefault();
-    var volunteeringRoute = Model.ContentItems.Where(x => x.ContentType == "VolunteeringRoute").SingleOrDefault();
-    var workRoute = Model.ContentItems.Where(x => x.ContentType == "WorkRoute").SingleOrDefault();
-}
+﻿@model JobProfileHowToBecomeModel
 
     <section id="HowToBecome" data-gtm-vis-recent-on-screen-8675592_54="32785" data-gtm-vis-first-on-screen-8675592_54="32785" data-gtm-vis-total-visible-time-8675592_54="100" data-gtm-vis-has-fired-8675592_54="1">
         <h2 class="heading-large job-profile-heading">How to become an @Model.Title</h2>
         @Html.Raw(Model.HtbBodies)
 
-        @if (collegeRoute != null)
+        @if (Model.CollegeRoute != null)
         {
-            <partial name="_jbHtbCollegeRoute" model="@collegeRoute" />
+            <partial name="_jbHtbCollegeRoute" model="@Model.CollegeRoute" />
         }
 
-        @if (apprenticeshipRoute != null)
+        @if (Model.ApprenticeshipRoute != null)
         {
-            <partial name="_jbHtbApprenticeshipRoute" model="@apprenticeshipRoute" />
+            <partial name="_jbHtbApprenticeshipRoute" model="@Model.ApprenticeshipRoute" />
         }
 
-        @if (directRoute != null)
+        @if (Model.DirectRoute != null)
         {
-            <partial name="_jbHtbDirectRoute" model="@directRoute" />
+            <partial name="_jbHtbDirectRoute" model="@Model.DirectRoute" />
         }
 
-        @if (otherRoute != null)
+        @if (Model.OtherRoute != null)
         {
-            <partial name="_jbHtbOtherRoute" model="@otherRoute" />
+            <partial name="_jbHtbOtherRoute" model="@Model.OtherRoute" />
         }
 
-        @if (volunteeringRoute != null)
+        @if (Model.VolunteeringRoute != null)
         {
-            <partial name="_jbHtbVolunteeringRoute" model="@volunteeringRoute" />
+            <partial name="_jbHtbVolunteeringRoute" model="@Model.VolunteeringRoute" />
         }
 
-        @if (registration != null)
+        @if (Model.Registration != null)
         {
-            <partial name="_jbHtbRegistration" model="@registration" />
+            <partial name="_jbHtbRegistration" model="@Model.Registration" />
         }
 
         @if (Model.HtbFurtherInformation != null)
@@ -49,9 +39,9 @@
             <partial name="_jbHtbMoreInformation" model="@Model.HtbFurtherInformation" />
         }
 
-        @if (workRoute != null)
+        @if (Model.WorkRoute != null)
         {
-            <partial name="_jbHtbWorkRoute" model="@workRoute" />
+            <partial name="_jbHtbWorkRoute" model="@Model.WorkRoute" />
         }
 
     </section>

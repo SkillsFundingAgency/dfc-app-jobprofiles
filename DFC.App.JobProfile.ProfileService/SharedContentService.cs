@@ -41,12 +41,13 @@ namespace DFC.App.JobProfile.ProfileService
             foreach (var item in contentList)
             {
                 var sharedContentItem = await repository.GetAsync(d => d.CanonicalName == item.ToLowerInvariant()).ConfigureAwait(false);
+
                 if (sharedContentItem != null)
                 {
                     contentListItems.Add(sharedContentItem);
                 }
             }
-            
+
             return contentListItems;
         }
     }

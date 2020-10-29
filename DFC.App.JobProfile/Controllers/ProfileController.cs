@@ -4,10 +4,12 @@ using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -111,7 +113,6 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPost, HttpGet]
         [Route("profile/overview/{article}")]
-        [Route("profile/overview/{article}/contents")]
         public async Task<IActionResult> DocumentOverview(string article)
         {
             logService.LogInformation($"{nameof(Document)} has been called with: {article}");
@@ -126,7 +127,7 @@ namespace DFC.App.JobProfile.Controllers
             var viewModel = mapper.Map<HeroViewModel>(jobProfileModel);
 
             logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
-            return PartialView("~/Views/Profile/_jbOverviewSegment.cshtml", viewModel);
+            return View("~/Views/Profile/_jbOverviewSegment.cshtml", viewModel);
         }
 
         [HttpPut]

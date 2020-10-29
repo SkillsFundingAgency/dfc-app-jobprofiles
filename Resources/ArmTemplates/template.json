@@ -117,6 +117,18 @@
         "EventGridSubscriptionClientOptionsEndpoint": {
             "type": "string"
         },
+        "EventGridAegSasKey": {
+            "type": "string"
+        },
+        "EventGridTopicUrl": {
+            "type": "string"
+        },
+        "EventGridPublishClientOptionsApiEndpoint": {
+            "type": "string"
+        },
+        "EventGridSubjectPrefix": {
+            "type": "string"
+        },
         "apimCompositeApiKey": {
             "type": "securestring"
         },
@@ -500,6 +512,22 @@
                             {
                                 "name": "EventGridSubscriptionClientOptions__Endpoint",
                                 "value": "[parameters('EventGridSubscriptionClientOptionsEndpoint')]"
+                            },
+                            {
+                                "name": "EventGridPublishClientOptions__TopicKey",
+                                "value": "[parameters('EventGridAegSasKey')]"
+                            },
+                            {
+                                "name": "EventGridPublishClientOptions__TopicEndpoint",
+                                "value": "[parameters('EventGridTopicUrl')]"
+                            },
+                            {
+                                "name": "EventGridPublishClientOptions__SubjectPrefix",
+                                "value": "[parameters('EventGridSubjectPrefix')]"
+                            },
+                            {
+                                "name": "EventGridPublishClientOptions__ApiEndpoint",
+                                "value": "[parameters('EventGridPublishClientOptionsApiEndpoint')]"
                             },
                             {
                                 "name": "SubscriptionSettings__SubscriptionServiceEndpoint",

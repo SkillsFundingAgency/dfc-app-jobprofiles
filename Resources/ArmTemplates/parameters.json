@@ -83,6 +83,18 @@
         "EventGridSubscriptionClientOptionsEndpoint": {
             "value": "__EventGridSubscriptionClientOptionsEndpoint__"
         },
+        "EventGridAegSasKey": {
+            "value": "__EventGridAegSasKey__"
+        },
+        "EventGridTopicUrl": {
+            "value": "__EventGridTopicUrl__"
+        },
+        "EventGridPublishClientOptionsApiEndpoint": {
+            "value": "__EventGridPublishClientOptionsApiEndpoint__"
+        },
+        "EventGridSubjectPrefix": {
+            "value": "__EventGridSubjectPrefix__"
+        },
         "apimCompositeApiKey": {
             "value": "__apimCompositeApiKey__"
         },

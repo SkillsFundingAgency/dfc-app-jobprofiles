@@ -120,7 +120,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async Task ProfileControllerDocumentOverviewReturnsPartialView(string mediaTypeName)
         {
             // Arrange
-            const string article = "an-article-name";
+            const string article = "an-article-namse";
             var expectedResult = A.Fake<JobProfileModel>();
             var controller = BuildProfileController(mediaTypeName);
 

@@ -141,7 +141,7 @@
         "apimProxyAddress": {
             "type": "string"
         },
-        "ContentApiAddress": {
+        "ContentBaseAddress": {
             "type": "string"
         },
         "apimContentApiKey": {
@@ -582,7 +582,7 @@
                             },
                             {
                                 "name": "CmsApiClientOptions__BaseAddress",
-                                "value": "[parameters('ContentApiAddress')]"
+                                "value": "[parameters('ContentBaseAddress')]"
                             },
                             {
                                 "name": "CmsApiClientOptions__StaticContentEndpoint",

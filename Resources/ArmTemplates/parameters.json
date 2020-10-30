@@ -101,8 +101,8 @@
         "apimProxyAddress": {
             "value": "__apimProxyAddress__"
         },
-        "ContentApiAddress": {
-            "value": "__ContentApiAddress__"
+        "ContentBaseAddress": {
+            "value": "__ContentBaseAddress__"
         },
         "SubscriptionApiEndpointUrl": {
             "value": "__SubscriptionApiEndpointUrl__"

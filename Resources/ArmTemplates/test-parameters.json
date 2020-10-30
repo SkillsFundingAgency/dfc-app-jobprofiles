@@ -80,6 +80,9 @@
         "apimProxyAddress": {
             "value": "https://foo"
         },
+        "ContentApiAddress": {
+            "value": "https://foo"
+        },
         "SubscriptionApiEndpointUrl": {
             "value": "https://url"
         },

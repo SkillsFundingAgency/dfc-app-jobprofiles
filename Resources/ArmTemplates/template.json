@@ -141,6 +141,9 @@
         "apimProxyAddress": {
             "type": "string"
         },
+        "ContentApiAddress": {
+            "type": "string"
+        },
         "apimContentApiKey": {
             "type": "securestring"
         }
@@ -263,6 +266,10 @@
                             },
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "ApplicationInsights:InstrumentationKey",
                                 "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
                             },
                             {
@@ -575,7 +582,7 @@
                             },
                             {
                                 "name": "CmsApiClientOptions__BaseAddress",
-                                "value": "[parameters('apimProxyAddress')]"
+                                "value": "[parameters('ContentApiAddress')]"
                             },
                             {
                                 "name": "CmsApiClientOptions__StaticContentEndpoint",

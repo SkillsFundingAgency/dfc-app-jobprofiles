@@ -127,7 +127,7 @@ namespace DFC.App.JobProfile.Controllers
             var viewModel = mapper.Map<HeroViewModel>(jobProfileModel);
 
             logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
-            return View("~/Views/Profile/_jbOverviewSegment.cshtml", viewModel);
+            return View("~/Views/Profile/_OverviewDysac.cshtml", viewModel);
         }
 
         [HttpPut]

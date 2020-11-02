@@ -14,5 +14,7 @@ namespace DFC.App.JobProfile.ViewModels
         public string Description { get; set; }
 
         public JobProfileOverviewModel OverviewSegment { get; set; }
+
+        public string JobProfileWebsiteUrl { get; set; }
     }
 }

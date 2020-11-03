@@ -83,6 +83,9 @@
         "ContentBaseAddress": {
             "value": "https://foo"
         },
+        "OverviewDetailsLink": {
+            "value": "https://foo"
+        },
         "SubscriptionApiEndpointUrl": {
             "value": "https://url"
         },

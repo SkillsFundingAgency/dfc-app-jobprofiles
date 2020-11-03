@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
@@ -59,7 +60,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             httpContext.Request.Host = new HostString(host);
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeSharedContentService, mapper ?? FakeMapper, feedbackLinks, whitelist)
+            var overviewDetails = A.Fake<OverviewDetails>();
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, FakeSharedContentService, mapper ?? FakeMapper, feedbackLinks, overviewDetails, whitelist)
             {
                 ControllerContext = new ControllerContext()
                 {

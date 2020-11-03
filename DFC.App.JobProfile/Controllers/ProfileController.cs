@@ -26,9 +26,14 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ISharedContentService sharedContentService;
         private readonly AutoMapper.IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
+        private readonly OverviewDetails overviewDetails;
         private readonly string[] redirectionHostWhitelist = { "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0", "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474" };
 
-        public ProfileController(ILogger<ProfileController> logService, IJobProfileService jobProfileService, ISharedContentService sharedContentService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, string[] redirectionHostWhitelist = null)
+        public ProfileController(ILogger<ProfileController> logService, IJobProfileService jobProfileService, 
+            ISharedContentService sharedContentService, AutoMapper.IMapper mapper, 
+            FeedbackLinks feedbackLinks,
+            OverviewDetails overviewDetails,
+            string[] redirectionHostWhitelist = null)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
@@ -37,6 +42,7 @@ namespace DFC.App.JobProfile.Controllers
             this.feedbackLinks = feedbackLinks;
             this.redirectionHostWhitelist = redirectionHostWhitelist ?? this.redirectionHostWhitelist;
             this.sharedContentService = sharedContentService;
+            this.overviewDetails = overviewDetails;
         }
 
         [HttpGet]
@@ -125,6 +131,7 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             var viewModel = mapper.Map<HeroViewModel>(jobProfileModel);
+            viewModel.JobProfileWebsiteUrl = this.overviewDetails.Link + viewModel.JobProfileWebsiteUrl;
 
             logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
             return View("~/Views/Profile/_OverviewDysac.cshtml", viewModel);

@@ -141,6 +141,7 @@ namespace DFC.App.JobProfile
             services.AddTransient<CorrelationIdDelegatingHandler>();
            // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKe"]);
             services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
+            services.AddSingleton(configuration.GetSection(nameof(OverviewDetails)).Get<OverviewDetails>() ?? new OverviewDetails());
 
             services.AddApplicationInsightsTelemetry();
             var cosmosDbConnectionContentPages = configuration.GetSection(CosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();

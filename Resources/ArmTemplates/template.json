@@ -135,6 +135,9 @@
         "SubscriptionApiEndpointUrl": {
             "type": "string"
         },
+        "OverviewDetailsLink": {
+            "type": "string"
+        },
         "ApplicationWebhookReceiverEndpointUrl": {
             "type": "string"
         },
@@ -479,6 +482,10 @@
                             {
                                 "name": "FeedbackLinks__SmartSurveyJP",
                                 "value": "[parameters('surveyUrl')]"
+                            },
+                            {
+                                "name": "OverviewDetails__Link",
+                                "value": "[parameters('OverviewDetailsLink')]"
                             },
                             {
                                 "name": "Logging__ApplicationInsights__LogLevel__Default",

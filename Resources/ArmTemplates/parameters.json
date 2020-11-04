@@ -101,6 +101,9 @@
         "apimProxyAddress": {
             "value": "__apimProxyAddress__"
         },
+        "OverviewDetailsLink": {
+            "value": "__OverviewDetailsLink__"
+        },
         "ContentBaseAddress": {
             "value": "__ContentBaseAddress__"
         },

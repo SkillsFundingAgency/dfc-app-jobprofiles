@@ -784,7 +784,7 @@
             "name": "[concat(variables('functionAppInsightsName'), '-metric-exceptions')]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[variables('webAppInsightsName')]"
+                "[variables('functionAppInsightsName')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -866,6 +866,7 @@
             "apiVersion": "2019-05-01",
             "name": "[concat(variables('AppServicePlanName'), '-CPUPercentage')]",
             "type": "Microsoft.Resources/deployments",
+            "condition": "[not(equals(parameters('sharedAppServicePlanName'), variables('appServicePlanName')))]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -919,6 +920,7 @@
             "apiVersion": "2019-05-01",
             "name": "[concat(variables('AppServicePlanName'), '-MemoryPercentage')]",
             "type": "Microsoft.Resources/deployments",
+            "condition": "[not(equals(parameters('sharedAppServicePlanName'), variables('appServicePlanName')))]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {

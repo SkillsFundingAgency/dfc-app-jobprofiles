@@ -3,11 +3,13 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="job-profile-sections">
-            <partial name="_HowToBecomeSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.HowToBecome)?.Markup />
-            <partial name="_WhatItTakesSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.WhatItTakes)?.Markup />
-            <partial name="_WhatYouWillDoSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.WhatYouWillDo)?.Markup />
-            <partial name="_CareerPathSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.CareerPathsAndProgression)?.Markup />
-            <partial name="_CurrentOpportunitiesSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.CurrentOpportunities)?.Markup />
+            <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-with-summary-sections">
+                <partial name="_HowToBecomeSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.HowToBecome)?.Markup />
+                <partial name="_WhatItTakesSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.WhatItTakes)?.Markup />
+                <partial name="_WhatYouWillDoSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.WhatYouWillDo)?.Markup />
+                <partial name="_CareerPathSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.CareerPathsAndProgression)?.Markup />
+                <partial name="_CurrentOpportunitiesSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.CurrentOpportunities)?.Markup />
+            </div>
         </div>
     </div>
 

@@ -3,7 +3,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="job-profile-sections">
-            <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-with-summary-sections">
+            <div class="govuk-accordion" data-module="govuk-accordion" id="job-profile-accordion-with-summary-sections">
                 <partial name="_HowToBecomeSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.HowToBecome)?.Markup />
                 <partial name="_WhatItTakesSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.WhatItTakes)?.Markup />
                 <partial name="_WhatYouWillDoSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.WhatYouWillDo)?.Markup />

@@ -17,7 +17,11 @@ namespace DFC.App.JobProfile.HostedServices
         private readonly ICacheReloadService cacheReloadService;
         private readonly IHostedServiceTelemetryWrapper hostedServiceTelemetryWrapper;
 
-        public CacheReloadBackgroundService(ILogger<CacheReloadBackgroundService> logger, CmsApiClientOptions cmsApiClientOptions, ICacheReloadService cacheReloadService, IHostedServiceTelemetryWrapper hostedServiceTelemetryWrapper)
+        public CacheReloadBackgroundService(
+            ILogger<CacheReloadBackgroundService> logger,
+            CmsApiClientOptions cmsApiClientOptions,
+            ICacheReloadService cacheReloadService,
+            IHostedServiceTelemetryWrapper hostedServiceTelemetryWrapper)
         {
             this.logger = logger;
             this.cmsApiClientOptions = cmsApiClientOptions;

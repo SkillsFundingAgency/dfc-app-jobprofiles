@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//using System;
+//using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Contracts
-{
-    public interface IContentCacheService
-    {
-        bool CheckIsContentItem(Guid contentItemId);
+//namespace DFC.App.JobProfile.Data.Contracts
+//{
+//    public interface IContentCacheService
+//    {
+//        bool CheckIsContentItem(Guid contentItemId);
 
-        void Clear();
+//        void Clear();
 
-        IList<Guid> GetContentIdsContainingContentItemId(Guid contentItemId);
+//        IList<Guid> GetContentIdsContainingContentItemId(Guid contentItemId);
 
-        void Remove(Guid contentId);
+//        void Remove(Guid contentId);
 
-        void RemoveContentItem(Guid contentId, Guid contentItemId);
+//        void RemoveContentItem(Guid contentId, Guid contentItemId);
 
-        void AddOrReplace(Guid contentId, List<Guid> contentItemIds);
-    }
-}
+//        void AddOrReplace(Guid contentId, List<Guid> contentItemIds);
+//    }
+//}

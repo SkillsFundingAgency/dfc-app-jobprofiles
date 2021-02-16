@@ -19,14 +19,14 @@ namespace DFC.App.JobProfile.CacheContentService
         private readonly AutoMapper.IMapper mapper;
         private readonly IEventMessageService<ContentPageModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
-        private readonly Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService;
+        private readonly IContentCacheService contentCacheService;
          
         public CacheReloadService(
             ILogger<CacheReloadService> logger,
             AutoMapper.IMapper mapper,
             IEventMessageService<ContentPageModel> eventMessageService,
             ICmsApiService cmsApiService,
-            Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService)
+            IContentCacheService contentCacheService)
         {
             this.logger = logger;
             this.mapper = mapper;

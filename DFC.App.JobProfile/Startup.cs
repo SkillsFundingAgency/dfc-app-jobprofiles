@@ -139,7 +139,8 @@ namespace DFC.App.JobProfile
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<ISharedContentService, SharedContentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
-           // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKe"]);
+
+            // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
             services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
             services.AddSingleton(configuration.GetSection(nameof(OverviewDetails)).Get<OverviewDetails>() ?? new OverviewDetails());
 
@@ -148,7 +149,10 @@ namespace DFC.App.JobProfile
             var cosmosDbConnectionStaticPages = configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
             services.AddContentPageServices<ContentPageModel>(cosmosDbConnectionContentPages, env.IsDevelopment());
             services.AddContentPageServices<StaticContentItemModel>(cosmosDbConnectionStaticPages, env.IsDevelopment());
-            services.AddSingleton<Content.Pkg.Netcore.Data.Contracts.IContentCacheService>(new ContentCacheService());
+
+            // remote contract local service implementation
+            services.AddSingleton<IContentCacheService, ContentCacheService>();
+
             services.AddTransient<IEventMessageService<ContentPageModel>, EventMessageService<ContentPageModel>>();
             services.AddTransient<IEventMessageService<StaticContentItemModel>, EventMessageService<StaticContentItemModel>>();
             services.AddTransient<ICacheReloadService, CacheReloadService>();

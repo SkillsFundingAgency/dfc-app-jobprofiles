@@ -1,29 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <CodeAnalysisRuleSet>../DFC.Digital.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     <LangVersion>latest</LangVersion>
     <ProjectGuid>{8FD8EB5A-1255-4B74-8E9D-07344C744C08}</ProjectGuid>
+    <UserSecretsId>72a03c8a-df0c-4319-91b3-4a2eb59c9e2f</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Views\Home\**" />
     <Content Remove="Views\Home\**" />
     <EmbeddedResource Remove="Views\Home\**" />
     <None Remove="Views\Home\**" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Remove="appsettings-template.json" />
   </ItemGroup>
-
   <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="../stylecop.json" />
+    <AdditionalFiles Include="..\stylecop.json" />
   </ItemGroup>
-
-
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="CorrelationId" Version="2.1.0" />
@@ -44,21 +39,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-
   <ItemGroup>
     <None Include="appsettings-template.json" />
   </ItemGroup>
-
-
   <ItemGroup>
     <ProjectReference Include="..\DFC.App.JobProfile.CacheContentService\DFC.App.JobProfile.CacheContentService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.EventProcessorService\DFC.App.JobProfile.EventProcessorService.csproj" />
     <ProjectReference Include="..\DFC.App.JobProfile.ProfileService\DFC.App.JobProfile.ProfileService.csproj" />
   </ItemGroup>
-
-
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>

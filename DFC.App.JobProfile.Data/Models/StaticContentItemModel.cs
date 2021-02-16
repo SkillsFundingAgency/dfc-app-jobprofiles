@@ -27,6 +27,7 @@ namespace DFC.App.JobProfile.Data.Models
         public override string PageLocation { get; set; } = "/shared-content";
 
         Guid IDataModel.DocumentId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         string IDataModel.Etag { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         string IDataModel.PartitionKey => throw new NotImplementedException();

@@ -177,7 +177,6 @@ namespace DFC.App.JobProfile
             var policyRegistry = services.AddPolicyRegistry();
 
             services.AddApiServices(configuration, policyRegistry);
-
         }
     }
 }

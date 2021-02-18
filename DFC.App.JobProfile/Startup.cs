@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using CorrelationId;
-using DFC.App.JobProfile.CacheContentService;
+﻿using DFC.App.JobProfile.CacheContentService;
 using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Contracts;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ClientOptions;
 using DFC.App.JobProfile.EventProcessorService;
-using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.HostedServices;
 using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.Models;
@@ -21,7 +18,6 @@ using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Content.Pkg.Netcore.Extensions;
 using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
 using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
-using DFC.Logger.AppInsights.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,35 +28,35 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile
 {
-    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
         public const string StaticCosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:StaticContent";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
 
-        private readonly IConfiguration configuration;
-        private readonly IWebHostEnvironment env;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _envvironment;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            this.configuration = configuration;
-            this.env = env;
+            _configuration = configuration;
+            _envvironment = env;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // TODO: check this!!! CorrelationId breaking changes...
+            /*
             app.UseCorrelationId(new CorrelationIdOptions
             {
                 Header = "DssCorrelationId",
                 UseGuidForCorrelationId = true,
                 UpdateTraceIdentifier = false,
             });
+            */
 
             if (env.IsDevelopment())
             {
@@ -98,16 +94,15 @@ namespace DFC.App.JobProfile
                     name: "default",
                     pattern: "{controller=Health}/{action=Ping}");
             });
-
-            //mapper?.ConfigurationProvider.AssertConfigurationIsValid();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationInsightsTelemetry();
             services.AddAutoMapper(typeof(Startup).Assembly);
-            services.AddCorrelationId();
+
+            // TODO: check this!!! breaking changes...
+            // services.AddCorrelationId();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -122,11 +117,14 @@ namespace DFC.App.JobProfile
 
         private void AddApplicationSpecificDependencyInjectionConfiguration(IServiceCollection services)
         {
-            //var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel();
-            //eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase));
-            //services.AddSingleton(eventGridSubscriptionModel);
-            var cosmosDbConnection = configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
-            var staticContentDbConnection = configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<StaticCosmosDbConnection>();
+            /*
+            var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel();
+            eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase));
+            services.AddSingleton(eventGridSubscriptionModel)
+            */
+
+            var cosmosDbConnection = _configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
+            var staticContentDbConnection = _configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<StaticCosmosDbConnection>();
             var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
 
             services.AddSingleton(cosmosDbConnection);
@@ -141,42 +139,42 @@ namespace DFC.App.JobProfile
             services.AddTransient<CorrelationIdDelegatingHandler>();
 
             // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
-            services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
-            services.AddSingleton(configuration.GetSection(nameof(OverviewDetails)).Get<OverviewDetails>() ?? new OverviewDetails());
+            services.AddSingleton(_configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
+            services.AddSingleton(_configuration.GetSection(nameof(OverviewDetails)).Get<OverviewDetails>() ?? new OverviewDetails());
 
             services.AddApplicationInsightsTelemetry();
-            var cosmosDbConnectionContentPages = configuration.GetSection(CosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
-            var cosmosDbConnectionStaticPages = configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
-            services.AddContentPageServices<ContentPageModel>(cosmosDbConnectionContentPages, env.IsDevelopment());
-            services.AddContentPageServices<StaticContentItemModel>(cosmosDbConnectionStaticPages, env.IsDevelopment());
+            var cosmosDbConnectionContentPages = _configuration.GetSection(CosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
+            var cosmosDbConnectionStaticPages = _configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
+            services.AddContentPageServices<ContentPageModel>(cosmosDbConnectionContentPages, _envvironment.IsDevelopment());
+            services.AddContentPageServices<StaticContentItemModel>(cosmosDbConnectionStaticPages, _envvironment.IsDevelopment());
 
             // remote contract local service implementation
             services.AddSingleton<IContentCacheService, ContentCacheService>();
 
             services.AddTransient<IEventMessageService<ContentPageModel>, EventMessageService<ContentPageModel>>();
             services.AddTransient<IEventMessageService<StaticContentItemModel>, EventMessageService<StaticContentItemModel>>();
-            services.AddTransient<ICacheReloadService, CacheReloadService>();
-            services.AddTransient<IStaticContentReloadService, StaticContentReloadService>();
+            services.AddTransient<ILoadJobProfileContent, JobProfileCacheLoader>();
+            services.AddTransient<ILoadStaticContent, StaticContentLoader>();
             services.AddTransient<IApiService, ApiService>();
             services.AddTransient<ICmsApiService, CmsApiService>();
             services.AddTransient<IWebhooksService, WebhooksService>();
             services.AddTransient<IEventGridService, EventGridService>();
             services.AddTransient<IEventGridClientService, EventGridClientService>();
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
-            services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
-            services.AddSingleton(configuration.GetSection(nameof(EventGridSubscriptionClientOptions)).Get<EventGridSubscriptionClientOptions>() ?? new EventGridSubscriptionClientOptions());
-            services.AddSingleton(configuration.GetSection(nameof(EventGridPublishClientOptions)).Get<EventGridPublishClientOptions>() ?? new EventGridPublishClientOptions());
+            services.AddSingleton(_configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
+            services.AddSingleton(_configuration.GetSection(nameof(EventGridSubscriptionClientOptions)).Get<EventGridSubscriptionClientOptions>() ?? new EventGridSubscriptionClientOptions());
+            services.AddSingleton(_configuration.GetSection(nameof(EventGridPublishClientOptions)).Get<EventGridPublishClientOptions>() ?? new EventGridPublishClientOptions());
             services.AddHostedServiceTelemetryWrapper();
 
-            services.AddSubscriptionBackgroundService(configuration);
-            services.AddHostedService<StaticContentReloadBackgroundService>();
-            services.AddHostedService<CacheReloadBackgroundService>();
+            services.AddSubscriptionBackgroundService(_configuration);
+            services.AddHostedService<StaticContentBackgroundLoader>();
+            services.AddHostedService<JobProfileBackgroundLoader>();
 
             const string AppSettingsPolicies = "Policies";
-            var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
+            var policyOptions = _configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
             var policyRegistry = services.AddPolicyRegistry();
 
-            services.AddApiServices(configuration, policyRegistry);
+            services.AddApiServices(_configuration, policyRegistry);
         }
     }
 }

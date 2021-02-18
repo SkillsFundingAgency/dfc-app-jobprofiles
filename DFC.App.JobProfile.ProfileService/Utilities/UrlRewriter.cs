@@ -6,7 +6,7 @@ namespace DFC.App.JobProfile.ProfileService.Utilities
     {
         public static string Rewrite(string content, Uri fromUri, Uri toUri)
         {
-            if (fromUri != null && toUri != null)
+            if (fromUri != null && toUri != null && content != null)
             {
                 var attributeNames = new string[] { "href", "action" };
                 var quoteChars = new char[] { '"', '\'' };

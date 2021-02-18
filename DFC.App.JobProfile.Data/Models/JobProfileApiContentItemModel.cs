@@ -7,56 +7,56 @@ using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileApiContentItemModel : IBaseContentItemModel<JobProfileApiContentItemModel>
+    public class JobProfileApiContentItemModel :
+        IBaseContentItemModel<JobProfileApiContentItemModel>
     {
-
         [JsonProperty("uri")]
-        public Uri Url { get; set; }
+        public Uri? Url { get; set; } = UriExtra.Empty;
 
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
-        public string FurtherInfo { get; set; }
+        public string FurtherInfo { get; set; } = string.Empty;
 
-        public string RelevantSubjects { get; set; }
+        public string RelevantSubjects { get; set; } = string.Empty;
 
         [JsonProperty("id")]
-        public Guid? ItemId { get; set; }
+        public Guid ItemId { get; set; } = Guid.Empty;
 
         [JsonProperty("skos__prefLabel")]
-        public string? Content { get; set; }
+        public string Content { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "ModifiedDate")]
-        public DateTime Published { get; set; }
+        public DateTime Published { get; set; } = DateTime.UtcNow;
 
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [JsonProperty("contentType")]
-        public string ContentType { get; set; }
+        public string ContentType { get; set; } = string.Empty;
 
         [JsonProperty("_links")]
-        public JObject? Links { get; set; }
+        public JObject Links { get; set; } = new JObject();
 
         public IList<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string? BreadcrumbLinkSegment { get; set; }
+        public string BreadcrumbLinkSegment { get; set; } = string.Empty;
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string? BreadcrumbText { get; set; }
+        public string BreadcrumbText { get; set; } = string.Empty;
 
         public DateTime LastCached { get; set; } = DateTime.UtcNow;
 
         [JsonIgnore]
-        public ContentLinksModel ContentLinks
+        public ContentLinksModel? ContentLinks
         {
             get => PrivateLinksModel ??= new ContentLinksModel(Links);
 
-            set => PrivateLinksModel = value;
+            set => PrivateLinksModel = value ??= new ContentLinksModel(Links);
         }
 
         [JsonIgnore]
-        private ContentLinksModel PrivateLinksModel { get; set; }
+        private ContentLinksModel PrivateLinksModel { get; set; } = new ContentLinksModel(null);
     }
 }

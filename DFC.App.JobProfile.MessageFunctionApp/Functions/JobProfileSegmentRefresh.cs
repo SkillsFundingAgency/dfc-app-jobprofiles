@@ -2,6 +2,7 @@
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +24,9 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             IMessageProcessor processor,
             ICorrelationIdProvider correlationIdProvider)
         {
+            _ = processor ?? throw new ArgumentNullException(nameof(processor));
+            _ = correlationIdProvider ?? throw new ArgumentNullException(nameof(correlationIdProvider));
+
             this.logService = logService;
             this.processor = processor;
             this.correlationIdProvider = correlationIdProvider;
@@ -31,20 +35,9 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         [FunctionName("JobProfileSegmentRefresh")]
         public async Task Run([ServiceBusTrigger("%job-profiles-refresh-topic%", "%job-profiles-refresh-subscription%", Connection = "service-bus-connection-string")] Message segmentRefreshMessage)
         {
-            if (segmentRefreshMessage is null)
-            {
-                throw new System.ArgumentNullException(nameof(segmentRefreshMessage));
-            }
+            _ = segmentRefreshMessage ?? throw new ArgumentNullException(nameof(segmentRefreshMessage));
 
-            if (processor is null)
-            {
-                throw new System.ArgumentNullException(nameof(processor));
-            }
-
-            if (correlationIdProvider != null)
-            {
-                correlationIdProvider.CorrelationId = segmentRefreshMessage.CorrelationId;
-            }
+            correlationIdProvider.CorrelationId = segmentRefreshMessage.CorrelationId;
 
             segmentRefreshMessage.UserProperties.TryGetValue(MessageAction, out var messageAction); // Parse to enum values
             segmentRefreshMessage.UserProperties.TryGetValue(MessageContentType, out var messageCtype);

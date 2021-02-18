@@ -6,7 +6,8 @@ using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.CacheContentService
 {
-    public class ContentCacheService : IContentCacheService
+    public class ContentCacheService :
+        IContentCacheService
     {
         private IDictionary<Guid, List<Guid>> ContentItems { get; set; } = new Dictionary<Guid, List<Guid>>();
 

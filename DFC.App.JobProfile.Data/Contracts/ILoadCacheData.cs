@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {
-    public interface IStaticContentReloadService
+    public interface ILoadCacheData
     {
         Task Reload(CancellationToken stoppingToken);
     }

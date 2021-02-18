@@ -9,23 +9,24 @@ using System.Linq;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileApiDataModel : IBaseContentItemModel<JobProfileApiContentItemModel>
+    public class JobProfileApiDataModel :
+        IBaseContentItemModel<JobProfileApiContentItemModel>
     {
         [JsonProperty("id")]
-        public Guid? ItemId { get; set; }
+        public Guid ItemId { get; set; } = Guid.Empty;
 
         [JsonProperty("alias_alias")]
-        public string? CanonicalName { get; set; }
+        public string CanonicalName { get; set; } = string.Empty;
 
         [JsonIgnore]
         public string Pagelocation => $"{TaxonomyTerms.FirstOrDefault() ?? string.Empty}/{CanonicalName}";
 
         [JsonProperty("taxonomy_terms")]
-        public List<string> TaxonomyTerms { get; set; } = new List<string>();
+        public ICollection<string> TaxonomyTerms { get; set; } = new List<string>();
 
-        public Guid? Version { get; set; }
+        public Guid Version { get; set; } = Guid.Empty;
 
-        public string? BreadcrumbTitle { get; set; }
+        public string BreadcrumbTitle { get; set; } = string.Empty;
 
         [JsonProperty("sitemap_Exclude")]
         public bool ExcludeFromSitemap { get; set; }
@@ -37,27 +38,19 @@ namespace DFC.App.JobProfile.Data.Models
         public Uri? Url { get; set; }
 
         [JsonProperty("skos__prefLabel")]
-        public string? Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-        public string? Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
-        public string? Keywords { get; set; }
+        public string Keywords { get; set; } = string.Empty;
 
         [JsonProperty("_links")]
-        public JObject? Links { get; set; }
-
-        [JsonIgnore]
-        public ContentLinksModel? ContentLinks
-        {
-            get => PrivateLinksModel ??= new ContentLinksModel(Links);
-
-            set => PrivateLinksModel = value;
-        }
+        public JObject Links { get; set; } = new JObject();
 
         [JsonProperty(PropertyName = "ModifiedDate")]
-        public DateTime Published { get; set; }
+        public DateTime Published { get; set; } = DateTime.UtcNow;
 
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         [JsonProperty("sitemap_Priority")]
         public decimal SiteMapPriority { get; set; }
@@ -67,55 +60,60 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string RedirectLocations { get; set; } = string.Empty;
 
-        public List<string> Redirects()
-        {
-            return string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList();
-        }
+        public string SalaryStarter { get; set; } = string.Empty;
 
-        public string SalaryStarter { get; set; }
+        public string SalaryExperienced { get; set; } = string.Empty;
 
-        public string SalaryExperienced { get; set; }
-
-        public string CareerPathAndProgression { get; set; }
+        public string CareerPathAndProgression { get; set; } = string.Empty;
 
         public decimal MinimumHours { get; set; }
 
         public string? HtbCareerTips { get; set; }
 
-        public string HtbBodies { get; set; }
+        public string HtbBodies { get; set; } = string.Empty;
 
-        public Uri JobProfileWebsiteUrl { get; set; }
+        public Uri JobProfileWebsiteUrl { get; set; } = UriExtra.Empty;
 
-        public string WitDigitalSkillsLevel { get; set; }
+        public string WitDigitalSkillsLevel { get; set; } = string.Empty;
 
-        public string WorkingPattern { get; set; }
+        public string WorkingPattern { get; set; } = string.Empty;
 
-        public string WorkingHoursDetails { get; set; }
+        public string WorkingHoursDetails { get; set; } = string.Empty;
 
-        public string TitleOptions { get; set; }
+        public string TitleOptions { get; set; } = string.Empty;
 
         public decimal MaximumHours { get; set; }
 
-        public string WorkingPatternDetails { get; set; }
+        public string WorkingPatternDetails { get; set; } = string.Empty;
 
-        public string HtbFurtherInformation { get; set; }
+        public string HtbFurtherInformation { get; set; } = string.Empty;
+
+        public string FurtherInfo { get; set; } = string.Empty;
+
+        public string RelevantSubjects { get; set; } = string.Empty;
+
+        public JobProfileWhatYoullDoModel? WhatYoullDoSegment { get; set; }
+
+        public JobProfileCareerPathModel? CareerPathSegment { get; set; }
+
+        public JobProfileHowToBecomeModel? HowToBecomeSegment { get; set; }
+
+        public JobProfileWhatItTakesModel? WhatItTakesSegment { get; set; }
+
+        public IList<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
+
+        public ICollection<Guid> AllContentItemIds { get; set; } = new List<Guid>();
+
+        [JsonIgnore]
+        public ContentLinksModel? ContentLinks
+        {
+            get => PrivateLinksModel ??= new ContentLinksModel(Links);
+            set => PrivateLinksModel = value ?? new ContentLinksModel(Links);
+        }
 
         private ContentLinksModel? PrivateLinksModel { get; set; }
 
-        public string FurtherInfo { get; set; }
-
-        public string RelevantSubjects { get; set; }
-
-        public JobProfileWhatYoullDoModel WhatYoullDoSegment { get; set; }
-
-        public JobProfileCareerPathModel CareerPathSegment { get; set; }
-
-        public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
-
-        public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
-
-        public IList<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
-        
-        public List<Guid> AllContentItemIds { get; set; }
+        public List<string> Redirects() =>
+            string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList();
     }
 }

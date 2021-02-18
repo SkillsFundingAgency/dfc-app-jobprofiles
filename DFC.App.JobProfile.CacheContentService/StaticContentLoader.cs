@@ -10,23 +10,21 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.CacheContentService
 {
-    public class StaticContentReloadService : IStaticContentReloadService
+    public class StaticContentLoader :
+        ILoadStaticContent
     {
-        private readonly ILogger<StaticContentReloadService> logger;
-        private readonly AutoMapper.IMapper mapper;
+        private readonly ILogger<StaticContentLoader> logger;
         private readonly IEventMessageService<StaticContentItemModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
-        private readonly Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService;
+        private readonly IContentCacheService contentCacheService;
 
-        public StaticContentReloadService(
-            ILogger<StaticContentReloadService> logger,
-            AutoMapper.IMapper mapper,
+        public StaticContentLoader(
+            ILogger<StaticContentLoader> logger,
             IEventMessageService<StaticContentItemModel> eventMessageService,
             ICmsApiService cmsApiService,
-            Content.Pkg.Netcore.Data.Contracts.IContentCacheService contentCacheService)
+            IContentCacheService contentCacheService)
         {
             this.logger = logger;
-            this.mapper = mapper;
             this.eventMessageService = eventMessageService;
             this.cmsApiService = cmsApiService;
             this.contentCacheService = contentCacheService;
@@ -92,6 +90,7 @@ namespace DFC.App.JobProfile.CacheContentService
             foreach (var item in items) {
                 item.PartitionKey = "/";
                 item.CanonicalName = item.skos_prefLabel.Replace(" ", "").ToLower();
+
                 try
                 {
                     logger.LogInformation($"Updating static content cache with {item.Id} - {item.Url}");

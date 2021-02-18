@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
@@ -13,6 +6,13 @@ using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
 {
@@ -26,7 +26,11 @@ namespace DFC.App.JobProfile.Controllers
         private readonly IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
         private readonly OverviewDetails overviewDetails;
-        private readonly string[] redirectionHostWhitelist = { "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0", "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474" };
+        private readonly string[] redirectionHostWhitelist =
+        {
+            "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0",
+            "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474",
+        };
 
         public ProfileController(
             ILogger<ProfileController> logService,

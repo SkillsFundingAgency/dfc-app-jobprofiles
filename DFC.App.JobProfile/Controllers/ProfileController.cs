@@ -187,27 +187,25 @@ namespace DFC.App.JobProfile.Controllers
             return new StatusCodeResult((int)response);
         }
 
+        // TODO: remove me!
         //[HttpPut]
         //[HttpPost]
         //[Route("refresh")]
         //public async Task<IActionResult> Refresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
-        //{
-        //    logService.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}");
-
-        //    if (refreshJobProfileSegmentModel == null)
-        //    {
-        //        return BadRequest();
-        //    }
-
+        //[
+        //    logService.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}")
+        //    if refreshJobProfileSegmentModel == null
+        //    [
+        //        return BadRequest()
+        //    ]
         //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    //var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
-        //    logService.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
-        //    return new StatusCodeResult((int)response);
-        //}
+        //    [
+        //        return BadRequest(ModelState)
+        //    ]
+        //    //var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false)
+        //    logService.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}")
+        //    return new StatusCodeResult((int)response)
+        //]
         [HttpDelete]
         [Route("profile/{documentId}")]
         public async Task<IActionResult> Delete(Guid documentId)

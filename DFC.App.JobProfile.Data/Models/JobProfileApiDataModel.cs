@@ -10,7 +10,7 @@ using System.Linq;
 namespace DFC.App.JobProfile.Data.Models
 {
     public class JobProfileApiDataModel :
-        IBaseContentItemModel<JobProfileApiContentItemModel>
+        IRootContentItemModel<JobProfileApiContentItemModel>
     {
         [JsonProperty("id")]
         public Guid ItemId { get; set; } = Guid.Empty;
@@ -35,7 +35,7 @@ namespace DFC.App.JobProfile.Data.Models
         public bool IncludeInSitemap => !ExcludeFromSitemap;
 
         [JsonProperty(PropertyName = "uri")]
-        public Uri? Url { get; set; }
+        public Uri Uri { get; set; }
 
         [JsonProperty("skos__prefLabel")]
         public string Title { get; set; } = string.Empty;
@@ -48,9 +48,9 @@ namespace DFC.App.JobProfile.Data.Models
         public JObject Links { get; set; } = new JObject();
 
         [JsonProperty(PropertyName = "ModifiedDate")]
-        public DateTime Published { get; set; } = DateTime.UtcNow;
+        public DateTime Published { get; set; } = DateTime.MinValue;
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedDate { get; set; } = DateTime.MinValue;
 
         [JsonProperty("sitemap_Priority")]
         public decimal SiteMapPriority { get; set; }
@@ -68,7 +68,7 @@ namespace DFC.App.JobProfile.Data.Models
 
         public decimal MinimumHours { get; set; }
 
-        public string? HtbCareerTips { get; set; }
+        public string HtbCareerTips { get; set; }
 
         public string HtbBodies { get; set; } = string.Empty;
 
@@ -92,26 +92,33 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string RelevantSubjects { get; set; } = string.Empty;
 
-        public JobProfileWhatYoullDoModel? WhatYoullDoSegment { get; set; }
+        public JobProfileWhatYoullDoModel WhatYoullDoSegment { get; set; }
 
-        public JobProfileCareerPathModel? CareerPathSegment { get; set; }
+        public JobProfileCareerPathModel CareerPathSegment { get; set; }
 
-        public JobProfileHowToBecomeModel? HowToBecomeSegment { get; set; }
+        public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
 
-        public JobProfileWhatItTakesModel? WhatItTakesSegment { get; set; }
+        public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
 
-        public IList<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
+        public ICollection<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
 
         public ICollection<Guid> AllContentItemIds { get; set; } = new List<Guid>();
 
         [JsonIgnore]
-        public ContentLinksModel? ContentLinks
+        public ContentLinksModel ContentLinks
         {
             get => PrivateLinksModel ??= new ContentLinksModel(Links);
             set => PrivateLinksModel = value ?? new ContentLinksModel(Links);
         }
 
-        private ContentLinksModel? PrivateLinksModel { get; set; }
+        private ContentLinksModel PrivateLinksModel { get; set; }
+
+        // TODO: consider what makes an item 'faulted'
+        public bool IsFaultedState() =>
+            Uri == UriExtra.Empty
+                || ItemId == Guid.Empty
+                || Title == string.Empty
+                || Description == string.Empty;
 
         public List<string> Redirects() =>
             string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList();

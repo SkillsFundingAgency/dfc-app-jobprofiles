@@ -6,7 +6,6 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ClientOptions;
 using DFC.App.JobProfile.EventProcessorService;
 using DFC.App.JobProfile.HostedServices;
-using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.Repository.CosmosDb;
@@ -51,11 +50,11 @@ namespace DFC.App.JobProfile
             // TODO: check this!!! CorrelationId breaking changes...
             /*
             app.UseCorrelationId(new CorrelationIdOptions
-            {
+            [
                 Header = "DssCorrelationId",
                 UseGuidForCorrelationId = true,
                 UpdateTraceIdentifier = false,
-            });
+            ])
             */
 
             if (env.IsDevelopment())
@@ -102,7 +101,7 @@ namespace DFC.App.JobProfile
             services.AddAutoMapper(typeof(Startup).Assembly);
 
             // TODO: check this!!! breaking changes...
-            // services.AddCorrelationId();
+            // services.AddCorrelationId()
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -118,8 +117,8 @@ namespace DFC.App.JobProfile
         private void AddApplicationSpecificDependencyInjectionConfiguration(IServiceCollection services)
         {
             /*
-            var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel();
-            eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase));
+            var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel()
+            eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase))
             services.AddSingleton(eventGridSubscriptionModel)
             */
 
@@ -138,7 +137,7 @@ namespace DFC.App.JobProfile
             services.AddScoped<ISharedContentService, SharedContentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
 
-            // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
+            // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"])
             services.AddSingleton(_configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
             services.AddSingleton(_configuration.GetSection(nameof(OverviewDetails)).Get<OverviewDetails>() ?? new OverviewDetails());
 
@@ -170,8 +169,9 @@ namespace DFC.App.JobProfile
             services.AddHostedService<StaticContentBackgroundLoader>();
             services.AddHostedService<JobProfileBackgroundLoader>();
 
-            const string AppSettingsPolicies = "Policies";
-            var policyOptions = _configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
+            // TODO: remove me!
+            // const string AppSettingsPolicies = "Policies"
+            // var policyOptions = _configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>()
             var policyRegistry = services.AddPolicyRegistry();
 
             services.AddApiServices(_configuration, policyRegistry);

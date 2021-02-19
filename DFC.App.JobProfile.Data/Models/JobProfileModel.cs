@@ -22,7 +22,7 @@ namespace DFC.App.JobProfile.Data.Models
         public string PartitionKey => SocLevelTwo.ToString();
 
         [Required]
-        public DateTime? LastReviewed { get; set; }
+        public DateTime LastReviewed { get; set; }
 
         [JsonProperty(PropertyName = "_etag")]
         public string Etag { get; set; }
@@ -70,6 +70,5 @@ namespace DFC.App.JobProfile.Data.Models
         public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
 
         public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
-
     }
 }

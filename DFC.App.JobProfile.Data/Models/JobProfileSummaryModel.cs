@@ -3,7 +3,7 @@
 namespace DFC.App.JobProfile.Data.Models
 {
     public class JobProfileSummaryModel :
-        ApiSummaryItemModel
+        SummaryItemModel
     {
         public string CanonicalName
         {

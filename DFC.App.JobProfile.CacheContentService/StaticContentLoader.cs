@@ -65,7 +65,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public async Task ProcessContentAsync(List<StaticContentItemModel> sharedContent, CancellationToken stoppingToken)
+        public async Task ProcessContentAsync(IReadOnlyCollection<StaticContentItemModel> sharedContent, CancellationToken stoppingToken)
         {
             logger.LogInformation("Process summary list started");
 
@@ -83,7 +83,7 @@ namespace DFC.App.JobProfile.CacheContentService
             logger.LogInformation("Process summary list completed");
         }
 
-        public async Task GetAndSaveItemAsync(List<StaticContentItemModel> items, CancellationToken stoppingToken)
+        public async Task GetAndSaveItemAsync(IReadOnlyCollection<StaticContentItemModel> items, CancellationToken stoppingToken)
         {
             _ = items ?? throw new ArgumentNullException(nameof(items));
 

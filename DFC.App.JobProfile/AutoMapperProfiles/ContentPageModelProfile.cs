@@ -17,6 +17,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.PartitionKey, s => s.Ignore())
                 .ForMember(d => d.TraceId, s => s.Ignore())
                 .ForMember(d => d.ParentId, s => s.Ignore())
+
                 //.ForMember(d => d.Links, s => s.Ignore())
                 //.ForMember(d => d.ContentLinks, s => s.Ignore())
                 .ForMember(d => d.SiteMapPriority, s => s.MapFrom(a => a.SiteMapPriority / 10))
@@ -34,7 +35,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForPath(d => d.OverviewSegment.WorkingPatternDetails, s => s.MapFrom(a => a.WorkingPatternDetails));
 
             CreateMap<LinkDetails, JobProfileApiContentItemModel>()
-                .ForMember(d => d.Url, s => s.Ignore())
+                .ForMember(d => d.Uri, s => s.Ignore())
                 .ForMember(d => d.ItemId, s => s.Ignore())
                 .ForMember(d => d.Content, s => s.Ignore())
                 .ForMember(d => d.Published, s => s.Ignore())

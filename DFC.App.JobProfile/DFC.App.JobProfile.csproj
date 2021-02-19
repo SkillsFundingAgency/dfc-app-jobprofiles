@@ -4,9 +4,6 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
         <CodeAnalysisRuleSet>../DFC.Digital.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
         <Compile Remove="Views\Home\**" />

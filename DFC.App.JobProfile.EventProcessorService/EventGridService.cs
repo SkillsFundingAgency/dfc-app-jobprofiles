@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ClientOptions;
+using DFC.Compui.Cosmos.Models;
 using Microsoft.Azure.EventGrid.Models;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.EventProcessorService
 {
-    public class EventGridService : IEventGridService
+    public class EventGridService :
+        IEventGridService
     {
         private readonly ILogger<EventGridService> logger;
         private readonly IEventGridClientService eventGridClientService;
@@ -24,7 +26,10 @@ namespace DFC.App.JobProfile.EventProcessorService
             this.eventGridPublishClientOptions = eventGridPublishClientOptions;
         }
 
-        public static bool ContainsDifferences(JobProfileContentPageModel? existingContentPageModel, JobProfileContentPageModel? updatedContentPageModel)
+        public static bool ContainsDifferences<TModel>(
+            TModel existingContentPageModel,
+            TModel updatedContentPageModel)
+                where TModel : ContentPageModel
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 
@@ -67,7 +72,9 @@ namespace DFC.App.JobProfile.EventProcessorService
             return false;
         }
 
-        public static bool IsValidEventGridPublishClientOptions(ILogger<EventGridService> logger, EventGridPublishClientOptions? eventGridPublishClientOptions)
+        public static bool IsValidEventGridPublishClientOptions(
+            ILogger<EventGridService> logger,
+            EventGridPublishClientOptions eventGridPublishClientOptions)
         {
             _ = eventGridPublishClientOptions ?? throw new ArgumentNullException(nameof(eventGridPublishClientOptions));
 
@@ -86,7 +93,9 @@ namespace DFC.App.JobProfile.EventProcessorService
             return true;
         }
 
-        public async Task CompareAndSendEventAsync(JobProfileContentPageModel? existingContentPageModel, JobProfileContentPageModel? updatedContentPageModel)
+        public async Task CompareAndSendEventAsync(
+            JobProfileContentPageModel existingContentPageModel,
+            JobProfileContentPageModel updatedContentPageModel)
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 
@@ -102,7 +111,9 @@ namespace DFC.App.JobProfile.EventProcessorService
             }
         }
 
-        public async Task SendEventAsync(WebhookCacheOperation webhookCacheOperation, JobProfileContentPageModel? updatedContentPageModel)
+        public async Task SendEventAsync(
+            WebhookCacheOperation webhookCacheOperation,
+            JobProfileContentPageModel updatedContentPageModel)
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 

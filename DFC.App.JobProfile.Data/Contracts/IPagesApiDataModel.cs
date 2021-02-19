@@ -4,8 +4,9 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IPagesApiDataModel
     {
-        ContentLinksModel? ContentLinks { get; set; }
+        ContentLinksModel ContentLinks { get; set; }
 
-        //IList<ApiContentItemModel> ContentItems { get; set; }
+        // TODO: remove me?
+        /* IList<ApiContentItemModel> ContentItems [ get set ]*/
     }
 }

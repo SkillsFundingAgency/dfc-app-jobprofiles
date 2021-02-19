@@ -21,7 +21,7 @@ namespace DFC.App.JobProfile.EventProcessorService
             this.contentPageService = contentPageService;
         }
 
-        public async Task<IList<TModel>?> GetAllCachedCanonicalNamesAsync()
+        public async Task<IList<TModel>> GetAllCachedCanonicalNamesAsync()
         {
             var serviceDataModels = await contentPageService.GetAllAsync().ConfigureAwait(false);
 

@@ -2,8 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <Nullable>enable</Nullable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.61" />

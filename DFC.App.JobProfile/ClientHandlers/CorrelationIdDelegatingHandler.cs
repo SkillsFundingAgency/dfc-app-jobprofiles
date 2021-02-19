@@ -21,20 +21,20 @@ namespace DFC.App.JobProfile.ClientHandlers
             this.logService = logService;
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            // TODO: check this out!!! CorrelationId breaking changes...
-            /*
-            if (correlationContextAccessor.CorrelationId != null &&
-                request != null &&
-                !request.Headers.Contains(correlationContextAccessor.CorrelationContext.Header))
-            {
-                request.Headers.Add(correlationContextAccessor.CorrelationContext.Header, correlationContextAccessor.CorrelationContext.CorrelationId);
-                logService.LogInformation($"Added CorrelationID header with name {correlationContextAccessor.CorrelationContext.Header} and value {correlationContextAccessor.CorrelationContext.CorrelationId}");
-            }
-            */
+        // TODO: FIX me!
+        //protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        //[
+        //    // TODO: check this out!!! CorrelationId breaking changes...
+        //    if correlationContextAccessor.CorrelationId != null and
+        //        request != null and
+        //        !request.Headers.Contains(correlationContextAccessor.CorrelationContext.Header))
+        //    [
+        //        request.Headers.Add(correlationContextAccessor.CorrelationContext.Header, correlationContextAccessor.CorrelationContext.CorrelationId)
+        //        logService.LogInformation($"Added CorrelationID header with name {correlationContextAccessor.CorrelationContext.Header} and value {correlationContextAccessor.CorrelationContext.CorrelationId}")
+        //    ]
+        //    */
 
-            return base.SendAsync(request, cancellationToken);
-        }
+        //    return base.SendAsync(request, cancellationToken)
+        //]
     }
 }

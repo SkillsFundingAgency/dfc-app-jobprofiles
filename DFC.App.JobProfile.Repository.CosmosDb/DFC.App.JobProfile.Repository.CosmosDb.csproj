@@ -3,9 +3,6 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <CodeAnalysisRuleSet>../DFC.Digital.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\stylecop.json" />

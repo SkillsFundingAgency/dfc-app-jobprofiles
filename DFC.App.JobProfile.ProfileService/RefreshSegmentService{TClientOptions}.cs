@@ -62,8 +62,8 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
                 {
                     logService.LogError($"{nameof(HealthCheckAsync)}: Error loading health data from {url}: {response.StatusCode}");
 
-                    var aa = SegmentClientOptions.BaseAddress;
-
+                    // TODO: remove me!
+                    // var aa = SegmentClientOptions.BaseAddress
                     var result = new HealthCheckItems
                     {
                         Source = SegmentClientOptions.BaseAddress,

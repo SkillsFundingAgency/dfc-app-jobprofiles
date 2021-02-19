@@ -73,7 +73,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public async Task<IList<JobProfileSummaryModel>> GetSummaryListAsync()
+        public async Task<IReadOnlyCollection<JobProfileSummaryModel>> GetSummaryListAsync()
         {
             logger.LogInformation("Get summary list");
 
@@ -84,7 +84,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return summaryList;
         }
 
-        public async Task ProcessSummaryListAsync(IList<JobProfileSummaryModel>? summaryList, CancellationToken stoppingToken)
+        public async Task ProcessSummaryListAsync(IReadOnlyCollection<JobProfileSummaryModel> summaryList, CancellationToken stoppingToken)
         {
             logger.LogInformation("Process summary list started");
 
@@ -111,13 +111,13 @@ namespace DFC.App.JobProfile.CacheContentService
 
             try
             {
-                logger.LogInformation($"Get details for {item.Title} - {item.Url}");
+                logger.LogInformation($"Get details for {item.Title} - {item.Uri}");
 
-                var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(item!.Url!).ConfigureAwait(false);
+                var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(item.Uri).ConfigureAwait(false);
 
                 if (apiDataModel == null)
                 {
-                    logger.LogWarning($"No details returned from {item.Title} - {item.Url}");
+                    logger.LogWarning($"No details returned from {item.Title} - {item.Uri}");
 
                     return;
                 }
@@ -132,28 +132,28 @@ namespace DFC.App.JobProfile.CacheContentService
                 OrganiseSegments(ref apiDataModel);
                 var contentPageModel = mapper.Map<JobProfileContentPageModel>(apiDataModel);
 
-                logger.LogInformation($"Updating cache with {item.Title} - {item.Url}");
+                logger.LogInformation($"Updating cache with {item.Title} - {item.Uri}");
 
                 var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
                 if (result == HttpStatusCode.NotFound)
                 {
-                    logger.LogInformation($"Does not exist, creating cache with {item.Title} - {item.Url}");
+                    logger.LogInformation($"Does not exist, creating cache with {item.Title} - {item.Uri}");
 
                     result = await eventMessageService.CreateAsync(contentPageModel).ConfigureAwait(false);
 
                     if (result == HttpStatusCode.Created)
                     {
-                        logger.LogInformation($"Created cache with {item.Title} - {item.Url}");
+                        logger.LogInformation($"Created cache with {item.Title} - {item.Uri}");
                     }
                     else
                     {
-                        logger.LogError($"Cache create error status {result} from {item.Title} - {item.Url}");
+                        logger.LogError($"Cache create error status {result} from {item.Title} - {item.Uri}");
                     }
                 }
                 else
                 {
-                    logger.LogInformation($"Updated cache with {item.Title} - {item.Url}");
+                    logger.LogInformation($"Updated cache with {item.Title} - {item.Uri}");
                 }
 
                 var contentItemIds = contentPageModel.AllContentItemIds.ToList();
@@ -161,11 +161,11 @@ namespace DFC.App.JobProfile.CacheContentService
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error in get and save for {item.Title} - {item.Url}");
+                logger.LogError(ex, $"Error in get and save for {item.Title} - {item.Uri}");
             }
         }
 
-        public async Task DeleteStaleCacheEntriesAsync(IList<JobProfileSummaryModel> summaryList, CancellationToken stoppingToken)
+        public async Task DeleteStaleCacheEntriesAsync(IReadOnlyCollection<JobProfileSummaryModel> summaryList, CancellationToken stoppingToken)
         {
             logger.LogInformation("Delete stale cache items started");
 
@@ -173,7 +173,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
             if (cachedContentPages != null && cachedContentPages.Any())
             {
-                var hashedSummaryList = new HashSet<Uri>(summaryList.Select(p => p.Url!));
+                var hashedSummaryList = new HashSet<Uri>(summaryList.Select(p => p.Uri));
                 var staleContentPages = cachedContentPages.Where(p => !hashedSummaryList.Contains(p.Url!)).ToList();
 
                 if (staleContentPages.Any())
@@ -185,7 +185,7 @@ namespace DFC.App.JobProfile.CacheContentService
             logger.LogInformation("Delete stale cache items completed");
         }
 
-        public async Task DeleteStaleItemsAsync(List<Data.Models.JobProfileContentPageModel> staleItems, CancellationToken stoppingToken)
+        public async Task DeleteStaleItemsAsync(IReadOnlyCollection<JobProfileContentPageModel> staleItems, CancellationToken stoppingToken)
         {
             _ = staleItems ?? throw new ArgumentNullException(nameof(staleItems));
 
@@ -213,7 +213,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public bool TryValidateModel(Data.Models.JobProfileContentPageModel contentPageModel)
+        public bool TryValidateModel(JobProfileContentPageModel contentPageModel)
         {
             _ = contentPageModel ?? throw new ArgumentNullException(nameof(contentPageModel));
 
@@ -238,8 +238,8 @@ namespace DFC.App.JobProfile.CacheContentService
             var whatYoullDoModel = new JobProfileWhatYoullDoModel();
             whatYoullDoModel.DaytoDayTasks = apiDataModel.ContentItems.Where(x => x.ContentType == "DayToDayTask").ToList();
             whatYoullDoModel.WorkingEnvironment = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkingEnvironment").ToList();
-            whatYoullDoModel.WorkingLocation = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkingLocation").SingleOrDefault();
-            whatYoullDoModel.WorkingUniform = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkingUniform").SingleOrDefault();
+            whatYoullDoModel.WorkingLocation = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "WorkingLocation");
+            whatYoullDoModel.WorkingUniform = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "WorkingUniform");
             apiDataModel.WhatYoullDoSegment = whatYoullDoModel;
 
             //Career Path
@@ -250,14 +250,14 @@ namespace DFC.App.JobProfile.CacheContentService
 
             //How to Become
             var howToBecomeSegment = new JobProfileHowToBecomeModel();
-            howToBecomeSegment.DirectRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "DirectRoute").SingleOrDefault();
-            howToBecomeSegment.ApprenticeshipRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipRoute").SingleOrDefault();
-            howToBecomeSegment.CollegeRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "CollegeRoute").SingleOrDefault();
-            howToBecomeSegment.OtherRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRoute").SingleOrDefault();
-            howToBecomeSegment.Registration = apiDataModel.ContentItems.Where(x => x.ContentType == "Registration").SingleOrDefault();
-            howToBecomeSegment.UniversityRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "UniversityRoute").SingleOrDefault();
-            howToBecomeSegment.VolunteeringRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "VolunteeringRoute").SingleOrDefault();
-            howToBecomeSegment.WorkRoute = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkRoute").SingleOrDefault();
+            howToBecomeSegment.DirectRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "DirectRoute");
+            howToBecomeSegment.ApprenticeshipRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "ApprenticeshipRoute");
+            howToBecomeSegment.CollegeRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "CollegeRoute");
+            howToBecomeSegment.OtherRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "OtherRoute");
+            howToBecomeSegment.Registration = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "Registration");
+            howToBecomeSegment.UniversityRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "UniversityRoute");
+            howToBecomeSegment.VolunteeringRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "VolunteeringRoute");
+            howToBecomeSegment.WorkRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "WorkRoute");
             howToBecomeSegment.Title = apiDataModel.Title;
             howToBecomeSegment.HtbBodies = apiDataModel.HtbBodies;
             howToBecomeSegment.HtbFurtherInformation = apiDataModel.HtbFurtherInformation;
@@ -267,7 +267,7 @@ namespace DFC.App.JobProfile.CacheContentService
             var whatItTakes = new JobProfileWhatItTakesModel();
             whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
             whatItTakes.OtherRequirement = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
-            whatItTakes.Occupation = apiDataModel.ContentItems.Where(x => x.ContentType == "occupation").SingleOrDefault();
+            whatItTakes.Occupation = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "occupation");
             apiDataModel.WhatItTakesSegment = whatItTakes;
 
             apiDataModel.AllContentItemIds = apiDataModel.ContentItems.Flatten(s => s.ContentItems).Select(s => s.ItemId).ToList();

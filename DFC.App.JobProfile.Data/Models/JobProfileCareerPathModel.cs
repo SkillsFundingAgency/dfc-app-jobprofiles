@@ -6,6 +6,6 @@ namespace DFC.App.JobProfile.Data.Models
     {
         public string CareerPathAndProgression { get; set; }
 
-        public List<JobProfileApiContentItemModel> ApprecticeshipStandard;
+        public IReadOnlyCollection<JobProfileApiContentItemModel> ApprecticeshipStandard { get; set; }
     }
 }

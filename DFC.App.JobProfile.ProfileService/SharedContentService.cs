@@ -10,8 +10,9 @@ namespace DFC.App.JobProfile.ProfileService
     public class SharedContentService : ISharedContentService
     {
         private readonly IStaticCosmosRepository<StaticContentItemModel> repository;
-        private readonly IMapper mapper;
 
+        // TODO: remove me!
+        // private readonly IMapper mapper
         public SharedContentService(
             IStaticCosmosRepository<StaticContentItemModel> repository,
             IMapper mapper)

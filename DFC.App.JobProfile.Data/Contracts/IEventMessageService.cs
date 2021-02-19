@@ -9,7 +9,7 @@ namespace DFC.App.JobProfile.Data.Contracts
     public interface IEventMessageService<TModel>
         where TModel : class, IContentPageModel
     {
-        Task<IList<TModel>?> GetAllCachedCanonicalNamesAsync();
+        Task<IList<TModel>> GetAllCachedCanonicalNamesAsync();
 
         Task<HttpStatusCode> CreateAsync(TModel upsertDocumentModel);
 

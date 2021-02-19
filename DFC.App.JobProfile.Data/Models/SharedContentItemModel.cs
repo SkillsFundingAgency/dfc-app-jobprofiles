@@ -4,15 +4,15 @@ namespace DFC.App.JobProfile.Data.Models
 {
     public class SharedContentItemModel
     {
-        public Guid? ItemId { get; set; }
+        public Guid ItemId { get; set; }
 
-        public Uri? Url { get; set; }
+        public Uri Url { get; set; }
 
-        public Guid? Version { get; set; }
+        public Guid Version { get; set; }
 
-        public string? Content { get; set; }
+        public string Content { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public DateTime LastReviewed { get; set; }
     }

@@ -27,7 +27,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.ValuerConverters
             { "Justify", "dfc-app-pages-alignment-justify" },
         };
 
-        public HtmlString? Convert(IList<ContentItemModel> sourceMember, ResolutionContext context)
+        public HtmlString Convert(IList<ContentItemModel> sourceMember, ResolutionContext context)
         {
             if (sourceMember == null || !sourceMember.Any())
             {

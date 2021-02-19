@@ -112,7 +112,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return result;
         }
 
-        public JobProfileApiContentItemModel FindContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items)
+        public JobProfileApiContentItemModel FindContentItem(Guid contentItemId, ICollection<JobProfileApiContentItemModel> items)
         {
             if (items == null || !items.Any())
             {
@@ -137,7 +137,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return default;
         }
 
-        public bool RemoveContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items)
+        public bool RemoveContentItem(Guid contentItemId, ICollection<JobProfileApiContentItemModel> items)
         {
             if (items == null || !items.Any())
             {
@@ -163,7 +163,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return false;
         }
 
-        public bool TryValidateModel(JobProfileContentPageModel? contentPageModel)
+        public bool TryValidateModel(JobProfileContentPageModel contentPageModel)
         {
             _ = contentPageModel ?? throw new ArgumentNullException(nameof(contentPageModel));
 

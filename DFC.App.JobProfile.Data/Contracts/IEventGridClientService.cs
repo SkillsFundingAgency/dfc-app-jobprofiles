@@ -6,6 +6,6 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IEventGridClientService
     {
-        Task SendEventAsync(List<EventGridEvent>? eventGridEvents, string? topicEndpoint, string? topicKey, string? logMessage);
+        Task SendEventAsync(List<EventGridEvent> eventGridEvents, string topicEndpoint, string topicKey, string logMessage);
     }
 }

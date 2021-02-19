@@ -10,16 +10,16 @@ namespace DFC.App.JobProfile.Data.Models
     {
         [Required]
         [JsonProperty(Order = -30)]
-        public override string PartitionKey => Title!;
+        public override string PartitionKey => Title;
 
-        //public new string? Content { get; set; }
-
+        // TODO: remove me!
+        // public new string Content { get; set; ]
         [Display(Name = "Breadcrumb Title")]
         public string BreadcrumbTitle { get; set; } = string.Empty;
 
+        // TODO: remove me!
         //[JsonProperty(Order = -10)]
-        //public new Guid? Version { get; set; }
-
+        //public new Guid? Version { get; set; ]
         [JsonProperty("id")]
         public Guid? ItemId { get; set; }
 
@@ -30,41 +30,36 @@ namespace DFC.App.JobProfile.Data.Models
         public new bool IncludeInSitemap => !ExcludeFromSitemap;
 
         [JsonProperty("skos__prefLabel")]
-        public string? Title { get; set; }
+        public string Title { get; set; }
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
-        public string? Keywords { get; set; }
+        public string Keywords { get; set; }
 
+        // TODO: remove me!
         //[JsonProperty("_links")]
         //[JsonIgnore]
-        //public JObject? Links { get; set; }
-
+        //public JObject Links { get; set; ]
         //[JsonIgnore]
         //public ContentLinksModel? ContentLinks
-        //{
-        //    get => PrivateLinksModel ??= new ContentLinksModel(Links);
-
-        //    set => PrivateLinksModel = value;
-        //}
-
-        //public List<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
-
+        //[
+        //    get => PrivateLinksModel ??= new ContentLinksModel(Links)
+        //    set => PrivateLinksModel = value
+        //]
+        //public List<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>()
         [JsonProperty(PropertyName = "ModifiedDate")]
         public DateTime Published { get; set; }
 
-        //public DateTime? CreatedDate { get; set; }
-
-        //public string RedirectLocations { get; set; } = string.Empty;
-
+        // TODO: remove me!
+        //public DateTime? CreatedDate { get; set; ]
+        //public string RedirectLocations { get; set; } = string.Empty
         //public List<string> Redirects()
-        //{
-        //    return string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList();
-        //}
-
+        //[
+        //    return string.IsNullOrEmpty(RedirectLocations) ? new List<string>() : RedirectLocations.Split("\r\n").ToList()
+        //]
         public Uri JobProfileWebsiteUrl { get; set; }
 
-        public override string? PageLocation { get; set; }
+        public override string PageLocation { get; set; }
 
         public string WitDigitalSkillsLevel { get; set; } = string.Empty;
 
@@ -72,22 +67,21 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string HtbFurtherInformation { get; set; } = string.Empty;
 
-        public JobProfileOverviewModel? OverviewSegment { get; set; }
+        public JobProfileOverviewModel OverviewSegment { get; set; }
 
-        public JobProfileWhatYoullDoModel? WhatYoullDoSegment { get; set; }
+        public JobProfileWhatYoullDoModel WhatYoullDoSegment { get; set; }
 
-        public JobProfileCareerPathModel? CareerPathSegment { get; set; }
+        public JobProfileCareerPathModel CareerPathSegment { get; set; }
 
-        public JobProfileHowToBecomeModel? HowToBecomeSegment { get; set; }
+        public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
 
-        public JobProfileWhatItTakesModel? WhatItTakesSegment { get; set; }
+        public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
 
+        // TODO: remove me!
         //[JsonIgnore]
-        //private ContentLinksModel? PrivateLinksModel { get; set; }
-
+        //private ContentLinksModel? PrivateLinksModel { get; set; ]
         //[JsonIgnore]
-        //public List<Guid> AllContentItemIds => ContentItems.Flatten(s => s.ContentItems).Where(w => w.ItemId != null).Select(s => s.ItemId!.Value).ToList();
-
+        //public List<Guid> AllContentItemIds => ContentItems.Flatten(s => s.ContentItems).Where(w => w.ItemId != null).Select(s => s.ItemId!.Value).ToList()
         [JsonIgnore]
         public ICollection<Guid> AllContentItemIds { get; set; } = new List<Guid>();
     }

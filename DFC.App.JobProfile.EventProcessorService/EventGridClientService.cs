@@ -19,7 +19,7 @@ namespace DFC.App.JobProfile.Contracts
             this.logger = logger;
         }
 
-        public async Task SendEventAsync(List<EventGridEvent>? eventGridEvents, string? topicEndpoint, string? topicKey, string? logMessage)
+        public async Task SendEventAsync(List<EventGridEvent> eventGridEvents, string topicEndpoint, string topicKey, string logMessage)
         {
             _ = eventGridEvents ?? throw new ArgumentNullException(nameof(eventGridEvents));
             _ = topicEndpoint ?? throw new ArgumentNullException(nameof(topicEndpoint));

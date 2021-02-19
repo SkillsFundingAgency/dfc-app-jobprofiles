@@ -11,13 +11,12 @@ namespace DFC.App.JobProfile.Data.Contracts
     {
         Task<HttpStatusCode> DeleteContentItemAsync(Guid contentItemId);
 
-
         Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId);
 
         Task<HttpStatusCode> ProcessMessageAsync(WebhookCacheOperation webhookCacheOperation, Guid eventId, Guid contentId, string apiEndpoint);
 
-        JobProfileApiContentItemModel? FindContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items);
+        JobProfileApiContentItemModel FindContentItem(Guid contentItemId, ICollection<JobProfileApiContentItemModel> items);
 
-        bool RemoveContentItem(Guid contentItemId, IList<JobProfileApiContentItemModel> items);
+        bool RemoveContentItem(Guid contentItemId, ICollection<JobProfileApiContentItemModel> items);
     }
 }

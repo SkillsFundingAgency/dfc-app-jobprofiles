@@ -8,10 +8,10 @@ using System.Collections.Generic;
 namespace DFC.App.JobProfile.Data.Models
 {
     public class JobProfileApiContentItemModel :
-        IBaseContentItemModel<JobProfileApiContentItemModel>
+        IBranchContentItemModel<JobProfileApiContentItemModel>
     {
         [JsonProperty("uri")]
-        public Uri? Url { get; set; } = UriExtra.Empty;
+        public Uri Uri { get; set; } = UriExtra.Empty;
 
         public string Description { get; set; } = string.Empty;
 
@@ -38,7 +38,7 @@ namespace DFC.App.JobProfile.Data.Models
         [JsonProperty("_links")]
         public JObject Links { get; set; } = new JObject();
 
-        public IList<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
+        public ICollection<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string BreadcrumbLinkSegment { get; set; } = string.Empty;
@@ -49,7 +49,7 @@ namespace DFC.App.JobProfile.Data.Models
         public DateTime LastCached { get; set; } = DateTime.UtcNow;
 
         [JsonIgnore]
-        public ContentLinksModel? ContentLinks
+        public ContentLinksModel ContentLinks
         {
             get => PrivateLinksModel ??= new ContentLinksModel(Links);
 
@@ -58,5 +58,11 @@ namespace DFC.App.JobProfile.Data.Models
 
         [JsonIgnore]
         private ContentLinksModel PrivateLinksModel { get; set; } = new ContentLinksModel(null);
+
+        public bool IsFaultedState() =>
+            Uri == UriExtra.Empty
+                || ItemId == Guid.Empty
+                || Title == string.Empty
+                || Content == string.Empty;
     }
 }

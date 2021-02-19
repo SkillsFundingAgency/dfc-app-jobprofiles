@@ -81,7 +81,7 @@ namespace DFC.App.JobProfile.Controllers
                         throw new InvalidDataException($"Invalid Guid for EventGridEvent.Data.ItemId '{eventGridEventData.ItemId}'");
                     }
 
-                    if (!Uri.TryCreate(eventGridEventData.Api, UriKind.Absolute, out Uri? url))
+                    if (!Uri.TryCreate(eventGridEventData.Api, UriKind.Absolute, out Uri url))
                     {
                         throw new InvalidDataException($"Invalid Api url '{eventGridEventData.Api}' received for Event Id: {eventId}");
                     }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace DFC.App.JobProfile.HostedServices
 {
     public class StaticContentBackgroundLoader :
-        CacheLoadingBackgroundService<ILoadStaticContent>
+        CacheBackgroundLoader<ILoadStaticContent>
     {
         public StaticContentBackgroundLoader(
             ILogger<StaticContentBackgroundLoader> logger,

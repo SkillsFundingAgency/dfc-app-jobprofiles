@@ -145,13 +145,13 @@ namespace DFC.App.JobProfile
             services.AddApplicationInsightsTelemetry();
             var cosmosDbConnectionContentPages = _configuration.GetSection(CosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
             var cosmosDbConnectionStaticPages = _configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
-            services.AddContentPageServices<ContentPageModel>(cosmosDbConnectionContentPages, _envvironment.IsDevelopment());
+            services.AddContentPageServices<JobProfileContentPageModel>(cosmosDbConnectionContentPages, _envvironment.IsDevelopment());
             services.AddContentPageServices<StaticContentItemModel>(cosmosDbConnectionStaticPages, _envvironment.IsDevelopment());
 
             // remote contract local service implementation
             services.AddSingleton<IContentCacheService, ContentCacheService>();
 
-            services.AddTransient<IEventMessageService<ContentPageModel>, EventMessageService<ContentPageModel>>();
+            services.AddTransient<IEventMessageService<JobProfileContentPageModel>, EventMessageService<JobProfileContentPageModel>>();
             services.AddTransient<IEventMessageService<StaticContentItemModel>, EventMessageService<StaticContentItemModel>>();
             services.AddTransient<ILoadJobProfileContent, JobProfileCacheLoader>();
             services.AddTransient<ILoadStaticContent, StaticContentLoader>();

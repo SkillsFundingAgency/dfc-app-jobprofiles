@@ -10,7 +10,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public ContentPageModelProfile()
         {
-            CreateMap<JobProfileApiDataModel, ContentPageModel>()
+            CreateMap<JobProfileApiDataModel, JobProfileContentPageModel>()
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.ItemId))
                 .ForMember(d => d.PageLocation, s => s.Ignore())
                 .ForMember(d => d.Etag, s => s.Ignore())

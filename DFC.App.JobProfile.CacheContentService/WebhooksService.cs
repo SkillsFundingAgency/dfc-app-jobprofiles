@@ -1,7 +1,6 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Common;
 using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using Microsoft.Extensions.Logging;
@@ -16,22 +15,23 @@ using IContentCacheService = DFC.Content.Pkg.Netcore.Data.Contracts.IContentCach
 
 namespace DFC.App.JobProfile.CacheContentService
 {
-    public class WebhooksService : IWebhooksService
+    public class WebhooksService :
+        IWebhooksService
     {
         private readonly ILogger<WebhooksService> logger;
         private readonly AutoMapper.IMapper mapper;
-        private readonly IEventMessageService<ContentPageModel> eventMessageService;
+        private readonly IEventMessageService<JobProfileContentPageModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
-        private readonly IContentPageService<ContentPageModel> contentPageService;
+        private readonly IContentPageService<JobProfileContentPageModel> contentPageService;
         private readonly IContentCacheService contentCacheService;
         private readonly IEventGridService eventGridService;
 
         public WebhooksService(
             ILogger<WebhooksService> logger,
             AutoMapper.IMapper mapper,
-            IEventMessageService<ContentPageModel> eventMessageService,
+            IEventMessageService<JobProfileContentPageModel> eventMessageService,
             ICmsApiService cmsApiService,
-            IContentPageService<ContentPageModel> contentPageService,
+            IContentPageService<JobProfileContentPageModel> contentPageService,
             IContentCacheService contentCacheService,
             IEventGridService eventGridService)
         {
@@ -53,7 +53,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
                 case WebhookCacheOperation.CreateOrUpdate:
 
-                    if (!Uri.TryCreate(apiEndpoint, UriKind.Absolute, out Uri? url))
+                    if (!Uri.TryCreate(apiEndpoint, UriKind.Absolute, out Uri url))
                     {
                         throw new InvalidDataException($"Invalid Api url '{apiEndpoint}' received for Event Id: {eventId}");
                     }
@@ -69,7 +69,7 @@ namespace DFC.App.JobProfile.CacheContentService
         public async Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId)
         {
             var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(url).ConfigureAwait(false);
-            var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
+            var contentPageModel = mapper.Map<JobProfileContentPageModel>(apiDataModel);
 
             if (contentPageModel == null)
             {
@@ -89,7 +89,7 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 await eventGridService.CompareAndSendEventAsync(existingContentPageModel, contentPageModel).ConfigureAwait(false);
 
-                var contentItemIds = contentPageModel.AllContentItemIds;
+                var contentItemIds = contentPageModel.AllContentItemIds.ToList();
 
                 contentCacheService.AddOrReplace(contentItemId, contentItemIds);
             }
@@ -163,7 +163,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return false;
         }
 
-        public bool TryValidateModel(ContentPageModel? contentPageModel)
+        public bool TryValidateModel(JobProfileContentPageModel? contentPageModel)
         {
             _ = contentPageModel ?? throw new ArgumentNullException(nameof(contentPageModel));
 

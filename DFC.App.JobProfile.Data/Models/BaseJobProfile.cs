@@ -10,7 +10,7 @@ namespace DFC.App.JobProfile.Data
         public Guid JobProfileId { get; set; }
 
         [Required]
-        public string CanonicalName { get; set; }
+        public string CanonicalName { get; set; } = string.Empty;
 
         [Required]
         public long SequenceNumber { get; set; }

@@ -24,7 +24,7 @@ namespace DFC.App.JobProfile.EventProcessorService
             this.eventGridPublishClientOptions = eventGridPublishClientOptions;
         }
 
-        public static bool ContainsDifferences(ContentPageModel? existingContentPageModel, ContentPageModel? updatedContentPageModel)
+        public static bool ContainsDifferences(JobProfileContentPageModel? existingContentPageModel, JobProfileContentPageModel? updatedContentPageModel)
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 
@@ -86,7 +86,7 @@ namespace DFC.App.JobProfile.EventProcessorService
             return true;
         }
 
-        public async Task CompareAndSendEventAsync(ContentPageModel? existingContentPageModel, ContentPageModel? updatedContentPageModel)
+        public async Task CompareAndSendEventAsync(JobProfileContentPageModel? existingContentPageModel, JobProfileContentPageModel? updatedContentPageModel)
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 
@@ -102,7 +102,7 @@ namespace DFC.App.JobProfile.EventProcessorService
             }
         }
 
-        public async Task SendEventAsync(WebhookCacheOperation webhookCacheOperation, ContentPageModel? updatedContentPageModel)
+        public async Task SendEventAsync(WebhookCacheOperation webhookCacheOperation, JobProfileContentPageModel? updatedContentPageModel)
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 

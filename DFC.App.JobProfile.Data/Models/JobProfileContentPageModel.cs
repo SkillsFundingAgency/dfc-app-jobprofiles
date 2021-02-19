@@ -1,28 +1,24 @@
-﻿using DFC.App.JobProfile.Data.Extensions;
-using DFC.Compui.Cosmos.Enums;
-using DFC.Content.Pkg.Netcore.Data.Models;
+﻿using DFC.Compui.Cosmos.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class ContentPageModel : Compui.Cosmos.Models.ContentPageModel
+    public class JobProfileContentPageModel : ContentPageModel
     {
         [Required]
-        [JsonProperty(Order = -10)]
-        public override string? PartitionKey => PageLocation;
+        [JsonProperty(Order = -30)]
+        public override string PartitionKey => Title!;
 
-        public new string? Content { get; set; }
+        //public new string? Content { get; set; }
 
         [Display(Name = "Breadcrumb Title")]
-        public new string? BreadcrumbTitle { get; set; }
+        public string BreadcrumbTitle { get; set; } = string.Empty;
 
-        [JsonProperty(Order = -10)]
-        public new Guid? Version { get; set; }
+        //[JsonProperty(Order = -10)]
+        //public new Guid? Version { get; set; }
 
         [JsonProperty("id")]
         public Guid? ItemId { get; set; }
@@ -31,7 +27,7 @@ namespace DFC.App.JobProfile.Data.Models
         public bool ExcludeFromSitemap { get; set; }
 
         [JsonIgnore]
-        public bool IncludeInSitemap => !ExcludeFromSitemap;
+        public new bool IncludeInSitemap => !ExcludeFromSitemap;
 
         [JsonProperty("skos__prefLabel")]
         public string? Title { get; set; }
@@ -57,7 +53,7 @@ namespace DFC.App.JobProfile.Data.Models
         [JsonProperty(PropertyName = "ModifiedDate")]
         public DateTime Published { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
+        //public DateTime? CreatedDate { get; set; }
 
         //public string RedirectLocations { get; set; } = string.Empty;
 
@@ -68,27 +64,23 @@ namespace DFC.App.JobProfile.Data.Models
 
         public Uri JobProfileWebsiteUrl { get; set; }
 
-        public override string PageLocation
-        {
-            get { return $"/{this.JobProfileWebsiteUrl}"; }
-            set { }
-        }
+        public override string? PageLocation { get; set; }
 
-        public string WitDigitalSkillsLevel { get; set; }
+        public string WitDigitalSkillsLevel { get; set; } = string.Empty;
 
-        public string TitleOptions { get; set; }
+        public string TitleOptions { get; set; } = string.Empty;
 
-        public string HtbFurtherInformation { get; set; }
+        public string HtbFurtherInformation { get; set; } = string.Empty;
 
-        public JobProfileOverviewModel OverviewSegment { get; set; }
+        public JobProfileOverviewModel? OverviewSegment { get; set; }
 
-        public JobProfileWhatYoullDoModel WhatYoullDoSegment { get; set; }
+        public JobProfileWhatYoullDoModel? WhatYoullDoSegment { get; set; }
 
-        public JobProfileCareerPathModel CareerPathSegment { get; set; }
+        public JobProfileCareerPathModel? CareerPathSegment { get; set; }
 
-        public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
+        public JobProfileHowToBecomeModel? HowToBecomeSegment { get; set; }
 
-        public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
+        public JobProfileWhatItTakesModel? WhatItTakesSegment { get; set; }
 
         //[JsonIgnore]
         //private ContentLinksModel? PrivateLinksModel { get; set; }
@@ -97,6 +89,6 @@ namespace DFC.App.JobProfile.Data.Models
         //public List<Guid> AllContentItemIds => ContentItems.Flatten(s => s.ContentItems).Where(w => w.ItemId != null).Select(s => s.ItemId!.Value).ToList();
 
         [JsonIgnore]
-        public List<Guid> AllContentItemIds { get; set; }
+        public ICollection<Guid> AllContentItemIds { get; set; } = new List<Guid>();
     }
 }

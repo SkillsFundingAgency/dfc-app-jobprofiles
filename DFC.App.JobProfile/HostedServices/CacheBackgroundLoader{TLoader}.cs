@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.HostedServices
 {
-    public abstract class CacheLoadingBackgroundService<TLoader> :
+    public abstract class CacheBackgroundLoader<TLoader> :
         BackgroundService
         where TLoader : class, ILoadCacheData
     {
-        private readonly ILogger<CacheLoadingBackgroundService<TLoader>> _logger;
+        private readonly ILogger<CacheBackgroundLoader<TLoader>> _logger;
         private readonly CmsApiClientOptions _clientOptions;
         private readonly ILoadCacheData _cacheLoader;
         private readonly IHostedServiceTelemetryWrapper _serviceTelemetryWrapper;
 
-        protected CacheLoadingBackgroundService(
-            ILogger<CacheLoadingBackgroundService<TLoader>> logger,
+        protected CacheBackgroundLoader(
+            ILogger<CacheBackgroundLoader<TLoader>> logger,
             CmsApiClientOptions clientOptions,
             ILoadCacheData cacheLoader,
             IHostedServiceTelemetryWrapper hostedServiceTelemetryWrapper)
@@ -49,7 +49,7 @@ namespace DFC.App.JobProfile.HostedServices
             {
                 _logger.LogInformation("Cache reload executing");
 
-                var task = _serviceTelemetryWrapper.Execute(() => _cacheLoader.Reload(stoppingToken), nameof(CacheLoadingBackgroundService<TLoader>));
+                var task = _serviceTelemetryWrapper.Execute(() => _cacheLoader.Reload(stoppingToken), nameof(CacheBackgroundLoader<TLoader>));
 
                 if (!task.IsCompletedSuccessfully)
                 {

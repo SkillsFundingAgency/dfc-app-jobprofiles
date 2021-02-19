@@ -18,14 +18,14 @@ namespace DFC.App.JobProfile.CacheContentService
     {
         private readonly ILogger<JobProfileCacheLoader> logger;
         private readonly AutoMapper.IMapper mapper;
-        private readonly IEventMessageService<ContentPageModel> eventMessageService;
+        private readonly IEventMessageService<JobProfileContentPageModel> eventMessageService;
         private readonly ICmsApiService cmsApiService;
         private readonly IContentCacheService contentCacheService;
          
         public JobProfileCacheLoader(
             ILogger<JobProfileCacheLoader> logger,
             AutoMapper.IMapper mapper,
-            IEventMessageService<ContentPageModel> eventMessageService,
+            IEventMessageService<JobProfileContentPageModel> eventMessageService,
             ICmsApiService cmsApiService,
             IContentCacheService contentCacheService)
         {
@@ -113,7 +113,7 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 logger.LogInformation($"Get details for {item.Title} - {item.Url}");
 
-                var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(item.Url).ConfigureAwait(false);
+                var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(item!.Url!).ConfigureAwait(false);
 
                 if (apiDataModel == null)
                 {
@@ -130,7 +130,7 @@ namespace DFC.App.JobProfile.CacheContentService
                 }
 
                 OrganiseSegments(ref apiDataModel);
-                var contentPageModel = mapper.Map<ContentPageModel>(apiDataModel);
+                var contentPageModel = mapper.Map<JobProfileContentPageModel>(apiDataModel);
 
                 logger.LogInformation($"Updating cache with {item.Title} - {item.Url}");
 
@@ -156,7 +156,7 @@ namespace DFC.App.JobProfile.CacheContentService
                     logger.LogInformation($"Updated cache with {item.Title} - {item.Url}");
                 }
 
-                var contentItemIds = contentPageModel.AllContentItemIds;
+                var contentItemIds = contentPageModel.AllContentItemIds.ToList();
                 contentCacheService.AddOrReplace(contentPageModel.Id, contentItemIds);
             }
             catch (Exception ex)
@@ -185,7 +185,7 @@ namespace DFC.App.JobProfile.CacheContentService
             logger.LogInformation("Delete stale cache items completed");
         }
 
-        public async Task DeleteStaleItemsAsync(List<Data.Models.ContentPageModel> staleItems, CancellationToken stoppingToken)
+        public async Task DeleteStaleItemsAsync(List<Data.Models.JobProfileContentPageModel> staleItems, CancellationToken stoppingToken)
         {
             _ = staleItems ?? throw new ArgumentNullException(nameof(staleItems));
 
@@ -213,7 +213,7 @@ namespace DFC.App.JobProfile.CacheContentService
             }
         }
 
-        public bool TryValidateModel(Data.Models.ContentPageModel contentPageModel)
+        public bool TryValidateModel(Data.Models.JobProfileContentPageModel contentPageModel)
         {
             _ = contentPageModel ?? throw new ArgumentNullException(nameof(contentPageModel));
 

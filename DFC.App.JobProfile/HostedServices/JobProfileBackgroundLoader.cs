@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace DFC.App.JobProfile.HostedServices
 {
     public class JobProfileBackgroundLoader :
-        CacheLoadingBackgroundService<ILoadJobProfileContent>
+        CacheBackgroundLoader<ILoadJobProfileContent>
     {
         public JobProfileBackgroundLoader(
             ILogger<JobProfileBackgroundLoader> logger,

@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.Extensions;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
+using DFC.Content.Pkg.Netcore.Data.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,37 +17,37 @@ namespace DFC.App.JobProfile.CacheContentService
     public class JobProfileCacheLoader :
         ILoadJobProfileContent
     {
-        private readonly ILogger<JobProfileCacheLoader> logger;
-        private readonly AutoMapper.IMapper mapper;
-        private readonly IEventMessageService<JobProfileContentPageModel> eventMessageService;
-        private readonly ICmsApiService cmsApiService;
-        private readonly IContentCacheService contentCacheService;
+        private readonly ILogger<JobProfileCacheLoader> _logger;
+        private readonly AutoMapper.IMapper _mapper;
+        private readonly IEventMessageService<JobProfileCached> _messageService;
+        private readonly IProvideGraphContent _graphContent;
+        private readonly IContentCacheService _otherCacheThingy;
          
         public JobProfileCacheLoader(
             ILogger<JobProfileCacheLoader> logger,
             AutoMapper.IMapper mapper,
-            IEventMessageService<JobProfileContentPageModel> eventMessageService,
-            ICmsApiService cmsApiService,
+            IEventMessageService<JobProfileCached> eventMessageService,
+            IProvideGraphContent cmsApiService,
             IContentCacheService contentCacheService)
         {
-            this.logger = logger;
-            this.mapper = mapper;
-            this.eventMessageService = eventMessageService;
-            this.cmsApiService = cmsApiService;
-            this.contentCacheService = contentCacheService;
+            _logger = logger;
+            _mapper = mapper;
+            _messageService = eventMessageService;
+            _graphContent = cmsApiService;
+            _otherCacheThingy = contentCacheService;
         }
 
         public async Task Reload(CancellationToken stoppingToken)
         {
             try
             {
-                logger.LogInformation("Reload cache started");
+                _logger.LogInformation("Reload cache started");
 
                 var summaryList = await GetSummaryListAsync().ConfigureAwait(false);
 
                 if (stoppingToken.IsCancellationRequested)
                 {
-                    logger.LogWarning("Reload cache cancelled");
+                    _logger.LogWarning("Reload cache cancelled");
 
                     return;
                 }
@@ -57,7 +58,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
                     if (stoppingToken.IsCancellationRequested)
                     {
-                        logger.LogWarning("Reload cache cancelled");
+                        _logger.LogWarning("Reload cache cancelled");
 
                         return;
                     }
@@ -65,36 +66,38 @@ namespace DFC.App.JobProfile.CacheContentService
                     await DeleteStaleCacheEntriesAsync(summaryList, stoppingToken).ConfigureAwait(false);
                 }
 
-                logger.LogInformation("Reload cache completed");
+                _logger.LogInformation("Reload cache completed");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error in cache reload");
+                _logger.LogError(ex, "Error in cache reload");
             }
         }
 
-        public async Task<IReadOnlyCollection<JobProfileSummaryModel>> GetSummaryListAsync()
+        public async Task<IReadOnlyCollection<SummaryItemModel>> GetSummaryListAsync()
         {
-            logger.LogInformation("Get summary list");
+            _logger.LogInformation("Get summary list");
 
-            var summaryList = await cmsApiService.GetSummaryAsync<JobProfileSummaryModel>().ConfigureAwait(false);
+            var summaryList = await _graphContent.GetSummaryItems<SummaryItemModel>().ConfigureAwait(false);
 
-            logger.LogInformation("Get summary list completed");
+            _logger.LogInformation("Get summary list completed");
 
             return summaryList;
         }
 
-        public async Task ProcessSummaryListAsync(IReadOnlyCollection<JobProfileSummaryModel> summaryList, CancellationToken stoppingToken)
+        public async Task ProcessSummaryListAsync(
+            IReadOnlyCollection<SummaryItemModel> summaryList,
+            CancellationToken stoppingToken)
         {
-            logger.LogInformation("Process summary list started");
+            _logger.LogInformation("Process summary list started");
 
-            contentCacheService.Clear();
+            _otherCacheThingy.Clear();
 
             foreach (var item in summaryList.OrderBy(o => o.Published))
             {
                 if (stoppingToken.IsCancellationRequested)
                 {
-                    logger.LogWarning("Process summary list cancelled");
+                    _logger.LogWarning("Process summary list cancelled");
 
                     return;
                 }
@@ -102,79 +105,83 @@ namespace DFC.App.JobProfile.CacheContentService
                 await GetAndSaveItemAsync(item, stoppingToken).ConfigureAwait(false);
             }
 
-            logger.LogInformation("Process summary list completed");
+            _logger.LogInformation("Process summary list completed");
         }
 
-        public async Task GetAndSaveItemAsync(JobProfileSummaryModel item, CancellationToken stoppingToken)
+        public async Task GetAndSaveItemAsync(SummaryItemModel item, CancellationToken stoppingToken)
         {
             _ = item ?? throw new ArgumentNullException(nameof(item));
 
             try
             {
-                logger.LogInformation($"Get details for {item.Title} - {item.Uri}");
+                _logger.LogInformation($"Get details for {item.CanonicalName} - {item.Uri}");
 
-                var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(item.Uri).ConfigureAwait(false);
+                var apiDataModel = await _graphContent
+                    .GetComposedItem<ContentApiRootElement, ContentApiBranchElement>(item.Uri)
+                    .ConfigureAwait(false);
 
                 if (apiDataModel == null)
                 {
-                    logger.LogWarning($"No details returned from {item.Title} - {item.Uri}");
+                    _logger.LogWarning($"No details returned from {item.CanonicalName} - {item.Uri}");
 
                     return;
                 }
 
                 if (stoppingToken.IsCancellationRequested)
                 {
-                    logger.LogWarning("Process item get and save cancelled");
+                    _logger.LogWarning("Process item get and save cancelled");
 
                     return;
                 }
 
                 OrganiseSegments(ref apiDataModel);
-                var contentPageModel = mapper.Map<JobProfileContentPageModel>(apiDataModel);
+                var contentPageModel = _mapper.Map<JobProfileCached>(apiDataModel);
 
-                logger.LogInformation($"Updating cache with {item.Title} - {item.Uri}");
+                _logger.LogInformation($"Updating cache with {item.CanonicalName} - {item.Uri}");
 
-                var result = await eventMessageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+                var result = await _messageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
 
                 if (result == HttpStatusCode.NotFound)
                 {
-                    logger.LogInformation($"Does not exist, creating cache with {item.Title} - {item.Uri}");
+                    _logger.LogInformation($"Does not exist, creating cache with {item.CanonicalName} - {item.Uri}");
 
-                    result = await eventMessageService.CreateAsync(contentPageModel).ConfigureAwait(false);
+                    result = await _messageService.CreateAsync(contentPageModel).ConfigureAwait(false);
 
                     if (result == HttpStatusCode.Created)
                     {
-                        logger.LogInformation($"Created cache with {item.Title} - {item.Uri}");
+                        _logger.LogInformation($"Created cache with {item.CanonicalName} - {item.Uri}");
                     }
                     else
                     {
-                        logger.LogError($"Cache create error status {result} from {item.Title} - {item.Uri}");
+                        _logger.LogError($"Cache create error status {result} from {item.CanonicalName} - {item.Uri}");
                     }
                 }
                 else
                 {
-                    logger.LogInformation($"Updated cache with {item.Title} - {item.Uri}");
+                    _logger.LogInformation($"Updated cache with {item.CanonicalName} - {item.Uri}");
                 }
 
                 var contentItemIds = contentPageModel.AllContentItemIds.ToList();
-                contentCacheService.AddOrReplace(contentPageModel.Id, contentItemIds);
+                _otherCacheThingy.AddOrReplace(contentPageModel.Id, contentItemIds);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error in get and save for {item.Title} - {item.Uri}");
+                _logger.LogError(ex, $"Error in get and save for {item.CanonicalName} - {item.Uri}");
             }
         }
 
-        public async Task DeleteStaleCacheEntriesAsync(IReadOnlyCollection<JobProfileSummaryModel> summaryList, CancellationToken stoppingToken)
+        public async Task DeleteStaleCacheEntriesAsync(
+            IReadOnlyCollection<SummaryItemModel> summaryList,
+            CancellationToken stoppingToken)
         {
-            logger.LogInformation("Delete stale cache items started");
+            _logger.LogInformation("Delete stale cache items started");
 
-            var cachedContentPages = await eventMessageService.GetAllCachedCanonicalNamesAsync().ConfigureAwait(false);
+            var cachedContentPages = await _messageService.GetAllCachedCanonicalNamesAsync().ConfigureAwait(false);
 
             if (cachedContentPages != null && cachedContentPages.Any())
             {
                 var hashedSummaryList = new HashSet<Uri>(summaryList.Select(p => p.Uri));
-                var staleContentPages = cachedContentPages.Where(p => !hashedSummaryList.Contains(p.Url!)).ToList();
+                var staleContentPages = cachedContentPages.Where(p => !hashedSummaryList.Contains(p.Uri)).ToList();
 
                 if (staleContentPages.Any())
                 {
@@ -182,10 +189,12 @@ namespace DFC.App.JobProfile.CacheContentService
                 }
             }
 
-            logger.LogInformation("Delete stale cache items completed");
+            _logger.LogInformation("Delete stale cache items completed");
         }
 
-        public async Task DeleteStaleItemsAsync(IReadOnlyCollection<JobProfileContentPageModel> staleItems, CancellationToken stoppingToken)
+        public async Task DeleteStaleItemsAsync(
+            IReadOnlyCollection<JobProfileCached> staleItems,
+            CancellationToken stoppingToken)
         {
             _ = staleItems ?? throw new ArgumentNullException(nameof(staleItems));
 
@@ -193,27 +202,27 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 if (stoppingToken.IsCancellationRequested)
                 {
-                    logger.LogWarning("Delete stale cache items cancelled");
+                    _logger.LogWarning("Delete stale cache items cancelled");
 
                     return;
                 }
 
-                logger.LogInformation($"Deleting cache with {staleContentPage.CanonicalName} - {staleContentPage.Id}");
+                _logger.LogInformation($"Deleting cache with {staleContentPage.CanonicalName} - {staleContentPage.Id}");
 
-                var deletionResult = await eventMessageService.DeleteAsync(staleContentPage.Id).ConfigureAwait(false);
+                var deletionResult = await _messageService.DeleteAsync(staleContentPage.Id).ConfigureAwait(false);
 
                 if (deletionResult == HttpStatusCode.OK)
                 {
-                    logger.LogInformation($"Deleted stale cache item {staleContentPage.CanonicalName} - {staleContentPage.Id}");
+                    _logger.LogInformation($"Deleted stale cache item {staleContentPage.CanonicalName} - {staleContentPage.Id}");
                 }
                 else
                 {
-                    logger.LogError($"Cache delete error status {deletionResult} from {staleContentPage.CanonicalName} - {staleContentPage.Id}");
+                    _logger.LogError($"Cache delete error status {deletionResult} from {staleContentPage.CanonicalName} - {staleContentPage.Id}");
                 }
             }
         }
 
-        public bool TryValidateModel(JobProfileContentPageModel contentPageModel)
+        public bool TryValidateModel(JobProfileCached contentPageModel)
         {
             _ = contentPageModel ?? throw new ArgumentNullException(nameof(contentPageModel));
 
@@ -225,17 +234,17 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 foreach (var validationResult in validationResults)
                 {
-                    logger.LogError($"Error validating {contentPageModel.CanonicalName} - {contentPageModel.Url}: {string.Join(",", validationResult.MemberNames)} - {validationResult.ErrorMessage}");
+                    _logger.LogError($"Error validating {contentPageModel.CanonicalName} - {contentPageModel.Uri}: {string.Join(",", validationResult.MemberNames)} - {validationResult.ErrorMessage}");
                 }
             }
 
             return isValid;
         }
 
-        private void OrganiseSegments(ref JobProfileApiDataModel apiDataModel)
+        private void OrganiseSegments(ref ContentApiRootElement apiDataModel)
         {
             //What You'll Do
-            var whatYoullDoModel = new JobProfileWhatYoullDoModel();
+            var whatYoullDoModel = new JobProfileCachedWhatYoullDo();
             whatYoullDoModel.DaytoDayTasks = apiDataModel.ContentItems.Where(x => x.ContentType == "DayToDayTask").ToList();
             whatYoullDoModel.WorkingEnvironment = apiDataModel.ContentItems.Where(x => x.ContentType == "WorkingEnvironment").ToList();
             whatYoullDoModel.WorkingLocation = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "WorkingLocation");
@@ -243,13 +252,13 @@ namespace DFC.App.JobProfile.CacheContentService
             apiDataModel.WhatYoullDoSegment = whatYoullDoModel;
 
             //Career Path
-            var careerPathSegment = new JobProfileCareerPathModel();
+            var careerPathSegment = new JobProfileCachedCareerPath();
             careerPathSegment.ApprecticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
             careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
             apiDataModel.CareerPathSegment = careerPathSegment;
 
             //How to Become
-            var howToBecomeSegment = new JobProfileHowToBecomeModel();
+            var howToBecomeSegment = new JobProfileCachedHowToBecome();
             howToBecomeSegment.DirectRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "DirectRoute");
             howToBecomeSegment.ApprenticeshipRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "ApprenticeshipRoute");
             howToBecomeSegment.CollegeRoute = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "CollegeRoute");
@@ -264,13 +273,13 @@ namespace DFC.App.JobProfile.CacheContentService
             apiDataModel.HowToBecomeSegment = howToBecomeSegment;
 
             //What it Takes
-            var whatItTakes = new JobProfileWhatItTakesModel();
+            var whatItTakes = new JobProfileCachedWhatItTakes();
             whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
             whatItTakes.OtherRequirement = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
             whatItTakes.Occupation = apiDataModel.ContentItems.SingleOrDefault(x => x.ContentType == "occupation");
             apiDataModel.WhatItTakesSegment = whatItTakes;
 
-            apiDataModel.AllContentItemIds = apiDataModel.ContentItems.Flatten(s => s.ContentItems).Select(s => s.ItemId).ToList();
+            apiDataModel.AllContentItemIds = apiDataModel.ContentItems.Flatten(s => s.ContentItems).Select(s => s.ItemID).ToList();
         }
     }
 }

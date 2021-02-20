@@ -20,18 +20,18 @@ namespace DFC.App.JobProfile.CacheContentService
     {
         private readonly ILogger<WebhooksService> logger;
         private readonly AutoMapper.IMapper mapper;
-        private readonly IEventMessageService<JobProfileContentPageModel> eventMessageService;
-        private readonly ICmsApiService cmsApiService;
-        private readonly IContentPageService<JobProfileContentPageModel> contentPageService;
+        private readonly IEventMessageService<JobProfileCached> eventMessageService;
+        private readonly IProvideGraphContent cmsApiService;
+        private readonly IContentPageService<JobProfileCached> contentPageService;
         private readonly IContentCacheService contentCacheService;
         private readonly IEventGridService eventGridService;
 
         public WebhooksService(
             ILogger<WebhooksService> logger,
             AutoMapper.IMapper mapper,
-            IEventMessageService<JobProfileContentPageModel> eventMessageService,
-            ICmsApiService cmsApiService,
-            IContentPageService<JobProfileContentPageModel> contentPageService,
+            IEventMessageService<JobProfileCached> eventMessageService,
+            IProvideGraphContent cmsApiService,
+            IContentPageService<JobProfileCached> contentPageService,
             IContentCacheService contentCacheService,
             IEventGridService eventGridService)
         {
@@ -68,8 +68,8 @@ namespace DFC.App.JobProfile.CacheContentService
 
         public async Task<HttpStatusCode> ProcessContentItemAsync(Uri url, Guid contentItemId)
         {
-            var apiDataModel = await cmsApiService.GetItemAsync<JobProfileApiDataModel, JobProfileApiContentItemModel>(url).ConfigureAwait(false);
-            var contentPageModel = mapper.Map<JobProfileContentPageModel>(apiDataModel);
+            var apiDataModel = await cmsApiService.GetComposedItem<ContentApiRootElement, ContentApiBranchElement>(url).ConfigureAwait(false);
+            var contentPageModel = mapper.Map<JobProfileCached>(apiDataModel);
 
             if (contentPageModel == null)
             {
@@ -112,7 +112,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return result;
         }
 
-        public JobProfileApiContentItemModel FindContentItem(Guid contentItemId, ICollection<JobProfileApiContentItemModel> items)
+        public ContentApiBranchElement FindContentItem(Guid contentItemId, ICollection<ContentApiBranchElement> items)
         {
             if (items == null || !items.Any())
             {
@@ -121,7 +121,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
             foreach (var contentItemModel in items)
             {
-                if (contentItemModel.ItemId == contentItemId)
+                if (contentItemModel.ItemID == contentItemId)
                 {
                     return contentItemModel;
                 }
@@ -137,7 +137,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return default;
         }
 
-        public bool RemoveContentItem(Guid contentItemId, ICollection<JobProfileApiContentItemModel> items)
+        public bool RemoveContentItem(Guid contentItemId, ICollection<ContentApiBranchElement> items)
         {
             if (items == null || !items.Any())
             {
@@ -146,7 +146,7 @@ namespace DFC.App.JobProfile.CacheContentService
 
             foreach (var contentItemModel in items)
             {
-                if (contentItemModel.ItemId == contentItemId)
+                if (contentItemModel.ItemID == contentItemId)
                 {
                     items.Remove(contentItemModel);
                     return true;
@@ -163,7 +163,7 @@ namespace DFC.App.JobProfile.CacheContentService
             return false;
         }
 
-        public bool TryValidateModel(JobProfileContentPageModel contentPageModel)
+        public bool TryValidateModel(JobProfileCached contentPageModel)
         {
             _ = contentPageModel ?? throw new ArgumentNullException(nameof(contentPageModel));
 
@@ -175,7 +175,7 @@ namespace DFC.App.JobProfile.CacheContentService
             {
                 foreach (var validationResult in validationResults)
                 {
-                    logger.LogError($"Error validating {contentPageModel.CanonicalName} - {contentPageModel.Url}: {string.Join(",", validationResult.MemberNames)} - {validationResult.ErrorMessage}");
+                    logger.LogError($"Error validating {contentPageModel.CanonicalName} - {contentPageModel.Uri}: {string.Join(",", validationResult.MemberNames)} - {validationResult.ErrorMessage}");
                 }
             }
 

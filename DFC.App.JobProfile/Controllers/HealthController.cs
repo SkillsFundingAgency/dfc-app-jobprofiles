@@ -28,14 +28,13 @@ namespace DFC.App.JobProfile.Controllers
         [Route("health")]
         public async Task<IActionResult> Health()
         {
-            string resourceName = typeof(Program).Namespace;
             string message;
 
             logService.LogInformation($"{nameof(Health)} has been called");
 
             try
             {
-                var isHealthy = await jobProfileService.PingAsync().ConfigureAwait(false);
+                var isHealthy = await jobProfileService.Ping().ConfigureAwait(false);
 
                 if (isHealthy)
                 {

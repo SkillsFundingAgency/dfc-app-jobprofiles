@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Net.Mime;
 
 namespace DFC.App.JobProfile.Controllers
@@ -10,9 +11,9 @@ namespace DFC.App.JobProfile.Controllers
     public class RobotController : Controller
     {
         private readonly ILogger<RobotController> logService;
-        private readonly IHostingEnvironment hostingEnvironment;
+        private readonly IWebHostEnvironment hostingEnvironment;
 
-        public RobotController(ILogger<RobotController> logService, IHostingEnvironment hostingEnvironment)
+        public RobotController(ILogger<RobotController> logService, IWebHostEnvironment hostingEnvironment)
         {
             this.logService = logService;
             this.hostingEnvironment = hostingEnvironment;
@@ -43,12 +44,12 @@ namespace DFC.App.JobProfile.Controllers
         private Robot GenerateThisSiteRobot()
         {
             var robot = new Robot();
-            string robotsFilePath = System.IO.Path.Combine(hostingEnvironment.WebRootPath, "StaticRobots.txt");
+            var robotsFilePath = Path.Combine(hostingEnvironment.WebRootPath, "StaticRobots.txt");
 
             if (System.IO.File.Exists(robotsFilePath))
             {
                 // output the composite UI default (static) robots data from the StaticRobots.txt file
-                string staticRobotsText = System.IO.File.ReadAllText(robotsFilePath);
+                var staticRobotsText = System.IO.File.ReadAllText(robotsFilePath);
 
                 if (!string.IsNullOrWhiteSpace(staticRobotsText))
                 {

@@ -1,7 +1,11 @@
-﻿@model JobProfileApiContentItemModel
+﻿@using DFC.Content.Pkg.Netcore.Data.Models
+@model ContentApiBranchElement
+
 @{
-    var essentialList = Model.ContentLinks.ContentLinks.Where(x => x.Key == "esco__relatedOptionalSkill").ToList()[0].Value.Select(x => x.Title).ToList();
-    var listToLoop = Model.ContentItems.Where(x => x.ContentType == "skill").ToList();
+    //TODO: review this code...
+    var links = Model?.ContentLinks?.ContentLinks?.FirstOrDefault(x => x.Key == "esco__relatedOptionalSkillŸ").Value ?? new List<LinkDetails>();
+    var essentialList = links.Select(x => x.Title).ToList() ?? new List<string>();
+    var listToLoop = Model?.ContentItems?.Where(x => x.ContentType == "skill").ToList() ?? new List<ContentApiBranchElement>();
 }
 
 <ul>

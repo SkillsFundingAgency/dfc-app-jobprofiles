@@ -9,13 +9,16 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.EventProcessorService
 {
-    public class EventMessageService<TModel> : IEventMessageService<TModel>
-       where TModel : class, IContentPageModel
+    public class EventMessageService<TModel> :
+        IEventMessageService<TModel>
+        where TModel : class, IContentPageModel
     {
         private readonly ILogger<EventMessageService<TModel>> logger;
         private readonly IContentPageService<TModel> contentPageService;
 
-        public EventMessageService(ILogger<EventMessageService<TModel>> logger, IContentPageService<TModel> contentPageService)
+        public EventMessageService(
+            ILogger<EventMessageService<TModel>> logger,
+            IContentPageService<TModel> contentPageService)
         {
             this.logger = logger;
             this.contentPageService = contentPageService;

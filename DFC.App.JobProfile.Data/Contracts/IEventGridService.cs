@@ -6,8 +6,8 @@ namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IEventGridService
     {
-        Task CompareAndSendEventAsync(JobProfileContentPageModel existingContentPageModel, JobProfileContentPageModel updatedContentPageModel);
+        Task CompareAndSendEventAsync(IJobProfileCached existingContentPageModel, IJobProfileCached updatedContentPageModel);
 
-        Task SendEventAsync(WebhookCacheOperation webhookCacheOperation, JobProfileContentPageModel updatedContentPageModel);
+        Task SendEventAsync(WebhookCacheOperation webhookCacheOperation, IJobProfileCached updatedContentPageModel);
     }
 }

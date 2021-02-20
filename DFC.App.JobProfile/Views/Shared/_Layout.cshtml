@@ -4,15 +4,24 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DFC.App.JobProfile</title>
+    <link href="https://cdn.nationalcareers.service.gov.uk/nationalcareers_toolkit/css/all.min.css?ZLtxWzRjgzJMnAsmVw4xCA==" rel="stylesheet" type="text/css">
 </head>
-<body>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+@*TODO: remove some these divs and styling *@
+<body class="govuk-template__body">
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <div class="govuk-grid-row">
+                    <main role="main" class="govuk-grid-column-two-thirds">
+                        @RenderBody()
+                    </main>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    @RenderSection("Scripts", required: false)
+                </div>
+            </div>
+        </div>
     </div>
-
-    @RenderSection("Scripts", required: false)
 </body>
 </html>

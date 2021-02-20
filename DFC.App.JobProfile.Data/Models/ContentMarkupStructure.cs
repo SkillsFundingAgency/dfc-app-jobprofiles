@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class ContentItemModel
+    public class ContentMarkupStructure
     {
         public Uri Url { get; set; }
 

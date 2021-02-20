@@ -1,29 +1,27 @@
 ﻿using DFC.App.JobProfile.Data.Models;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IJobProfileService
     {
-        Task<bool> PingAsync();
+        Task<bool> Ping();
 
-        Task<IEnumerable<Models.JobProfileModel>> GetAllAsync();
+        Task<IReadOnlyCollection<JobProfileCached>> GetAllItems();
 
-        Task<Models.JobProfileModel> GetByIdAsync(Guid documentId);
+        Task<JobProfileCached> GetItemBy(Guid documentId);
 
-        Task<Models.JobProfileModel> GetByNameAsync(string canonicalName);
+        Task<JobProfileCached> GetItemBy(string canonicalName);
 
-        Task<Models.JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
-
-        Task<HttpStatusCode> Create(Models.JobProfileModel jobProfileModel);
-
-        Task<HttpStatusCode> Update(Models.JobProfileModel jobProfileModel);
-
-        Task<HttpStatusCode> Update(Models.JobProfileMetadata jobProfileMetadata);
-
-        Task<bool> DeleteAsync(Guid documentId);
+// TODO: fix(?) me!
+#pragma warning disable S125 // Sections of code should not be commented out
+#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
+        //Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName);
+        //Task<HttpStatusCode> Create(JobProfileModel jobProfileModel);
+        //Task<HttpStatusCode> Update(JobProfileModel jobProfileModel);
+        //Task<HttpStatusCode> Update(JobProfileMetadata jobProfileMetadata);
+        //Task<bool> DeleteAsync(Guid documentId);
     }
 }

@@ -1,18 +1,44 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.ViewModels;
 using DFC.Content.Pkg.Netcore.Data.Models;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
-    [ExcludeFromCodeCoverage]
     public class ContentPageModelProfile : Profile
     {
         public ContentPageModelProfile()
         {
-            CreateMap<JobProfileApiDataModel, JobProfileContentPageModel>()
+            CreateMap<JobProfileCached, IndexDocumentViewModel>()
+                .ForMember(d => d.JobProfileWebsiteUrl, s => s.MapFrom(x => x.CanonicalName.Replace(" ", "-")));
+
+            CreateMap<JobProfileCached, HeadViewModel>()
+                .ForMember(d => d.Title, s => s.MapFrom(x => x.CanonicalName))
+                .ForMember(d => d.Description, s => s.MapFrom(x => x.Description))
+                .ForMember(d => d.CanonicalUrl, s => s.MapFrom(x => x.PageLocation))
+                .ForMember(d => d.Keywords, s => s.MapFrom(x => x.Keywords));
+
+            CreateMap<JobProfileCached, HeroViewModel>()
+                .ForMember(d => d.Title, s => s.MapFrom(x => x.CanonicalName))
+                .ForMember(d => d.Description, s => s.MapFrom(x => x.Description))
+                .ForMember(d => d.PageLocation, s => s.MapFrom(x => x.PageLocation))
+                .ForMember(d => d.Keywords, s => s.MapFrom(x => x.Keywords))
+                .ForMember(d => d.OverviewSegment, s => s.MapFrom(x => x.OverviewSegment));
+
+            CreateMap<JobProfileCached, BodyViewModel>()
+                .ForMember(d => d.CareerPathSegment, s => s.MapFrom(x => x.CareerPathSegment))
+                .ForMember(d => d.HowToBecomeSegment, s => s.MapFrom(x => x.HowToBecomeSegment))
+                .ForMember(d => d.WhatItTakesSegment, s => s.MapFrom(x => x.WhatItTakesSegment))
+                .ForMember(d => d.WhatYoullDoSegment, s => s.MapFrom(x => x.WhatYoullDoSegment));
+
+            CreateMap<JobProfileCached, DocumentViewModel>()
+                .ForMember(x => x.Head, opt => opt.MapFrom(model => model))
+                .ForMember(x => x.HeroBanner, opt => opt.MapFrom(model => model))
+                .ForMember(x => x.Body, opt => opt.MapFrom(model => model))
+                .ForMember(d => d.CanonicalName, s => s.MapFrom(x => x.CanonicalName));
+
+            CreateMap<ContentApiRootElement, JobProfileCached>()
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.ItemId))
-                .ForMember(d => d.PageLocation, s => s.Ignore())
                 .ForMember(d => d.Etag, s => s.Ignore())
                 .ForMember(d => d.PartitionKey, s => s.Ignore())
                 .ForMember(d => d.TraceId, s => s.Ignore())
@@ -34,9 +60,9 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForPath(d => d.OverviewSegment.WorkingHoursDetails, s => s.MapFrom(a => a.WorkingHoursDetails))
                 .ForPath(d => d.OverviewSegment.WorkingPatternDetails, s => s.MapFrom(a => a.WorkingPatternDetails));
 
-            CreateMap<LinkDetails, JobProfileApiContentItemModel>()
+            CreateMap<LinkDetails, ContentApiBranchElement>()
                 .ForMember(d => d.Uri, s => s.Ignore())
-                .ForMember(d => d.ItemId, s => s.Ignore())
+                .ForMember(d => d.ItemID, s => s.Ignore())
                 .ForMember(d => d.Content, s => s.Ignore())
                 .ForMember(d => d.Published, s => s.Ignore())
                 .ForMember(d => d.CreatedDate, s => s.Ignore())

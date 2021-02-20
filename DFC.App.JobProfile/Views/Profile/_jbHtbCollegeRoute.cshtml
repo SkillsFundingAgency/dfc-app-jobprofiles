@@ -1,4 +1,4 @@
-﻿@model JobProfileApiContentItemModel
+﻿@model ContentApiBranchElement
 @{ 
     var collegeRrquirements = Model.ContentItems.Where(x => x.ContentType == "CollegeRequirement").ToList();
     var collegeLinks = Model.ContentItems.Where(x => x.ContentType == "CollegeLink").ToList();

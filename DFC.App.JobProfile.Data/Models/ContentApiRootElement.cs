@@ -9,13 +9,14 @@ using System.Linq;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileApiDataModel :
-        IRootContentItemModel<JobProfileApiContentItemModel>
+    public class ContentApiRootElement :
+        IRootContentItem<ContentApiBranchElement>
     {
         [JsonProperty("id")]
         public Guid ItemId { get; set; } = Guid.Empty;
 
-        [JsonProperty("alias_alias")]
+        //[JsonProperty("alias_alias")]
+        [JsonProperty("pagelocation_UrlName")]
         public string CanonicalName { get; set; } = string.Empty;
 
         [JsonIgnore]
@@ -72,8 +73,6 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string HtbBodies { get; set; } = string.Empty;
 
-        public Uri JobProfileWebsiteUrl { get; set; } = UriExtra.Empty;
-
         public string WitDigitalSkillsLevel { get; set; } = string.Empty;
 
         public string WorkingPattern { get; set; } = string.Empty;
@@ -92,17 +91,18 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string RelevantSubjects { get; set; } = string.Empty;
 
-        public JobProfileWhatYoullDoModel WhatYoullDoSegment { get; set; }
-
-        public JobProfileCareerPathModel CareerPathSegment { get; set; }
-
-        public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
-
-        public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
-
-        public ICollection<JobProfileApiContentItemModel> ContentItems { get; set; } = new List<JobProfileApiContentItemModel>();
+        public ICollection<ContentApiBranchElement> ContentItems { get; set; } = new List<ContentApiBranchElement>();
 
         public ICollection<Guid> AllContentItemIds { get; set; } = new List<Guid>();
+
+        // TODO: review, don't think these should be here...
+        public JobProfileCachedWhatYoullDo WhatYoullDoSegment { get; set; }
+
+        public JobProfileCachedCareerPath CareerPathSegment { get; set; }
+
+        public JobProfileCachedHowToBecome HowToBecomeSegment { get; set; }
+
+        public JobProfileCachedWhatItTakes WhatItTakesSegment { get; set; }
 
         [JsonIgnore]
         public ContentLinksModel ContentLinks

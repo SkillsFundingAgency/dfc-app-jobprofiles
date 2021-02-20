@@ -2,7 +2,6 @@
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.ClientOptions;
-using DFC.Compui.Cosmos.Models;
 using Microsoft.Azure.EventGrid.Models;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,21 +14,24 @@ namespace DFC.App.JobProfile.EventProcessorService
     public class EventGridService :
         IEventGridService
     {
-        private readonly ILogger<EventGridService> logger;
-        private readonly IEventGridClientService eventGridClientService;
-        private readonly EventGridPublishClientOptions eventGridPublishClientOptions;
+        private readonly ILogger<EventGridService> _logger;
+        private readonly IEventGridClientService _gridClient;
+        private readonly EventGridPublishClientOptions _gridClientOptions;
 
-        public EventGridService(ILogger<EventGridService> logger, IEventGridClientService eventGridClientService, EventGridPublishClientOptions eventGridPublishClientOptions)
+        public EventGridService(
+            ILogger<EventGridService> logger,
+            IEventGridClientService eventGridClientService,
+            EventGridPublishClientOptions eventGridPublishClientOptions)
         {
-            this.logger = logger;
-            this.eventGridClientService = eventGridClientService;
-            this.eventGridPublishClientOptions = eventGridPublishClientOptions;
+            _logger = logger;
+            _gridClient = eventGridClientService;
+            _gridClientOptions = eventGridPublishClientOptions;
         }
 
         public static bool ContainsDifferences<TModel>(
             TModel existingContentPageModel,
             TModel updatedContentPageModel)
-                where TModel : ContentPageModel
+                where TModel : IJobProfileCached
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 
@@ -94,12 +96,12 @@ namespace DFC.App.JobProfile.EventProcessorService
         }
 
         public async Task CompareAndSendEventAsync(
-            JobProfileContentPageModel existingContentPageModel,
-            JobProfileContentPageModel updatedContentPageModel)
+            IJobProfileCached existingContentPageModel,
+            IJobProfileCached updatedContentPageModel)
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 
-            logger.LogInformation($"Comparing differences to new: {updatedContentPageModel.Id} - {updatedContentPageModel.CanonicalName}");
+            _logger.LogInformation($"Comparing differences to new: {updatedContentPageModel.Id} - {updatedContentPageModel.CanonicalName}");
 
             if (ContainsDifferences(existingContentPageModel, updatedContentPageModel))
             {
@@ -107,38 +109,38 @@ namespace DFC.App.JobProfile.EventProcessorService
             }
             else
             {
-                logger.LogInformation($"No differences to create Event Grid message for: {updatedContentPageModel.Id} - {updatedContentPageModel.CanonicalName}");
+                _logger.LogInformation($"No differences to create Event Grid message for: {updatedContentPageModel.Id} - {updatedContentPageModel.CanonicalName}");
             }
         }
 
         public async Task SendEventAsync(
             WebhookCacheOperation webhookCacheOperation,
-            JobProfileContentPageModel updatedContentPageModel)
+            IJobProfileCached updatedContentPageModel)
         {
             _ = updatedContentPageModel ?? throw new ArgumentNullException(nameof(updatedContentPageModel));
 
-            if (!IsValidEventGridPublishClientOptions(logger, eventGridPublishClientOptions))
+            if (!IsValidEventGridPublishClientOptions(_logger, _gridClientOptions))
             {
-                logger.LogWarning("Unable to send to event grid due to invalid EventGridPublishClientOptions options");
+                _logger.LogWarning("Unable to send to event grid due to invalid EventGridPublishClientOptions options");
                 return;
             }
 
             var logMessage = $"{webhookCacheOperation} - {updatedContentPageModel.Id} - {updatedContentPageModel.CanonicalName}";
-            logger.LogInformation($"Sending Event Grid message for: {logMessage}");
+            _logger.LogInformation($"Sending Event Grid message for: {logMessage}");
 
             var eventGridEvents = new List<EventGridEvent>
             {
                 new EventGridEvent
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Subject = $"{eventGridPublishClientOptions.SubjectPrefix}{updatedContentPageModel.Id}",
+                    Subject = $"{_gridClientOptions.SubjectPrefix}{updatedContentPageModel.Id}",
                     Data = new EventGridEventData
                     {
                         ItemId = updatedContentPageModel.Id.ToString(),
-                        Api = $"{eventGridPublishClientOptions.ApiEndpoint}/{updatedContentPageModel.JobProfileWebsiteUrl}",
-                        DisplayText = updatedContentPageModel.JobProfileWebsiteUrl.ToString(),
+                        Api = $"{_gridClientOptions.ApiEndpoint}{updatedContentPageModel.PageLocation}",
+                        DisplayText = updatedContentPageModel.PageLocation,
                         VersionId = updatedContentPageModel.Version.ToString(),
-                        Author = eventGridPublishClientOptions.SubjectPrefix,
+                        Author = _gridClientOptions.SubjectPrefix,
                     },
                     EventType = webhookCacheOperation == WebhookCacheOperation.Delete ? "deleted" : "published",
                     EventTime = DateTime.Now,
@@ -148,7 +150,7 @@ namespace DFC.App.JobProfile.EventProcessorService
 
             eventGridEvents.ForEach(f => f.Validate());
 
-            await eventGridClientService.SendEventAsync(eventGridEvents, eventGridPublishClientOptions.TopicEndpoint, eventGridPublishClientOptions.TopicKey, logMessage).ConfigureAwait(false);
+            await _gridClient.SendEventAsync(eventGridEvents, _gridClientOptions.TopicEndpoint, _gridClientOptions.TopicKey, logMessage).ConfigureAwait(false);
         }
     }
 }

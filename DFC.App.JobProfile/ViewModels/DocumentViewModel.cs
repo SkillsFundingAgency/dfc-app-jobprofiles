@@ -1,22 +1,27 @@
-﻿using DFC.App.JobProfile.Data.Models;
+﻿// TODO: fix(?) me!
+#pragma warning disable S125 // Sections of code should not be commented out
+#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
+#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
+using DFC.App.JobProfile.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.ViewModels
 {
-    [ExcludeFromCodeCoverage]
+    // TODO: ths is one that requires removing??
     public class DocumentViewModel
     {
-        public HeadViewModel Head { get; set; }
+        public HeadViewModel Head { get; set; } = new HeadViewModel();
 
         public BreadcrumbViewModel Breadcrumb { get; set; }
 
-        public BodyViewModel Body { get; set; }
+        public HeroViewModel HeroBanner { get; set; } = new HeroViewModel();
 
-        [Display(Name = "Document Id")]
-        public Guid? DocumentId { get; set; }
+        public BodyViewModel Body { get; set; } = new BodyViewModel();
+
+        //[Display(Name = "Document Id")]
+        //public Guid? DocumentId { get; set; }
 
         [Display(Name = "Canonical Name")]
         public string CanonicalName { get; set; }
@@ -27,29 +32,23 @@ namespace DFC.App.JobProfile.ViewModels
         [Display(Name = "Include In SiteMap")]
         public bool IncludeInSitemap { get; set; }
 
-        public string Title { get; set; }
+        //[Display(Name = "Last Updated")]
+        //public DateTime LastReviewed { get; set; }
 
-        public string Description { get; set; }
-
-        public string Keywords { get; set; }
-
-        [Display(Name = "Last Updated")]
-        public DateTime LastReviewed { get; set; }
-
-        public long SequenceNumber { get; set; }
+        //public long SequenceNumber { get; set; }
 
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }
 
-        public string JobProfileWebsiteUrl { get; set; }
+        //public string JobProfileWebsiteUrl { get; set; }
 
-        public string PageLocation { get; set; }
+        //public string PageLocation { get; set; }
 
-        public string skos__prefLabel { get; set; }
+        //public string skos__prefLabel { get; set; }
 
-        public DateTime ModifiedDate { get; set; }
+        //public DateTime ModifiedDate { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        //public DateTime CreatedDate { get; set; }
 
         public string HtbCareerTips { get; set; }
 
@@ -59,18 +58,8 @@ namespace DFC.App.JobProfile.ViewModels
 
         public string HtbFurtherInformation { get; set; }
 
-        public IList<JobProfileApiContentItemModel> ContentItems { get; set; }
+        public IList<ContentApiBranchElement> ContentItems { get; set; }
 
-        public List<StaticContentItemModel> SharedContent { get; set; }
-
-        public JobProfileOverviewModel OverviewSegment { get; set; }
-
-        public JobProfileWhatYoullDoModel WhatYoullDoSegment { get; set; }
-
-        public JobProfileCareerPathModel CareerPathSegment { get; set; }
-
-        public JobProfileHowToBecomeModel HowToBecomeSegment { get; set; }
-
-        public JobProfileWhatItTakesModel WhatItTakesSegment { get; set; }
+        //public List<StaticContentItemModel> SharedContent { get; set; }
     }
 }

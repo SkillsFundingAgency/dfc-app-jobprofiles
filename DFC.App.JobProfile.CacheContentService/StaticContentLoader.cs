@@ -13,34 +13,34 @@ namespace DFC.App.JobProfile.CacheContentService
     public class StaticContentLoader :
         ILoadStaticContent
     {
-        private readonly ILogger<StaticContentLoader> logger;
-        private readonly IEventMessageService<StaticContentItemModel> eventMessageService;
-        private readonly ICmsApiService cmsApiService;
-        private readonly IContentCacheService contentCacheService;
+        private readonly ILogger<StaticContentLoader> _logger;
+        private readonly IEventMessageService<ContentApiStaticElement> _messageService;
+        private readonly IProvideGraphContent _graphContent;
+        private readonly IContentCacheService _otherCacheThingy;
 
         public StaticContentLoader(
             ILogger<StaticContentLoader> logger,
-            IEventMessageService<StaticContentItemModel> eventMessageService,
-            ICmsApiService cmsApiService,
+            IEventMessageService<ContentApiStaticElement> eventMessageService,
+            IProvideGraphContent cmsApiService,
             IContentCacheService contentCacheService)
         {
-            this.logger = logger;
-            this.eventMessageService = eventMessageService;
-            this.cmsApiService = cmsApiService;
-            this.contentCacheService = contentCacheService;
+            _logger = logger;
+            _messageService = eventMessageService;
+            _graphContent = cmsApiService;
+            _otherCacheThingy = contentCacheService;
         }
 
         public async Task Reload(CancellationToken stoppingToken)
         {
             try
             {
-                logger.LogInformation("Reload static content started");
+                _logger.LogInformation("Reload static content started");
 
-                var staticContent = await cmsApiService.GetContentAsync<StaticContentItemModel>().ConfigureAwait(false);
+                var staticContent = await _graphContent.GetStaticItems<ContentApiStaticElement>().ConfigureAwait(false);
 
                 if (stoppingToken.IsCancellationRequested)
                 {
-                    logger.LogWarning("Reload static content cancelled");
+                    _logger.LogWarning("Reload static content cancelled");
 
                     return;
                 }
@@ -51,75 +51,81 @@ namespace DFC.App.JobProfile.CacheContentService
 
                     if (stoppingToken.IsCancellationRequested)
                     {
-                        logger.LogWarning("Reload static content cancelled");
+                        _logger.LogWarning("Reload static content cancelled");
 
                         return;
                     }
                 }
 
-                logger.LogInformation("Reload static content completed");
+                _logger.LogInformation("Reload static content completed");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error in static content reload");
+                _logger.LogError(ex, "Error in static content reload");
             }
         }
 
-        public async Task ProcessContentAsync(IReadOnlyCollection<StaticContentItemModel> sharedContent, CancellationToken stoppingToken)
+        public async Task ProcessContentAsync(
+            IReadOnlyCollection<ContentApiStaticElement> sharedContent,
+            CancellationToken stoppingToken)
         {
-            logger.LogInformation("Process summary list started");
+            _logger.LogInformation("Process summary list started");
 
-            contentCacheService.Clear();
+            _otherCacheThingy.Clear();
 
             if (stoppingToken.IsCancellationRequested)
             {
-                logger.LogWarning("Process summary list cancelled");
+                _logger.LogWarning("Process summary list cancelled");
 
                 return;
             }
 
             await GetAndSaveItemAsync(sharedContent, stoppingToken).ConfigureAwait(false);
 
-            logger.LogInformation("Process summary list completed");
+            _logger.LogInformation("Process summary list completed");
         }
 
-        public async Task GetAndSaveItemAsync(IReadOnlyCollection<StaticContentItemModel> items, CancellationToken stoppingToken)
+        public async Task GetAndSaveItemAsync(
+            IReadOnlyCollection<ContentApiStaticElement> items,
+            CancellationToken stoppingToken)
         {
             _ = items ?? throw new ArgumentNullException(nameof(items));
+            await Task.CompletedTask;
 
-            foreach (var item in items) {
+            foreach (var item in items)
+            {
                 item.PartitionKey = "/";
-                item.CanonicalName = item.skos_prefLabel.Replace(" ", "").ToLower();
+                item.CanonicalName = item.Title.Replace(" ", "-").ToLower();
 
                 try
                 {
-                    logger.LogInformation($"Updating static content cache with {item.Id} - {item.Url}");
+                    _logger.LogInformation($"Updating static content cache with {item.Id} - {item.Url}");
 
-                    var result = await eventMessageService.UpdateAsync(item).ConfigureAwait(false);
+                    var result = await _messageService.UpdateAsync(item).ConfigureAwait(false);
 
                     if (result == HttpStatusCode.NotFound)
                     {
-                        logger.LogInformation($"Does not exist, creating static content cache with {item.Id} - {item.Url}");
+                        _logger.LogInformation($"Does not exist, creating static content cache with {item.Id} - {item.Url}");
 
-                        result = await eventMessageService.CreateAsync(item).ConfigureAwait(false);
+                        result = await _messageService.CreateAsync(item).ConfigureAwait(false);
 
                         if (result == HttpStatusCode.OK)
                         {
-                            logger.LogInformation($"Created static content cache with {item.Id} - {item.Url}");
+                            _logger.LogInformation($"Created static content cache with {item.Id} - {item.Url}");
                         }
                         else
                         {
-                            logger.LogError($"Static content cache create error status {result} from {item.Id} - {item.Url}");
+                            _logger.LogError($"Static content cache create error status {result} from {item.Id} - {item.Url}");
                         }
                     }
                     else
                     {
-                        logger.LogInformation($"Updated static content cache with {item.Id} - {item.Url}");
+                        _logger.LogInformation($"Updated static content cache with {item.Id} - {item.Url}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, $"Error in get and save for {item.Id} - {item.Url}");
+                    _logger.LogError(ex, $"Error in get and save for {item.Id} - {item.Url}");
                 }
             }
         }

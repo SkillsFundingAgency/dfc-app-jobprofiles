@@ -1,4 +1,8 @@
-﻿using DFC.App.JobProfile.CacheContentService;
+﻿// TODO: fix(?) me!
+#pragma warning disable S125 // Sections of code should not be commented out
+#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
+#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
+using DFC.App.JobProfile.CacheContentService;
 using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Contracts;
 using DFC.App.JobProfile.Data.Contracts;
@@ -15,8 +19,8 @@ using DFC.Compui.Telemetry;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Content.Pkg.Netcore.Extensions;
+using DFC.Content.Pkg.Netcore.Services;
 using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
-using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -50,11 +54,11 @@ namespace DFC.App.JobProfile
             // TODO: check this!!! CorrelationId breaking changes...
             /*
             app.UseCorrelationId(new CorrelationIdOptions
-            [
+            {
                 Header = "DssCorrelationId",
                 UseGuidForCorrelationId = true,
                 UpdateTraceIdentifier = false,
-            ])
+            });
             */
 
             if (env.IsDevelopment())
@@ -117,9 +121,9 @@ namespace DFC.App.JobProfile
         private void AddApplicationSpecificDependencyInjectionConfiguration(IServiceCollection services)
         {
             /*
-            var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel()
-            eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase))
-            services.AddSingleton(eventGridSubscriptionModel)
+            var eventGridSubscriptionModel = configuration.GetSection(nameof(EventGridSubscriptionModel)).Get<EventGridSubscriptionModel>() ?? new EventGridSubscriptionModel();
+            eventGridSubscriptionModel.Name = configuration.GetValue("Configuration:ApplicationName", typeof(Startup).Namespace!.Replace(".", "-", System.StringComparison.OrdinalIgnoreCase));
+            services.AddSingleton(eventGridSubscriptionModel);
             */
 
             var cosmosDbConnection = _configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
@@ -128,13 +132,12 @@ namespace DFC.App.JobProfile
 
             services.AddSingleton(cosmosDbConnection);
             services.AddSingleton<IDocumentClient>(documentClient);
-            services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
 
             services.AddSingleton(staticContentDbConnection);
-            services.AddSingleton<IStaticCosmosRepository<StaticContentItemModel>, StaticCosmosRepository<StaticContentItemModel>>();
+            //services.AddSingleton<IStaticCosmosRepository<StaticContentItemModel>, StaticCosmosRepository<StaticContentItemModel>>();
 
             services.AddScoped<IJobProfileService, JobProfileService>();
-            services.AddScoped<ISharedContentService, SharedContentService>();
+            //services.AddScoped<ISharedContentService, SharedContentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
 
             // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"])
@@ -144,18 +147,18 @@ namespace DFC.App.JobProfile
             services.AddApplicationInsightsTelemetry();
             var cosmosDbConnectionContentPages = _configuration.GetSection(CosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
             var cosmosDbConnectionStaticPages = _configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
-            services.AddContentPageServices<JobProfileContentPageModel>(cosmosDbConnectionContentPages, _envvironment.IsDevelopment());
-            services.AddContentPageServices<StaticContentItemModel>(cosmosDbConnectionStaticPages, _envvironment.IsDevelopment());
+            services.AddContentPageServices<JobProfileCached>(cosmosDbConnectionContentPages, _envvironment.IsDevelopment());
+            services.AddContentPageServices<ContentApiStaticElement>(cosmosDbConnectionStaticPages, _envvironment.IsDevelopment());
 
             // remote contract local service implementation
-            services.AddSingleton<IContentCacheService, ContentCacheService>();
+            services.AddSingleton<IContentCacheService, CacheContentService.ContentCacheService>();
 
-            services.AddTransient<IEventMessageService<JobProfileContentPageModel>, EventMessageService<JobProfileContentPageModel>>();
-            services.AddTransient<IEventMessageService<StaticContentItemModel>, EventMessageService<StaticContentItemModel>>();
+            services.AddTransient<IEventMessageService<JobProfileCached>, EventMessageService<JobProfileCached>>();
+            services.AddTransient<IEventMessageService<ContentApiStaticElement>, EventMessageService<ContentApiStaticElement>>();
             services.AddTransient<ILoadJobProfileContent, JobProfileCacheLoader>();
             services.AddTransient<ILoadStaticContent, StaticContentLoader>();
             services.AddTransient<IApiService, ApiService>();
-            services.AddTransient<ICmsApiService, CmsApiService>();
+            services.AddTransient<IProvideGraphContent, GraphContentProvider>();
             services.AddTransient<IWebhooksService, WebhooksService>();
             services.AddTransient<IEventGridService, EventGridService>();
             services.AddTransient<IEventGridClientService, EventGridClientService>();

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DFC.App.JobProfile.Data.Models
+﻿namespace DFC.App.JobProfile.Data.Models
 {
     public class SharedContent
     {

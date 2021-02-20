@@ -1,6 +1,6 @@
 ﻿namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileOverviewModel
+    public class JobProfileCachedOverview
     {
         public decimal MinimumHours { get; set; }
 

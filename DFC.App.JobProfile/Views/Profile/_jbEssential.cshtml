@@ -1,19 +1,23 @@
-﻿@model JobProfileApiContentItemModel
+﻿@using DFC.Content.Pkg.Netcore.Data.Models
+@model ContentApiBranchElement
+
 @{
-    var essentialList = Model.ContentLinks.ContentLinks.Where(x => x.Key == "esco__relatedEssentialSkill").ToList()[0].Value.Select(x => x.Title).ToList();
-    var listToLoop = Model.ContentItems.Where(x => x.ContentType == "skill").ToList();
+    //TODO: review this code...
+    var links = Model?.ContentLinks?.ContentLinks?.FirstOrDefault(x => x.Key == "esco__relatedEssentialSkill").Value ?? new List<LinkDetails>();
+    var essentialList = links.Select(x => x.Title).ToList() ?? new List<string>();
+    var listToLoop = Model?.ContentItems?.Where(x => x.ContentType == "skill").ToList() ?? new List<ContentApiBranchElement>();
 }
 
-    <ul>
-        @foreach (var skill in listToLoop)
+<ul>
+    @foreach (var skill in listToLoop)
+    {
+        @if (essentialList.Contains(skill.Content))
         {
-            @if (essentialList.Contains(skill.Content))
+            var displaySkill = skill.ContentLinks.ContentLinks[0].Value[0].Title == (string)ViewData["Type"];
+            @if (displaySkill)
             {
-                @if (skill.ContentLinks.ContentLinks[0].Value[0].Title == (string)ViewData["Type"])
-                {
-                    <li>@skill.Content</li>
-                }
+                <li>@skill.Content</li>
             }
         }
-
-    </ul>
+    }
+</ul>

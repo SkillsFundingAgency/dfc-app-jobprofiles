@@ -31,7 +31,7 @@ namespace DFC.App.JobProfile.Controllers
                 var sitemapUrlPrefix = $"{Request.GetBaseAddress()}{ProfileController.ProfilePathRoot}";
                 var sitemap = new Sitemap();
 
-                var jobProfileModels = await jobProfileService.GetAllAsync().ConfigureAwait(false);
+                var jobProfileModels = await jobProfileService.GetAllItems().ConfigureAwait(false);
 
                 if (jobProfileModels != null)
                 {

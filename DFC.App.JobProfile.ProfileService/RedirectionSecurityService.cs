@@ -12,14 +12,23 @@ namespace DFC.App.JobProfile.ProfileService
     {
         private readonly string[] redirectionHostWhitelist;
 
-        public RedirectionSecurityService(
-            Microsoft.Extensions.Configuration.IConfiguration configuration)
+        public RedirectionSecurityService(IConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
             redirectionHostWhitelist = configuration.GetSection("AllowedRedirects").Get<string[]>();
         }
 
         public bool IsValidHost(Uri host)
         {
+            if (host == null)
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
+
             return host.IsLoopback || host.Host.Split(".").Any(s => redirectionHostWhitelist.Contains(s.ToLower()));
         }
     }

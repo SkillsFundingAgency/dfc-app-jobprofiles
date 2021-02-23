@@ -294,7 +294,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         public async Task JobProfileControllerBodyHtmlAndJsonReturnsBadRequestWhenHostIsInvalid (string mediaTypeName)
         {
             // Arrange
-            var controller = BuildProfileController(mediaTypeName, host: "localhost");
+            var controller = BuildProfileController(mediaTypeName, host: "notlocalhost");
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
 

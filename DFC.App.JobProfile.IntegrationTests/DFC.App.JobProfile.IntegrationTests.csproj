@@ -38,10 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="appsettings-template.json">
+    <None Update="appsettings.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="appsettings-template.json">
+    <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="appsettings-template.json">

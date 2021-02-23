@@ -17,13 +17,7 @@ namespace DFC.App.JobProfile.RedirectionSecurityService.UnitTests.RedirectionSec
         public void RedirectionSecurityServiceValidHostTests(bool expectedResult, string hostUrl)
         {
             //arrange
-            IConfiguration config = new ConfigurationBuilder()
-        .AddInMemoryCollection(new List<KeyValuePair<string, string>>
-        {
-            new KeyValuePair<string, string>("AllowedRedirects:0", "nationalcareersservice"),
-            new KeyValuePair<string, string>("AllowedRedirects:1", "nationalcareers"),
-        })
-        .Build();
+            IConfiguration config = SetupConfiguration();
 
             var redirectService = new ProfileService.RedirectionSecurityService(config);
 
@@ -32,6 +26,17 @@ namespace DFC.App.JobProfile.RedirectionSecurityService.UnitTests.RedirectionSec
 
             // assert
             Assert.Equal(expectedResult, result);
+        }
+
+        private static IConfiguration SetupConfiguration()
+        {
+            return new ConfigurationBuilder()
+        .AddInMemoryCollection(new List<KeyValuePair<string, string>>
+        {
+            new KeyValuePair<string, string>("AllowedRedirects:0", "nationalcareersservice"),
+            new KeyValuePair<string, string>("AllowedRedirects:1", "nationalcareers"),
+        })
+        .Build();
         }
 
         [Fact]
@@ -43,13 +48,7 @@ namespace DFC.App.JobProfile.RedirectionSecurityService.UnitTests.RedirectionSec
         [Fact]
         public void RedirectionSecurityServiceShouldThrowNullExceptionOnHostValueNULLTest()
         {
-            IConfiguration config = new ConfigurationBuilder()
-        .AddInMemoryCollection(new List<KeyValuePair<string, string>>
-        {
-            new KeyValuePair<string, string>("AllowedRedirects:0", "nationalcareersservice"),
-            new KeyValuePair<string, string>("AllowedRedirects:1", "nationalcareers"),
-        })
-        .Build();
+            IConfiguration config = SetupConfiguration();
 
             // act
             Assert.Throws<ArgumentNullException>(() => new ProfileService.RedirectionSecurityService(config).IsValidHost(null));

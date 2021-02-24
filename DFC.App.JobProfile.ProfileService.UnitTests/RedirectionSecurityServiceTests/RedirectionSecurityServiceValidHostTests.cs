@@ -33,8 +33,7 @@ namespace DFC.App.JobProfile.RedirectionSecurityService.UnitTests.RedirectionSec
             return new ConfigurationBuilder()
         .AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
-            new KeyValuePair<string, string>("AllowedRedirects:0", "nationalcareersservice"),
-            new KeyValuePair<string, string>("AllowedRedirects:1", "nationalcareers"),
+            new KeyValuePair<string, string>("AllowedRedirects", "nationalcareersservice, nationalcareers"),
         })
         .Build();
         }

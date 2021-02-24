@@ -19,7 +19,12 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            redirectionHostWhitelist = configuration.GetSection("AllowedRedirects").Get<string[]>();
+            var allowedWhitelistValues = configuration.GetValue<string>("AllowedRedirects");
+
+            if (!String.IsNullOrEmpty(allowedWhitelistValues))
+            {
+                redirectionHostWhitelist = allowedWhitelistValues.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+            }
         }
 
         public bool IsValidHost(Uri host)

@@ -34,6 +34,9 @@
             "type": "string",
             "defaultValue": ""
         },
+        "AllowedRedirects": {
+            "type": "string"
+        },
         "brandingAssetsAppCssFilePath": {
             "type": "string"
         },
@@ -279,6 +282,10 @@
                             {
                                 "name": "Policies__HttpRetry__Count",
                                 "value": 3
+                            },
+                            {
+                                "name": "AllowedRedirects",
+                                "value": "[parameters('AllowedRedirects')]"
                             },
                             {
                                 "name": "OverviewBannerSegmentClientOptions__Timeout",

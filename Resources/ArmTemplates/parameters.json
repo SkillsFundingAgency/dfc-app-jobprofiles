@@ -44,6 +44,9 @@
         "sharedAppServicePlanResourceGroup": {
             "value": "__appSharedResourceGroup__"
         },
+        "AllowedRedirects": {
+            "value": "__AllowedRedirects__"
+        },
         "cosmosDbCollectionName": {
             "value": "__cosmosDbCollectionName__"
         },

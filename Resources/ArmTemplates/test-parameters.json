@@ -62,6 +62,9 @@
         "apimProxyAddress": {
             "value": "https://foo"
         },
+        "AllowedRedirects": {
+            "value": "nationalcareers"
+        },
         "apimContentApiKey": {
             "value": "FakeKey"
         }

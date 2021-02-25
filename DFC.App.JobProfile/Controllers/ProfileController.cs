@@ -1,4 +1,4 @@
-﻿using DFC.App.JobProfile.Data;
+using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Exceptions;
@@ -10,16 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
 {
     public class ProfileController : Controller
     {
-        public const string ProfilePathRoot = "job-profiles";
-
+        public const string ProfilePathRoot = "job-profiles";
+
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
@@ -209,7 +209,7 @@ namespace DFC.App.JobProfile.Controllers
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
 
             var viewModel = BuildHeadViewModel(jobProfileModel);
-            logService.LogInformation($"{nameof(Head)} has returned content for: {article}");
+            logService.LogInformation($"{nameof(Head)} has returned content for: {article}");
             return this.NegotiateContentResult(viewModel);
         }
 
@@ -249,19 +249,19 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{article}/contents")]
         public async Task<IActionResult> Body(string article)
         {
-            logService.LogInformation($"{nameof(Body)} has been called");
-            var host = Request.GetBaseAddress();
-            if (!redirectionSecurityService.IsValidHost(host))
-            {
-                logService.LogWarning($"Invalid host {host}.");
-                return BadRequest($"Invalid host {host}.");
+            logService.LogInformation($"{nameof(Body)} has been called");
+            var host = Request.GetBaseAddress();
+            if (!redirectionSecurityService.IsValidHost(host))
+            {
+                logService.LogWarning($"Invalid host {host}.");
+                return BadRequest($"Invalid host {host}.");
             }
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
+                logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
                 viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
 
                 return ValidateJobProfile(viewModel, jobProfileModel);
@@ -270,25 +270,16 @@ namespace DFC.App.JobProfile.Controllers
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
             if (alternateJobProfileModel != null)
             {
-                var host = Request.GetBaseAddress();
-                if (!IsValidHost(host))
-                {
-                    logService.LogWarning($"Invalid host {host}.");
-                    return BadRequest($"Invalid host {host}.");
-                }
-                else
-                {
-                    var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                    logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
-
-                    return RedirectPermanentPreserveMethod(alternateUrl);
-                }
+                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
+
+                return RedirectPermanentPreserveMethod(alternateUrl);
             }
 
             logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
             return NotFound();
-        }
-
+        }
+
         [HttpGet]
         [Route("profile/{documentId}/profile")]
         public async Task<IActionResult> Profile(Guid documentId)
@@ -310,29 +301,29 @@ namespace DFC.App.JobProfile.Controllers
             logService.LogWarning($"{nameof(Profile)} has not returned a profile for: {documentId}");
 
             return NoContent();
-        }
-
+        }
+
         #region Static helper methods
 
-        private static string ComputeSha256Hash(string rawData)
-        {
+        private static string ComputeSha256Hash(string rawData)
+        {
             // Create a SHA256
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
                 // ComputeHash - returns byte array
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
                 // Convert byte array to a string
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-
-                return builder.ToString();
-            }
-        }
-
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+
+                return builder.ToString();
+            }
+        }
+
         private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)
         {
             var viewModel = new BreadcrumbViewModel
@@ -366,12 +357,12 @@ namespace DFC.App.JobProfile.Controllers
             viewModel.Paths.Last().AddHyperlink = false;
 
             return viewModel;
-        }
-
+        }
+
         private IActionResult ValidateJobProfile(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
         {
-            var overviewExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
-            var howToBecomeExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.HowToBecome);
+            var overviewExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
+            var howToBecomeExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.HowToBecome);
             var whatItTakesExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatItTakes);
 
             if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
@@ -428,8 +419,8 @@ namespace DFC.App.JobProfile.Controllers
             headModel = mapper.Map<HeadViewModel>(jobProfileModel);
             headModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
             return headModel;
-        }
-
+        }
+
         #endregion Static helper methods
 
     }

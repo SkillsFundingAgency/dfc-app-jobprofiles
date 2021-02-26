@@ -1,10 +1,16 @@
 ﻿@model JobProfileCachedCareerPath
 
-<section id="CareerPathAndProgression" data-gtm-vis-recent-on-screen-8675592_57="18871038" data-gtm-vis-first-on-screen-8675592_57="18871039" data-gtm-vis-total-visible-time-8675592_57="100" data-gtm-vis-has-fired-8675592_57="1">
+<section id="CareerPathAndProgression"
+         data-gtm-vis-recent-on-screen-8675592_57="18871038"
+         data-gtm-vis-first-on-screen-8675592_57="18871039"
+         data-gtm-vis-total-visible-time-8675592_57="100"
+         data-gtm-vis-has-fired-8675592_57="1">
+
     <h2 class="job-profile-heading">Career path and progression</h2>
+
     @Html.Raw(Model.CareerPathAndProgression)
 
-    @if (Model.ApprecticeshipStandard.Any())
+    @*@if (Model.ApprecticeshipStandard.Any())
     {
         <h3>Apprenticeship Standards</h3>
         <ul>
@@ -13,5 +19,5 @@
                 <li>@Html.Raw(standard.Content)</li>
             }
         </ul>
-    }
+    }*@
 </section>

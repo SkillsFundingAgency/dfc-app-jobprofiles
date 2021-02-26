@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.18.0.27296">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.63" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\DFC.App.JobProfile.EventProcessing\DFC.App.JobProfile.EventProcessing.csproj" />
+        <ProjectReference Include="..\DFC.App.JobProfile.ContentAPI\DFC.App.JobProfile.ContentAPI.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Models\" />
+      <Folder Include="junk\" />
+    </ItemGroup>
+</Project>

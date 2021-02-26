@@ -1,6 +1,6 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Cacheing;
+using DFC.App.JobProfile.ContentAPI.Models;
 using DFC.Compui.Telemetry.HostedService;
-using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading;
@@ -13,13 +13,13 @@ namespace DFC.App.JobProfile.HostedServices
         where TLoader : class, ILoadCacheData
     {
         private readonly ILogger<CacheBackgroundLoader<TLoader>> _logger;
-        private readonly CmsApiClientOptions _clientOptions;
+        private readonly ContentApiOptions _clientOptions;
         private readonly ILoadCacheData _cacheLoader;
         private readonly IHostedServiceTelemetryWrapper _serviceTelemetryWrapper;
 
         protected CacheBackgroundLoader(
             ILogger<CacheBackgroundLoader<TLoader>> logger,
-            CmsApiClientOptions clientOptions,
+            ContentApiOptions clientOptions,
             ILoadCacheData cacheLoader,
             IHostedServiceTelemetryWrapper hostedServiceTelemetryWrapper)
         {

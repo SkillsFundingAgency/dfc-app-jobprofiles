@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DFC.App.JobProfile.ProfileService
 {
     public class JobProfileService :
-        IJobProfileService
+        IProvideJobProfiles
     {
         private readonly IContentPageService<JobProfileCached> _pageService;
         private readonly IMapper _mapper;
@@ -42,88 +42,5 @@ namespace DFC.App.JobProfile.ProfileService
 
             throw new ArgumentNullException(nameof(canonicalName));
         }
-
-        // TODO: fix(?) me!
-#pragma warning disable S125 // Sections of code should not be commented out
-#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
-        //public async Task<JobProfileCached> GetByAlternativeNameAsync(string alternativeName)
-        //{
-        //    if (string.IsNullOrWhiteSpace(alternativeName))
-        //    {
-        //        throw new ArgumentNullException(nameof(alternativeName));
-        //    }
-
-        //    return await repository.GetAsync(d => d.AlternativeNames.Contains(alternativeName.ToLowerInvariant())).ConfigureAwait(false);
-        //}
-
-        //public async Task<HttpStatusCode> Create(JobProfileCached jobProfileModel)
-        //{
-        //    if (jobProfileModel == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(jobProfileModel));
-        //    }
-
-        //    jobProfileModel.MetaTags = jobProfileModel.MetaTags is null ? new MetaTags() : jobProfileModel.MetaTags;
-        //    jobProfileModel.Segments = jobProfileModel.Segments is null ? new List<SegmentModel>() : jobProfileModel.Segments;
-
-        //    var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
-        //    if (existingRecord != null)
-        //    {
-        //        return HttpStatusCode.AlreadyReported;
-        //    }
-
-        //    return await repository.UpsertAsync(jobProfileModel).ConfigureAwait(false);
-        //}
-
-        //public async Task<HttpStatusCode> Update(JobProfileCached jobProfileMetadata)
-        //{
-        //    if (jobProfileMetadata is null)
-        //    {
-        //        throw new ArgumentNullException(nameof(jobProfileMetadata));
-        //    }
-
-        //    var existingRecord = await GetByIdAsync(jobProfileMetadata.JobProfileId).ConfigureAwait(false);
-        //    if (existingRecord is null)
-        //    {
-        //        return HttpStatusCode.NotFound;
-        //    }
-
-        //    if (existingRecord.SequenceNumber > jobProfileMetadata.SequenceNumber)
-        //    {
-        //        return HttpStatusCode.AlreadyReported;
-        //    }
-
-        //    var mappedRecord = mapper.Map(jobProfileMetadata, existingRecord);
-        //    return await repository.UpsertAsync(mappedRecord).ConfigureAwait(false);
-        //}
-
-        //public async Task<HttpStatusCode> Update(Data.Models.JobProfileModel jobProfileModel)
-        //{
-        //    if (jobProfileModel == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(jobProfileModel));
-        //    }
-
-        //    var existingRecord = await GetByIdAsync(jobProfileModel.DocumentId).ConfigureAwait(false);
-        //    if (existingRecord is null)
-        //    {
-        //        return HttpStatusCode.NotFound;
-        //    }
-
-        //    if (existingRecord.SequenceNumber > jobProfileModel.SequenceNumber)
-        //    {
-        //        return HttpStatusCode.AlreadyReported;
-        //    }
-
-        //    var mappedRecord = mapper.Map(jobProfileModel, existingRecord);
-        //    return await repository.UpsertAsync(mappedRecord).ConfigureAwait(false);
-        //}
-
-        //public async Task<bool> DeleteAsync(Guid documentId)
-        //{
-        //    var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
-
-        //    return result == HttpStatusCode.NoContent;
-        //}
     }
 }

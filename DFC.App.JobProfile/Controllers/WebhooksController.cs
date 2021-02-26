@@ -1,6 +1,6 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Enums;
+﻿using DFC.App.JobProfile.EventProcessing.Models;
 using DFC.App.JobProfile.Models;
+using DFC.App.JobProfile.Webhooks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.EventGrid;
 using Microsoft.Azure.EventGrid.Models;
@@ -17,13 +17,13 @@ namespace DFC.App.JobProfile.Controllers
     [Route("api/webhook")]
     public class WebhooksController : Controller
     {
-        private readonly Dictionary<string, WebhookCacheOperation> acceptedEventTypes = new Dictionary<string, WebhookCacheOperation>
+        private readonly Dictionary<string, EventOperation> acceptedEventTypes = new Dictionary<string, EventOperation>
         {
-            { "draft", WebhookCacheOperation.CreateOrUpdate },
-            { "published", WebhookCacheOperation.CreateOrUpdate },
-            { "draft-discarded", WebhookCacheOperation.Delete },
-            { "unpublished", WebhookCacheOperation.Delete },
-            { "deleted", WebhookCacheOperation.Delete },
+            { "draft", EventOperation.CreateOrUpdate },
+            { "published", EventOperation.CreateOrUpdate },
+            { "draft-discarded", EventOperation.Delete },
+            { "unpublished", EventOperation.Delete },
+            { "deleted", EventOperation.Delete },
         };
 
         private readonly ILogger<WebhooksController> logger;
@@ -89,7 +89,7 @@ namespace DFC.App.JobProfile.Controllers
 
                     logger.LogInformation($"Got Event Id: {eventId}: {eventGridEvent.EventType}: Cache operation: {cacheOperation} {url}");
 
-                    var result = await webhookService.ProcessMessageAsync(cacheOperation, eventId, contentId, eventGridEventData.Api).ConfigureAwait(false);
+                    var result = await webhookService.ProcessMessage(cacheOperation, eventId, contentId, eventGridEventData.Api).ConfigureAwait(false);
 
                     LogResult(eventId, contentId, result);
                 }

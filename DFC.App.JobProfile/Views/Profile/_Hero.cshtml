@@ -1,10 +1,33 @@
 ﻿@model HeroViewModel
 
-<div class="grid-row">
-    <div class="column-desktop-two-thirds">
-        <h1 class="heading-xlarge">@Model.Title</h1>
-        @Html.Raw(Model.Description)
-    </div>
-</div>
+<header class="job-profile-hero">
 
-<partial name="_jbOverviewSegment" model="@Model.OverviewSegment" />
+    <div class="govuk-width-container">
+
+        <div class="govuk-breadcrumbs">
+
+            <ol class="govuk-breadcrumbs__list">
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="/explore-careers">Home: Explore careers</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item" aria-current="page">{your breadcrumb here...}</li>
+            </ol>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="heading-xlarge">@Model.Title</h1>
+
+                <h2 class="govuk-!-margin-top-5 govuk-!-margin-bottom-3">
+                    <span class="sr-hidden">{Add your alternative hidden labels here...}</span>
+                </h2>
+
+                @Html.Raw(Model.Description)
+
+            </div>
+        </div>
+
+        <partial name="_jbOverviewSegment" model="@Model.OverviewSegment" />
+    </div>
+
+</header>

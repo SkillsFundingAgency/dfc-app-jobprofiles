@@ -1,47 +1,57 @@
 ﻿@model JobProfileCachedHowToBecome
 
-    <section id="HowToBecome" data-gtm-vis-recent-on-screen-8675592_54="32785" data-gtm-vis-first-on-screen-8675592_54="32785" data-gtm-vis-total-visible-time-8675592_54="100" data-gtm-vis-has-fired-8675592_54="1">
-        <h2 class="heading-large job-profile-heading">How to become an @Model.Title</h2>
-        @Html.Raw(Model.HtbBodies)
+<section id="HowToBecome"
+         data-gtm-vis-recent-on-screen-8675592_54="32785"
+         data-gtm-vis-first-on-screen-8675592_54="32785"
+         data-gtm-vis-total-visible-time-8675592_54="100"
+         data-gtm-vis-has-fired-8675592_54="1">
 
-        @if (Model.CollegeRoute != null)
-        {
-            <partial name="_jbHtbCollegeRoute" model="@Model.CollegeRoute" />
-        }
+    <h2 class="heading-large job-profile-heading">How to become an @Model.Title</h2>
 
-        @if (Model.ApprenticeshipRoute != null)
-        {
-            <partial name="_jbHtbApprenticeshipRoute" model="@Model.ApprenticeshipRoute" />
-        }
 
-        @if (Model.DirectRoute != null)
-        {
-            <partial name="_jbHtbDirectRoute" model="@Model.DirectRoute" />
-        }
+    @if (Model.UniversityRoute != null)
+    {
+        <partial name="_jbHtbUniversityRoute" model="@Model.UniversityRoute" />
+    }
 
-        @if (Model.OtherRoute != null)
-        {
-            <partial name="_jbHtbOtherRoute" model="@Model.OtherRoute" />
-        }
+    @if (Model.CollegeRoute != null)
+    {
+        <partial name="_jbHtbCollegeRoute" model="@Model.CollegeRoute" />
+    }
 
-        @if (Model.VolunteeringRoute != null)
-        {
-            <partial name="_jbHtbVolunteeringRoute" model="@Model.VolunteeringRoute" />
-        }
+    @if (Model.ApprenticeshipRoute != null)
+    {
+        <partial name="_jbHtbApprenticeshipRoute" model="@Model.ApprenticeshipRoute" />
+    }
 
-        @if (Model.Registration != null)
-        {
-            <partial name="_jbHtbRegistration" model="@Model.Registration" />
-        }
+    @if (Model.DirectRoute != null)
+    {
+        <partial name="_jbHtbDirectRoute" model="@Model.DirectRoute" />
+    }
 
-        @if (Model.HtbFurtherInformation != null)
-        {
-            <partial name="_jbHtbMoreInformation" model="@Model.HtbFurtherInformation" />
-        }
+    @if (Model.VolunteeringRoute != null)
+    {
+        <partial name="_jbHtbVolunteeringRoute" model="@Model.VolunteeringRoute" />
+    }
 
-        @if (Model.WorkRoute != null)
-        {
-            <partial name="_jbHtbWorkRoute" model="@Model.WorkRoute" />
-        }
+    @if (Model.OtherRoute != null)
+    {
+        <partial name="_jbHtbOtherRoute" model="@Model.OtherRoute" />
+    }
 
-    </section>
+    @if (Model.Registration != null)
+    {
+        <partial name="_jbHtbRegistration" model="@Model.Registration" />
+    }
+
+    @if (Model.MoreInformation != null)
+    {
+        <partial name="_jbHtbMoreInformation" model="@Model.MoreInformation" />
+    }
+
+    @if (Model.WorkRoute != null)
+    {
+        <partial name="_jbHtbWorkRoute" model="@Model.WorkRoute" />
+    }
+
+</section>

@@ -13,9 +13,9 @@ namespace DFC.App.JobProfile.Controllers
     public class SitemapController : Controller
     {
         private readonly ILogger<SitemapController> logService;
-        private readonly IJobProfileService jobProfileService;
+        private readonly IProvideJobProfiles jobProfileService;
 
-        public SitemapController(ILogger<SitemapController> logService, IJobProfileService jobProfileService)
+        public SitemapController(ILogger<SitemapController> logService, IProvideJobProfiles jobProfileService)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;

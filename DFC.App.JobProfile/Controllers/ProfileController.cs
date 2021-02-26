@@ -4,9 +4,7 @@
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
 using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
-using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,11 +18,11 @@ namespace DFC.App.JobProfile.Controllers
         public const string ProfilePathRoot = "job-profiles";
 
         private readonly ILogger<ProfileController> logService;
-        private readonly IJobProfileService jobProfileService;
+        private readonly IProvideJobProfiles jobProfileService;
         //private readonly ISharedContentService sharedContentService;
         private readonly IMapper mapper;
         //private readonly FeedbackLinks feedbackLinks;
-        private readonly OverviewDetails overviewDetails;
+        //private readonly OverviewDetails overviewDetails;
         private readonly string[] redirectionHostWhitelist =
         {
             "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0",
@@ -33,11 +31,11 @@ namespace DFC.App.JobProfile.Controllers
 
         public ProfileController(
             ILogger<ProfileController> logService,
-            IJobProfileService jobProfileService,
+            IProvideJobProfiles jobProfileService,
             //ISharedContentService sharedContentService,
             IMapper mapper,
             //FeedbackLinks feedbackLinks,
-            OverviewDetails overviewDetails,
+            //OverviewDetails overviewDetails,
             string[] redirectionHostWhitelist = null)
         {
             this.logService = logService;
@@ -47,7 +45,7 @@ namespace DFC.App.JobProfile.Controllers
             //this.feedbackLinks = feedbackLinks;
             this.redirectionHostWhitelist = redirectionHostWhitelist ?? this.redirectionHostWhitelist;
             //this.sharedContentService = sharedContentService;
-            this.overviewDetails = overviewDetails;
+            //this.overviewDetails = overviewDetails;
         }
 
         [HttpGet]

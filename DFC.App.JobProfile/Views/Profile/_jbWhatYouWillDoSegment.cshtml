@@ -1,58 +1,67 @@
 ﻿@model JobProfileCachedWhatYoullDo
 
-    <section id="WhatYouWillDo" data-gtm-vis-recent-on-screen-8675592_56="18870293" data-gtm-vis-first-on-screen-8675592_56="18870293" data-gtm-vis-total-visible-time-8675592_56="100" data-gtm-vis-has-fired-8675592_56="1">
-        <h2 class="job-profile-heading">What you'll do</h2>
+<section id="WhatYouWillDo"
+         data-gtm-vis-recent-on-screen-8675592_56="18870293"
+         data-gtm-vis-first-on-screen-8675592_56="18870293"
+         data-gtm-vis-total-visible-time-8675592_56="100"
+         data-gtm-vis-has-fired-8675592_56="1">
 
-        @if (Model.DaytoDayTasks != null)
-        {
-            <section class="job-profile-subsection">
-                <h3>Day-to-day tasks</h3>
-                <div class="job-profile-subsection-content">
-                    <p>
-                        On a typical day you could:
-                    </p>
-                    <ul>
-                        @foreach (var d2d in Model.DaytoDayTasks)
-                        {
-                            <li>@Html.Raw(d2d.Description)</li>
-                        }
-                    </ul>
-                </div>
-            </section>
-        }
+    <h2 class="job-profile-heading">What you'll do</h2>
 
-        @if (Model.WorkingEnvironment != null)
-        {
-            <section class="job-profile-subsection" id="workingenvironment">
-                <h3>Working environment</h3>
-                <div class="job-profile-subsection-content">
-                    <ul>
-                        @foreach (var workingEnv in Model.WorkingEnvironment)
-                        {
-                            <li>@Html.Raw(workingEnv.Description)</li>
-                        }
-                    </ul>
-                </div>
-            </section>
-        }
+    @if (Model.DaytoDayTasks.Any())
+    {
+        <section class="job-profile-subsection">
+            <h3>Day-to-day tasks</h3>
+            <div class="job-profile-subsection-content">
+                <p>
+                    On a typical day you could:
+                </p>
+                <ul>
+                    @foreach (var item in Model.DaytoDayTasks)
+                    {
+                        <li>@item</li>
+                    }
+                </ul>
+            </div>
+        </section>
+    }
 
-        @if (Model.WorkingLocation != null)
-        {
-            <section class="job-profile-subsection" id="workingenvironment">
-                <h3>Working Location</h3>
-                <div class="job-profile-subsection-content">
-                    @Html.Raw(Model.WorkingLocation.Description)
-                </div>
-            </section>
-        }
+    @if (Model.WorkingEnvironment.Any())
+    {
+        <section class="job-profile-subsection" id="workingenvironment">
+            <h3>Working environment</h3>
+            <div class="job-profile-subsection-content">
+                @foreach (var item in Model.WorkingEnvironment)
+                {
+                    @Html.Raw(item);
+                }
+            </div>
+        </section>
+    }
 
-        @if (Model.WorkingUniform != null)
-        {
-            <section class="job-profile-subsection" id="workingenvironment">
-                <h3>Working Uniform</h3>
-                <div class="job-profile-subsection-content">
-                    @Html.Raw(Model.WorkingUniform.Description)
-                </div>
-            </section>
-        }
-    </section>
+    @if (Model.WorkingLocation.Any())
+    {
+        <section class="job-profile-subsection" id="workingenvironment">
+            <h3>Working Location</h3>
+            <div class="job-profile-subsection-content">
+                @foreach (var item in Model.WorkingLocation)
+                {
+                    @Html.Raw(item);
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.WorkingUniform.Any())
+    {
+        <section class="job-profile-subsection" id="workingenvironment">
+            <h3>Working Uniform</h3>
+            <div class="job-profile-subsection-content">
+                @foreach (var item in Model.WorkingUniform)
+                {
+                    @Html.Raw(item);
+                }
+            </div>
+        </section>
+    }
+</section>

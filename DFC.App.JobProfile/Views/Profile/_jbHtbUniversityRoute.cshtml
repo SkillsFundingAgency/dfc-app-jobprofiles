@@ -1,30 +1,31 @@
-﻿@model ContentApiBranchElement
-@{ 
-    var universityRequirement = Model.ContentItems.Where(x => x.ContentType == "UniversityRequirement").ToList();
-    var universityLinks = Model.ContentItems.Where(x => x.ContentType == "UniversityLink").ToList();
-    var requirementsPrefix = Model.ContentItems.Where(x => x.ContentType == "RequirementsPrefix").SingleOrDefault();
+﻿@model EducationalRoute
 
-}
+<section class="job-profile-subsection"
+         id="Univeristy">
 
-<section class="job-profile-subsection" id="College">
-    <h3>College</h3>
+    <h3>University</h3>
+
     <div class="job-profile-subsection-content">
+
         @Html.Raw(Model.RelevantSubjects)
 
         <h4>Entry requirements</h4>
-        <p>@requirementsPrefix.Content</p>
+
         <ul class="list-reqs">
-            @foreach (var requirement in universityRequirement)
+            @foreach (var requirement in Model.MoreInformation.Requirements)
             {
-                <li><a class="htb-feature" href="#">@requirement.Content</a></li>
+                <li><a class="htb-feature" href="#">@requirement</a></li>
             }
         </ul>
 
         <h4>More information</h4>
+
+        <p>@Model.MoreInformation.Preamble</p>
+
         <ul class="list-link">
-            @foreach (var link in universityLinks)
+            @foreach (var readingLink in Model.MoreInformation.FurtherReading)
             {
-                <li><a class="htb-feature" href="#">@link.Content</a></li>
+                <li><a class="htb-feature" href="@readingLink.Link">@readingLink.Text</a></li>
             }
         </ul>
     </div>

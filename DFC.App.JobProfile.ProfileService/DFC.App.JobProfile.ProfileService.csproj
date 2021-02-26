@@ -19,9 +19,12 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.63" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
-        <ProjectReference Include="..\DFC.App.JobProfile.Repository.CosmosDb\DFC.App.JobProfile.Repository.CosmosDb.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="junk\" />
     </ItemGroup>
 </Project>

@@ -1,9 +1,28 @@
-﻿@model string
+﻿@model JobProfileCachedHowToBecomeMoreInformation
 
-<section class="job-profile-subsection" id="moreinfo">
-    <h3>More information</h3>
-    <div class="job-profile-subsection-content">
-        <h4>Further information</h4>
-        @Html.Raw(Model)
-    </div>
-</section>
+@if (Model.HasItemsToDisplay())
+{
+    <section class="job-profile-subsection" id="moreinfo">
+        <h3>More information</h3>
+        <div class="job-profile-subsection-content">
+
+            @if (!string.IsNullOrWhiteSpace(Model.CareerTips))
+            {
+                <h4>Career Tips</h4>
+                @Html.Raw(Model.CareerTips)
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.ProfessionalBodies))
+            {
+                <h4>Professional And Industry Bodies</h4>
+                @Html.Raw(Model.ProfessionalBodies)
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.FurtherInformation))
+            {
+                <h4>Further information</h4>
+                @Html.Raw(Model.FurtherInformation)
+            }
+        </div>
+    </section>
+}

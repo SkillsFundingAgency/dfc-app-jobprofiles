@@ -1,13 +1,11 @@
-﻿using DFC.Compui.Cosmos.Contracts;
-using System;
+﻿using DFC.App.JobProfile.ContentAPI.Models;
+using DFC.Compui.Cosmos.Contracts;
 
 namespace DFC.App.JobProfile.Data.Models
 {
     public interface IJobProfileCached :
-        IContentPageModel
+        IContentPageModel,
+        IResourceLocatable
     {
-        Uri Uri { get; }
-
-        bool IsDefaultForPageLocation { get; }
     }
 }

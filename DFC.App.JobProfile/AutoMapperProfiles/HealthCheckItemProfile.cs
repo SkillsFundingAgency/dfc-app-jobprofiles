@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using System.Diagnostics.CodeAnalysis;
 
@@ -10,8 +10,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public HealthCheckItemProfile()
         {
-            CreateMap<HealthCheckItem, HealthItemViewModel>()
-                ;
+            CreateMap<HealthCheckItem, HealthItemViewModel>();
         }
     }
 }

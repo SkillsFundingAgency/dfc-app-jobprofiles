@@ -13,11 +13,11 @@ namespace DFC.App.JobProfile.Controllers
     public class HealthController : Controller
     {
         private readonly ILogger<HealthController> logService;
-        private readonly IJobProfileService jobProfileService;
+        private readonly IProvideJobProfiles jobProfileService;
         private readonly AutoMapper.IMapper mapper;
         private readonly string resourceName = typeof(Program).Namespace!;
 
-        public HealthController(ILogger<HealthController> logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public HealthController(ILogger<HealthController> logService, IProvideJobProfiles jobProfileService, AutoMapper.IMapper mapper)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;

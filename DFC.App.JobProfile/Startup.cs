@@ -2,42 +2,40 @@
 #pragma warning disable S125 // Sections of code should not be commented out
 #pragma warning disable SA1515 // Single-line comment should be preceded by blank line
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
-using DFC.App.JobProfile.CacheContentService;
+using DFC.App.JobProfile.Cacheing;
+using DFC.App.JobProfile.Cacheing.Models;
 using DFC.App.JobProfile.ClientHandlers;
-using DFC.App.JobProfile.Contracts;
+using DFC.App.JobProfile.ContentAPI.Models;
+using DFC.App.JobProfile.ContentAPI.Services;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.ClientOptions;
-using DFC.App.JobProfile.EventProcessorService;
+using DFC.App.JobProfile.EventProcessing;
+using DFC.App.JobProfile.EventProcessing.Models;
 using DFC.App.JobProfile.HostedServices;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
-using DFC.App.JobProfile.Repository.CosmosDb;
+using DFC.App.JobProfile.Webhooks;
 using DFC.Compui.Cosmos;
+using DFC.Compui.Cosmos.Contracts;
 using DFC.Compui.Subscriptions.Pkg.Netstandard.Extensions;
 using DFC.Compui.Telemetry;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
-using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Content.Pkg.Netcore.Extensions;
-using DFC.Content.Pkg.Netcore.Services;
 using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 
 namespace DFC.App.JobProfile
 {
     public class Startup
     {
-        public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
-        public const string StaticCosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:StaticContent";
+        public const string JobProfileStoreSettings = "Configuration:DocumentStore:JobProfile";
+        public const string StaticContentStoreSettings = "Configuration:DocumentStore:StaticContent";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
 
         private readonly IConfiguration _configuration;
@@ -126,44 +124,49 @@ namespace DFC.App.JobProfile
             services.AddSingleton(eventGridSubscriptionModel);
             */
 
-            var cosmosDbConnection = _configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
-            var staticContentDbConnection = _configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<StaticCosmosDbConnection>();
-            var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
+            //var jpStorageProperties = _configuration.GetSection(JobProfileStoreSettings).Get<JobProfileStorageProperties>();
+            //var scStorageProperties = _configuration.GetSection(StaticContentStoreSettings).Get<StaticContentStorageProperties>();
+            //var documentClient = new DocumentClient(new Uri(jpStorageProperties.EndpointLocation), jpStorageProperties.AccessKey);
 
-            services.AddSingleton(cosmosDbConnection);
-            services.AddSingleton<IDocumentClient>(documentClient);
+            //services.AddSingleton(jpStorageProperties);
+            //services.AddSingleton<IDocumentClient>(documentClient);
 
-            services.AddSingleton(staticContentDbConnection);
+            //services.AddSingleton(scStorageProperties);
             //services.AddSingleton<IStaticCosmosRepository<StaticContentItemModel>, StaticCosmosRepository<StaticContentItemModel>>();
 
-            services.AddScoped<IJobProfileService, JobProfileService>();
+            services.AddScoped<IProvideJobProfiles, JobProfileService>();
             //services.AddScoped<ISharedContentService, SharedContentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
 
             // services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"])
             services.AddSingleton(_configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
-            services.AddSingleton(_configuration.GetSection(nameof(OverviewDetails)).Get<OverviewDetails>() ?? new OverviewDetails());
+
+            //TODO: what's this and do we need it??
+            //services.AddSingleton(_configuration.GetSection(nameof(OverviewDetails)).Get<OverviewDetails>() ?? new OverviewDetails());
 
             services.AddApplicationInsightsTelemetry();
-            var cosmosDbConnectionContentPages = _configuration.GetSection(CosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
-            var cosmosDbConnectionStaticPages = _configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<Compui.Cosmos.Contracts.CosmosDbConnection>();
-            services.AddContentPageServices<JobProfileCached>(cosmosDbConnectionContentPages, _envvironment.IsDevelopment());
-            services.AddContentPageServices<ContentApiStaticElement>(cosmosDbConnectionStaticPages, _envvironment.IsDevelopment());
+
+            var jpStorageProperties = _configuration.GetSection(JobProfileStoreSettings).Get<CosmosDbConnection>();
+            var scStorageProperties = _configuration.GetSection(StaticContentStoreSettings).Get<CosmosDbConnection>();
+            services.AddContentPageServices<JobProfileCached>(jpStorageProperties, _envvironment.IsDevelopment());
+            services.AddContentPageServices<ContentApiStaticElement>(scStorageProperties, _envvironment.IsDevelopment());
 
             // remote contract local service implementation
-            services.AddSingleton<IContentCacheService, CacheContentService.ContentCacheService>();
+            //services.AddSingleton<IContentCacheService, CacheContentService.ContentCacheService>();
 
             services.AddTransient<IEventMessageService<JobProfileCached>, EventMessageService<JobProfileCached>>();
             services.AddTransient<IEventMessageService<ContentApiStaticElement>, EventMessageService<ContentApiStaticElement>>();
-            services.AddTransient<ILoadJobProfileContent, JobProfileCacheLoader>();
+            services.AddTransient<ILoadJobProfileContent, JobProfileCacheLoader<JobProfileCached>>();
             services.AddTransient<ILoadStaticContent, StaticContentLoader>();
             services.AddTransient<IApiService, ApiService>();
             services.AddTransient<IProvideGraphContent, GraphContentProvider>();
+            services.AddTransient<IProcessGraphCuries, GraphCurieProcessor>();
             services.AddTransient<IWebhooksService, WebhooksService>();
-            services.AddTransient<IEventGridService, EventGridService>();
+            services.AddTransient<IEventGridService<JobProfileCached>, EventGridService<JobProfileCached>>();
             services.AddTransient<IEventGridClientService, EventGridClientService>();
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
-            services.AddSingleton(_configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
+
+            services.AddSingleton(_configuration.GetSection(nameof(ContentApiOptions)).Get<ContentApiOptions>());
             services.AddSingleton(_configuration.GetSection(nameof(EventGridSubscriptionClientOptions)).Get<EventGridSubscriptionClientOptions>() ?? new EventGridSubscriptionClientOptions());
             services.AddSingleton(_configuration.GetSection(nameof(EventGridPublishClientOptions)).Get<EventGridPublishClientOptions>() ?? new EventGridPublishClientOptions());
             services.AddHostedServiceTelemetryWrapper();

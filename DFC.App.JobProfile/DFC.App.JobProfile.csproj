@@ -40,10 +40,22 @@
         <None Include="appsettings-template.json" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\DFC.App.JobProfile.CacheContentService\DFC.App.JobProfile.CacheContentService.csproj" />
-        <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
-        <ProjectReference Include="..\DFC.App.JobProfile.EventProcessorService\DFC.App.JobProfile.EventProcessorService.csproj" />
         <ProjectReference Include="..\DFC.App.JobProfile.ProfileService\DFC.App.JobProfile.ProfileService.csproj" />
+        <ProjectReference Include="..\DFC.App.JobProfile.Webhooks\DFC.App.JobProfile.Webhooks.csproj">
+          <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+        </ProjectReference>
+        <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj">
+          <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+        </ProjectReference>
+        <ProjectReference Include="..\DFC.App.JobProfile.EventProcessing\DFC.App.JobProfile.EventProcessing.csproj">
+          <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+        </ProjectReference>
+        <ProjectReference Include="..\DFC.App.JobProfile.ContentAPI\DFC.App.JobProfile.ContentAPI.csproj">
+          <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+        </ProjectReference>
+        <ProjectReference Include="..\DFC.App.JobProfile.Cacheing\DFC.App.JobProfile.Cacheing.csproj">
+          <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+        </ProjectReference>
     </ItemGroup>
     <ItemGroup>
         <WCFMetadata Include="Connected Services" />

@@ -1,27 +1,27 @@
-﻿namespace DFC.App.JobProfile.Data.Models
+﻿using System.Collections.Generic;
+
+namespace DFC.App.JobProfile.Data.Models
 {
     public class JobProfileCachedHowToBecome
     {
         public string Title { get; set; }
 
-        public string HtbBodies { get; set; }
+        public EducationalRoute UniversityRoute { get; set; }
 
-        public string HtbFurtherInformation { get; set; }
+        public EducationalRoute CollegeRoute { get; set; }
 
-        public ContentApiBranchElement DirectRoute { get; set; }
+        public EducationalRoute ApprenticeshipRoute { get; set; }
 
-        public ContentApiBranchElement ApprenticeshipRoute { get; set; }
+        public string WorkRoute { get; set; }
 
-        public ContentApiBranchElement CollegeRoute { get; set; }
+        public string DirectRoute { get; set; }
 
-        public ContentApiBranchElement OtherRoute { get; set; }
+        public string VolunteeringRoute { get; set; }
 
-        public ContentApiBranchElement Registration { get; set; }
+        public string OtherRoute { get; set; }
 
-        public ContentApiBranchElement UniversityRoute { get; set; }
+        public string Registration { get; set; }
 
-        public ContentApiBranchElement VolunteeringRoute { get; set; }
-
-        public ContentApiBranchElement WorkRoute { get; set; }
+        public JobProfileCachedHowToBecomeMoreInformation MoreInformation { get; set; }
     }
 }

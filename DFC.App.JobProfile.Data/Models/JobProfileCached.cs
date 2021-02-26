@@ -29,19 +29,20 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string Keywords { get; set; }
 
+        // TODO: this is a 'what it takes' field
         public string WitDigitalSkillsLevel { get; set; }
 
         public string TitleOptions { get; set; }
 
-        public JobProfileCachedOverview OverviewSegment { get; set; }
+        public JobProfileCachedOverview Overview { get; set; }
 
-        public JobProfileCachedWhatYoullDo WhatYoullDoSegment { get; set; }
+        public JobProfileCachedWhatYoullDo WhatYoullDo { get; set; }
 
-        public JobProfileCachedCareerPath CareerPathSegment { get; set; }
+        public JobProfileCachedCareerPath CareerPath { get; set; }
 
-        public JobProfileCachedHowToBecome HowToBecomeSegment { get; set; }
+        public JobProfileCachedHowToBecome HowToBecome { get; set; }
 
-        public JobProfileCachedWhatItTakes WhatItTakesSegment { get; set; }
+        public JobProfileCachedWhatItTakes WhatItTakes { get; set; }
 
         #region required by site map controller
 

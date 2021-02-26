@@ -13,13 +13,13 @@
         <section class="job-profile-subsection">
             <h3>Day-to-day tasks</h3>
             <div class="job-profile-subsection-content">
-                <p>
-                    On a typical day you could:
-                </p>
+                <p>On a typical day you could:</p>
                 <ul>
                     @foreach (var item in Model.DaytoDayTasks)
                     {
-                        <li>@item</li>
+                    <li>
+                        @Html.Raw(item)
+                    </li>
                     }
                 </ul>
             </div>
@@ -33,7 +33,7 @@
             <div class="job-profile-subsection-content">
                 @foreach (var item in Model.WorkingEnvironment)
                 {
-                    @Html.Raw(item);
+                    @Html.Raw(item)
                 }
             </div>
         </section>
@@ -46,7 +46,7 @@
             <div class="job-profile-subsection-content">
                 @foreach (var item in Model.WorkingLocation)
                 {
-                    @Html.Raw(item);
+                    @Html.Raw(item)
                 }
             </div>
         </section>

@@ -260,13 +260,13 @@ namespace DFC.App.JobProfile.Cacheing
             whatYoullDoModel.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
             whatYoullDoModel.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
             whatYoullDoModel.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
-            apiDataModel.WhatYoullDoSegment = whatYoullDoModel;
+            apiDataModel.WhatYoullDo = whatYoullDoModel;
 
             //Career Path
             var careerPathSegment = new ContentApiCareerPath();
             //careerPathSegment.ApprenticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
             careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
-            apiDataModel.CareerPathSegment = careerPathSegment;
+            apiDataModel.CareerPath = careerPathSegment;
 
             //How to Become
             var moreInfo = new ContentApiHowToBecomeMoreInformation();
@@ -287,58 +287,54 @@ namespace DFC.App.JobProfile.Cacheing
             moreInfo.FurtherInformation = apiDataModel.HtbFurtherInformation;
             moreInfo.CareerTips = apiDataModel.HtbCareerTips;
             howToBecomeSegment.MoreInformation = moreInfo;
-            apiDataModel.HowToBecomeSegment = howToBecomeSegment;
+            apiDataModel.HowToBecome = howToBecomeSegment;
 
             //What it Takes
             var whatItTakes = new ContentApiWhatItTakes();
             //whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
             //whatItTakes.OtherRequirement = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
             whatItTakes.Skills = GetDescriptions(contentItems, "ONetSkill");
-            apiDataModel.WhatItTakesSegment = whatItTakes;
+            apiDataModel.WhatItTakes = whatItTakes;
 
             return apiDataModel;
         }
 
-        internal IReadOnlyCollection<string> GetDescriptions(IEnumerable<ContentApiBranchElement> branches, string contentType)
-        {
-            return branches
+        internal string GetDescription(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            GetDescriptions(branches, contentType).FirstOrDefault();
+
+        internal IReadOnlyCollection<string> GetDescriptions(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            branches
                 .Where(x => x.ContentType == contentType)
                 .OrderBy(x => x.Ordinal)
                 .Select(x => x.Description)
                 .ToList();
-        }
 
-        internal IReadOnlyCollection<string> GetRawTexts(IEnumerable<ContentApiBranchElement> branches, string contentType)
-        {
-            return branches
+        internal string GetRawText(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            GetRawTexts(branches, contentType).FirstOrDefault();
+
+        internal IReadOnlyCollection<string> GetRawTexts(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            branches
                 .Where(x => x.ContentType == contentType)
                 .OrderBy(x => x.Ordinal)
                 .Select(x => x.Title)
                 .ToList();
-        }
 
-        internal IReadOnlyCollection<ApiAnchor> GetReadingLinks(IEnumerable<ContentApiBranchElement> branches, string contentType)
-        {
-            return branches
+        internal string GetText(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            GetTexts(branches, contentType).FirstOrDefault();
+
+        internal IReadOnlyCollection<string> GetTexts(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            branches
+                .Where(x => x.ContentType == contentType)
+                .OrderBy(x => x.Ordinal)
+                .Select(x => x.Text)
+                .ToList();
+
+        internal IReadOnlyCollection<ApiAnchor> GetAnchorLinks(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            branches
                 .Where(x => x.ContentType == contentType)
                 .OrderBy(x => x.Ordinal)
                 .Select(x => new ApiAnchor { Text = x.Text, Link = x.Link })
                 .ToList();
-        }
-
-        internal string GetDescription(IEnumerable<ContentApiBranchElement> branches, string contentType)
-        {
-            return branches
-                .FirstOrDefault(x => x.ContentType == contentType)?
-                .Description;
-        }
-
-        internal string GetRawText(IEnumerable<ContentApiBranchElement> branches, string contentType)
-        {
-            return branches
-                .FirstOrDefault(x => x.ContentType == contentType)?
-                .Title;
-        }
 
         internal ApiEducationalRoute GetRoute(IEnumerable<ContentApiBranchElement> branches, string contentType)
         {
@@ -357,8 +353,8 @@ namespace DFC.App.JobProfile.Cacheing
             route.RelevantSubjects = content.RelevantSubjects;
 
             item.Preamble = GetDescription(branches, "RequirementsPrefix");
-            item.Requirements = GetDescriptions(branches, $"{contentType}Requirement");
-            item.FurtherReading = GetReadingLinks(branches, $"{contentType}Link");
+            item.Requirements = GetTexts(branches, $"{contentType}Requirement");
+            item.FurtherReading = GetAnchorLinks(branches, $"{contentType}Link");
 
             return route;
         }

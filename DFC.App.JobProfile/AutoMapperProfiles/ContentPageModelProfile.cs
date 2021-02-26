@@ -17,7 +17,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<JobProfileCached, IndexDocumentViewModel>()
                 .ForMember(d => d.JobProfileWebsiteUrl, s => s.MapFrom(x => x.CanonicalName.Replace(" ", "-")));
 
-            CreateMap<JobProfileCached, HeroViewModel>();
+            CreateMap<JobProfileCached, HeroViewModel>()
+                .ForMember(d => d.OverviewSegment, s => s.MapFrom(x => x.Overview));
 
             CreateMap<JobProfileCached, HeadViewModel>()
                 //.ForMember(d => d.Title, s => s.MapFrom(x => x.CanonicalName))
@@ -43,10 +44,10 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             //.ForMember(d => d.OverviewSegment, s => s.MapFrom(x => x.OverviewSegment));
 
             CreateMap<JobProfileCached, BodyViewModel>()
-                .ForMember(d => d.CareerPathSegment, s => s.MapFrom(x => x.CareerPathSegment))
-                .ForMember(d => d.HowToBecomeSegment, s => s.MapFrom(x => x.HowToBecomeSegment))
-                .ForMember(d => d.WhatItTakesSegment, s => s.MapFrom(x => x.WhatItTakesSegment))
-                .ForMember(d => d.WhatYoullDoSegment, s => s.MapFrom(x => x.WhatYoullDoSegment));
+                .ForMember(d => d.CareerPathSegment, s => s.MapFrom(x => x.CareerPath))
+                .ForMember(d => d.HowToBecomeSegment, s => s.MapFrom(x => x.HowToBecome))
+                .ForMember(d => d.WhatItTakesSegment, s => s.MapFrom(x => x.WhatItTakes))
+                .ForMember(d => d.WhatYoullDoSegment, s => s.MapFrom(x => x.WhatYoullDo));
 
             CreateMap<JobProfileCached, DocumentViewModel>()
                 .ForMember(x => x.Head, opt => opt.MapFrom(model => model))
@@ -69,13 +70,13 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 //.ForPath(d => d.MetaTags.Title, s => s.MapFrom(a => a.Title))
                 //.ForPath(d => d.MetaTags.Description, s => s.MapFrom(a => a.Description))
                 //.ForPath(d => d.MetaTags.Keywords, s => s.MapFrom(a => a.Keywords))
-                .ForPath(d => d.OverviewSegment.MinimumHours, s => s.MapFrom(a => a.MinimumHours))
-                .ForPath(d => d.OverviewSegment.MaximumHours, s => s.MapFrom(a => a.MaximumHours))
-                .ForPath(d => d.OverviewSegment.SalaryStarter, s => s.MapFrom(a => a.SalaryStarter))
-                .ForPath(d => d.OverviewSegment.SalaryExperienced, s => s.MapFrom(a => a.SalaryExperienced))
-                .ForPath(d => d.OverviewSegment.WorkingPattern, s => s.MapFrom(a => a.WorkingPattern))
-                .ForPath(d => d.OverviewSegment.WorkingHoursDetails, s => s.MapFrom(a => a.WorkingHoursDetails))
-                .ForPath(d => d.OverviewSegment.WorkingPatternDetails, s => s.MapFrom(a => a.WorkingPatternDetails));
+                .ForPath(d => d.Overview.MinimumHours, s => s.MapFrom(a => a.MinimumHours))
+                .ForPath(d => d.Overview.MaximumHours, s => s.MapFrom(a => a.MaximumHours))
+                .ForPath(d => d.Overview.SalaryStarter, s => s.MapFrom(a => a.SalaryStarter))
+                .ForPath(d => d.Overview.SalaryExperienced, s => s.MapFrom(a => a.SalaryExperienced))
+                .ForPath(d => d.Overview.WorkingPattern, s => s.MapFrom(a => a.WorkingPattern))
+                .ForPath(d => d.Overview.WorkingHoursDetails, s => s.MapFrom(a => a.WorkingHoursDetails))
+                .ForPath(d => d.Overview.WorkingPatternDetails, s => s.MapFrom(a => a.WorkingPatternDetails));
 
             CreateMap<IGraphItem, ContentApiBranchElement>();
                 //.ForMember(d => d.Uri, s => s.Ignore())

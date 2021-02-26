@@ -62,13 +62,13 @@ namespace DFC.App.JobProfile.Cacheing.Models
 
         public string HtbFurtherInformation { get; set; }
 
-        public ContentApiWhatYoullDo WhatYoullDoSegment { get; set; }
+        public ContentApiWhatYoullDo WhatYoullDo { get; set; }
 
-        public ContentApiCareerPath CareerPathSegment { get; set; }
+        public ContentApiCareerPath CareerPath { get; set; }
 
-        public ContentApiHowToBecome HowToBecomeSegment { get; set; }
+        public ContentApiHowToBecome HowToBecome { get; set; }
 
-        public ContentApiWhatItTakes WhatItTakesSegment { get; set; }
+        public ContentApiWhatItTakes WhatItTakes { get; set; }
 
         public ICollection<ContentApiBranchElement> ContentItems { get; set; } = new List<ContentApiBranchElement>();
 

@@ -13,108 +13,19 @@
          id="accordion-default"
          aria-expanded="true">
 
-        <div class="govuk-accordion__section govuk-accordion__section--expanded">
-            <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                    <span class="govuk-accordion__section-button"
-                          id="accordion-default-heading-1">
-                        Essential knowledge
-                    </span>
-                </h2>
-            </div>
-            <div id="accordion-default-content-1"
-                 class="govuk-accordion__section-content"
-                 aria-labelledby="accordion-default-heading-1">
+        <section class="job-profile-subsection" id="workingenvironment">
+            <h3>Skills and knowledge</h3>
+            <div class="job-profile-subsection-content">
 
-                @{ ViewData["Type"] = "knowledge"; }
-                @*<partial name="_jbEssential" model="@Model" view-data="ViewData" />*@
-            </div>
-        </div>
+                <p>You'll need:</p>
 
-        <div class="govuk-accordion__section govuk-accordion__section--expanded">
-            <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                    <span class="govuk-accordion__section-button"
-                          id="accordion-default-heading-2">
-                        Essential skills
-                    </span>
-                </h2>
-            </div>
-            <div id="accordion-default-content-2"
-                 class="govuk-accordion__section-content"
-                 aria-labelledby="accordion-default-heading-2">
                 <ul>
                     @foreach (var skill in Model.Skills)
                     {
                         <li>@skill</li>
                     }
                 </ul>
-
-                @*@{ ViewData["Type"] = "skill"; }
-                <partial name="_jbEssential" model="@Model" view-data="ViewData" />*@
             </div>
-        </div>
-
-        <div class="govuk-accordion__section ">
-            <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                    <span class="govuk-accordion__section-button"
-                          id="accordion-default-heading-1">
-                        Optional knowledge
-                    </span>
-                </h2>
-            </div>
-            <div id="accordion-default-content-1"
-                 class="govuk-accordion__section-content"
-                 aria-labelledby="accordion-default-heading-1">
-
-                @{ ViewData["Type"] = "knowledge"; }
-                @*<partial name="_jbOptional" model="Model.Occupation" view-data="ViewData" />*@
-            </div>
-        </div>
-
-        <div class="govuk-accordion__section ">
-            <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                    <span class="govuk-accordion__section-button"
-                          id="accordion-default-heading-2">
-                        Optional skills
-                    </span>
-                </h2>
-            </div>
-            <div id="accordion-default-content-2"
-                 class="govuk-accordion__section-content"
-                 aria-labelledby="accordion-default-heading-2">
-
-                @{ ViewData["Type"] = "skill"; }
-                @*<partial name="_jbOptional" model="@Model.Occupation" view-data="ViewData" />*@
-            </div>
-        </div>
+        </section>
     </div>
-
-    @*@if (Model.Restrictions.Any())
-        {
-            <section class="job-profile-subsection">
-                <h3>Restrictions</h3>
-                <ul>
-                    @foreach (var restriction in Model.Restrictions)
-                    {
-                        <li>@restriction.Content</li>
-                    }
-                </ul>
-            </section>
-        }*@
-
-    @*@if (Model.Restrictions.Any())
-        {
-            <section class="job-profile-subsection">
-                <h3>Other Requirements</h3>
-                <ul>
-                    @foreach (var requirement in Model.OtherRequirement)
-                    {
-                        <li>@requirement.Content</li>
-                    }
-                </ul>
-            </section>
-        }*@
 </section>

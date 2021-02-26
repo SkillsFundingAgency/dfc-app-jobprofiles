@@ -8,6 +8,34 @@
 
     <h2 class="heading-large job-profile-heading">How to become an @Model.Title</h2>
 
+    <p>You can get into this job through:</p>
+    <ul>
+        @if (Model.UniversityRoute != null)
+        {
+            <li>a university degree</li>
+        }
+
+        @if (Model.CollegeRoute != null)
+        {
+            <li>college study</li>
+        }
+
+        @if (Model.ApprenticeshipRoute != null)
+        {
+            <li>an apprenticeship</li>
+        }
+
+        @if (Model.DirectRoute != null)
+        {
+            <li>directly applying to an employer</li>
+        }
+
+        @if (Model.VolunteeringRoute != null)
+        {
+            <li>participating in voluntary work</li>
+        }
+
+    </ul>
 
     @if (Model.UniversityRoute != null)
     {

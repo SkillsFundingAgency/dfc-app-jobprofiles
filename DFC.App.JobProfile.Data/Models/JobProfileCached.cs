@@ -34,15 +34,15 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string TitleOptions { get; set; }
 
-        public JobProfileCachedOverview Overview { get; set; }
+        public JobProfileOverview Overview { get; set; }
 
-        public JobProfileCachedWhatYoullDo WhatYoullDo { get; set; }
+        public JobProfileWhatYoullDo WhatYoullDo { get; set; }
 
-        public JobProfileCachedCareerPath CareerPath { get; set; }
+        public JobProfileCareerPath CareerPath { get; set; }
 
-        public JobProfileCachedHowToBecome HowToBecome { get; set; }
+        public JobProfileHowToBecome HowToBecome { get; set; }
 
-        public JobProfileCachedWhatItTakes WhatItTakes { get; set; }
+        public JobProfileWhatItTakes WhatItTakes { get; set; }
 
         #region required by site map controller
 

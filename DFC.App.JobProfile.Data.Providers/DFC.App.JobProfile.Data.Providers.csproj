@@ -1,16 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <CodeAnalysisRuleSet>../DFC.Digital.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\stylecop.json" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.61" />
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.13.1" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,5 +16,9 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.63" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
     </ItemGroup>
 </Project>

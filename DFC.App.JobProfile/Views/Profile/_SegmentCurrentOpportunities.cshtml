@@ -1,0 +1,77 @@
+﻿@model CurrentOpportunities
+
+@{
+    var apprenticeships = Enumerable.Empty<OpportunityApprenticeship>();
+    var courses = Enumerable.Empty<OpportunityCourse>();
+
+    if (Model != null)
+    {
+        apprenticeships = Model.Apprenticeships.Take(2).ToList();
+        courses = Model.Courses.Take(2).ToList();
+    }
+}
+
+<section id="CurrentOpportunities">
+
+    <h2 class="job-profile-headings">Current opportunities</h2>
+
+    <div class="govuk-grid-row"
+         id="appGeneric">
+
+        <div class="govuk-grid-column-full">
+
+            <h3 class="govuk-heading-m">
+                Apprenticeships
+                <span class="govuk-caption-m">In England</span>
+            </h3>
+        </div>
+
+        @if (apprenticeships.Any())
+        {
+            foreach (var apprenticeship in apprenticeships)
+            {
+                <partial name="_NewApprenticeship" model=@apprenticeship />
+            }
+
+            <div class="govuk-grid-column-full govuk-body-m dfc-code-jp-vacancyText">
+                <a href="https://www.findapprenticeship.service.gov.uk/apprenticeshipsearch">Find apprenticeships near you</a>
+            </div>
+        }
+        else
+        {
+            <div class="govuk-grid-column-full govuk-body dfc-code-jp-novacancyText">
+                <p>We can't find any apprenticeship vacancies in England for an @Model?.Title right now.</p>
+                <p>The <a href="https://www.gov.uk/apply-apprenticeship">Find an apprenticeship service</a> can help you with your search, send alerts when new apprenticeships become available and has advice on how to apply.</p>
+            </div>
+        }
+    </div>
+
+    <div class="govuk-grid-row dfc-code-jp-trainingCourse">
+
+        <div class="govuk-grid-column-full">
+
+            <h3 class="govuk-heading-m">
+                Courses
+                <span class="govuk-caption-m">In England</span>
+            </h3>
+        </div>
+
+        @foreach (var course in courses)
+        {
+            <partial name="_NewCourse" model=@course />
+        }
+
+        <div class="govuk-grid-column-full govuk-body dfc-code-jp-TrainingCoursesText">
+            <a href="/find-a-course/search">Find courses near you</a>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="govuk-heading-m">
+            Jobs
+            <span class="govuk-caption-m">In the United Kingdom</span>
+        </h3>
+
+        <p>The <a href="https://findajob.dwp.gov.uk">Find a job service</a> can help you with your search for jobs and send alerts when new jobs become available.</p>
+    </div>
+</section>

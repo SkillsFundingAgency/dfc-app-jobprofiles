@@ -2,7 +2,7 @@
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileCachedWhatYoullDo
+    public class JobProfileWhatYoullDo
     {
         public IReadOnlyCollection<string> DaytoDayTasks { get; set; }
 

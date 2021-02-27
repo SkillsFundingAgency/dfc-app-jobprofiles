@@ -1,6 +1,6 @@
 ﻿namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileCachedHowToBecomeMoreInformation
+    public class HowToBecomeMoreInformation
     {
         public string CareerTips { get; set; }
 

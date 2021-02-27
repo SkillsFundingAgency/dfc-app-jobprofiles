@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileCachedWhatItTakes
+    public class JobProfileWhatItTakes
     {
         //public IReadOnlyCollection<ContentApiBranchElement> OtherRequirement { get; set; }
 

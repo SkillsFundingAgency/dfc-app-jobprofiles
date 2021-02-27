@@ -1,4 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data.Providers;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using Microsoft.AspNetCore.Mvc;

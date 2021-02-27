@@ -10,12 +10,14 @@
                 <li class="govuk-breadcrumbs__list-item">
                     <a class="govuk-breadcrumbs__link" href="/explore-careers">Home: Explore careers</a>
                 </li>
-                <li class="govuk-breadcrumbs__list-item" aria-current="page">{your breadcrumb here...}</li>
+
+                <li class="govuk-breadcrumbs__list-item" aria-current="page">@Model.Title</li>
             </ol>
         </div>
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
+
                 <h1 class="heading-xlarge">@Model.Title</h1>
 
                 <h2 class="govuk-!-margin-top-5 govuk-!-margin-bottom-3">
@@ -27,7 +29,7 @@
             </div>
         </div>
 
-        <partial name="_jbOverviewSegment" model="@Model.OverviewSegment" />
+        <partial name="_HeroBannerOverview" model="@Model.OverviewSegment" />
     </div>
 
 </header>

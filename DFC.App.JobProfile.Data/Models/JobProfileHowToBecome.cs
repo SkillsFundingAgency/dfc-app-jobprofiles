@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace DFC.App.JobProfile.Data.Models
+﻿namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileCachedHowToBecome
+    public class JobProfileHowToBecome
     {
         public string Title { get; set; }
 
@@ -22,6 +20,6 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string Registration { get; set; }
 
-        public JobProfileCachedHowToBecomeMoreInformation MoreInformation { get; set; }
+        public HowToBecomeMoreInformation MoreInformation { get; set; }
     }
 }

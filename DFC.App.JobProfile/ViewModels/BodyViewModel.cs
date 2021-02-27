@@ -14,12 +14,14 @@ namespace DFC.App.JobProfile.ViewModels
 
         //public string SmartSurveyJP { get; set; }
 
-        public JobProfileCachedWhatYoullDo WhatYoullDoSegment { get; set; }
+        public JobProfileWhatYoullDo WhatYoullDoSegment { get; set; }
 
-        public JobProfileCachedCareerPath CareerPathSegment { get; set; }
+        public JobProfileCareerPath CareerPathSegment { get; set; }
 
-        public JobProfileCachedHowToBecome HowToBecomeSegment { get; set; }
+        public JobProfileHowToBecome HowToBecomeSegment { get; set; }
 
-        public JobProfileCachedWhatItTakes WhatItTakesSegment { get; set; }
+        public JobProfileWhatItTakes WhatItTakesSegment { get; set; }
+
+        public CurrentOpportunities CurrentOpportunities { get; set; }
     }
 }

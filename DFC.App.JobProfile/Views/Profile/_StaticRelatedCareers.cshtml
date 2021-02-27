@@ -1,4 +1,5 @@
-﻿@model DocumentViewModel
+﻿@*@model DocumentViewModel
+
 @{
     var relatedOccupations = Model.ContentItems.Where(x => x.ContentType == "relatedOccupation").ToList();
 }
@@ -18,8 +19,8 @@
         <ul class="list list-big">
             @foreach (var occupation in relatedOccupations)
             {
-                @*<li><a href="/job-profiles/@occupation.Uri">@occupation.Content</a></li>*@
+                <li><a href="/job-profiles/@occupation.Uri">@occupation.Content</a></li>
             }
         </ul>
     </div>
-}
+}*@

@@ -8,7 +8,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.ViewModels
 {
-    // TODO: ths is one that requires removing??
     public class DocumentViewModel
     {
         public HeadViewModel Head { get; set; } = new HeadViewModel();
@@ -36,8 +35,8 @@ namespace DFC.App.JobProfile.ViewModels
 
         //public long SequenceNumber { get; set; }
 
-        [Display(Name = "Alternative Names")]
-        public string[] AlternativeNames { get; set; }
+        //[Display(Name = "Alternative Names")]
+        //public string[] AlternativeNames { get; set; }
 
         //public string JobProfileWebsiteUrl { get; set; }
 
@@ -49,15 +48,15 @@ namespace DFC.App.JobProfile.ViewModels
 
         //public DateTime CreatedDate { get; set; }
 
-        public string HtbCareerTips { get; set; }
+        //public string HtbCareerTips { get; set; }
 
-        public string WitDigitalSkillsLevel { get; set; }
+        //public string WitDigitalSkillsLevel { get; set; }
 
-        public string TitleOptions { get; set; }
+        //public string TitleOptions { get; set; }
 
-        public string HtbFurtherInformation { get; set; }
+        //public string HtbFurtherInformation { get; set; }
 
-        public IList<ContentApiBranchElement> ContentItems { get; set; }
+        //public IList<ContentApiBranchElement> ContentItems { get; set; }
 
         //public List<StaticContentItemModel> SharedContent { get; set; }
     }

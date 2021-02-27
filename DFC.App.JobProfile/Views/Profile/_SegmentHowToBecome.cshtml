@@ -1,4 +1,4 @@
-﻿@model JobProfileCachedHowToBecome
+﻿@model JobProfileHowToBecome
 
 <section id="HowToBecome"
          data-gtm-vis-recent-on-screen-8675592_54="32785"
@@ -9,6 +9,7 @@
     <h2 class="heading-large job-profile-heading">How to become an @Model.Title</h2>
 
     <p>You can get into this job through:</p>
+
     <ul>
         @if (Model.UniversityRoute != null)
         {
@@ -34,52 +35,51 @@
         {
             <li>participating in voluntary work</li>
         }
-
     </ul>
 
     @if (Model.UniversityRoute != null)
     {
-        <partial name="_jbHtbUniversityRoute" model="@Model.UniversityRoute" />
+        <partial name="_HowToBecomeUniversityRoute" model="@Model.UniversityRoute" />
     }
 
     @if (Model.CollegeRoute != null)
     {
-        <partial name="_jbHtbCollegeRoute" model="@Model.CollegeRoute" />
+        <partial name="_HowToBecomeCollegeRoute" model="@Model.CollegeRoute" />
     }
 
     @if (Model.ApprenticeshipRoute != null)
     {
-        <partial name="_jbHtbApprenticeshipRoute" model="@Model.ApprenticeshipRoute" />
+        <partial name="_HowToBecomeApprenticeshipRoute" model="@Model.ApprenticeshipRoute" />
     }
 
     @if (Model.DirectRoute != null)
     {
-        <partial name="_jbHtbDirectRoute" model="@Model.DirectRoute" />
+        <partial name="_HowToBecomeDirectRoute" model="@Model.DirectRoute" />
     }
 
     @if (Model.VolunteeringRoute != null)
     {
-        <partial name="_jbHtbVolunteeringRoute" model="@Model.VolunteeringRoute" />
+        <partial name="_HowToBecomeVolunteeringRoute" model="@Model.VolunteeringRoute" />
     }
 
     @if (Model.OtherRoute != null)
     {
-        <partial name="_jbHtbOtherRoute" model="@Model.OtherRoute" />
+        <partial name="_HowToBecomeOtherRoute" model="@Model.OtherRoute" />
     }
 
     @if (Model.Registration != null)
     {
-        <partial name="_jbHtbRegistration" model="@Model.Registration" />
+        <partial name="_HowToBecomeRegistration" model="@Model.Registration" />
     }
 
     @if (Model.MoreInformation != null)
     {
-        <partial name="_jbHtbMoreInformation" model="@Model.MoreInformation" />
+        <partial name="_HowToBecomeMoreInformation" model="@Model.MoreInformation" />
     }
 
     @if (Model.WorkRoute != null)
     {
-        <partial name="_jbHtbWorkRoute" model="@Model.WorkRoute" />
+        <partial name="_HowToBecomeWorkRoute" model="@Model.WorkRoute" />
     }
 
 </section>

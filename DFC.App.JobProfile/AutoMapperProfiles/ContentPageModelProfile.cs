@@ -26,15 +26,15 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 //.ForMember(d => d.Keywords, s => s.MapFrom(x => x.Keywords))
                 .ForMember(d => d.CanonicalUrl, s => s.MapFrom(x => x.PageLocation));
 
-            CreateMap<ContentApiHowToBecome, JobProfileCachedHowToBecome>();
+            CreateMap<ContentApiHowToBecome, JobProfileHowToBecome>();
             CreateMap<ApiEducationalRoute, EducationalRoute>();
             CreateMap<ApiEducationalRouteItem, EducationalRouteItem>();
             CreateMap<ApiAnchor, Anchor>();
 
-            CreateMap<ContentApiHowToBecomeMoreInformation, JobProfileCachedHowToBecomeMoreInformation>();
-            CreateMap<ContentApiCareerPath, JobProfileCachedCareerPath>();
-            CreateMap<ContentApiWhatItTakes, JobProfileCachedWhatItTakes>();
-            CreateMap<ContentApiWhatYoullDo, JobProfileCachedWhatYoullDo>();
+            CreateMap<ContentApiHowToBecomeMoreInformation, HowToBecomeMoreInformation>();
+            CreateMap<ContentApiCareerPath, JobProfileCareerPath>();
+            CreateMap<ContentApiWhatItTakes, JobProfileWhatItTakes>();
+            CreateMap<ContentApiWhatYoullDo, JobProfileWhatYoullDo>();
             //CreateMap<JobProfileCachedHowToBecome, ContentApiCareerPath>();
             //CreateMap<JobProfileCachedHowToBecome, ContentApiCareerPath>();
             //.ForMember(d => d.Title, s => s.MapFrom(x => x.CanonicalName))

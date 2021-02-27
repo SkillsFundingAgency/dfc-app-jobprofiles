@@ -3,11 +3,12 @@
 #pragma warning disable SA1515 // Single-line comment should be preceded by blank line
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
 using AutoMapper;
-using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Providers;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,13 +18,14 @@ namespace DFC.App.JobProfile.Controllers
     {
         public const string ProfilePathRoot = "job-profiles";
 
-        private readonly ILogger<ProfileController> logService;
-        private readonly IProvideJobProfiles jobProfileService;
+        private readonly ILogger<ProfileController> _logService;
+        private readonly IProvideJobProfiles _profileProvider;
+        private readonly IProvideCurrentOpportunities _opportunities;
         //private readonly ISharedContentService sharedContentService;
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
         //private readonly FeedbackLinks feedbackLinks;
         //private readonly OverviewDetails overviewDetails;
-        private readonly string[] redirectionHostWhitelist =
+        private readonly string[] _redirectionHostWhitelist =
         {
             "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0",
             "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474",
@@ -31,19 +33,21 @@ namespace DFC.App.JobProfile.Controllers
 
         public ProfileController(
             ILogger<ProfileController> logService,
-            IProvideJobProfiles jobProfileService,
+            IProvideJobProfiles jobProfiles,
+            IProvideCurrentOpportunities opportunities,
             //ISharedContentService sharedContentService,
             IMapper mapper,
             //FeedbackLinks feedbackLinks,
             //OverviewDetails overviewDetails,
             string[] redirectionHostWhitelist = null)
         {
-            this.logService = logService;
-            this.jobProfileService = jobProfileService;
+            _logService = logService;
+            _profileProvider = jobProfiles;
+            _opportunities = opportunities;
             //this.sharedContentService = sharedContentService;
-            this.mapper = mapper;
+            _mapper = mapper;
             //this.feedbackLinks = feedbackLinks;
-            this.redirectionHostWhitelist = redirectionHostWhitelist ?? this.redirectionHostWhitelist;
+            _redirectionHostWhitelist = redirectionHostWhitelist ?? _redirectionHostWhitelist;
             //this.sharedContentService = sharedContentService;
             //this.overviewDetails = overviewDetails;
         }
@@ -53,24 +57,17 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Index()
         {
             //AOP: These should be coded as an Aspect
-            logService.LogInformation($"{nameof(Index)} has been called");
+            _logService.LogInformation($"{nameof(Index)} has been called");
 
             var viewModel = new IndexViewModel();
-            var jobProfileModels = await jobProfileService.GetAllItems().ConfigureAwait(false);
+            var jobProfileModels = await _profileProvider.GetAllItems().ConfigureAwait(false);
 
-            if (jobProfileModels is null)
-            {
-                logService.LogWarning($"{nameof(Index)} has returned with no results");
-            }
-            else
-            {
-                viewModel.Documents = jobProfileModels
-                    .OrderBy(o => o.PageLocation)
-                    .Select(x => mapper.Map<IndexDocumentViewModel>(x))
-                    .ToList();
+            viewModel.Documents = jobProfileModels
+                .OrderBy(o => o.PageLocation)
+                .Select(x => _mapper.Map<IndexDocumentViewModel>(x))
+                .ToList();
 
-                logService.LogInformation($"{nameof(Index)} has succeeded");
-            }
+            _logService.LogInformation($"{nameof(Index)} has succeeded");
 
             return this.NegotiateContentResult(viewModel);
         }
@@ -80,22 +77,24 @@ namespace DFC.App.JobProfile.Controllers
         [Route("profile/{article}/contents")]
         public async Task<IActionResult> Document(string article)
         {
-            logService.LogInformation($"{nameof(Document)} has been called with: {article}");
+            _logService.LogInformation($"{nameof(Document)} has been called with: {article}");
 
             //var contentList = new List<string>() { "speaktoanadvisor", "skillsassessment", "notwhatyourlookingfor" ]
-            var jobProfileModel = await jobProfileService.GetItemBy(article).ConfigureAwait(false);
-            if (jobProfileModel is null)
+            var jobProfile = await _profileProvider.GetItemBy(article).ConfigureAwait(false);
+            if (jobProfile is null)
             {
-                logService.LogWarning($"{nameof(Document)} has returned not found: {article}");
+                _logService.LogWarning($"{nameof(Document)} has returned not found: {article}");
                 return NotFound();
             }
 
             //var sharedContent = await sharedContentService.GetByNamesAsync(contentList).ConfigureAwait(false)
             //jobProfileModel.SharedContent = sharedContent
-            var viewModel = mapper.Map<DocumentViewModel>(jobProfileModel);
+            var currentOpportunities = await _opportunities.GetItemBy("jobprofile-canonicalname");
+            var viewModel = _mapper.Map<DocumentViewModel>(jobProfile);
+            viewModel.Body.CurrentOpportunities = currentOpportunities;
 
             //viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel)
-            logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
+            _logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
 
             return this.NegotiateContentResult(viewModel);
         }

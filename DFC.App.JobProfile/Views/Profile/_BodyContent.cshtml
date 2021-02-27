@@ -8,18 +8,19 @@
                     <div class="govuk-grid-column-two-thirds">
                         <div class="job-profile-sections">
                             <partial name="_SegmentLinks" />
-                            <partial name="_jbHowToBecomeSegment" model="@Model.HowToBecomeSegment" />
-                            <partial name="_jbWhatItTakesSegment" model="@Model.WhatItTakesSegment" />
-                            <partial name="_jbWhatYouWillDoSegment" model="@Model.WhatYoullDoSegment" />
-                            <partial name="_jbCareerPathSegment" model="@Model.CareerPathSegment" />
+                            <partial name="_SegmentHowToBecome" model="@Model.HowToBecomeSegment" />
+                            <partial name="_SegmentWhatItTakes" model="@Model.WhatItTakesSegment" />
+                            <partial name="_SegmentWhatYouWillDo" model="@Model.WhatYoullDoSegment" />
+                            <partial name="_SegmentCareerPath" model="@Model.CareerPathSegment" />
+                            <partial name="_SegmentCurrentOpportunities" model="@Model.CurrentOpportunities" />
                         </div>
                     </div>
 
                     <div class="govuk-grid-column-one-third">
-                        @*<partial name="_Search" model="@Model.SharedContent.Where(x => x.CanonicalName == "notwhatyourlookingfor").FirstOrDefault()" />*@
-                        @*<partial name="_jbRelatedCareersSegment" model="@Model" />*@
-                        @*<partial name="_SkillsAssessmentSnippet" model="@Model.SharedContent.Where(x => x.CanonicalName == "skillsassessment").FirstOrDefault()" />*@
-                        @*<partial name="_speakToAnAdvisor" model="@Model.SharedContent.Where(x => x.CanonicalName == "speaktoanadvisor").FirstOrDefault()" />*@
+                        @*<partial name="_StaticSearch" model="@Model.SharedContent.Where(x => x.CanonicalName == "notwhatyourlookingfor").FirstOrDefault()" />*@
+                        @*<partial name="_StaticRelatedCareers" model="@Model" />*@
+                        @*<partial name="_StaticSkillsAssessment" model="@Model.SharedContent.Where(x => x.CanonicalName == "skillsassessment").FirstOrDefault()" />*@
+                        @*<partial name="_StaticSpeakToAnAdvisor" model="@Model.SharedContent.Where(x => x.CanonicalName == "speaktoanadvisor").FirstOrDefault()" />*@
                     </div>
                 </div>
 

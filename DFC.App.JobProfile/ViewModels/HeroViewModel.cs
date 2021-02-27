@@ -12,6 +12,6 @@ namespace DFC.App.JobProfile.ViewModels
 
         public string PageLocation { get; set; }
 
-        public JobProfileCachedOverview OverviewSegment { get; set; }
+        public JobProfileOverview OverviewSegment { get; set; }
     }
 }

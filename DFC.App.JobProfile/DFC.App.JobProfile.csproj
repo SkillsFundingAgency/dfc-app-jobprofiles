@@ -61,7 +61,7 @@
         <ProjectReference Include="..\DFC.App.Services.Common\DFC.App.Services.Common.csproj">
           <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
         </ProjectReference>
-        <ProjectReference Include="..\DFC.App.JobProfile.Views\DFC.App.JobProfile.ViewSupport.csproj">
+        <ProjectReference Include="..\DFC.App.JobProfile.ViewSupport\DFC.App.JobProfile.ViewSupport.csproj">
           <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
         </ProjectReference>
     </ItemGroup>

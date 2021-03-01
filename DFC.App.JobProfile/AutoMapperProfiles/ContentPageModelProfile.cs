@@ -3,7 +3,6 @@ using DFC.App.JobProfile.Cacheing.Models;
 using DFC.App.JobProfile.ContentAPI.Models;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
-using DFC.App.JobProfile.ViewSupport.Configuration;
 using DFC.App.JobProfile.ViewSupport.ViewModels;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles

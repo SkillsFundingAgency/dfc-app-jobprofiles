@@ -1,6 +1,4 @@
-﻿// TODO: fix(?) me!
-#pragma warning disable S125 // Sections of code should not be commented out
-#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
+﻿// TODO: breadcumb trail...
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
 using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
@@ -86,13 +84,10 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
             var viewModel = Mapper.Map<DocumentViewModel>(jobProfile);
 
             var sharedContent = await SharedContent.GetAllItems().ConfigureAwait(false);
-            viewModel.Body.SkillsAssessment = GetContent(sharedContent, "skills-assessment");
-            viewModel.Body.SpeakToAnAdvisor = GetContent(sharedContent, "speak-to-an-adviser");
+            viewModel.Body.SkillsAssessment = GetContent(sharedContent, "skills-assessment-2");
+            viewModel.Body.SpeakToAnAdvisor = GetContent(sharedContent, "speak-to-an-adviser-2");
             viewModel.Body.NotWhatYoureLookingFor = GetContent(sharedContent, "not-what-youre-looking-for");
             viewModel.Body.SmartSurveyJP = FeedbackLinks.SmartSurveyJP;
-
-            //It.IsNull(sharedContent)
-            //    .AsGuard<ResourceNotFoundException>($"Shared content not found for: {occupationName}");
 
             var currentOpportunities = await Opportunities.GetItemBy("jobprofile-canonicalname");
             It.IsNull(currentOpportunities)

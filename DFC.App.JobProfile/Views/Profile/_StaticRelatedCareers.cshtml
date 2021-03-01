@@ -1,26 +1,24 @@
-﻿@*@model DocumentViewModel
+﻿@model BodyViewModel
+@*
+    @{
+        var relatedOccupations = Model.ContentItems.Where(x => x.ContentType == "relatedOccupation").ToList();
+    }
 
-@{
-    var relatedOccupations = Model.ContentItems.Where(x => x.ContentType == "relatedOccupation").ToList();
-}
+    @if (relatedOccupations.Any())
+    {*@
+<div class="job-profile-related">
+    <h3 class="govuk-heading-m">Related careers</h3>
+    <ul class="list list-big">
+        @*@foreach (var occupation in relatedOccupations)
+        {
+            <li><a href="/job-profiles/@occupation.Uri">@occupation.Content</a></li>
+        }*@
 
-@if (relatedOccupations.Any())
-{
-    <div class="job-profile-related">
-
-        <h3 class="govuk-heading-m"
-            data-gtm-vis-first-on-screen-8675592_194="2372755"
-            data-gtm-vis-recent-on-screen-8675592_194="2448921"
-            data-gtm-vis-total-visible-time-8675592_194="100"
-            data-gtm-vis-has-fired-8675592_194="1">
-            Related careers
-        </h3>
-
-        <ul class="list list-big">
-            @foreach (var occupation in relatedOccupations)
-            {
-                <li><a href="/job-profiles/@occupation.Uri">@occupation.Content</a></li>
-            }
-        </ul>
-    </div>
-}*@
+        <li><a href="/job-profiles/kennel-worker">Kennel worker</a></li>
+        <li><a href="/job-profiles/veterinary-nurse">Veterinary nurse</a></li>
+        <li><a href="/job-profiles/assistance-dog-trainer">Assistance dog trainer</a></li>
+        <li><a href="/job-profiles/pet-shop-assistant">Pet shop assistant</a></li>
+        <li><a href="/job-profiles/dog-groomer">Dog groomer</a></li>
+    </ul>
+</div>
+@*}*@

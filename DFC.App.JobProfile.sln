@@ -33,7 +33,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.Services.Common", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.Services.Common.Tests", "DFC.App.Services.Common.Tests\DFC.App.Services.Common.Tests.csproj", "{5B6B0812-BE05-4D50-A893-A438043ED5AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.ViewSupport", "DFC.App.JobProfile.Views\DFC.App.JobProfile.ViewSupport.csproj", "{49962B8D-65B9-4EAB-82DE-CBBD11657851}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.ViewSupport", "DFC.App.JobProfile.ViewSupport\DFC.App.JobProfile.ViewSupport.csproj", "{49962B8D-65B9-4EAB-82DE-CBBD11657851}"
 EndProject
 Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "DFC.App.JobProfile.IntegrationTests", "DFC.App.JobProfile.IntegrationTests\DFC.App.JobProfile.IntegrationTests.csproj", "{3EEF90A9-60CD-4A9C-A99E-E10ED84855F3}"
 EndProject

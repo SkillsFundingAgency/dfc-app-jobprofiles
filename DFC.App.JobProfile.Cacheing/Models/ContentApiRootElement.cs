@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
-    public class ContentApiRootElement :
+    public sealed class ContentApiRootElement :
         IRootContentItem<ContentApiBranchElement>
     {
         [JsonProperty("id")]

@@ -13,7 +13,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.18.0.27296">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.19.0.28253">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -21,5 +21,10 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\DFC.App.JobProfile.ContentAPI\DFC.App.JobProfile.ContentAPI.csproj" />
+      <ProjectReference Include="..\DFC.App.Services.Common\DFC.App.Services.Common.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Providers\" />
+      <Folder Include="Registration\" />
     </ItemGroup>
 </Project>

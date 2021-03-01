@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.EventProcessing.Models;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.Webhooks;
+using DFC.App.JobProfile.Webhooks.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.EventGrid;
 using Microsoft.Azure.EventGrid.Models;
@@ -19,22 +20,22 @@ namespace DFC.App.JobProfile.Controllers
     {
         private readonly Dictionary<string, EventOperation> acceptedEventTypes = new Dictionary<string, EventOperation>
         {
-            { "draft", EventOperation.CreateOrUpdate },
-            { "published", EventOperation.CreateOrUpdate },
-            { "draft-discarded", EventOperation.Delete },
-            { "unpublished", EventOperation.Delete },
-            { "deleted", EventOperation.Delete },
+            ["draft"] = EventOperation.CreateOrUpdate,
+            ["published"] = EventOperation.CreateOrUpdate,
+            ["draft-discarded"] = EventOperation.Delete,
+            ["unpublished"] = EventOperation.Delete,
+            ["deleted"] = EventOperation.Delete,
         };
 
-        private readonly ILogger<WebhooksController> logger;
-        private readonly IWebhooksService webhookService;
+        private readonly ILogger<WebhooksController> _logger;
+        private readonly IProvideWebhooks _webhooks;
 
         public WebhooksController(
             ILogger<WebhooksController> logger,
-            IWebhooksService webhookService)
+            IProvideWebhooks webhooks)
         {
-            this.logger = logger;
-            this.webhookService = webhookService;
+            _logger = logger;
+            _webhooks = webhooks;
         }
 
         [HttpPost]
@@ -43,7 +44,7 @@ namespace DFC.App.JobProfile.Controllers
         {
             using var reader = new StreamReader(Request.Body, Encoding.UTF8);
             string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
-            logger.LogInformation($"Received events: {requestContent}");
+            _logger.LogInformation($"Received events: {requestContent}");
 
             var eventGridSubscriber = new EventGridSubscriber();
             foreach (var key in acceptedEventTypes.Keys)
@@ -62,7 +63,7 @@ namespace DFC.App.JobProfile.Controllers
 
                 if (eventGridEvent.Data is SubscriptionValidationEventData subscriptionValidationEventData)
                 {
-                    logger.LogInformation($"Got SubscriptionValidation event data, validationCode: {subscriptionValidationEventData!.ValidationCode},  validationUrl: {subscriptionValidationEventData.ValidationUrl}, topic: {eventGridEvent.Topic}");
+                    _logger.LogInformation($"Got SubscriptionValidation event data, validationCode: {subscriptionValidationEventData!.ValidationCode},  validationUrl: {subscriptionValidationEventData.ValidationUrl}, topic: {eventGridEvent.Topic}");
 
                     // Do any additional validation (as required) such as validating that the Azure resource ID of the topic matches
                     // the expected topic and then return back the below response
@@ -87,9 +88,9 @@ namespace DFC.App.JobProfile.Controllers
 
                     var cacheOperation = acceptedEventTypes[eventGridEvent.EventType];
 
-                    logger.LogInformation($"Got Event Id: {eventId}: {eventGridEvent.EventType}: Cache operation: {cacheOperation} {url}");
+                    _logger.LogInformation($"Got Event Id: {eventId}: {eventGridEvent.EventType}: Cache operation: {cacheOperation} {url}");
 
-                    var result = await webhookService.ProcessMessage(cacheOperation, eventId, contentId, eventGridEventData.Api).ConfigureAwait(false);
+                    var result = await _webhooks.ProcessMessage(cacheOperation, eventId, contentId, eventGridEventData.Api).ConfigureAwait(false);
 
                     LogResult(eventId, contentId, result);
                 }
@@ -107,19 +108,19 @@ namespace DFC.App.JobProfile.Controllers
             switch (result)
             {
                 case HttpStatusCode.OK:
-                    logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Updated Content Page");
+                    _logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Updated Content Page");
                     break;
 
                 case HttpStatusCode.Created:
-                    logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Created Content Page");
+                    _logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Created Content Page");
                     break;
 
                 case HttpStatusCode.AlreadyReported:
-                    logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Content Page previously updated");
+                    _logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Content Page previously updated");
                     break;
 
                 default:
-                    logger.LogWarning($"Event Id: {eventId}, Content Page Id: {contentPageId}: Content Page not Posted: Status: {result}");
+                    _logger.LogWarning($"Event Id: {eventId}, Content Page Id: {contentPageId}: Content Page not Posted: Status: {result}");
                     break;
             }
         }

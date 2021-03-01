@@ -26,14 +26,14 @@
             <li>an apprenticeship</li>
         }
 
-        @if (Model.DirectRoute != null)
-        {
-            <li>directly applying to an employer</li>
-        }
-
         @if (Model.VolunteeringRoute != null)
         {
             <li>participating in voluntary work</li>
+        }
+
+        @if (Model.DirectRoute != null)
+        {
+            <li>directly applying to an employer</li>
         }
     </ul>
 
@@ -52,14 +52,19 @@
         <partial name="_HowToBecomeApprenticeshipRoute" model="@Model.ApprenticeshipRoute" />
     }
 
-    @if (Model.DirectRoute != null)
+    @if (Model.WorkRoute != null)
     {
-        <partial name="_HowToBecomeDirectRoute" model="@Model.DirectRoute" />
+        <partial name="_HowToBecomeWorkRoute" model="@Model.WorkRoute" />
     }
 
     @if (Model.VolunteeringRoute != null)
     {
         <partial name="_HowToBecomeVolunteeringRoute" model="@Model.VolunteeringRoute" />
+    }
+
+    @if (Model.DirectRoute != null)
+    {
+        <partial name="_HowToBecomeDirectRoute" model="@Model.DirectRoute" />
     }
 
     @if (Model.OtherRoute != null)
@@ -75,11 +80,6 @@
     @if (Model.MoreInformation != null)
     {
         <partial name="_HowToBecomeMoreInformation" model="@Model.MoreInformation" />
-    }
-
-    @if (Model.WorkRoute != null)
-    {
-        <partial name="_HowToBecomeWorkRoute" model="@Model.WorkRoute" />
     }
 
 </section>

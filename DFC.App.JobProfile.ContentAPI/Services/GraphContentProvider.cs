@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using DFC.App.JobProfile.ContentAPI.Configuration;
 using DFC.App.JobProfile.ContentAPI.Models;
+using DFC.App.Services.Common.Registration;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using System;
 using System.Collections.Generic;
@@ -8,10 +10,11 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.ContentAPI.Services
 {
-    public sealed class GraphContentProvider :
-        IProvideGraphContent
+    internal sealed class GraphContentProvider :
+        IProvideGraphContent,
+        IRequireServiceRegistration
     {
-        private readonly ContentApiOptions _clientOptions;
+        private readonly IContentApiConfiguration _clientConfig;
         private readonly IApiDataProcessorService _dataProcessor;
         private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
@@ -19,14 +22,14 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         private readonly IApiCacheService _cacheService;
 
         public GraphContentProvider(
-            ContentApiOptions clientOptions,
+            IContentApiConfiguration clientConfig,
             IApiDataProcessorService apiDataProcessor,
             HttpClient httpClient,
             IMapper mapper,
             IProcessGraphCuries curieProcessor,
             IApiCacheService cacheService)
         {
-            _clientOptions = clientOptions;
+            _clientConfig = clientConfig;
             _dataProcessor = apiDataProcessor;
             _httpClient = httpClient;
             _mapper = mapper;
@@ -35,10 +38,10 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         }
 
         public async Task<IReadOnlyCollection<TApiModel>> GetSummaryItems<TApiModel>()
-            where TApiModel : class, IResourceLocatable
+            where TApiModel : class, IGraphSummaryItem
         {
             var summaryEndpoint = new Uri(
-                  $"{_clientOptions.BaseAddress}{_clientOptions.SummaryEndpoint}",
+                  $"{_clientConfig.BaseAddress}{_clientConfig.SummaryEndpoint}",
                   UriKind.Absolute);
 
             return await GetSummaryItemsFor<TApiModel>(summaryEndpoint).ConfigureAwait(false);
@@ -70,10 +73,10 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         {
             var contentList = new List<TApiModel>();
 
-            foreach (var id in _clientOptions.PageStaticContentIDs)
+            foreach (var id in _clientConfig.PageStaticContentIDs)
             {
                 var url = new Uri(
-                    $"{_clientOptions.BaseAddress}{_clientOptions.StaticContentEndpoint}{id}",
+                    $"{_clientConfig.BaseAddress}{_clientConfig.StaticContentEndpoint}{id}",
                     UriKind.Absolute);
 
                 var content = await _dataProcessor.GetAsync<TApiModel>(_httpClient, url).ConfigureAwait(false);
@@ -141,7 +144,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         private void AddToApiCache<TModel>(TModel model)
             where TModel : class, IBranchContentItem<TModel>
         {
-            if (model.Uri == GraphSummaryItem.Empty)
+            if (model.Uri == UriExtra.Empty)
             {
                 throw new ArgumentException($"model.Url is invalid");
             }

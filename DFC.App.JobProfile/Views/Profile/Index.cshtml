@@ -10,7 +10,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <ul>
-                    @foreach (var document in Model.Documents)
+                    @foreach (var document in Model.OccupationSummaries)
                     {
                         <li>
                             <a href="/profile/@document.JobProfileWebsiteUrl">@document.CanonicalName</a>

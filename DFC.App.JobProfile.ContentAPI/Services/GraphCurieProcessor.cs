@@ -1,4 +1,6 @@
-﻿using DFC.App.JobProfile.ContentAPI.Models;
+﻿using DFC.App.JobProfile.ContentAPI.Configuration;
+using DFC.App.JobProfile.ContentAPI.Models;
+using DFC.App.Services.Common.Registration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -6,12 +8,13 @@ using System.Linq;
 
 namespace DFC.App.JobProfile.ContentAPI.Services
 {
-    public sealed class GraphCurieProcessor :
-        IProcessGraphCuries
+    internal sealed class GraphCurieProcessor :
+        IProcessGraphCuries,
+        IRequireServiceRegistration
     {
-        private readonly ContentApiOptions _options;
+        private readonly IContentApiConfiguration _options;
 
-        public GraphCurieProcessor(ContentApiOptions options)
+        public GraphCurieProcessor(IContentApiConfiguration options)
         {
             _options = options;
         }

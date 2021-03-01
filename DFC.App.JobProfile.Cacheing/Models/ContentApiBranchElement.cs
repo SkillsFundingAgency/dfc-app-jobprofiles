@@ -28,10 +28,6 @@ namespace DFC.App.JobProfile.Cacheing.Models
 
         public ICollection<ContentApiBranchElement> ContentItems { get; set; } = new List<ContentApiBranchElement>();
 
-        public bool IsFaultedState() =>
-            Uri == UriExtra.Empty
-            || Id == Guid.Empty;
-
         // auto-mapped from graph item
         public string Title { get; set; }
 
@@ -73,5 +69,9 @@ namespace DFC.App.JobProfile.Cacheing.Models
 
         [JsonProperty("MaximumFunding")]
         public int MaximumFunding { get; set; }
+
+        public bool IsFaultedState() =>
+            Uri == UriExtra.Empty
+            || Id == Guid.Empty;
     }
 }

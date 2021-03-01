@@ -1,15 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
-    <ProjectReference Include="..\DFC.App.JobProfile.EventProcessing\DFC.App.JobProfile.EventProcessing.csproj" />
-    <ProjectReference Include="..\DFC.App.JobProfile.Cacheing\DFC.App.JobProfile.Cacheing.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <CodeAnalysisRuleSet>../DFC.Digital.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+    <ItemGroup>
+        <AdditionalFiles Include="..\stylecop.json" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.19.0.28253">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Registration\" />
+        <Folder Include="Services\" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
+        <ProjectReference Include="..\DFC.App.JobProfile.EventProcessing\DFC.App.JobProfile.EventProcessing.csproj" />
+        <ProjectReference Include="..\DFC.App.JobProfile.Cacheing\DFC.App.JobProfile.Cacheing.csproj" />
+        <ProjectReference Include="..\DFC.App.Services.Common\DFC.App.Services.Common.csproj" />
+    </ItemGroup>
 </Project>

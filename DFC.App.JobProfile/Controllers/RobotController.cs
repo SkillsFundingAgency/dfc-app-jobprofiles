@@ -10,13 +10,15 @@ namespace DFC.App.JobProfile.Controllers
 {
     public class RobotController : Controller
     {
-        private readonly ILogger<RobotController> logService;
-        private readonly IWebHostEnvironment hostingEnvironment;
+        private readonly ILogger<RobotController> _logger;
+        private readonly IWebHostEnvironment _environment;
 
-        public RobotController(ILogger<RobotController> logService, IWebHostEnvironment hostingEnvironment)
+        public RobotController(
+            ILogger<RobotController> logger,
+            IWebHostEnvironment environment)
         {
-            this.logService = logService;
-            this.hostingEnvironment = hostingEnvironment;
+            _logger = logger;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -24,17 +26,17 @@ namespace DFC.App.JobProfile.Controllers
         {
             try
             {
-                logService.LogInformation("Generating Robots.txt");
+                _logger.LogInformation("Generating Robots.txt");
 
                 var robot = GenerateThisSiteRobot();
 
-                logService.LogInformation("Generated Robots.txt");
+                _logger.LogInformation("Generated Robots.txt");
 
                 return Content(robot.Data, MediaTypeNames.Text.Plain);
             }
             catch (Exception ex)
             {
-                logService.LogError($"{nameof(Robot)}: {ex.Message}");
+                _logger.LogError($"{nameof(Robot)}: {ex.Message}");
             }
 
             // fall through from errors
@@ -44,7 +46,7 @@ namespace DFC.App.JobProfile.Controllers
         private Robot GenerateThisSiteRobot()
         {
             var robot = new Robot();
-            var robotsFilePath = Path.Combine(hostingEnvironment.WebRootPath, "StaticRobots.txt");
+            var robotsFilePath = Path.Combine(_environment.WebRootPath, "StaticRobots.txt");
 
             if (System.IO.File.Exists(robotsFilePath))
             {

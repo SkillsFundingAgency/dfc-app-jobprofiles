@@ -8,7 +8,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
     public interface IProvideGraphContent
     {
         Task<IReadOnlyCollection<TApiModel>> GetSummaryItems<TApiModel>()
-            where TApiModel : class, IResourceLocatable;
+            where TApiModel : class, IGraphSummaryItem;
 
         Task<TRoot> GetComposedItem<TRoot, TBranch>(Uri uri)
             where TRoot : class, IRootContentItem<TBranch>, new()

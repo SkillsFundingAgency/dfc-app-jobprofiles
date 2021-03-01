@@ -1,6 +1,6 @@
 ﻿namespace DFC.App.JobProfile.Cacheing.Models
 {
-    public class ContentApiHowToBecomeMoreInformation
+    public sealed class ContentApiHowToBecomeMoreInformation
     {
         public string CareerTips { get; set; }
 

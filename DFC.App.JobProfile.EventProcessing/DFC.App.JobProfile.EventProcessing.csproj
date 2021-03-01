@@ -2,20 +2,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+        <CodeAnalysisRuleSet>../DFC.Digital.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.61" />
+        <AdditionalFiles Include="..\stylecop.json" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.63" />
         <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.18.0.27296">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.19.0.28253">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Models\" />
+        <Folder Include="Models\" />
+        <Folder Include="Services\" />
+        <Folder Include="Registration\" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\DFC.App.JobProfile.ContentAPI\DFC.App.JobProfile.ContentAPI.csproj" />
+        <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
     </ItemGroup>
 </Project>

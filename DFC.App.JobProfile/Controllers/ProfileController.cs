@@ -2,14 +2,9 @@
 #pragma warning disable S125 // Sections of code should not be commented out
 #pragma warning disable SA1515 // Single-line comment should be preceded by blank line
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
-using AutoMapper;
-using DFC.App.JobProfile.Data.Providers;
-using DFC.App.JobProfile.Extensions;
-using DFC.App.JobProfile.ViewModels;
+using DFC.App.JobProfile.ViewSupport.Adapters;
+using DFC.App.JobProfile.ViewSupport.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
@@ -18,108 +13,24 @@ namespace DFC.App.JobProfile.Controllers
     {
         public const string ProfilePathRoot = "job-profiles";
 
-        private readonly ILogger<ProfileController> _logService;
-        private readonly IProvideJobProfiles _profileProvider;
-        private readonly IProvideCurrentOpportunities _opportunities;
-        //private readonly ISharedContentService sharedContentService;
-        private readonly IMapper _mapper;
-        //private readonly FeedbackLinks feedbackLinks;
-        //private readonly OverviewDetails overviewDetails;
-        private readonly string[] _redirectionHostWhitelist =
-        {
-            "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0",
-            "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474",
-        };
+        private readonly IAdaptProfileDocumentViews _viewAdapter;
 
         public ProfileController(
-            ILogger<ProfileController> logService,
-            IProvideJobProfiles jobProfiles,
-            IProvideCurrentOpportunities opportunities,
-            //ISharedContentService sharedContentService,
-            IMapper mapper,
-            //FeedbackLinks feedbackLinks,
-            //OverviewDetails overviewDetails,
-            string[] redirectionHostWhitelist = null)
+            IAdaptProfileDocumentViews viewAdapter)
         {
-            _logService = logService;
-            _profileProvider = jobProfiles;
-            _opportunities = opportunities;
-            //this.sharedContentService = sharedContentService;
-            _mapper = mapper;
-            //this.feedbackLinks = feedbackLinks;
-            _redirectionHostWhitelist = redirectionHostWhitelist ?? _redirectionHostWhitelist;
-            //this.sharedContentService = sharedContentService;
-            //this.overviewDetails = overviewDetails;
+            _viewAdapter = viewAdapter;
         }
 
         [HttpGet]
         [Route("profile/")]
-        public async Task<IActionResult> Index()
-        {
-            //AOP: These should be coded as an Aspect
-            _logService.LogInformation($"{nameof(Index)} has been called");
-
-            var viewModel = new IndexViewModel();
-            var jobProfileModels = await _profileProvider.GetAllItems().ConfigureAwait(false);
-
-            viewModel.Documents = jobProfileModels
-                .OrderBy(o => o.PageLocation)
-                .Select(x => _mapper.Map<IndexDocumentViewModel>(x))
-                .ToList();
-
-            _logService.LogInformation($"{nameof(Index)} has succeeded");
-
-            return this.NegotiateContentResult(viewModel);
-        }
+        public async Task<IActionResult> Index() =>
+            await _viewAdapter.GetSummaryDocuments<IndexViewModel>(View);
 
         [HttpGet]
         [Route("profile/{article}")]
         [Route("profile/{article}/contents")]
-        public async Task<IActionResult> Document(string article)
-        {
-            _logService.LogInformation($"{nameof(Document)} has been called with: {article}");
-
-            //var contentList = new List<string>() { "speaktoanadvisor", "skillsassessment", "notwhatyourlookingfor" ]
-            var jobProfile = await _profileProvider.GetItemBy(article).ConfigureAwait(false);
-            if (jobProfile is null)
-            {
-                _logService.LogWarning($"{nameof(Document)} has returned not found: {article}");
-                return NotFound();
-            }
-
-            //var sharedContent = await sharedContentService.GetByNamesAsync(contentList).ConfigureAwait(false)
-            //jobProfileModel.SharedContent = sharedContent
-            var currentOpportunities = await _opportunities.GetItemBy("jobprofile-canonicalname");
-            var viewModel = _mapper.Map<DocumentViewModel>(jobProfile);
-            viewModel.Body.CurrentOpportunities = currentOpportunities;
-
-            //viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel)
-            _logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
-
-            return this.NegotiateContentResult(viewModel);
-        }
-
-        //[HttpPost]
-        //[Route("profile")]
-        //public async Task<IActionResult> Create([FromBody] JobProfileModel jobProfileModel)
-        //{
-        //    //AOP: These should be coded as an Aspect
-        //    logService.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
-
-        //    if (jobProfileModel is null)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var response = await jobProfileService.Create(jobProfileModel).ConfigureAwait(false);
-        //    logService.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
-        //    return new StatusCodeResult((int)response);
-        //}
+        public async Task<IActionResult> Document(string article) =>
+            await _viewAdapter.GetDocumentViewFor<DocumentViewModel>(article, View);
 
         //[HttpPost, HttpGet]
         //[Route("profile/overview/{article}")]
@@ -139,72 +50,6 @@ namespace DFC.App.JobProfile.Controllers
 
         //    logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
         //    return View("~/Views/Profile/_OverviewDysac.cshtml", viewModel);
-        //}
-
-        //[HttpPut]
-        //[Route("profile")]
-        //public async Task<IActionResult> Update([FromBody] JobProfileModel jobProfileModel)
-        //{
-        //    //AOP: These should be coded as an Aspect
-        //    logService.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
-
-        //    if (jobProfileModel is null)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var response = await jobProfileService.Update(jobProfileModel).ConfigureAwait(false);
-        //    logService.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
-        //    return new StatusCodeResult((int)response);
-        //}
-
-        //[HttpPatch]
-        //[Route("profile/{documentId}/metadata")]
-        //public async Task<IActionResult> Patch([FromBody] JobProfileMetadata jobProfileMetaDataPatchModel, Guid documentId)
-        //{
-        //    logService.LogInformation($"{nameof(Patch)} has been called with {documentId} for {jobProfileMetaDataPatchModel?.CanonicalName} with seq number {jobProfileMetaDataPatchModel?.SequenceNumber}");
-
-        //    if (jobProfileMetaDataPatchModel == null)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var response = await jobProfileService.Update(jobProfileMetaDataPatchModel).ConfigureAwait(false);
-        //    logService.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileMetaDataPatchModel.CanonicalName}. Response status - {response}");
-
-        //    return new StatusCodeResult((int)response);
-        //}
-
-        //[HttpDelete]
-        //[Route("profile/{documentId}")]
-        //public async Task<IActionResult> Delete(Guid documentId)
-        //{
-        //    logService.LogInformation($"{nameof(Delete)} has been called");
-
-        //    var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
-
-        //    if (jobProfileModel == null)
-        //    {
-        //        logService.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
-
-        //        return NotFound();
-        //    }
-
-        //    await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
-
-        //    logService.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
-
-        //    return Ok();
         //}
 
         //[HttpGet]
@@ -284,27 +129,6 @@ namespace DFC.App.JobProfile.Controllers
         //    return NoContent();
         //}
 
-        //#region Static helper methods
-
-        //private static string ComputeSha256Hash(string rawData)
-        //{
-        //    // Create a SHA256
-        //    using (SHA256 sha256Hash = SHA256.Create())
-        //    {
-        //        // ComputeHash - returns byte array
-        //        byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
-        //        // Convert byte array to a string
-        //        StringBuilder builder = new StringBuilder();
-        //        for (int i = 0; i < bytes.Length; i++)
-        //        {
-        //            builder.Append(bytes[i].ToString("x2", CultureInfo.InvariantCulture));
-        //        }
-
-        //        return builder.ToString();
-        //    }
-        //}
-
         //private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)
         //{
         //    var viewModel = new BreadcrumbViewModel
@@ -352,17 +176,5 @@ namespace DFC.App.JobProfile.Controllers
         //    headModel.CanonicalUrl = $"{Request.GetBaseAddress()}{ProfilePathRoot}/{jobProfileModel.CanonicalName}";
         //    return headModel;
         //}
-
-        //#endregion Static helper methods
-
-        //#region Helper methods
-
-        //private bool IsValidHost(Uri host)
-        //{
-        //    return host.IsLoopback
-        //        || host.Host.Split(".").Any(s => redirectionHostWhitelist.Contains(ComputeSha256Hash(s.ToUpperInvariant())));
-        //}
-
-        //#endregion Helper methods
     }
 }

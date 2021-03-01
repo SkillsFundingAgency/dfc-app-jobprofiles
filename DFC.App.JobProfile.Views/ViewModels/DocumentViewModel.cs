@@ -9,7 +9,5 @@
         public HeroViewModel HeroBanner { get; set; } = new HeroViewModel();
 
         public BodyViewModel Body { get; set; } = new BodyViewModel();
-
-        public FeedbackLinksViewModel FeedbackLinks { get; set; }
     }
 }

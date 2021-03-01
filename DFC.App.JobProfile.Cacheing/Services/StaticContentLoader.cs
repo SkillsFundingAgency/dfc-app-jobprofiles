@@ -9,8 +9,8 @@ using DFC.App.JobProfile.EventProcessing.Services;
 using DFC.App.Services.Common.Providers;
 using DFC.App.Services.Common.Registration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,56 +39,30 @@ namespace DFC.App.JobProfile.Cacheing.Services
         {
             Logger.LogInformation("Reload static content started");
 
-            var staticContent = await GraphContent.GetStaticItems<ContentApiStaticElement>().ConfigureAwait(false);
+            var staticItems = await GraphContent.GetStaticItems<ContentApiStaticElement>().ConfigureAwait(false);
 
-            if (stoppingToken.IsCancellationRequested)
+            if (staticItems.Any())
             {
-                Logger.LogWarning("Reload static content cancelled");
-
-                return;
-            }
-
-            if (staticContent != null)
-            {
-                await ProcessContentAsync(staticContent, stoppingToken).ConfigureAwait(false);
-
-                if (stoppingToken.IsCancellationRequested)
-                {
-                    Logger.LogWarning("Reload static content cancelled");
-
-                    return;
-                }
+                await ProcessContentAsync(staticItems, stoppingToken).ConfigureAwait(false);
             }
 
             Logger.LogInformation("Reload static content completed");
         }
 
         public async Task ProcessContentAsync(
-            IReadOnlyCollection<ContentApiStaticElement> sharedContent,
+            IReadOnlyCollection<ContentApiStaticElement> sharedItems,
             CancellationToken stoppingToken)
         {
             Logger.LogInformation("Process summary list started");
 
-            if (stoppingToken.IsCancellationRequested)
+            foreach (var item in sharedItems)
             {
-                Logger.LogWarning("Process summary list cancelled");
+                if (stoppingToken.IsCancellationRequested)
+                {
+                    Logger.LogWarning("Process summary list cancelled");
+                    return;
+                }
 
-                return;
-            }
-
-            await GetAndSaveItemAsync(sharedContent, stoppingToken).ConfigureAwait(false);
-
-            Logger.LogInformation("Process summary list completed");
-        }
-
-        public async Task GetAndSaveItemAsync(
-            IReadOnlyCollection<ContentApiStaticElement> items,
-            CancellationToken stoppingToken)
-        {
-            _ = items ?? throw new ArgumentNullException(nameof(items));
-
-            foreach (var item in items)
-            {
                 var candidate = Mapper.Map<StaticItemCached>(item);
 
                 candidate.CanonicalName = item.Title.Replace(" ", "-").ToLower();

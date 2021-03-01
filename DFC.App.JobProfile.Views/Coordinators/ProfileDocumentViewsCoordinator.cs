@@ -3,6 +3,7 @@
 #pragma warning disable SA1515 // Single-line comment should be preceded by blank line
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
 using AutoMapper;
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Providers;
 using DFC.App.JobProfile.ViewSupport.Configuration;
 using DFC.App.JobProfile.ViewSupport.ViewModels;
@@ -11,6 +12,7 @@ using DFC.App.Services.Common.Faults;
 using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -25,7 +27,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
         public ProfileDocumentViewsCoordinator(
             IProvideJobProfiles jobProfiles,
             IProvideCurrentOpportunities opportunities,
-            //ISharedContentService sharedContentService,
+            IProvideSharedContent sharedContent,
             IMapper mapper,
             IFeedbackLinks feedbackLinks,
             ICreateHttpResponseMessages response)
@@ -43,6 +45,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
 
             Profiles = jobProfiles;
             Opportunities = opportunities;
+            SharedContent = sharedContent;
             Mapper = mapper;
             FeedbackLinks = feedbackLinks;
             Response = response;
@@ -54,7 +57,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
 
         internal IProvideCurrentOpportunities Opportunities { get; }
 
-        //internal IProvideSharedContent SharedContent { get; }
+        internal IProvideSharedContent SharedContent { get; }
 
         internal IMapper Mapper { get; }
 
@@ -82,10 +85,14 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
                 .AsGuard<ResourceNotFoundException>($"Profile details not found for: {occupationName}");
             var viewModel = Mapper.Map<DocumentViewModel>(jobProfile);
 
-            //var sharedContent = await SharedContent.GetByNamesAsync(contentList).ConfigureAwait(false)
+            var sharedContent = await SharedContent.GetAllItems().ConfigureAwait(false);
+            viewModel.Body.SkillsAssessment = GetContent(sharedContent, "skills-assessment");
+            viewModel.Body.SpeakToAnAdvisor = GetContent(sharedContent, "speak-to-an-adviser");
+            viewModel.Body.NotWhatYoureLookingFor = GetContent(sharedContent, "not-what-youre-looking-for");
+            viewModel.Body.SmartSurveyJP = FeedbackLinks.SmartSurveyJP;
+
             //It.IsNull(sharedContent)
             //    .AsGuard<ResourceNotFoundException>($"Shared content not found for: {occupationName}");
-            //viewModel.SharedContent = sharedContent
 
             var currentOpportunities = await Opportunities.GetItemBy("jobprofile-canonicalname");
             It.IsNull(currentOpportunities)
@@ -93,11 +100,12 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
 
             viewModel.Body.CurrentOpportunities = currentOpportunities;
 
-            Mapper.Map(viewModel.FeedbackLinks, FeedbackLinks);
-
             //viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel)
 
             return await Response.Create(HttpStatusCode.OK, viewModel);
         }
+
+        internal string GetContent(IReadOnlyCollection<StaticItemCached> items, string candidate) =>
+            items.FirstOrDefault(x => x.CanonicalName == candidate)?.Content;
     }
 }

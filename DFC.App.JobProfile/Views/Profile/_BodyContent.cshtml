@@ -17,10 +17,10 @@
                     </div>
 
                     <div class="govuk-grid-column-one-third">
-                        @*<partial name="_StaticSearch" model="@Model.SharedContent.Where(x => x.CanonicalName == "notwhatyourlookingfor").FirstOrDefault()" />*@
-                        @*<partial name="_StaticRelatedCareers" model="@Model" />*@
-                        @*<partial name="_StaticSkillsAssessment" model="@Model.SharedContent.Where(x => x.CanonicalName == "skillsassessment").FirstOrDefault()" />*@
-                        @*<partial name="_StaticSpeakToAnAdvisor" model="@Model.SharedContent.Where(x => x.CanonicalName == "speaktoanadvisor").FirstOrDefault()" />*@
+                        <partial name="_StaticWriteRawString" model="@Model.NotWhatYoureLookingFor" />
+                        @*<partial name="_StaticWriteRawString" model="@Model" />*@
+                        <partial name="_StaticWriteRawString" model="@Model.SkillsAssessment" />
+                        <partial name="_StaticWriteRawString" model="@Model.SpeakToAnAdvisor" />
                     </div>
                 </div>
 

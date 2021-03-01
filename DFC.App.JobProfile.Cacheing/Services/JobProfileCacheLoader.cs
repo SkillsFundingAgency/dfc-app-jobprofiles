@@ -7,6 +7,7 @@ using DFC.App.JobProfile.ContentAPI.Models;
 using DFC.App.JobProfile.ContentAPI.Services;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.EventProcessing.Services;
+using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Providers;
 using DFC.App.Services.Common.Registration;
 using Microsoft.Extensions.Logging;
@@ -39,43 +40,20 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
         public override async Task Load(CancellationToken stoppingToken)
         {
-            Logger.LogInformation("Reload cache started");
-
-            var summaryList = await GetSummaryList().ConfigureAwait(false);
-
-            if (stoppingToken.IsCancellationRequested)
-            {
-                Logger.LogWarning("Reload cache cancelled");
-
-                return;
-            }
-
-            if (summaryList != null && summaryList.Any())
-            {
-                await ProcessSummaryList(summaryList, stoppingToken).ConfigureAwait(false);
-
-                if (stoppingToken.IsCancellationRequested)
-                {
-                    Logger.LogWarning("Reload cache cancelled");
-
-                    return;
-                }
-
-                await DeleteStaleCacheEntries(summaryList, stoppingToken).ConfigureAwait(false);
-            }
-
-            Logger.LogInformation("Reload cache completed");
-        }
-
-        internal async Task<IReadOnlyCollection<IGraphSummaryItem>> GetSummaryList()
-        {
-            Logger.LogInformation("Get summary list");
+            Logger.LogInformation("Reload cache started, get summary list");
 
             var summaryList = await GraphContent.GetSummaryItems<ContentApiSummaryItem>().ConfigureAwait(false);
 
             Logger.LogInformation("Get summary list completed");
 
-            return summaryList;
+            if (summaryList.Any())
+            {
+                await ProcessSummaryList(summaryList, stoppingToken).ConfigureAwait(false);
+
+                await DeleteStaleCacheEntries(summaryList, stoppingToken).ConfigureAwait(false);
+            }
+
+            Logger.LogInformation("Reload cache completed");
         }
 
         internal async Task ProcessSummaryList(
@@ -95,13 +73,13 @@ namespace DFC.App.JobProfile.Cacheing.Services
                     return;
                 }
 
-                await GetAndSaveItem(item, stoppingToken).ConfigureAwait(false);
+                await GetAndSaveItem(item).ConfigureAwait(false);
             }
 
             Logger.LogInformation("Process summary list completed");
         }
 
-        internal async Task GetAndSaveItem(IGraphSummaryItem item, CancellationToken stoppingToken)
+        internal async Task GetAndSaveItem(IGraphSummaryItem item)
         {
             _ = item ?? throw new ArgumentNullException(nameof(item));
 
@@ -114,14 +92,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
             if (apiDataModel == null || apiDataModel.IsFaultedState())
             {
                 Logger.LogWarning($"No details returned from {item.CanonicalName} - {item.Uri}");
-
-                return;
-            }
-
-            if (stoppingToken.IsCancellationRequested)
-            {
-                Logger.LogWarning("Process item get and save cancelled");
-
                 return;
             }
 
@@ -162,9 +132,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
         {
             Logger.LogInformation("Delete stale cache items started");
 
-            var cachedContentPages = await _messageService.GetAllCachedCanonicalNamesAsync().ConfigureAwait(false);
+            var cachedContentPages = (await _messageService.GetAllCachedCanonicalNamesAsync().ConfigureAwait(false)).AsSafeReadOnlyList();
 
-            if (cachedContentPages != null && cachedContentPages.Any())
+            if (cachedContentPages.Any())
             {
                 var hashedSummaryList = new HashSet<Uri>(summaryList.Select(p => p.Uri));
                 var staleContentPages = cachedContentPages.Where(p => !hashedSummaryList.Contains(p.Uri)).ToList();
@@ -189,7 +159,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 if (stoppingToken.IsCancellationRequested)
                 {
                     Logger.LogWarning("Delete stale cache items cancelled");
-
                     return;
                 }
 

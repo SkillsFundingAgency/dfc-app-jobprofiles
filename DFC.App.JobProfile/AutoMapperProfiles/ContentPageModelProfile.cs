@@ -51,8 +51,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.HowToBecomeSegment, s => s.MapFrom(x => x.HowToBecome))
                 .ForMember(d => d.WhatItTakesSegment, s => s.MapFrom(x => x.WhatItTakes))
                 .ForMember(d => d.WhatYoullDoSegment, s => s.MapFrom(x => x.WhatYoullDo));
-
-            CreateMap<IFeedbackLinks, FeedbackLinksViewModel>();
         }
     }
 }

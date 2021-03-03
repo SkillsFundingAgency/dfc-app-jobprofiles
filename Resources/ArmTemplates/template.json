@@ -34,9 +34,6 @@
             "type": "string",
             "defaultValue": ""
         },
-        "AllowedRedirects": {
-            "type": "string"
-        },
         "brandingAssetsAppCssFilePath": {
             "type": "string"
         },
@@ -98,27 +95,6 @@
         },
         "ExceptionCountThreshold": {
             "type": "string"
-        },
-        "CPUPercentageThreshold": {
-            "type": "string"
-        },
-        "MemoryPercentageThreshold": {
-            "type": "string"
-        },
-        "EventGridSubscriptionModelEndpoint": {
-            "type": "string"
-        },
-        "EventGridSubscriptionClientOptionsEndpoint": {
-            "type": "string"
-        },
-        "apimCompositeApiKey": {
-            "type": "securestring"
-        },
-        "apimProxyAddress": {
-            "type": "string"
-        },
-        "apimContentApiKey": {
-            "type": "securestring"
         }
     },
     "variables": {
@@ -207,7 +183,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service.json')]",
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service-staging.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -222,12 +198,6 @@
                     },
                     "appServiceType": {
                         "value": "app"
-                    },
-                    "deployStagingSlot": {
-                        "value": true
-                    },
-                    "clientAffinity": {
-                        "value": true
                     },
                     "appServiceAppSettings": {
                         "value": [
@@ -282,10 +252,6 @@
                             {
                                 "name": "Policies__HttpRetry__Count",
                                 "value": 3
-                            },
-                            {
-                                "name": "AllowedRedirects",
-                                "value": "[parameters('AllowedRedirects')]"
                             },
                             {
                                 "name": "OverviewBannerSegmentClientOptions__Timeout",
@@ -433,61 +399,8 @@
                             },
                             {
                                 "name": "Logging__ApplicationInsights__LogLevel__Default",
-                                "value": "Error"
-                            },
-                            {
-                                "name": "ApplicationInsights__LogLevel__Default",
                                 "value": "Information"
-                            },
-                            {
-                                "name": "Configuration__ApplicationName",
-                                "value": "DFC-App-Job-Profiles"
-                            },
-                            {
-                                "name": "EventGridSubscriptionModel__Endpoint",
-                                "value": "[parameters('EventGridSubscriptionModelEndpoint')]"
-                            },
-                            {
-                                "name": "EventGridSubscriptionModel__Endpoint__Filter__BeginsWith",
-                                "value": "/job-profile/"
-                            },
-                            {
-                                "name": "EventGridSubscriptionModel__Endpoint__Filter__IncludeEventTypes",
-                                "value": "published"
-                            },
-                            {
-                                "name": "EventGridSubscriptionClientOptions__Timeout",
-                                "value": "00:00:30"
-                            },
-                            {
-                                "name": "EventGridSubscriptionClientOptions__ApiKey",
-                                "value": "[parameters('apimCompositeApiKey')]"
-                            },
-                            {
-                                "name": "EventGridSubscriptionClientOptions__BaseAddress",
-                                "value": "[concat(parameters('apimProxyAddress'),'/content/Subscription/')]"
-                            },
-                            {
-                                "name": "EventGridSubscriptionClientOptions__Endpoint",
-                                "value": "[parameters('EventGridSubscriptionClientOptionsEndpoint')]"
-                            },
-                            {
-                                "name": "CmsApiClientOptions__Timeout",
-                                "value": "00:00:30"
-                            },
-                            {
-                                "name": "CmsApiClientOptions__ApiKey",
-                                "value": "[parameters('apimContentApiKey')]"
-                            },
-                            {
-                                "name": "CmsApiClientOptions__BaseAddress",
-                                "value": "[parameters('apimProxyAddress')]"
-                            },
-                            {
-                                "name": "CmsApiClientOptions__SummaryEndpoint",
-                                "value": "content/getcontent/api/execute/jobprofile"
                             }
-
                         ]
                     }
                 }
@@ -734,7 +647,7 @@
                         "value": "GreaterThan"
                     },
                     "threshold": {
-                        "value": "[parameters('ExceptionCountThreshold')]"
+                        "value": "0"
                     },
                     "aggregation": {
                         "value": "Count"
@@ -791,7 +704,7 @@
             "name": "[concat(variables('functionAppInsightsName'), '-metric-exceptions')]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[variables('functionAppInsightsName')]"
+                "[variables('webAppInsightsName')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -867,115 +780,6 @@
                     }
                 }
             }
-
-        },
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[concat(variables('AppServicePlanName'), '-CPUPercentage')]",
-            "type": "Microsoft.Resources/deployments",
-            "condition": "[not(equals(parameters('sharedAppServicePlanName'), variables('appServicePlanName')))]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(variables('AppServicePlanName'), '-metric-CPUPercentage')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "CpuPercentage"
-                    },
-                    "operator": {
-                        "value": "GreaterThanOrEqual"
-                    },
-                    "threshold": {
-                        "value": "[parameters('CPUPercentageThreshold')]"
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "actionGroupResourceGroup": {
-                        "value": "[parameters('appSharedResourceGroup')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('AppServicePlanName')]"
-            ]
-        },
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[concat(variables('AppServicePlanName'), '-MemoryPercentage')]",
-            "type": "Microsoft.Resources/deployments",
-            "condition": "[not(equals(parameters('sharedAppServicePlanName'), variables('appServicePlanName')))]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(variables('AppServicePlanName'), '-metric-MemoryPercentage')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "MemoryPercentage"
-                    },
-                    "operator": {
-                        "value": "GreaterThanOrEqual"
-                    },
-                    "threshold": {
-                        "value": "[parameters('MemoryPercentageThreshold')]"
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "actionGroupResourceGroup": {
-                        "value": "[parameters('appSharedResourceGroup')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('AppServicePlanName')]"
-            ]
         }
     ],
     "outputs": {

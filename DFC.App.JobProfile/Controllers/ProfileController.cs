@@ -25,16 +25,16 @@ namespace DFC.App.JobProfile.Controllers
         private readonly AutoMapper.IMapper mapper;
         private readonly FeedbackLinks feedbackLinks;
         private readonly ISegmentService segmentService;
-        private readonly string[] redirectionHostWhitelist = { "f0d341973d3c8650e00a0d24f10df50a159f28ca9cedeca318f2e9054a9982a0", "de2280453aa81cc7216b408c32a58f5326d32b42e3d46aee42abed2bd902e474" };
+        private readonly IRedirectionSecurityService redirectionSecurityService;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService, string[] redirectionHostWhitelist = null)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
             this.feedbackLinks = feedbackLinks;
             this.segmentService = segmentService;
-            this.redirectionHostWhitelist = redirectionHostWhitelist ?? this.redirectionHostWhitelist;
+            this.redirectionSecurityService = redirectionSecurityService;
         }
 
         [HttpGet]
@@ -250,6 +250,12 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> Body(string article)
         {
             logService.LogInformation($"{nameof(Body)} has been called");
+            var host = Request.GetBaseAddress();
+            if (!redirectionSecurityService.IsValidHost(host))
+            {
+                logService.LogWarning($"Invalid host {host}.");
+                return BadRequest($"Invalid host {host}.");
+            }
 
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
             if (jobProfileModel != null)
@@ -264,19 +270,10 @@ namespace DFC.App.JobProfile.Controllers
             var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
             if (alternateJobProfileModel != null)
             {
-                var host = Request.GetBaseAddress();
-                if (!IsValidHost(host))
-                {
-                    logService.LogWarning($"Invalid host {host}.");
-                    return BadRequest($"Invalid host {host}.");
-                }
-                else
-                {
-                    var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                    logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
+                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
+                logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
 
-                    return RedirectPermanentPreserveMethod(alternateUrl);
-                }
+                return RedirectPermanentPreserveMethod(alternateUrl);
             }
 
             logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
@@ -426,13 +423,5 @@ namespace DFC.App.JobProfile.Controllers
 
         #endregion Static helper methods
 
-        #region Helper methods
-
-        private bool IsValidHost(Uri host)
-        {
-            return host.IsLoopback || host.Host.Split(".").Any(s => redirectionHostWhitelist.Contains(ComputeSha256Hash(s.ToLower())));
-        }
-
-        #endregion Helper methods
     }
 }

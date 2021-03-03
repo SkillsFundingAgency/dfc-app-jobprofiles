@@ -1,6 +1,13 @@
 ﻿@model HtmlString
 
-@if (Model != null)
-{
-    @Html.Raw(Model)
+@{
+    var accordionSectionViewModel = new AccordionSectionViewModel
+    {
+        SequenceNo = 2,
+        Title = "What it takes",
+        Summary = "Find out what skills you&rsquo;ll use in this role.",
+        Content = Model,
+    };
 }
+
+<partial name="_JobProfileAccordionSection" model=@accordionSectionViewModel />

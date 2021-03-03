@@ -115,7 +115,6 @@ namespace DFC.App.JobProfile
             services.AddSingleton(cosmosDbConnection);
             services.AddSingleton<IDocumentClient>(documentClient);
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
-            services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();
 
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<ISegmentService, SegmentService>();

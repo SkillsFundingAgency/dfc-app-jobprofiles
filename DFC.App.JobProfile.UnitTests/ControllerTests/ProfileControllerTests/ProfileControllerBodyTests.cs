@@ -6,7 +6,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -158,7 +157,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.CanonicalName = FakeArticleName;
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
             A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
             // Act
@@ -186,7 +184,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.Segments = new List<SegmentModel>();
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
             A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
             // Act
@@ -215,14 +212,12 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
                 .Returns(expectedAlternativeResult);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
                 .MustHaveHappenedOnceExactly();
 
@@ -245,7 +240,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
                 .Returns(expectedAlternativeResult);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
+
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
@@ -274,7 +269,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored))
                 .Returns((JobProfileModel)null);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
@@ -302,8 +296,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
             // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustNotHaveHappened();
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
             Assert.IsType<BadRequestObjectResult>(result);
 
             controller.Dispose();
@@ -320,7 +314,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.CanonicalName = FakeArticleName;
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
             A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
             // Act
@@ -363,7 +356,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
             A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
             // Act
             await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
@@ -386,7 +378,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
             A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
             // Act
             await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
@@ -415,7 +406,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
             A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
             A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).Returns(offlineSegmentModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);

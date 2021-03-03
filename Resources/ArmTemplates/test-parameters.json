@@ -43,30 +43,6 @@
         },
         "ExceptionCountThreshold":{
             "value": "0"
-        },
-        "MemoryPercentageThreshold": {
-            "value": "0"
-        },
-        "CPUPercentageThreshold": {
-            "value": "0"
-        },
-        "EventGridSubscriptionModelEndpoint": {
-            "value": "foo"
-        },
-        "EventGridSubscriptionClientOptionsEndpoint": {
-            "value": "foo"
-        },
-        "apimCompositeApiKey": {
-            "value": "FakeKey"
-        },
-        "apimProxyAddress": {
-            "value": "https://foo"
-        },
-        "AllowedRedirects": {
-            "value": "nationalcareers"
-        },
-        "apimContentApiKey": {
-            "value": "FakeKey"
         }
     }
 }

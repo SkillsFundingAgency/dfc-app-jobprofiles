@@ -27,7 +27,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
         public async Task<IList<TModel>> GetAllCachedCanonicalNamesAsync()
         {
-            var serviceDataModels = await _pageService.GetAllAsync().ConfigureAwait(false);
+            var serviceDataModels = await _pageService.GetAllAsync();
 
             return serviceDataModels?.ToList();
         }
@@ -39,13 +39,13 @@ namespace DFC.App.JobProfile.EventProcessing.Services
                 return HttpStatusCode.BadRequest;
             }
 
-            var existingDocument = await _pageService.GetByIdAsync(upsertDocumentModel.Id).ConfigureAwait(false);
+            var existingDocument = await _pageService.GetByIdAsync(upsertDocumentModel.Id);
             if (existingDocument != null)
             {
                 return HttpStatusCode.AlreadyReported;
             }
 
-            var response = await _pageService.UpsertAsync(upsertDocumentModel).ConfigureAwait(false);
+            var response = await _pageService.UpsertAsync(upsertDocumentModel);
 
             _logger.LogInformation($"{nameof(CreateAsync)} has upserted content for: {upsertDocumentModel.CanonicalName} with response code {response}");
 
@@ -59,7 +59,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
                 return HttpStatusCode.BadRequest;
             }
 
-            var existingDocument = await _pageService.GetByIdAsync(upsertDocumentModel.Id).ConfigureAwait(false);
+            var existingDocument = await _pageService.GetByIdAsync(upsertDocumentModel.Id);
             if (existingDocument == null)
             {
                 return HttpStatusCode.NotFound;
@@ -67,7 +67,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
             upsertDocumentModel.Etag = existingDocument.Etag;
 
-            var response = await _pageService.UpsertAsync(upsertDocumentModel).ConfigureAwait(false);
+            var response = await _pageService.UpsertAsync(upsertDocumentModel);
 
             _logger.LogInformation($"{nameof(UpdateAsync)} has upserted content for: {upsertDocumentModel.CanonicalName} with response code {response}");
 
@@ -76,7 +76,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
         public async Task<HttpStatusCode> DeleteAsync(Guid id)
         {
-            var isDeleted = await _pageService.DeleteAsync(id).ConfigureAwait(false);
+            var isDeleted = await _pageService.DeleteAsync(id);
 
             if (isDeleted)
             {

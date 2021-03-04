@@ -42,15 +42,15 @@ namespace DFC.App.JobProfile.Cacheing.Services
         {
             Logger.LogInformation("Reload cache started, get summary list");
 
-            var summaryList = await GraphContent.GetSummaryItems<ContentApiSummaryItem>().ConfigureAwait(false);
+            var summaryList = await GraphContent.GetSummaryItems<ContentApiSummaryItem>();
 
             Logger.LogInformation("Get summary list completed");
 
             if (summaryList.Any())
             {
-                await ProcessSummaryList(summaryList, stoppingToken).ConfigureAwait(false);
+                await ProcessSummaryList(summaryList, stoppingToken);
 
-                await DeleteStaleCacheEntries(summaryList, stoppingToken).ConfigureAwait(false);
+                await DeleteStaleCacheEntries(summaryList, stoppingToken);
             }
 
             Logger.LogInformation("Reload cache completed");
@@ -69,11 +69,10 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 if (stoppingToken.IsCancellationRequested)
                 {
                     Logger.LogWarning("Process summary list cancelled");
-
                     return;
                 }
 
-                await GetAndSaveItem(item).ConfigureAwait(false);
+                await GetAndSaveItem(item);
             }
 
             Logger.LogInformation("Process summary list completed");
@@ -86,8 +85,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             Logger.LogInformation($"Get details for {item.CanonicalName} - {item.Uri}");
 
             var apiDataModel = await GraphContent
-                .GetComposedItem<ContentApiRootElement, ContentApiBranchElement>(item.Uri)
-                .ConfigureAwait(false);
+                .GetComposedItem<ContentApiRootElement, ContentApiBranchElement>(item.Uri);
 
             if (apiDataModel == null || apiDataModel.IsFaultedState())
             {
@@ -100,26 +98,18 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             Logger.LogInformation($"Updating cache with {item.CanonicalName} - {item.Uri}");
 
-            var result = await _messageService.UpdateAsync(contentPageModel).ConfigureAwait(false);
+            var result = await _messageService.UpdateAsync(contentPageModel);
 
             if (result == HttpStatusCode.NotFound)
             {
                 Logger.LogInformation($"Does not exist, creating cache with {item.CanonicalName} - {item.Uri}");
 
-                result = await _messageService.CreateAsync(contentPageModel).ConfigureAwait(false);
+                result = await _messageService.CreateAsync(contentPageModel);
 
-                if (result == HttpStatusCode.Created)
-                {
-                    Logger.LogInformation($"Created cache with {item.CanonicalName} - {item.Uri}");
-                }
-                else
+                if (result != HttpStatusCode.Created)
                 {
                     Logger.LogError($"Cache create error status {result} from {item.CanonicalName} - {item.Uri}");
                 }
-            }
-            else
-            {
-                Logger.LogInformation($"Updated cache with {item.CanonicalName} - {item.Uri}");
             }
 
             //var contentItemIds = contentPageModel.AllContentItemIds.ToList();
@@ -132,7 +122,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
         {
             Logger.LogInformation("Delete stale cache items started");
 
-            var cachedContentPages = (await _messageService.GetAllCachedCanonicalNamesAsync().ConfigureAwait(false)).AsSafeReadOnlyList();
+            var cachedContentPages = (await _messageService.GetAllCachedCanonicalNamesAsync()).AsSafeReadOnlyList();
 
             if (cachedContentPages.Any())
             {
@@ -141,7 +131,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
                 if (staleContentPages.Any())
                 {
-                    await DeleteStaleItems(staleContentPages, stoppingToken).ConfigureAwait(false);
+                    await DeleteStaleItems(staleContentPages, stoppingToken);
                 }
             }
 
@@ -164,13 +154,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
                 Logger.LogInformation($"Deleting cache with {staleContentPage.CanonicalName} - {staleContentPage.Id}");
 
-                var deletionResult = await _messageService.DeleteAsync(staleContentPage.Id).ConfigureAwait(false);
+                var deletionResult = await _messageService.DeleteAsync(staleContentPage.Id);
 
-                if (deletionResult == HttpStatusCode.OK)
-                {
-                    Logger.LogInformation($"Deleted stale cache item {staleContentPage.CanonicalName} - {staleContentPage.Id}");
-                }
-                else
+                if (deletionResult != HttpStatusCode.OK)
                 {
                     Logger.LogError($"Cache delete error status {deletionResult} from {staleContentPage.CanonicalName} - {staleContentPage.Id}");
                 }
@@ -189,7 +175,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             //What You'll Do
             var whatYoullDoModel = new ContentApiWhatYoullDo();
-            whatYoullDoModel.DaytoDayTasks = GetRawTexts(contentItems, "DayToDayTask");
+            whatYoullDoModel.DayToDayTasks = apiDataModel.WydDayToDayTasks;
             whatYoullDoModel.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
             whatYoullDoModel.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
             whatYoullDoModel.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
@@ -197,7 +183,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             //Career Path
             var careerPathSegment = new ContentApiCareerPath();
+
             //careerPathSegment.ApprenticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
+
             careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
             apiDataModel.CareerPath = careerPathSegment;
 
@@ -208,7 +196,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             howToBecomeSegment.DirectRoute = GetDescription(contentItems, "DirectRoute");
             howToBecomeSegment.OtherRoute = GetDescription(contentItems, "OtherRoute");
-            howToBecomeSegment.Registration = GetDescription(contentItems, "Registration");
             howToBecomeSegment.VolunteeringRoute = GetDescription(contentItems, "VolunteeringRoute");
             howToBecomeSegment.WorkRoute = GetDescription(contentItems, "WorkRoute");
 
@@ -216,17 +203,24 @@ namespace DFC.App.JobProfile.Cacheing.Services
             howToBecomeSegment.CollegeRoute = GetRoute(contentItems, "College");
             howToBecomeSegment.UniversityRoute = GetRoute(contentItems, "University");
 
+            moreInfo.Registration = GetDescription(contentItems, "Registration");
+            moreInfo.CareerTips = apiDataModel.HtbCareerTips;
             moreInfo.ProfessionalBodies = apiDataModel.HtbBodies;
             moreInfo.FurtherInformation = apiDataModel.HtbFurtherInformation;
-            moreInfo.CareerTips = apiDataModel.HtbCareerTips;
             howToBecomeSegment.MoreInformation = moreInfo;
             apiDataModel.HowToBecome = howToBecomeSegment;
 
             //What it Takes
             var whatItTakes = new ContentApiWhatItTakes();
+
             //whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
             //whatItTakes.OtherRequirement = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
-            whatItTakes.Skills = GetDescriptions(contentItems, "ONetSkill");
+
+            var witAddition = new List<string> { apiDataModel.WitDigitalSkillsLevel };
+            whatItTakes.Skills = GetDescriptions(contentItems, "ONetSkill")
+                .Concat(witAddition)
+                .AsSafeReadOnlyList();
+
             apiDataModel.WhatItTakes = whatItTakes;
 
             return apiDataModel;

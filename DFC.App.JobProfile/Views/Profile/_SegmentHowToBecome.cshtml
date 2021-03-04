@@ -18,7 +18,7 @@
 
         @if (Model.CollegeRoute != null)
         {
-            <li>college study</li>
+            <li>studying at college</li>
         }
 
         @if (Model.ApprenticeshipRoute != null)
@@ -32,8 +32,8 @@
         }
 
         @if (Model.DirectRoute != null)
-        {
-            <li>directly applying to an employer</li>
+        { 
+            <li>directly applying to a potential employer</li>
         }
     </ul>
 
@@ -70,11 +70,6 @@
     @if (Model.OtherRoute != null)
     {
         <partial name="_HowToBecomeOtherRoute" model="@Model.OtherRoute" />
-    }
-
-    @if (Model.Registration != null)
-    {
-        <partial name="_HowToBecomeRegistration" model="@Model.Registration" />
     }
 
     @if (Model.MoreInformation != null)

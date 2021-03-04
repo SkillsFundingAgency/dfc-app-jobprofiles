@@ -25,12 +25,11 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string Title { get; set; }
 
+        public string AlternativeTitle { get; set; }
+
         public string Description { get; set; }
 
         public string Keywords { get; set; }
-
-        // TODO: this is a 'what it takes' field
-        public string WitDigitalSkillsLevel { get; set; }
 
         public string TitleOptions { get; set; }
 

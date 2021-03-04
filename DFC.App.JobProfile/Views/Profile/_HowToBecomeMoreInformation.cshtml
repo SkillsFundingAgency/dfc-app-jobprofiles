@@ -6,6 +6,12 @@
         <h3>More information</h3>
         <div class="job-profile-subsection-content">
 
+            @if (!string.IsNullOrWhiteSpace(Model.Registration))
+            {
+                <h4>Registration</h4>
+                @Html.Raw(Model.Registration)
+            }
+
             @if (!string.IsNullOrWhiteSpace(Model.CareerTips))
             {
                 <h4>Career Tips</h4>

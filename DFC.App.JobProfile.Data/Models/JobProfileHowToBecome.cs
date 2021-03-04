@@ -18,8 +18,6 @@
 
         public string OtherRoute { get; set; }
 
-        public string Registration { get; set; }
-
         public HowToBecomeMoreInformation MoreInformation { get; set; }
     }
 }

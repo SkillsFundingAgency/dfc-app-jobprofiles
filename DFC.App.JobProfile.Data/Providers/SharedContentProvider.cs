@@ -17,7 +17,7 @@ namespace DFC.App.JobProfile.Data.Providers
         }
 
         public async Task<IReadOnlyCollection<StaticItemCached>> GetAllItems() =>
-            (await PageService.GetAllAsync().ConfigureAwait(false))?.ToList()
+            (await PageService.GetAllAsync())?.ToList()
                 ?? new List<StaticItemCached>();
     }
 }

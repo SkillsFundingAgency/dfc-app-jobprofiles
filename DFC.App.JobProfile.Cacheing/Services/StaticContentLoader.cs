@@ -39,11 +39,11 @@ namespace DFC.App.JobProfile.Cacheing.Services
         {
             Logger.LogInformation("Reload static content started");
 
-            var staticItems = await GraphContent.GetStaticItems<ContentApiStaticElement>().ConfigureAwait(false);
+            var staticItems = await GraphContent.GetStaticItems<ContentApiStaticElement>();
 
             if (staticItems.Any())
             {
-                await ProcessContentAsync(staticItems, stoppingToken).ConfigureAwait(false);
+                await ProcessContentAsync(staticItems, stoppingToken);
             }
 
             Logger.LogInformation("Reload static content completed");
@@ -69,13 +69,13 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
                 Logger.LogInformation($"Updating static content cache with {candidate.Id} - {candidate.Uri}");
 
-                var result = await _messageService.UpdateAsync(candidate).ConfigureAwait(false);
+                var result = await _messageService.UpdateAsync(candidate);
 
                 if (result == HttpStatusCode.NotFound)
                 {
                     Logger.LogInformation($"Does not exist, creating static content cache with {candidate.Id} - {candidate.Uri}");
 
-                    result = await _messageService.CreateAsync(candidate).ConfigureAwait(false);
+                    result = await _messageService.CreateAsync(candidate);
 
                     if (result == HttpStatusCode.OK)
                     {

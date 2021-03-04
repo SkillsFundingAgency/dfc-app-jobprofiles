@@ -46,7 +46,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
             if (ContainsDifferences(currentModel, changedModel))
             {
-                await SendEvent(EventOperation.CreateOrUpdate, changedModel).ConfigureAwait(false);
+                await SendEvent(EventOperation.CreateOrUpdate, changedModel);
             }
             else
             {
@@ -88,7 +88,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
             eventGridEvents.ForEach(Validate);
 
-            await _gridClient.SendEvent(eventGridEvents, _gridConfiguration.TopicEndpoint, _gridConfiguration.TopicKey, logMessage).ConfigureAwait(false);
+            await _gridClient.SendEvent(eventGridEvents, _gridConfiguration.TopicEndpoint, _gridConfiguration.TopicKey, logMessage);
         }
 
         internal bool ContainsDifferences(TModel currentModel, TModel changedModel)

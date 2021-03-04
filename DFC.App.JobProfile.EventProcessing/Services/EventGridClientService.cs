@@ -34,7 +34,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
                 var topicCredentials = new TopicCredentials(topicKey);
                 using var client = new EventGridClient(topicCredentials);
 
-                await client.PublishEventsAsync(topicHostname, eventGridEvents.ToList()).ConfigureAwait(false);
+                await client.PublishEventsAsync(topicHostname, eventGridEvents.ToList());
 
                 _logger.LogInformation($"Sent Event Grid message for: {logMessage}");
             }

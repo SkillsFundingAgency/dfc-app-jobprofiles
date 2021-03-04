@@ -58,7 +58,7 @@ namespace DFC.App.Services.Common.Adapters
             }
         }
 
-        internal async Task<HttpResponseMessage> ProcessError(Exception exception, ILoggingContextScope loggingContext) =>
-            await Faulted.GetResponseFor(exception, loggingContext);
+        internal Task<HttpResponseMessage> ProcessError(Exception exception, ILoggingContextScope loggingContext) =>
+            Faulted.GetResponseFor(exception, loggingContext);
     }
 }

@@ -37,14 +37,13 @@ namespace DFC.App.JobProfile.ContentAPI.Services
             _cacheService = cacheService;
         }
 
-        public async Task<IReadOnlyCollection<TApiModel>> GetSummaryItems<TApiModel>()
-            where TApiModel : class, IGraphSummaryItem
+        Task<IReadOnlyCollection<TApiModel>> IProvideGraphContent.GetSummaryItems<TApiModel>()
         {
             var summaryEndpoint = new Uri(
                   $"{_clientConfig.BaseAddress}{_clientConfig.SummaryEndpoint}",
                   UriKind.Absolute);
 
-            return await GetSummaryItemsFor<TApiModel>(summaryEndpoint).ConfigureAwait(false);
+            return GetSummaryItemsFor<TApiModel>(summaryEndpoint);
         }
 
         public async Task<TRoot> GetComposedItem<TRoot, TBranch>(Uri uri)
@@ -53,11 +52,10 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         {
             var apiDataModel = await _dataProcessor
                 .GetAsync<TRoot>(_httpClient, uri)
-                .ConfigureAwait(false)
                     ?? new TRoot();
 
             var links = _curieProcessor.GetRelations(apiDataModel);
-            var candidates = await GetBranchedContentItems<TBranch>(links).ConfigureAwait(false);
+            var candidates = await GetBranchedContentItems<TBranch>(links);
             candidates.ForEach(apiDataModel.ContentItems.Add);
 
             return apiDataModel;
@@ -65,7 +63,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
 
         public async Task<TBranch> GetBranchItem<TBranch>(Uri uri)
             where TBranch : class, IBranchContentItem<TBranch>, new() =>
-                await _dataProcessor.GetAsync<TBranch>(_httpClient, uri).ConfigureAwait(false)
+                await _dataProcessor.GetAsync<TBranch>(_httpClient, uri)
                     ?? new TBranch();
 
         public async Task<IReadOnlyCollection<TApiModel>> GetStaticItems<TApiModel>()
@@ -79,7 +77,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
                     $"{_clientConfig.BaseAddress}{_clientConfig.StaticContentEndpoint}{id}",
                     UriKind.Absolute);
 
-                var content = await _dataProcessor.GetAsync<TApiModel>(_httpClient, url).ConfigureAwait(false);
+                var content = await _dataProcessor.GetAsync<TApiModel>(_httpClient, url);
 
                 if (content != null)
                 {
@@ -95,7 +93,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         {
             var list = new List<TBranch>();
 
-            foreach(var relation in relations)
+            foreach (var relation in relations)
             {
                 foreach (var link in relation.Items)
                 {
@@ -105,7 +103,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
 
                         if (descendent == null)
                         {
-                            descendent = await GetBranchItem<TBranch>(link.Uri).ConfigureAwait(false);
+                            descendent = await GetBranchItem<TBranch>(link.Uri);
 
                             if (!descendent.IsFaultedState())
                             {
@@ -114,7 +112,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
                                 _mapper.Map(link, descendent);
 
                                 var modelLinks = _curieProcessor.GetRelations(descendent);
-                                var candidates = await GetBranchedContentItems<TBranch>(modelLinks).ConfigureAwait(false);
+                                var candidates = await GetBranchedContentItems<TBranch>(modelLinks);
 
                                 candidates.ForEach(descendent.ContentItems.Add);
 
@@ -133,7 +131,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         {
             var result = await _dataProcessor
                 .GetAsync<IReadOnlyCollection<TApiModel>>(_httpClient, thisResource)
-                .ConfigureAwait(false)
+
                     ?? new List<TApiModel>();
 
             _cacheService.Clear();

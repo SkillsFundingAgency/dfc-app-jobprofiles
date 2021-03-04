@@ -43,7 +43,7 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> ReceiveEvents()
         {
             using var reader = new StreamReader(Request.Body, Encoding.UTF8);
-            string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
+            string requestContent = await reader.ReadToEndAsync();
             _logger.LogInformation($"Received events: {requestContent}");
 
             var eventGridSubscriber = new EventGridSubscriber();
@@ -90,7 +90,7 @@ namespace DFC.App.JobProfile.Controllers
 
                     _logger.LogInformation($"Got Event Id: {eventId}: {eventGridEvent.EventType}: Cache operation: {cacheOperation} {url}");
 
-                    var result = await _webhooks.ProcessMessage(cacheOperation, eventId, contentId, eventGridEventData.Api).ConfigureAwait(false);
+                    var result = await _webhooks.ProcessMessage(cacheOperation, eventId, contentId, eventGridEventData.Api);
 
                     LogResult(eventId, contentId, result);
                 }

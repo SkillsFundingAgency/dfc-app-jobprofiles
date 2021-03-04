@@ -20,11 +20,11 @@ namespace DFC.App.JobProfile.Data.Providers
 
         internal IContentPageService<TContentPageItem> PageService { get; }
 
-        public async Task<bool> Ping() =>
-            await PageService.PingAsync().ConfigureAwait(false);
+        public Task<bool> Ping() =>
+            PageService.PingAsync();
 
-        public async Task<TContentPageItem> GetItemBy(Guid documentId) =>
-            await PageService.GetByIdAsync(documentId).ConfigureAwait(false);
+        public Task<TContentPageItem> GetItemBy(Guid documentId) =>
+            PageService.GetByIdAsync(documentId);
 
         public async Task<TContentPageItem> GetItemBy(string canonicalName) =>
             !string.IsNullOrWhiteSpace(canonicalName)
@@ -32,6 +32,6 @@ namespace DFC.App.JobProfile.Data.Providers
                 : throw new ArgumentNullException(nameof(canonicalName));
 
         internal async Task<TContentPageItem> GetItemBy(Expression<Func<TContentPageItem, bool>> expression) =>
-            (await PageService.GetAsync(expression).ConfigureAwait(false))?.FirstOrDefault();
+            (await PageService.GetAsync(expression))?.FirstOrDefault();
     }
 }

@@ -2,6 +2,8 @@
 {
     public class HowToBecomeMoreInformation
     {
+        public string Registration { get; set; }
+
         public string CareerTips { get; set; }
 
         public string ProfessionalBodies { get; set; }

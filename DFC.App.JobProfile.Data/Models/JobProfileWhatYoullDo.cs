@@ -4,7 +4,7 @@ namespace DFC.App.JobProfile.Data.Models
 {
     public class JobProfileWhatYoullDo
     {
-        public IReadOnlyCollection<string> DaytoDayTasks { get; set; }
+        public string DayToDayTasks { get; set; }
 
         public IReadOnlyCollection<string> WorkingEnvironment { get; set; }
 

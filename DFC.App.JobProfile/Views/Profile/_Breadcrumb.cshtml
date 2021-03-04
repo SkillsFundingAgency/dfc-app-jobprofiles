@@ -1,0 +1,13 @@
+﻿@using DFC.App.JobProfile.ViewSupport.Models
+@model Breadcrumb
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        @foreach (var crumb in Model.Items)
+        {
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@crumb.Route">@crumb.Title</a>
+            </li>
+        }
+    </ol>
+</div>

@@ -79,9 +79,9 @@ namespace DFC.App.Services.Common.Helpers
         /// <typeparam name="T">Of type <typeparamref name="T"/>.</typeparam>
         /// <param name="list">The list.</param>
         /// <returns>A readonly safe collection.</returns>
-        public static async Task<IReadOnlyCollection<T>> AsSafeReadOnlyList<T>(this Task<IEnumerable<T>> list)
+        public static Task<IReadOnlyCollection<T>> AsSafeReadOnlyList<T>(this Task<IEnumerable<T>> list)
         {
-            return await list.SafeReadOnlyList();
+            return list.SafeReadOnlyList();
         }
 
         /// <summary>

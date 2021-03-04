@@ -33,8 +33,8 @@ namespace DFC.App.Services.Common.Factories
         internal IConvertJsonTypes Convert { get; }
 
         /// <inheritdoc/>
-        public async Task<HttpResponseMessage> Create<TContent>(HttpStatusCode responseCode, TContent responseContent) =>
-            await Task.Run(() =>
+        public Task<HttpResponseMessage> Create<TContent>(HttpStatusCode responseCode, TContent responseContent) =>
+            Task.Run(() =>
             {
                 var newContent = Convert.ToString(responseContent);
                 return Create(responseCode, newContent);

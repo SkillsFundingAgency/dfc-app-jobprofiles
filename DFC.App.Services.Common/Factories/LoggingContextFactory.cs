@@ -70,12 +70,12 @@ namespace DFC.App.Services.Common.Factories
             }
 
             /// <inheritdoc/>
-            public async Task Log(string message) =>
-                await Task.Run(() => _logger.Log(LogLevel.Information, message, null));
+            public Task Log(string message) =>
+                Task.Run(() => _logger.Log(LogLevel.Information, message, null));
 
             /// <inheritdoc/>
-            public async Task Log(Exception exception) =>
-                await Task.Run(() => _logger.Log(LogLevel.Error, exception, null));
+            public Task Log(Exception exception) =>
+                Task.Run(() => _logger.Log(LogLevel.Error, exception, null));
 
             /// <inheritdoc/>
             public void Dispose()

@@ -34,7 +34,7 @@ namespace DFC.App.JobProfile.Controllers
 
             try
             {
-                var isHealthy = await _jobProfiles.Ping().ConfigureAwait(false);
+                var isHealthy = await _jobProfiles.Ping();
 
                 if (isHealthy)
                 {

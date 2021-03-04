@@ -61,7 +61,7 @@ namespace DFC.App.JobProfile.Webhooks.Services
             switch (eventOperation)
             {
                 case EventOperation.Delete:
-                    return await DeleteContentItem(contentId).ConfigureAwait(false);
+                    return await DeleteContentItem(contentId);
 
                 case EventOperation.CreateOrUpdate:
                     if (!Uri.TryCreate(apiEndpoint, UriKind.Absolute, out Uri url))
@@ -69,7 +69,7 @@ namespace DFC.App.JobProfile.Webhooks.Services
                         throw new InvalidDataException($"Invalid Api url '{apiEndpoint}' received for Event Id: {eventId}");
                     }
 
-                    return await ProcessContentItem(url, contentId).ConfigureAwait(false);
+                    return await ProcessContentItem(url, contentId);
 
                 default:
                     _logger.LogError($"Event Id: {eventId} got unknown cache operation - {eventOperation}");
@@ -79,7 +79,7 @@ namespace DFC.App.JobProfile.Webhooks.Services
 
         public async Task<HttpStatusCode> ProcessContentItem(Uri url, Guid contentItemId)
         {
-            var apiDataModel = await _graphContent.GetComposedItem<ContentApiRootElement, ContentApiBranchElement>(url).ConfigureAwait(false);
+            var apiDataModel = await _graphContent.GetComposedItem<ContentApiRootElement, ContentApiBranchElement>(url);
             var contentPageModel = _mapper.Map<JobProfileCached>(apiDataModel);
 
             if (contentPageModel == null)
@@ -87,19 +87,19 @@ namespace DFC.App.JobProfile.Webhooks.Services
                 return HttpStatusCode.NoContent;
             }
 
-            var existingContentPageModel = await _pageContent.GetByIdAsync(contentItemId).ConfigureAwait(false);
+            var existingContentPageModel = await _pageContent.GetByIdAsync(contentItemId);
 
-            var contentResult = await _eventMessage.UpdateAsync(contentPageModel).ConfigureAwait(false);
+            var contentResult = await _eventMessage.UpdateAsync(contentPageModel);
 
             if (contentResult == HttpStatusCode.NotFound)
             {
-                contentResult = await _eventMessage.CreateAsync(contentPageModel).ConfigureAwait(false);
+                contentResult = await _eventMessage.CreateAsync(contentPageModel);
             }
 
             if (contentResult == HttpStatusCode.OK
                 || contentResult == HttpStatusCode.Created)
             {
-                await _eventGrid.CompareThenSendEvent(existingContentPageModel, contentPageModel).ConfigureAwait(false);
+                await _eventGrid.CompareThenSendEvent(existingContentPageModel, contentPageModel);
 
                 // TODO: don't understand what this does...
                 //var contentItemIds = contentPageModel.AllContentItemIds.ToList();
@@ -111,12 +111,12 @@ namespace DFC.App.JobProfile.Webhooks.Services
 
         public async Task<HttpStatusCode> DeleteContentItem(Guid contentItemId)
         {
-            var existingContentPageModel = await _pageContent.GetByIdAsync(contentItemId).ConfigureAwait(false);
-            var result = await _eventMessage.DeleteAsync(contentItemId).ConfigureAwait(false);
+            var existingContentPageModel = await _pageContent.GetByIdAsync(contentItemId);
+            var result = await _eventMessage.DeleteAsync(contentItemId);
 
             if (result == HttpStatusCode.OK && existingContentPageModel != null)
             {
-                await _eventGrid.SendEvent(EventOperation.Delete, existingContentPageModel).ConfigureAwait(false);
+                await _eventGrid.SendEvent(EventOperation.Delete, existingContentPageModel);
 
                 // TODO: don't understand what this does...
                 //_otherCacheThingy.Remove(contentItemId);

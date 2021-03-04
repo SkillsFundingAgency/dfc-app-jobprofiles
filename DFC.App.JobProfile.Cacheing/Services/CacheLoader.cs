@@ -40,15 +40,15 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
         internal IProvideSafeOperations SafeOperation { get; }
 
-        public async Task Reload(CancellationToken stoppingToken) =>
-            await SafeOperation.Try(() => Load(stoppingToken), x => LoadError(x));
+        Task ILoadCacheData.Reload(CancellationToken stoppingToken) =>
+            SafeOperation.Try(() => Load(stoppingToken), x => LoadError(x));
 
         public abstract Task Load(CancellationToken stoppingToken);
 
-        internal async Task LoadError(Exception exception)
+        internal Task LoadError(Exception exception)
         {
             Logger.LogError(exception, "Error in cache reload");
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

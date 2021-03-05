@@ -1,6 +1,4 @@
-﻿// TODO: breadcumb trail...
-#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
-using AutoMapper;
+﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Providers;
 using DFC.App.JobProfile.ViewSupport.Configuration;

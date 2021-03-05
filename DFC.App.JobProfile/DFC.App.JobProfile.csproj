@@ -74,5 +74,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Assets\" />
+      <Folder Include="HostedServices\" />
     </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿// TODO: fix(?) me!
+﻿// TODO: more content cache quewstions, don't understand what it does...
 #pragma warning disable S125 // Sections of code should not be commented out
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
 #pragma warning disable SA1515 // Single-line comment should be preceded by blank line
@@ -101,7 +101,6 @@ namespace DFC.App.JobProfile.Webhooks.Services
             {
                 await _eventGrid.CompareThenSendEvent(existingContentPageModel, contentPageModel);
 
-                // TODO: don't understand what this does...
                 //var contentItemIds = contentPageModel.AllContentItemIds.ToList();
                 //contentCacheService.AddOrReplace(contentItemId, contentItemIds);
             }
@@ -118,7 +117,6 @@ namespace DFC.App.JobProfile.Webhooks.Services
             {
                 await _eventGrid.SendEvent(EventOperation.Delete, existingContentPageModel);
 
-                // TODO: don't understand what this does...
                 //_otherCacheThingy.Remove(contentItemId);
             }
 

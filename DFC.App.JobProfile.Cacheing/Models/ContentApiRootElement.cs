@@ -60,15 +60,20 @@ namespace DFC.App.JobProfile.Cacheing.Models
 
         public string CareerPathAndProgression { get; set; }
 
-        public string WitDigitalSkillsLevel { get; set; }
+        [JsonProperty("WitDigitalSkillsLevel")]
+        public string WhatItTakesDigitalSkillsLevel { get; set; }
 
-        public string WydDayToDayTasks { get; set; } = "<p>i'm a placeholder:<ul><li>daily task 1</li><li>daily task 2</li><li>daily task 3</li></ul></>";
+        [JsonProperty("WydDayToDayTasks")]
+        public string WhatYoullDoDayToDayTasks { get; set; } = "<p>i'm a placeholder:<ul><li>daily task 1</li><li>daily task 2</li><li>daily task 3</li></ul></>";
 
-        public string HtbBodies { get; set; }
+        [JsonProperty("HtbProfessionalBodies")]
+        public string HowToBecomeProfessionalBodies { get; set; }
 
-        public string HtbCareerTips { get; set; }
+        [JsonProperty("HtbCareerTips")]
+        public string HowToBecomeCareerTips { get; set; }
 
-        public string HtbFurtherInformation { get; set; }
+        [JsonProperty("HtbFurtherInformation")]
+        public string HowToBecomeFurtherInformation { get; set; }
 
         public ContentApiWhatYoullDo WhatYoullDo { get; set; }
 

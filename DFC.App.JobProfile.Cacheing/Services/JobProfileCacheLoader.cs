@@ -175,7 +175,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             //What You'll Do
             var whatYoullDoModel = new ContentApiWhatYoullDo();
-            whatYoullDoModel.DayToDayTasks = apiDataModel.WydDayToDayTasks;
+            whatYoullDoModel.DayToDayTasks = apiDataModel.WhatYoullDoDayToDayTasks;
             whatYoullDoModel.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
             whatYoullDoModel.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
             whatYoullDoModel.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
@@ -204,9 +204,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
             howToBecomeSegment.UniversityRoute = GetRoute(contentItems, "University");
 
             moreInfo.Registration = GetDescription(contentItems, "Registration");
-            moreInfo.CareerTips = apiDataModel.HtbCareerTips;
-            moreInfo.ProfessionalBodies = apiDataModel.HtbBodies;
-            moreInfo.FurtherInformation = apiDataModel.HtbFurtherInformation;
+            moreInfo.CareerTips = apiDataModel.HowToBecomeCareerTips;
+            moreInfo.ProfessionalBodies = apiDataModel.HowToBecomeProfessionalBodies;
+            moreInfo.FurtherInformation = apiDataModel.HowToBecomeFurtherInformation;
             howToBecomeSegment.MoreInformation = moreInfo;
             apiDataModel.HowToBecome = howToBecomeSegment;
 
@@ -216,7 +216,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             //whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
             //whatItTakes.OtherRequirement = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
 
-            var witAddition = new List<string> { apiDataModel.WitDigitalSkillsLevel };
+            var witAddition = new List<string> { apiDataModel.WhatItTakesDigitalSkillsLevel };
             whatItTakes.Skills = GetDescriptions(contentItems, "ONetSkill")
                 .Concat(witAddition)
                 .AsSafeReadOnlyList();

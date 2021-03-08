@@ -43,8 +43,11 @@ namespace DFC.App.JobProfile.Cacheing.Models
         [JsonProperty("Description")]
         public string Description { get; set; }
 
-        [JsonProperty("Link_text")]
+        [JsonProperty("Text")]
         public string Text { get; set; }
+
+        [JsonProperty("Link_text")]
+        public string LinkText { get; set; }
 
         [JsonProperty("Link_url")]
         public string Link { get; set; }

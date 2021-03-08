@@ -272,7 +272,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             branches
                 .Where(x => x.ContentType == contentType)
                 .OrderBy(x => x.Ordinal)
-                .Select(x => new ApiAnchor { Text = x.Text, Link = x.Link })
+                .Select(x => new ApiAnchor { Text = x.LinkText, Link = x.Link })
                 .ToList();
 
         internal ApiEducationalRoute GetRoute(IEnumerable<ContentApiBranchElement> branches, string contentType)

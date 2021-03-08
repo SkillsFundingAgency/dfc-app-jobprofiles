@@ -167,61 +167,73 @@ namespace DFC.App.JobProfile.Cacheing.Services
         {
             var contentItems = apiDataModel.ContentItems.Flatten(s => s.ContentItems);
 
+            // how to become (root items)
+            var moreInfo = new ContentApiHowToBecomeMoreInformation();
+            var howToBecome = new ContentApiHowToBecome();
+
+            howToBecome.Title = apiDataModel.Title;
+
+            moreInfo.CareerTips = apiDataModel.HowToBecomeCareerTips;
+            moreInfo.ProfessionalBodies = apiDataModel.HowToBecomeProfessionalBodies;
+            moreInfo.FurtherInformation = apiDataModel.HowToBecomeFurtherInformation;
+
+            howToBecome.MoreInformation = moreInfo;
+            apiDataModel.HowToBecome = howToBecome;
+
+            // what it takes (root items)
+            var whatItTakes = new ContentApiWhatItTakes();
+            var witAddition = new List<string> { apiDataModel.WhatItTakesDigitalSkillsLevel };
+
+            whatItTakes.Skills = witAddition;
+
+            apiDataModel.WhatItTakes = whatItTakes;
+
+            // what you'll do (root items)
+            var whatYoullDo = new ContentApiWhatYoullDo();
+
+            whatYoullDo.DayToDayTasks = apiDataModel.WhatYoullDoDayToDayTasks;
+
+            apiDataModel.WhatYoullDo = whatYoullDo;
+
+            // career path (root items)
+            var careerPathSegment = new ContentApiCareerPath();
+            careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
+
+            apiDataModel.CareerPath = careerPathSegment;
+
             if (!contentItems.Any())
             {
                 Logger.LogError($"No Content Items for '{apiDataModel.CanonicalName}'");
                 return apiDataModel;
             }
 
-            // how to Become
-            var moreInfo = new ContentApiHowToBecomeMoreInformation();
-            var howToBecomeSegment = new ContentApiHowToBecome();
-            howToBecomeSegment.Title = apiDataModel.Title;
+            // how to become (content items)
+            howToBecome.DirectRoute = GetDescription(contentItems, "DirectRoute");
+            howToBecome.OtherRoute = GetDescription(contentItems, "OtherRoute");
+            howToBecome.VolunteeringRoute = GetDescription(contentItems, "VolunteeringRoute");
+            howToBecome.WorkRoute = GetDescription(contentItems, "WorkRoute");
 
-            howToBecomeSegment.DirectRoute = GetDescription(contentItems, "DirectRoute");
-            howToBecomeSegment.OtherRoute = GetDescription(contentItems, "OtherRoute");
-            howToBecomeSegment.VolunteeringRoute = GetDescription(contentItems, "VolunteeringRoute");
-            howToBecomeSegment.WorkRoute = GetDescription(contentItems, "WorkRoute");
-
-            howToBecomeSegment.ApprenticeshipRoute = GetRoute(contentItems, "Apprenticeship");
-            howToBecomeSegment.CollegeRoute = GetRoute(contentItems, "College");
-            howToBecomeSegment.UniversityRoute = GetRoute(contentItems, "University");
+            howToBecome.ApprenticeshipRoute = GetRoute(contentItems, "Apprenticeship");
+            howToBecome.CollegeRoute = GetRoute(contentItems, "College");
+            howToBecome.UniversityRoute = GetRoute(contentItems, "University");
 
             moreInfo.Registration = GetDescription(contentItems, "Registration");
-            moreInfo.CareerTips = apiDataModel.HowToBecomeCareerTips;
-            moreInfo.ProfessionalBodies = apiDataModel.HowToBecomeProfessionalBodies;
-            moreInfo.FurtherInformation = apiDataModel.HowToBecomeFurtherInformation;
-            howToBecomeSegment.MoreInformation = moreInfo;
-            apiDataModel.HowToBecome = howToBecomeSegment;
 
-            // what it Takes
-            var whatItTakes = new ContentApiWhatItTakes();
-
+            // what it takes (content items)
             //whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
             //whatItTakes.OtherRequirement = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
 
-            var witAddition = new List<string> { apiDataModel.WhatItTakesDigitalSkillsLevel };
             whatItTakes.Skills = GetDescriptions(contentItems, "ONetSkill")
                 .Concat(witAddition)
                 .AsSafeReadOnlyList();
 
-            apiDataModel.WhatItTakes = whatItTakes;
+            // what you'll do (content items)
+            whatYoullDo.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
+            whatYoullDo.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
+            whatYoullDo.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
 
-            // what You'll Do
-            var whatYoullDoModel = new ContentApiWhatYoullDo();
-            whatYoullDoModel.DayToDayTasks = apiDataModel.WhatYoullDoDayToDayTasks;
-            whatYoullDoModel.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
-            whatYoullDoModel.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
-            whatYoullDoModel.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
-            apiDataModel.WhatYoullDo = whatYoullDoModel;
-
-            // career Path
-            var careerPathSegment = new ContentApiCareerPath();
-
+            // career path (content items)
             //careerPathSegment.ApprenticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
-
-            careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
-            apiDataModel.CareerPath = careerPathSegment;
 
             return apiDataModel;
         }

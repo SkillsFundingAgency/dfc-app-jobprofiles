@@ -8,7 +8,7 @@
 
     <h2 class="job-profile-heading">What you'll do</h2>
 
-    @if (!string.IsNullOrWhiteSpace(Model.DayToDayTasks))
+    @if (It.Has(Model.DayToDayTasks))
     {
         <section class="job-profile-subsection">
 

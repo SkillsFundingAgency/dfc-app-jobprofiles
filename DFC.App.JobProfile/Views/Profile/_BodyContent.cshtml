@@ -8,10 +8,27 @@
                     <div class="govuk-grid-column-two-thirds">
                         <div class="job-profile-sections">
                             <partial name="_SegmentLinks" />
-                            <partial name="_SegmentHowToBecome" model="@Model.HowToBecomeSegment" />
-                            <partial name="_SegmentWhatItTakes" model="@Model.WhatItTakesSegment" />
-                            <partial name="_SegmentWhatYouWillDo" model="@Model.WhatYoullDoSegment" />
-                            <partial name="_SegmentCareerPath" model="@Model.CareerPathSegment" />
+
+                            @if (It.Has(Model.HowToBecomeSegment))
+                            {
+                                <partial name="_SegmentHowToBecome" model="@Model.HowToBecomeSegment" />
+                            }
+
+                            @if (It.Has(Model.WhatItTakesSegment))
+                            {
+                                <partial name="_SegmentWhatItTakes" model="@Model.WhatItTakesSegment" />
+                            }
+
+                            @if (It.Has(Model.WhatYoullDoSegment))
+                            {
+                                <partial name="_SegmentWhatYouWillDo" model="@Model.WhatYoullDoSegment" />
+                            }
+
+                            @if (It.Has(Model.CareerPathSegment))
+                            {
+                                <partial name="_SegmentCareerPath" model="@Model.CareerPathSegment" />
+                            }
+
                             <partial name="_SegmentCurrentOpportunities" model="@Model.CurrentOpportunities" />
                         </div>
                     </div>

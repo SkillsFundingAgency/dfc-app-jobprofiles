@@ -11,68 +11,68 @@
     <p>You can get into this job through:</p>
 
     <ul>
-        @if (Model.UniversityRoute != null)
+        @if (It.Has(Model.UniversityRoute))
         {
             <li>a university degree</li>
         }
 
-        @if (Model.CollegeRoute != null)
+        @if (It.Has(Model.CollegeRoute))
         {
             <li>studying at college</li>
         }
 
-        @if (Model.ApprenticeshipRoute != null)
+        @if (It.Has(Model.ApprenticeshipRoute))
         {
             <li>an apprenticeship</li>
         }
 
-        @if (Model.VolunteeringRoute != null)
+        @if (It.Has(Model.VolunteeringRoute))
         {
             <li>participating in voluntary work</li>
         }
 
-        @if (Model.DirectRoute != null)
+        @if (It.Has(Model.DirectRoute))
         { 
             <li>directly applying to a potential employer</li>
         }
     </ul>
 
-    @if (Model.UniversityRoute != null)
+    @if (It.Has(Model.UniversityRoute))
     {
         <partial name="_HowToBecomeUniversityRoute" model="@Model.UniversityRoute" />
     }
 
-    @if (Model.CollegeRoute != null)
+    @if (It.Has(Model.CollegeRoute))
     {
         <partial name="_HowToBecomeCollegeRoute" model="@Model.CollegeRoute" />
     }
 
-    @if (Model.ApprenticeshipRoute != null)
+    @if (It.Has(Model.ApprenticeshipRoute))
     {
         <partial name="_HowToBecomeApprenticeshipRoute" model="@Model.ApprenticeshipRoute" />
     }
 
-    @if (Model.WorkRoute != null)
+    @if (It.Has(Model.WorkRoute))
     {
         <partial name="_HowToBecomeWorkRoute" model="@Model.WorkRoute" />
     }
 
-    @if (Model.VolunteeringRoute != null)
+    @if (It.Has(Model.VolunteeringRoute))
     {
         <partial name="_HowToBecomeVolunteeringRoute" model="@Model.VolunteeringRoute" />
     }
 
-    @if (Model.DirectRoute != null)
+    @if (It.Has(Model.DirectRoute))
     {
         <partial name="_HowToBecomeDirectRoute" model="@Model.DirectRoute" />
     }
 
-    @if (Model.OtherRoute != null)
+    @if (It.Has(Model.OtherRoute))
     {
         <partial name="_HowToBecomeOtherRoute" model="@Model.OtherRoute" />
     }
 
-    @if (Model.MoreInformation != null)
+    @if (It.Has(Model.MoreInformation))
     {
         <partial name="_HowToBecomeMoreInformation" model="@Model.MoreInformation" />
     }

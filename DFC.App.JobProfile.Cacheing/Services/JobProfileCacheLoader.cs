@@ -173,23 +173,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 return apiDataModel;
             }
 
-            //What You'll Do
-            var whatYoullDoModel = new ContentApiWhatYoullDo();
-            whatYoullDoModel.DayToDayTasks = apiDataModel.WhatYoullDoDayToDayTasks;
-            whatYoullDoModel.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
-            whatYoullDoModel.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
-            whatYoullDoModel.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
-            apiDataModel.WhatYoullDo = whatYoullDoModel;
-
-            //Career Path
-            var careerPathSegment = new ContentApiCareerPath();
-
-            //careerPathSegment.ApprenticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
-
-            careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
-            apiDataModel.CareerPath = careerPathSegment;
-
-            //How to Become
+            // how to Become
             var moreInfo = new ContentApiHowToBecomeMoreInformation();
             var howToBecomeSegment = new ContentApiHowToBecome();
             howToBecomeSegment.Title = apiDataModel.Title;
@@ -210,7 +194,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             howToBecomeSegment.MoreInformation = moreInfo;
             apiDataModel.HowToBecome = howToBecomeSegment;
 
-            //What it Takes
+            // what it Takes
             var whatItTakes = new ContentApiWhatItTakes();
 
             //whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
@@ -222,6 +206,22 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 .AsSafeReadOnlyList();
 
             apiDataModel.WhatItTakes = whatItTakes;
+
+            // what You'll Do
+            var whatYoullDoModel = new ContentApiWhatYoullDo();
+            whatYoullDoModel.DayToDayTasks = apiDataModel.WhatYoullDoDayToDayTasks;
+            whatYoullDoModel.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
+            whatYoullDoModel.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
+            whatYoullDoModel.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
+            apiDataModel.WhatYoullDo = whatYoullDoModel;
+
+            // career Path
+            var careerPathSegment = new ContentApiCareerPath();
+
+            //careerPathSegment.ApprenticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
+
+            careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
+            apiDataModel.CareerPath = careerPathSegment;
 
             return apiDataModel;
         }

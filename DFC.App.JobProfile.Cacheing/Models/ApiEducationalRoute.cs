@@ -2,6 +2,8 @@
 {
     public sealed class ApiEducationalRoute
     {
+        public string Topic { get; set; }
+
         public string FurtherInformation { get; set; }
 
         public string RelevantSubjects { get; set; }

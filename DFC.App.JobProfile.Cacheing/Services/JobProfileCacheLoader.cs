@@ -275,9 +275,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 .Select(x => new ApiAnchor { Text = x.LinkText, Link = x.Link })
                 .ToList();
 
-        internal ApiEducationalRoute GetRoute(IEnumerable<ContentApiBranchElement> branches, string contentType)
+        internal ApiEducationalRoute GetRoute(IEnumerable<ContentApiBranchElement> branches, string contentTopic)
         {
-            var content = branches.FirstOrDefault(x => x.ContentType == $"{contentType}Route");
+            var content = branches.FirstOrDefault(x => x.ContentType == $"{contentTopic}Route");
 
             if (content == null)
             {
@@ -287,13 +287,15 @@ namespace DFC.App.JobProfile.Cacheing.Services
             var route = new ApiEducationalRoute();
             var item = new ApiEducationalRouteItem();
 
+            route.Topic = contentTopic;
+
             route.MoreInformation = item;
             route.FurtherInformation = content.FurtherInformation;
             route.RelevantSubjects = content.RelevantSubjects;
 
             item.Preamble = GetDescription(branches, "RequirementsPrefix");
-            item.Requirements = GetTexts(branches, $"{contentType}Requirement");
-            item.FurtherReading = GetAnchorLinks(branches, $"{contentType}Link");
+            item.Requirements = GetTexts(branches, $"{contentTopic}Requirement");
+            item.FurtherReading = GetAnchorLinks(branches, $"{contentTopic}Link");
 
             return route;
         }

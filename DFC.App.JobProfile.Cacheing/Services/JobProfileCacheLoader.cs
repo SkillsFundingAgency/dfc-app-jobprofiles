@@ -64,7 +64,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             //_otherCacheThingy.Clear();
 
-            foreach (var item in summaryList.OrderBy(o => o.Published))
+            foreach (var item in summaryList.OrderByDescending(o => o.Published))
             {
                 if (stoppingToken.IsCancellationRequested)
                 {

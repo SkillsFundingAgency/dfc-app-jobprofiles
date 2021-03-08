@@ -9,18 +9,20 @@
 
         @Html.Raw(Model.RelevantSubjects)
 
+        @Html.Raw(Model.FurtherInformation)
+
         <h4>Entry requirements</h4>
+
+        @Html.Raw(Model.MoreInformation.Preamble)
 
         <ul class="list-reqs">
             @foreach (var requirement in Model.MoreInformation.Requirements)
             {
-                <li><a class="htb-feature" href="#">@requirement</a></li>
+                <li>@requirement</li>
             }
         </ul>
 
         <h4>More information</h4>
-
-        <p>@Model.MoreInformation.Preamble</p>
 
         <ul class="list-link">
             @foreach (var readingLink in Model.MoreInformation.FurtherReading)

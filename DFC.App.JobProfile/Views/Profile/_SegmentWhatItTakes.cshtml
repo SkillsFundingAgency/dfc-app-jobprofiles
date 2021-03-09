@@ -20,7 +20,7 @@
                     <ul>
                         @foreach (var restriction in Model.Restrictions)
                         {
-                            <li>@restriction</li>
+                            <li>@Html.Raw(restriction)</li>
                         }
                     </ul>
                 }

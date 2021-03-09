@@ -35,7 +35,7 @@ namespace DFC.App.JobProfile.Data.Models
 
         public JobProfileOverview Overview { get; set; }
 
-        public JobProfileWhatYoullDo WhatYoullDo { get; set; }
+        public JobProfileWhatYouWillDo WhatYouWillDo { get; set; }
 
         public JobProfileCareerPath CareerPath { get; set; }
 

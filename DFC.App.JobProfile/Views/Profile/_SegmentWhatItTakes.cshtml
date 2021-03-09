@@ -20,7 +20,7 @@
                     <ul>
                         @foreach (var restriction in Model.Restrictions)
                         {
-                            <li>@Html.Raw(restriction)</li>
+                            <li>@restriction</li>
                         }
                     </ul>
                 }
@@ -37,7 +37,7 @@
     @if (Model.Skills.Any())
     {
         <section class="job-profile-subsection"
-                 id="workingenvironment">
+                  id="skills">
 
             <h3>Skills and knowledge</h3>
 

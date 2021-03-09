@@ -64,7 +64,7 @@ namespace DFC.App.JobProfile.Cacheing.Models
         public string WhatItTakesDigitalSkillsLevel { get; set; }
 
         [JsonProperty("WydDayToDayTasks")]
-        public string WhatYoullDoDayToDayTasks { get; set; } = "<p>i'm a placeholder:<ul><li>daily task 1</li><li>daily task 2</li><li>daily task 3</li></ul></>";
+        public string WhatYouWillDoDayToDayTasks { get; set; } = "<p>i'm a placeholder:<ul><li>daily task 1</li><li>daily task 2</li><li>daily task 3</li></ul></>";
 
         [JsonProperty("HtbProfessionalBodies")]
         public string HowToBecomeProfessionalBodies { get; set; }
@@ -75,7 +75,7 @@ namespace DFC.App.JobProfile.Cacheing.Models
         [JsonProperty("HtbFurtherInformation")]
         public string HowToBecomeFurtherInformation { get; set; }
 
-        public ContentApiWhatYoullDo WhatYoullDo { get; set; }
+        public ContentApiWhatYouWillDo WhatYouWillDo { get; set; }
 
         public ContentApiCareerPath CareerPath { get; set; }
 

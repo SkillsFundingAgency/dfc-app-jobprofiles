@@ -12,7 +12,7 @@ namespace DFC.App.JobProfile.ViewSupport.ViewModels
 
         public string NotWhatYoureLookingFor { get; set; }
 
-        public JobProfileWhatYoullDo WhatYoullDoSegment { get; set; }
+        public JobProfileWhatYouWillDo WhatYouWillDoSegment { get; set; }
 
         public JobProfileCareerPath CareerPathSegment { get; set; }
 

@@ -31,7 +31,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<ContentApiCareerPath, JobProfileCareerPath>();
             CreateMap<ContentApiWhatItTakes, JobProfileWhatItTakes>();
-            CreateMap<ContentApiWhatYoullDo, JobProfileWhatYoullDo>();
+            CreateMap<ContentApiWhatYouWillDo, JobProfileWhatYouWillDo>();
 
             CreateMap<JobProfileCached, OccupationSummaryViewModel>()
                 .ForMember(d => d.JobProfileWebsiteUrl, s => s.MapFrom(x => x.CanonicalName.Replace(" ", "-")));
@@ -51,7 +51,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.CareerPathSegment, s => s.MapFrom(x => x.CareerPath))
                 .ForMember(d => d.HowToBecomeSegment, s => s.MapFrom(x => x.HowToBecome))
                 .ForMember(d => d.WhatItTakesSegment, s => s.MapFrom(x => x.WhatItTakes))
-                .ForMember(d => d.WhatYoullDoSegment, s => s.MapFrom(x => x.WhatYoullDo));
+                .ForMember(d => d.WhatYouWillDoSegment, s => s.MapFrom(x => x.WhatYouWillDo));
         }
     }
 }

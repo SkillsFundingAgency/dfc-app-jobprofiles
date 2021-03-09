@@ -189,11 +189,11 @@ namespace DFC.App.JobProfile.Cacheing.Services
             apiDataModel.WhatItTakes = whatItTakes;
 
             // what you'll do (root items)
-            var whatYoullDo = new ContentApiWhatYoullDo();
+            var WhatYouWillDo = new ContentApiWhatYouWillDo();
 
-            whatYoullDo.DayToDayTasks = apiDataModel.WhatYoullDoDayToDayTasks;
+            WhatYouWillDo.DayToDayTasks = apiDataModel.WhatYouWillDoDayToDayTasks;
 
-            apiDataModel.WhatYoullDo = whatYoullDo;
+            apiDataModel.WhatYouWillDo = WhatYouWillDo;
 
             // career path (root items)
             var careerPathSegment = new ContentApiCareerPath();
@@ -227,9 +227,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 .AsSafeReadOnlyList();
 
             // what you'll do (content items)
-            whatYoullDo.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
-            whatYoullDo.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
-            whatYoullDo.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
+            WhatYouWillDo.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
+            WhatYouWillDo.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
+            WhatYouWillDo.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
 
             // career path (content items)
             //careerPathSegment.ApprenticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();

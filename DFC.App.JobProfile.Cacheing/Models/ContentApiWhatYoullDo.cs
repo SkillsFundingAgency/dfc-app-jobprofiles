@@ -2,7 +2,7 @@
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
-    public sealed class ContentApiWhatYoullDo
+    public sealed class ContentApiWhatYouWillDo
     {
         public string DayToDayTasks { get; set; }
 

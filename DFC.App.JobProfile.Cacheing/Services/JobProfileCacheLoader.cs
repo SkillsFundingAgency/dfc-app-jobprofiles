@@ -220,9 +220,8 @@ namespace DFC.App.JobProfile.Cacheing.Services
             moreInfo.Registration = GetDescription(contentItems, "Registration");
 
             // what it takes (content items)
-            //whatItTakes.Restrictions = apiDataModel.ContentItems.Where(x => x.ContentType == "Restriction").ToList();
-            //whatItTakes.OtherRequirement = apiDataModel.ContentItems.Where(x => x.ContentType == "OtherRequirement").ToList();
-
+            whatItTakes.Restrictions = GetDescriptions(contentItems, "Restriction");
+            whatItTakes.OtherRequirements = GetDescriptions(contentItems, "OtherRequirement");
             whatItTakes.Skills = GetDescriptions(contentItems, "ONetSkill")
                 .Concat(witAddition)
                 .AsSafeReadOnlyList();

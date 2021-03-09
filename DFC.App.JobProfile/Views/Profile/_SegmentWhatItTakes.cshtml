@@ -1,18 +1,41 @@
 ﻿@model JobProfileWhatItTakes
 
-<section id="WhatItTakes" class="jobprofiles-section"
-         data-gtm-vis-recent-on-screen-8675592_55="3291489"
-         data-gtm-vis-first-on-screen-8675592_55="3291489"
-         data-gtm-vis-total-visible-time-8675592_55="100"
-         data-gtm-vis-has-fired-8675592_55="1">
+<section id="WhatItTakes"
+         class="jobprofiles-section">
 
     <h2 class="job-profile-headings">What it takes</h2>
 
-    <div class="govuk-accordion"
-         data-module="govuk-accordion"
-         id="accordion-default"
-         aria-expanded="true">
+    @if (Model.Restrictions.Any() || Model.OtherRequirements.Any())
+    {
+        <section class="job-profile-subsection"
+                 id="restrictions">
 
+            <h3>Restrictions and Requirements</h3>
+
+            <div class="job-profile-subsection-content">
+
+                @if (Model.Restrictions.Any())
+                {
+                    <p>You'll need to:</p>
+                    <ul>
+                        @foreach (var restriction in Model.Restrictions)
+                        {
+                            <li>@Html.Raw(restriction)</li>
+                        }
+                    </ul>
+                }
+
+                @foreach (var requirement in Model.OtherRequirements)
+                {
+                    @Html.Raw(requirement)
+                }
+
+            </div>
+        </section>
+    }
+
+    @if (Model.Skills.Any())
+    {
         <section class="job-profile-subsection"
                  id="workingenvironment">
 
@@ -30,5 +53,6 @@
                 </ul>
             </div>
         </section>
-    </div>
+    }
+
 </section>

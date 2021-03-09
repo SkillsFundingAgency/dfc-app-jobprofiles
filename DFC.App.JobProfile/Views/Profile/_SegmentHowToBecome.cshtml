@@ -1,12 +1,8 @@
 ﻿@model JobProfileHowToBecome
 
-<section id="HowToBecome"
-         data-gtm-vis-recent-on-screen-8675592_54="32785"
-         data-gtm-vis-first-on-screen-8675592_54="32785"
-         data-gtm-vis-total-visible-time-8675592_54="100"
-         data-gtm-vis-has-fired-8675592_54="1">
+<section id="HowToBecome">
 
-    <h2 class="heading-large job-profile-heading">How to become an @Model.Title</h2>
+    <h2 class="job-profile-heading">How to become an @Model.Title</h2>
 
     <p>You can get into this job through:</p>
 
@@ -54,22 +50,22 @@
 
     @if (It.Has(Model.WorkRoute))
     {
-        <partial name="_HowToBecomeWorkRoute" model="@Model.WorkRoute" />
+        <partial name="_HowToBecomeGeneralRoute" model="@Model.WorkRoute" />
     }
 
     @if (It.Has(Model.VolunteeringRoute))
     {
-        <partial name="_HowToBecomeVolunteeringRoute" model="@Model.VolunteeringRoute" />
+        <partial name="_HowToBecomeGeneralRoute" model="@Model.VolunteeringRoute" />
     }
 
     @if (It.Has(Model.DirectRoute))
     {
-        <partial name="_HowToBecomeDirectRoute" model="@Model.DirectRoute" />
+        <partial name="_HowToBecomeGeneralRoute" model="@Model.DirectRoute" />
     }
 
     @if (It.Has(Model.OtherRoute))
     {
-        <partial name="_HowToBecomeOtherRoute" model="@Model.OtherRoute" />
+        <partial name="_HowToBecomeGeneralRoute" model="@Model.OtherRoute" />
     }
 
     @if (It.Has(Model.MoreInformation))

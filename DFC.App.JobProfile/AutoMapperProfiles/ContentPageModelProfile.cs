@@ -24,6 +24,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<ContentApiHowToBecome, JobProfileHowToBecome>();
             CreateMap<ContentApiHowToBecomeMoreInformation, HowToBecomeMoreInformation>();
+            CreateMap<ApiGeneralRoute, GeneralRoute>();
             CreateMap<ApiEducationalRoute, EducationalRoute>();
             CreateMap<ApiEducationalRouteItem, EducationalRouteItem>();
             CreateMap<ApiAnchor, Anchor>();

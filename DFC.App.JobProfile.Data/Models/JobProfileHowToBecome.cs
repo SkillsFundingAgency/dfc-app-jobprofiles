@@ -10,13 +10,13 @@
 
         public EducationalRoute ApprenticeshipRoute { get; set; }
 
-        public string WorkRoute { get; set; }
+        public GeneralRoute WorkRoute { get; set; }
 
-        public string DirectRoute { get; set; }
+        public GeneralRoute DirectRoute { get; set; }
 
-        public string VolunteeringRoute { get; set; }
+        public GeneralRoute VolunteeringRoute { get; set; }
 
-        public string OtherRoute { get; set; }
+        public GeneralRoute OtherRoute { get; set; }
 
         public HowToBecomeMoreInformation MoreInformation { get; set; }
     }

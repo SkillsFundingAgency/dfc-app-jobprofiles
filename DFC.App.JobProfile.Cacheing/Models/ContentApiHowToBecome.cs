@@ -10,13 +10,13 @@
 
         public ApiEducationalRoute ApprenticeshipRoute { get; set; }
 
-        public string WorkRoute { get; set; }
+        public ApiGeneralRoute WorkRoute { get; set; }
 
-        public string DirectRoute { get; set; }
+        public ApiGeneralRoute DirectRoute { get; set; }
 
-        public string VolunteeringRoute { get; set; }
+        public ApiGeneralRoute VolunteeringRoute { get; set; }
 
-        public string OtherRoute { get; set; }
+        public ApiGeneralRoute OtherRoute { get; set; }
 
         public ContentApiHowToBecomeMoreInformation MoreInformation { get; set; }
     }

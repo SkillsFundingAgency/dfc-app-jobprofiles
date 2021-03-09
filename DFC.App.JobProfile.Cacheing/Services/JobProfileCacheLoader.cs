@@ -208,14 +208,14 @@ namespace DFC.App.JobProfile.Cacheing.Services
             }
 
             // how to become (content items)
-            howToBecome.DirectRoute = GetDescription(contentItems, "DirectRoute");
-            howToBecome.OtherRoute = GetDescription(contentItems, "OtherRoute");
-            howToBecome.VolunteeringRoute = GetDescription(contentItems, "VolunteeringRoute");
-            howToBecome.WorkRoute = GetDescription(contentItems, "WorkRoute");
+            howToBecome.DirectRoute = GetGeneralRoute(contentItems, "Direct");
+            howToBecome.OtherRoute = GetGeneralRoute(contentItems, "Other");
+            howToBecome.VolunteeringRoute = GetGeneralRoute(contentItems, "Volunteering");
+            howToBecome.WorkRoute = GetGeneralRoute(contentItems, "Work");
 
-            howToBecome.ApprenticeshipRoute = GetRoute(contentItems, "Apprenticeship");
-            howToBecome.CollegeRoute = GetRoute(contentItems, "College");
-            howToBecome.UniversityRoute = GetRoute(contentItems, "University");
+            howToBecome.ApprenticeshipRoute = GetEducationalRoute(contentItems, "Apprenticeship");
+            howToBecome.CollegeRoute = GetEducationalRoute(contentItems, "College");
+            howToBecome.UniversityRoute = GetEducationalRoute(contentItems, "University");
 
             moreInfo.Registration = GetDescription(contentItems, "Registration");
 
@@ -275,7 +275,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 .Select(x => new ApiAnchor { Text = x.LinkText, Link = x.Link })
                 .ToList();
 
-        internal ApiEducationalRoute GetRoute(IEnumerable<ContentApiBranchElement> branches, string contentTopic)
+        internal ApiEducationalRoute GetEducationalRoute(IEnumerable<ContentApiBranchElement> branches, string contentTopic)
         {
             var content = branches.FirstOrDefault(x => x.ContentType == $"{contentTopic}Route");
 
@@ -296,6 +296,21 @@ namespace DFC.App.JobProfile.Cacheing.Services
             item.Preamble = GetDescription(branches, "RequirementsPrefix");
             item.Requirements = GetTexts(branches, $"{contentTopic}Requirement");
             item.FurtherReading = GetAnchorLinks(branches, $"{contentTopic}Link");
+
+            return route;
+        }
+
+        internal ApiGeneralRoute GetGeneralRoute(IEnumerable<ContentApiBranchElement> branches, string contentTopic)
+        {
+            if (!branches.SafeAny(x => x.ContentType == $"{contentTopic}Route"))
+            {
+                return null;
+            }
+
+            var route = new ApiGeneralRoute();
+
+            route.Topic = contentTopic;
+            route.Descriptions = GetDescriptions(branches, $"{contentTopic}Route");
 
             return route;
         }

@@ -9,5 +9,7 @@ namespace DFC.App.JobProfile.ContentAPI.Models
         string ContentType { get; }
 
         string Title { get; }
+
+        int Ordinal { get; }
     }
 }

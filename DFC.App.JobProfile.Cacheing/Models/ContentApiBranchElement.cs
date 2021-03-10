@@ -34,11 +34,8 @@ namespace DFC.App.JobProfile.Cacheing.Models
         // auto-mapped from graph item
         public string ContentType { get; set; }
 
-        [JsonProperty("Ordinal")]
+        // auto-mapped from graph item
         public int Ordinal { get; set; }
-
-        [JsonProperty("skos__prefLabel")]
-        public string Content { get; set; }
 
         [JsonProperty("Description")]
         public string Description { get; set; }

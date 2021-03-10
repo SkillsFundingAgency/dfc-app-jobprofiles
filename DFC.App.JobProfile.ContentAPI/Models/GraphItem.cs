@@ -17,5 +17,7 @@ namespace DFC.App.JobProfile.ContentAPI.Models
 
         [JsonProperty("title")]
         public string Title { get; set; }
+
+        public int Ordinal { get; set; }
     }
 }

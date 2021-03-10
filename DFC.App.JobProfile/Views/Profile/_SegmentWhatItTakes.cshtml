@@ -5,6 +5,27 @@
 
     <h2 class="job-profile-headings">What it takes</h2>
 
+    @if (Model.Skills.Any())
+    {
+        <section class="job-profile-subsection"
+                 id="skills">
+
+            <h3>Skills and knowledge</h3>
+
+            <div class="job-profile-subsection-content">
+
+                <p>You'll need:</p>
+
+                <ul>
+                    @foreach (var skill in Model.Skills)
+                    {
+                        <li>@skill</li>
+                    }
+                </ul>
+            </div>
+        </section>
+    }
+
     @if (Model.Restrictions.Any() || Model.OtherRequirements.Any())
     {
         <section class="job-profile-subsection"
@@ -30,27 +51,6 @@
                     @Html.Raw(requirement)
                 }
 
-            </div>
-        </section>
-    }
-
-    @if (Model.Skills.Any())
-    {
-        <section class="job-profile-subsection"
-                  id="skills">
-
-            <h3>Skills and knowledge</h3>
-
-            <div class="job-profile-subsection-content">
-
-                <p>You'll need:</p>
-
-                <ul>
-                    @foreach (var skill in Model.Skills)
-                    {
-                        <li>@skill</li>
-                    }
-                </ul>
             </div>
         </section>
     }

@@ -240,12 +240,17 @@ namespace DFC.App.JobProfile.Cacheing.Services
             return apiDataModel;
         }
 
+        internal IReadOnlyCollection<ContentApiBranchElement> GetContentItems(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            branches
+                .Where(x => x.ContentType == contentType)
+                .OrderBy(x => x.Ordinal)
+                .ToList();
+
         internal string GetDescription(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
             GetDescriptions(branches, contentType).FirstOrDefault();
 
         internal IReadOnlyCollection<string> GetDescriptions(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
-            branches
-                .Where(x => x.ContentType == contentType)
+            GetContentItems(branches, contentType)
                 .Select(x => x.Description)
                 .ToList();
 
@@ -253,8 +258,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             GetRawTexts(branches, contentType).FirstOrDefault();
 
         internal IReadOnlyCollection<string> GetRawTexts(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
-            branches
-                .Where(x => x.ContentType == contentType)
+            GetContentItems(branches, contentType)
                 .Select(x => x.Title)
                 .ToList();
 
@@ -262,20 +266,17 @@ namespace DFC.App.JobProfile.Cacheing.Services
             GetTexts(branches, contentType).FirstOrDefault();
 
         internal IReadOnlyCollection<string> GetTexts(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
-            branches
-                .Where(x => x.ContentType == contentType)
+            GetContentItems(branches, contentType)
                 .Select(x => x.Text)
                 .ToList();
 
         internal IReadOnlyCollection<ApiAnchor> GetAnchorLinks(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
-            branches
-                .Where(x => x.ContentType == contentType)
+            GetContentItems(branches, contentType)
                 .Select(x => new ApiAnchor { Text = x.LinkText, Link = x.Link })
                 .ToList();
 
         internal IReadOnlyCollection<ApiAnchor> Make5RelatedCareers(IEnumerable<ContentApiBranchElement> branches) =>
-            branches
-                .Where(x => x.ContentType == "JobProfile")
+            GetContentItems(branches, "JobProfile")
                 .Take(5)
                 .Select(x => new ApiAnchor { Text = x.Title, Link = $"/job-profiles/{x.Title.ToLowerInvariant().Replace(" ", "-")}" })
                 .ToList();

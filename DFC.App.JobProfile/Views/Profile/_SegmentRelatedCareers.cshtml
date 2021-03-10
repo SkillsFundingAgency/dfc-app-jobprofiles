@@ -1,0 +1,17 @@
+﻿@model BodyViewModel
+
+@if (Model.RelatedCareers.Any())
+{
+    <div class="job-profile-related">
+
+        <h3 class="govuk-heading-m">Related careers</h3>
+
+        <ul class="list list-big">
+
+            @foreach (var occupation in Model.RelatedCareers)
+            {
+                <li><a href="@occupation.Link">@occupation.Text</a></li>
+            }
+        </ul>
+    </div>
+}

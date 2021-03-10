@@ -83,6 +83,8 @@ namespace DFC.App.JobProfile.Cacheing.Models
 
         public ContentApiWhatItTakes WhatItTakes { get; set; }
 
+        public IReadOnlyCollection<ApiAnchor> RelatedCareers { get; set; }
+
         public ICollection<ContentApiBranchElement> ContentItems { get; set; } = new List<ContentApiBranchElement>();
 
         public bool IsFaultedState() =>

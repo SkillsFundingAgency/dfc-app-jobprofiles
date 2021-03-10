@@ -189,11 +189,11 @@ namespace DFC.App.JobProfile.Cacheing.Services
             apiDataModel.WhatItTakes = whatItTakes;
 
             // what you'll do (root items)
-            var WhatYouWillDo = new ContentApiWhatYouWillDo();
+            var whatYouWillDo = new ContentApiWhatYouWillDo();
 
-            WhatYouWillDo.DayToDayTasks = apiDataModel.WhatYouWillDoDayToDayTasks;
+            whatYouWillDo.DayToDayTasks = apiDataModel.WhatYouWillDoDayToDayTasks;
 
-            apiDataModel.WhatYouWillDo = WhatYouWillDo;
+            apiDataModel.WhatYouWillDo = whatYouWillDo;
 
             // career path (root items)
             var careerPathSegment = new ContentApiCareerPath();
@@ -206,6 +206,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 Logger.LogError($"No Content Items for '{apiDataModel.CanonicalName}'");
                 return apiDataModel;
             }
+
+            // root element (content items)
+            apiDataModel.RelatedCareers = MakeRelatedCareerLinks(contentItems);
 
             // how to become (content items)
             howToBecome.DirectRoute = GetGeneralRoute(contentItems, "Direct");
@@ -227,9 +230,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 .AsSafeReadOnlyList();
 
             // what you'll do (content items)
-            WhatYouWillDo.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
-            WhatYouWillDo.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
-            WhatYouWillDo.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
+            whatYouWillDo.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");
+            whatYouWillDo.WorkingLocation = GetDescriptions(contentItems, "WorkingLocation");
+            whatYouWillDo.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
 
             // career path (content items)
             //careerPathSegment.ApprenticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
@@ -272,6 +275,13 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 .Where(x => x.ContentType == contentType)
                 .OrderBy(x => x.Ordinal)
                 .Select(x => new ApiAnchor { Text = x.LinkText, Link = x.Link })
+                .ToList();
+
+        internal IReadOnlyCollection<ApiAnchor> MakeRelatedCareerLinks(IEnumerable<ContentApiBranchElement> branches) =>
+            branches
+                .Where(x => x.ContentType == "JobProfile")
+                .OrderBy(x => x.Ordinal)
+                .Select(x => new ApiAnchor { Text = x.Title, Link = $"/job-profiles/{x.Title.ToLowerInvariant().Replace(" ", "-")}" })
                 .ToList();
 
         internal ApiEducationalRoute GetEducationalRoute(IEnumerable<ContentApiBranchElement> branches, string contentTopic)

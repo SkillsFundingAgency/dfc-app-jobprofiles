@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.ViewSupport.ViewModels
 {
@@ -21,5 +22,7 @@ namespace DFC.App.JobProfile.ViewSupport.ViewModels
         public JobProfileWhatItTakes WhatItTakesSegment { get; set; }
 
         public CurrentOpportunities CurrentOpportunities { get; set; }
+
+        public IReadOnlyCollection<Anchor> RelatedCareers { get; set; }
     }
 }

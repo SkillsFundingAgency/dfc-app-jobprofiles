@@ -43,6 +43,8 @@ namespace DFC.App.JobProfile.Data.Models
 
         public JobProfileWhatItTakes WhatItTakes { get; set; }
 
+        public IReadOnlyCollection<Anchor> RelatedCareers { get; set; }
+
         #region required by site map controller
 
         [JsonIgnore]

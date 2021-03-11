@@ -13,10 +13,10 @@
 
         <h4>Entry requirements</h4>
 
-        @Html.Raw(Model.MoreInformation.Preamble)
+        @Html.Raw(Model.RequirementsAndReading.Preface)
 
         <ul class="list-reqs">
-            @foreach (var requirement in Model.MoreInformation.Requirements)
+            @foreach (var requirement in Model.RequirementsAndReading.Requirements)
             {
                 <li>@requirement</li>
             }
@@ -25,7 +25,7 @@
         <h4>More information</h4>
 
         <ul class="list-link">
-            @foreach (var readingLink in Model.MoreInformation.FurtherReading)
+            @foreach (var readingLink in Model.RequirementsAndReading.FurtherReading)
             {
                 <li><a class="htb-feature" href="@readingLink.Link">@readingLink.Text</a></li>
             }

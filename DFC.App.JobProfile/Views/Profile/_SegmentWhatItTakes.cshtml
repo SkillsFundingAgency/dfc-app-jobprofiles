@@ -14,7 +14,7 @@
 
             <div class="job-profile-subsection-content">
 
-                <p>You'll need:</p>
+                <p>@Model.Preface</p>
 
                 <ul>
                     @foreach (var skill in Model.Skills)
@@ -37,7 +37,6 @@
 
                 @if (Model.Restrictions.Any())
                 {
-                    <p>You'll need to:</p>
                     <ul>
                         @foreach (var restriction in Model.Restrictions)
                         {
@@ -46,11 +45,13 @@
                     </ul>
                 }
 
-                @foreach (var requirement in Model.OtherRequirements)
+                @if (Model.Restrictions.Any())
                 {
-                    @Html.Raw(requirement)
+                    foreach (var requirement in Model.OtherRequirements)
+                    {
+                        @Html.Raw(requirement)
+                    }
                 }
-
             </div>
         </section>
     }

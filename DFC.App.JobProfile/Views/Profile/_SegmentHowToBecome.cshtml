@@ -28,8 +28,13 @@
         }
 
         @if (It.Has(Model.DirectRoute))
-        { 
+        {
             <li>directly applying to a potential employer</li>
+        }
+
+        @if (It.Has(Model.OtherRoute))
+        {
+            <li>specialist courses through employers or professional bodies</li>
         }
     </ul>
 

@@ -294,12 +294,11 @@ namespace DFC.App.JobProfile.Cacheing.Services
             var item = new ApiEducationalRouteItem();
 
             route.Topic = contentTopic;
-
-            route.MoreInformation = item;
-            route.FurtherInformation = content.FurtherInformation;
             route.RelevantSubjects = content.RelevantSubjects;
+            route.FurtherInformation = content.FurtherInformation;
+            route.RequirementsAndReading = item;
 
-            item.Preamble = GetDescription(branches, "RequirementsPrefix");
+            //item.Preface = GetDescription(branches, "RequirementsPrefix");
             item.Requirements = GetTexts(branches, $"{contentTopic}Requirement");
             item.FurtherReading = GetAnchorLinks(branches, $"{contentTopic}Link");
 

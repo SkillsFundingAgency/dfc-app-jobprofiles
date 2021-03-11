@@ -4,7 +4,7 @@ namespace DFC.App.JobProfile.Data.Models
 {
     public class EducationalRouteItem
     {
-        public string Preamble { get; set; }
+        public string Preface { get; set; }
 
         public IReadOnlyCollection<string> Requirements { get; set; }
 

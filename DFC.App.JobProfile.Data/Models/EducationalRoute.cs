@@ -4,10 +4,10 @@
     {
         public string Topic { get; set; }
 
-        public string FurtherInformation { get; set; }
-
         public string RelevantSubjects { get; set; }
 
-        public EducationalRouteItem MoreInformation { get; set; }
+        public string FurtherInformation { get; set; }
+
+        public EducationalRouteItem RequirementsAndReading { get; set; }
     }
 }

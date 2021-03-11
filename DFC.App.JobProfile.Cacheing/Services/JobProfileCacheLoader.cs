@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Cacheing.Services
 {
-    internal sealed class JobProfileCacheLoader :
+    internal sealed partial class JobProfileCacheLoader :
         CacheLoader,
         ILoadJobProfileContent,
         IRequireServiceRegistration
@@ -163,6 +163,17 @@ namespace DFC.App.JobProfile.Cacheing.Services
             }
         }
 
+        internal string ConjunctiveMapping(string candidate, string title) =>
+            candidate switch
+            {
+                "as_defined" => title.ToLowerInvariant(),
+                "no_title" => string.Empty,
+                "no_prefix" => title.ToLowerInvariant(),
+                "prefix_with_a" => $"a {title.ToLowerInvariant()}",
+                "prefix_with_an" => $"an {title.ToLowerInvariant()}",
+                _ => throw new NotImplementedException()
+            };
+
         internal ContentApiRootElement OrganiseSegments(ContentApiRootElement apiDataModel)
         {
             var contentItems = apiDataModel.ContentItems.Flatten(s => s.ContentItems);
@@ -171,7 +182,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             var moreInfo = new ContentApiHowToBecomeMoreInformation();
             var howToBecome = new ContentApiHowToBecome();
 
-            howToBecome.Title = apiDataModel.Title;
+            howToBecome.Title = ConjunctiveMapping(apiDataModel.TitleOptions, apiDataModel.Title);
 
             moreInfo.CareerTips = apiDataModel.HowToBecomeCareerTips;
             moreInfo.ProfessionalBodies = apiDataModel.HowToBecomeProfessionalBodies;

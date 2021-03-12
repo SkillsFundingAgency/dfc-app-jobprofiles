@@ -1,5 +1,7 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using DFC.App.Services.Common.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DFC.App.JobProfile.ViewSupport.ViewModels
 {
@@ -24,5 +26,11 @@ namespace DFC.App.JobProfile.ViewSupport.ViewModels
         public CurrentOpportunities CurrentOpportunities { get; set; }
 
         public IReadOnlyCollection<Anchor> RelatedCareers { get; set; }
+
+        public bool HasCurrentOpportunities() =>
+            CurrentOpportunities?.HasItemsToDisplay() ?? false;
+
+        public bool HasRelatedCareers() =>
+            RelatedCareers?.Any() ?? false;
     }
 }

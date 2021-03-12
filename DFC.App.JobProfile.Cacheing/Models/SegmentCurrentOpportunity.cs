@@ -3,19 +3,14 @@ using DFC.Compui.Telemetry.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace DFC.App.JobProfile.Data.Models
+namespace DFC.App.JobProfile.Cacheing.Models
 {
-    public sealed class CurrentOpportunities :
+    public sealed class SegmentCurrentOpportunity :
         RequestTrace,
         IContentPageModel
     {
-        public string Title { get; set; }
-
-        public IReadOnlyCollection<OpportunityApprenticeship> Apprenticeships { get; set; }
-
-        public IReadOnlyCollection<OpportunityCourse> Courses { get; set; }
+        public SegmentData Data { get; set; }
 
         #region inherited from request trace and content page model
 
@@ -35,9 +30,5 @@ namespace DFC.App.JobProfile.Data.Models
         public string PartitionKey { get; set; }
 
         #endregion inherited from request trace and content page model
-
-        public bool HasItemsToDisplay() =>
-            Apprenticeships.Any()
-            || Courses.Any();
     }
 }

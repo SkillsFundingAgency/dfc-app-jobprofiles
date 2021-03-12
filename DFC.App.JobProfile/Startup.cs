@@ -1,6 +1,7 @@
 ﻿// TODO: fix(?) me!
 #pragma warning disable S125 // Sections of code should not be commented out
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
+using DFC.App.JobProfile.Cacheing.Models;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.Services.Common.Registration;
 using DFC.Compui.Cosmos;
@@ -21,6 +22,7 @@ namespace DFC.App.JobProfile
     {
         public const string JobProfileStoreSettings = "Configuration:DocumentStore:JobProfile";
         public const string CurrentOpportunitiesStoreSettings = "Configuration:DocumentStore:CurrentOpportunities";
+        public const string SegmentOpportunitiesStoreSettings = "Configuration:DocumentStore:OldCurrentOpportunities";
         public const string StaticContentStoreSettings = "Configuration:DocumentStore:StaticContent";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
 
@@ -87,6 +89,7 @@ namespace DFC.App.JobProfile
             var isDev = _environment.IsDevelopment();
             var jpStorageProperties = _configuration.GetSection(JobProfileStoreSettings).Get<CosmosDbConnection>();
             var coStorageProperties = _configuration.GetSection(CurrentOpportunitiesStoreSettings).Get<CosmosDbConnection>();
+            var ocoStorageProperties = _configuration.GetSection(SegmentOpportunitiesStoreSettings).Get<CosmosDbConnection>();
             var scStorageProperties = _configuration.GetSection(StaticContentStoreSettings).Get<CosmosDbConnection>();
 
             var registrar = ServiceRegistrar.Create(_configuration);
@@ -106,6 +109,7 @@ namespace DFC.App.JobProfile
                 })
                 .AddContentPageServices<JobProfileCached>(jpStorageProperties, isDev)
                 .AddContentPageServices<CurrentOpportunities>(coStorageProperties, isDev)
+                .AddContentPageServices<SegmentCurrentOpportunity>(ocoStorageProperties, isDev)
                 .AddContentPageServices<StaticItemCached>(scStorageProperties, isDev)
                 .AddControllersWithViews();
 

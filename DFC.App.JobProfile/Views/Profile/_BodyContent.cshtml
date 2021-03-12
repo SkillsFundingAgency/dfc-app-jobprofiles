@@ -29,7 +29,10 @@
                                 <partial name="_SegmentCareerPath" model="@Model.CareerPathSegment" />
                             }
 
-                            <partial name="_SegmentCurrentOpportunities" model="@Model.CurrentOpportunities" />
+                            @if (Model.CurrentOpportunities.HasItemsToDisplay())
+                            {
+                                <partial name="_SegmentCurrentOpportunities" model="@Model.CurrentOpportunities" />
+                            }
                         </div>
                     </div>
 

@@ -144,10 +144,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
 
         internal async Task<BodyViewModel> AddOpportunitiesTo(BodyViewModel candidate, string occupationName)
         {
-            var currentOpportunities = await Opportunities.GetItemBy("jobprofile-canonicalname");
-            It.IsNull(currentOpportunities)
-                .AsGuard<ResourceNotFoundException>($"Profile details not found for: {occupationName}");
-
+            var currentOpportunities = await Opportunities.GetItemBy(occupationName);
             candidate.CurrentOpportunities = currentOpportunities;
 
             return candidate;

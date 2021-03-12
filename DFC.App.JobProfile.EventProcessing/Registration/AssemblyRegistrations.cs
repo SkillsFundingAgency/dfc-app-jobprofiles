@@ -12,5 +12,6 @@ using DFC.App.Services.Common.Registration.Attributes;
 // services
 [assembly: InternalRegistration(typeof(IEventMessageService<JobProfileCached>), typeof(EventMessageService<JobProfileCached>), TypeOfRegistrationScope.Singleton)]
 [assembly: InternalRegistration(typeof(IEventMessageService<StaticItemCached>), typeof(EventMessageService<StaticItemCached>), TypeOfRegistrationScope.Singleton)]
+[assembly: InternalRegistration(typeof(IEventMessageService<CurrentOpportunities>), typeof(EventMessageService<CurrentOpportunities>), TypeOfRegistrationScope.Singleton)]
 [assembly: InternalRegistration(typeof(IEventGridService<JobProfileCached>), typeof(EventGridService<JobProfileCached>), TypeOfRegistrationScope.Singleton)]
 [assembly: InternalRegistration(typeof(IEventGridClientService), typeof(EventGridClientService), TypeOfRegistrationScope.Singleton)]

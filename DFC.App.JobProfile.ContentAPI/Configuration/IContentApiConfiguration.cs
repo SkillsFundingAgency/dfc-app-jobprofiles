@@ -10,12 +10,14 @@ namespace DFC.App.JobProfile.ContentAPI.Configuration
 
         string ApiKey { get; }
 
-        string SummaryEndpoint { get; set; }
+        string SummaryEndpoint { get; }
 
-        string StaticContentEndpoint { get; set; }
+        string StaticContentEndpoint { get; }
 
-        string[] PageStaticContentIDs { get; set; }
+        string[] PageStaticContentIDs { get; }
 
-        string[] SupportedRelationships { get; set; }
+        string[] RelationshipStubs { get; }
+
+        string[] SupportedRelationships { get; }
     }
 }

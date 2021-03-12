@@ -5,6 +5,7 @@ using DFC.App.Services.Common.Registration;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -111,12 +112,16 @@ namespace DFC.App.JobProfile.ContentAPI.Services
 
                                 _mapper.Map(link, descendent);
 
+                                list.Add(descendent);
+
+                                if (_clientConfig.RelationshipStubs.Contains(relation.Relationship))
+                                {
+                                    continue;
+                                }
+
                                 var modelLinks = _curieProcessor.GetRelations(descendent);
                                 var candidates = await GetBranchedContentItems<TBranch>(modelLinks);
-
                                 candidates.ForEach(descendent.ContentItems.Add);
-
-                                list.Add(descendent);
                             }
                         }
                     }

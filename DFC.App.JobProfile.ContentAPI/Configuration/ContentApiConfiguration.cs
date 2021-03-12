@@ -14,6 +14,8 @@ namespace DFC.App.JobProfile.ContentAPI.Configuration
 
         public string[] PageStaticContentIDs { get; set; }
 
+        public string[] RelationshipStubs { get; set; }
+
         public string[] SupportedRelationships { get; set; }
     }
 }

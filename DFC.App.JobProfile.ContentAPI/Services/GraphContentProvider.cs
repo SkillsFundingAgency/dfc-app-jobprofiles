@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.ContentAPI.Configuration;
 using DFC.App.JobProfile.ContentAPI.Models;
+using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using System;
@@ -114,7 +115,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
 
                                 list.Add(descendent);
 
-                                if (_clientConfig.RelationshipStubs.Contains(relation.Relationship))
+                                if (_clientConfig.RelationshipStubs.Any(x => x.ComparesWith(relation.Relationship)))
                                 {
                                     continue;
                                 }
@@ -136,7 +137,6 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         {
             var result = await _dataProcessor
                 .GetAsync<IReadOnlyCollection<TApiModel>>(_httpClient, thisResource)
-
                     ?? new List<TApiModel>();
 
             _cacheService.Clear();

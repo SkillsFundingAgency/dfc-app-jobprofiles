@@ -3,6 +3,5 @@
     public interface IMigrateCurrentOpportunities :
         ILoadCacheData
     {
-
     }
 }

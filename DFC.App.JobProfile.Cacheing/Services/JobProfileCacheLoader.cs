@@ -193,9 +193,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             // what it takes (root items)
             var whatItTakes = new ContentApiWhatItTakes();
-            var witAddition = new List<string> { apiDataModel.WhatItTakesDigitalSkillsLevel };
-
-            whatItTakes.Skills = witAddition;
 
             apiDataModel.WhatItTakes = whatItTakes;
 
@@ -234,10 +231,11 @@ namespace DFC.App.JobProfile.Cacheing.Services
             moreInfo.Registration = GetDescription(contentItems, "Registration");
 
             // what it takes (content items)
+            var witAddition = GetDescription(contentItems, "DigitalSkillsLevel");
             whatItTakes.Restrictions = GetDescriptions(contentItems, "Restriction");
             whatItTakes.OtherRequirements = GetDescriptions(contentItems, "OtherRequirement");
             whatItTakes.Skills = GetDescriptions(contentItems, "ONetSkill")
-                .Concat(witAddition)
+                .Concat(new string[] { witAddition })
                 .AsSafeReadOnlyList();
 
             // what you'll do (content items)

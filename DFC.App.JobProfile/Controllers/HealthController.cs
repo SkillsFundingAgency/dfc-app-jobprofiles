@@ -18,7 +18,8 @@ namespace DFC.App.JobProfile.Controllers
 
         public HealthController(
             ILogger<HealthController> logService,
-            IProvideJobProfiles jobProfileService)
+            IProvideJobProfiles jobProfileService,
+            AutoMapper.IMapper fakeAutoMapper)
         {
             _logger = logService;
             _jobProfiles = jobProfileService;

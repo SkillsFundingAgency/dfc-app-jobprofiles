@@ -1,6 +1,6 @@
 ﻿using DFC.App.JobProfile.Models.Robots;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
@@ -11,11 +11,11 @@ namespace DFC.App.JobProfile.Controllers
     public class RobotController : Controller
     {
         private readonly ILogger<RobotController> _logger;
-        private readonly IWebHostEnvironment _environment;
+        private readonly IHostEnvironment _environment;
 
         public RobotController(
             ILogger<RobotController> logger,
-            IWebHostEnvironment environment)
+            IHostEnvironment environment)
         {
             _logger = logger;
             _environment = environment;
@@ -46,7 +46,7 @@ namespace DFC.App.JobProfile.Controllers
         private Robot GenerateThisSiteRobot()
         {
             var robot = new Robot();
-            var robotsFilePath = Path.Combine(_environment.WebRootPath, "StaticRobots.txt");
+            var robotsFilePath = Path.Combine(_environment.ContentRootPath, "StaticRobots.txt");
 
             if (System.IO.File.Exists(robotsFilePath))
             {

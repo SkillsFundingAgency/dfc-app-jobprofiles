@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.Services.Common.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.ViewSupport", "DFC.App.JobProfile.ViewSupport\DFC.App.JobProfile.ViewSupport.csproj", "{49962B8D-65B9-4EAB-82DE-CBBD11657851}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.JobProfile.UnitTests", "DFC.App.JobProfile.UnitTests\DFC.App.JobProfile.UnitTests.csproj", "{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,12 +83,17 @@ Global
 		{49962B8D-65B9-4EAB-82DE-CBBD11657851}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49962B8D-65B9-4EAB-82DE-CBBD11657851}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49962B8D-65B9-4EAB-82DE-CBBD11657851}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5B6B0812-BE05-4D50-A893-A438043ED5AE} = {89AE2C55-7A1D-46EA-8C08-36C3D225B562}
+		{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3} = {89AE2C55-7A1D-46EA-8C08-36C3D225B562}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED3C7131-FE57-4FB5-ADDB-18D199004BEE}

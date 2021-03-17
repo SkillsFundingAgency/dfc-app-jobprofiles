@@ -1,22 +1,36 @@
-﻿using DFC.App.JobProfile.Data.Enums;
-using DFC.App.JobProfile.Models;
+﻿using DFC.App.JobProfile.Controllers;
+using DFC.App.JobProfile.EventProcessing.Models;
+using DFC.App.JobProfile.Webhooks.Services;
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.EventGrid.Models;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DFC.App.JobProfile.UnitTests.ControllerTests.WebhooksControllerTests
+namespace DFC.App.JobProfile.UnitTests.ControllerTests
 {
-    [Trait("Category", "Webhooks Controller Unit Tests")]
-    public class WebhooksControllerPostTests : BaseWebhooksControllerTests
+    public class WebhooksControllerTests
     {
+        private ILogger<WebhooksController> _mockLogger;
+
+        private IProvideWebhooks _mockService;
+
+        protected const string EventTypePublished = "published";
+        protected const string EventTypeDraft = "draft";
+        protected const string EventTypeDraftDiscarded = "draft-discarded";
+        protected const string EventTypeDeleted = "deleted";
+        protected const string EventTypeUnpublished = "unpublished";
+        protected const string ContentTypePages = "pages";
+
         public static IEnumerable<object[]> PublishedEvents => new List<object[]>
         {
             new object[] { MediaTypeNames.Application.Json, EventTypePublished },
@@ -36,220 +50,243 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.WebhooksControllerTests
             new object[] { "Not a Guid" },
         };
 
+        protected Guid ItemIdForCreate { get; } = Guid.NewGuid();
+
+        protected Guid ItemIdForUpdate { get; } = Guid.NewGuid();
+
+        protected Guid ItemIdForDelete { get; } = Guid.NewGuid();
+
         [Theory]
         [MemberData(nameof(PublishedEvents))]
-        public async Task WebhooksControllerPublishCreatePostReturnsOkForCreate(string mediaTypeName, string eventType)
+        public async Task WebhooksControllerPublishCreatePostReturnsOkForCreate(string eventType)
         {
-            // Arrange
+            // arrange
             const HttpStatusCode expectedResponse = HttpStatusCode.OK;
             var eventGridEvents = BuildValidEventGridEvent(eventType, new EventGridEventData { ItemId = ItemIdForCreate.ToString(), Api = "https://somewhere.com", });
-            var controller = BuildWebhooksController(mediaTypeName);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.Created);
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.Created);
 
-            // Act
+            // act
             var result = await controller.ReceiveEvents().ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
             var okResult = Assert.IsType<OkResult>(result);
 
             Assert.Equal((int)expectedResponse, okResult.StatusCode);
-
-            controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(PublishedEvents))]
-        public async Task WebhooksControllerPublishUpdatePostReturnsOk(string mediaTypeName, string eventType)
+        public async Task WebhooksControllerPublishUpdatePostReturnsOk(string eventType)
         {
-            // Arrange
+            // arrange
             const HttpStatusCode expectedResponse = HttpStatusCode.OK;
             var eventGridEvents = BuildValidEventGridEvent(eventType, new EventGridEventData { ItemId = ItemIdForUpdate.ToString(), Api = "https://somewhere.com", });
-            var controller = BuildWebhooksController(mediaTypeName);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(expectedResponse);
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(expectedResponse);
 
-            // Act
+            // act
             var result = await controller.ReceiveEvents().ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
             var okResult = Assert.IsType<OkResult>(result);
 
             Assert.Equal((int)expectedResponse, okResult.StatusCode);
-
-            controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(DeletedEvents))]
-        public async Task WebhooksControllerDeletePostReturnsSuccess(string mediaTypeName, string eventType)
+        public async Task WebhooksControllerDeletePostReturnsSuccess(string eventType)
         {
-            // Arrange
+            // arrange
             const HttpStatusCode expectedResponse = HttpStatusCode.OK;
             var eventGridEvents = BuildValidEventGridEvent(eventType, new EventGridEventData { ItemId = ItemIdForDelete.ToString(), Api = "https://somewhere.com", });
-            var controller = BuildWebhooksController(mediaTypeName);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(expectedResponse);
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(expectedResponse);
 
-            // Act
+            // act
             var result = await controller.ReceiveEvents().ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
             var okResult = Assert.IsType<OkResult>(result);
 
             Assert.Equal((int)expectedResponse, okResult.StatusCode);
-
-            controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(PublishedEvents))]
-        public async Task WebhooksControllerPublishCreatePostReturnsOkForAlreadyReported(string mediaTypeName, string eventType)
+        public async Task WebhooksControllerPublishCreatePostReturnsOkForAlreadyReported(string eventType)
         {
-            // Arrange
+            // arrange
             const HttpStatusCode expectedResponse = HttpStatusCode.OK;
             var eventGridEvents = BuildValidEventGridEvent(eventType, new EventGridEventData { ItemId = ItemIdForCreate.ToString(), Api = "https://somewhere.com", });
-            var controller = BuildWebhooksController(mediaTypeName);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.AlreadyReported);
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.AlreadyReported);
 
-            // Act
+            // act
             var result = await controller.ReceiveEvents().ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
             var okResult = Assert.IsType<OkResult>(result);
 
             Assert.Equal((int)expectedResponse, okResult.StatusCode);
-
-            controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(PublishedEvents))]
-        public async Task WebhooksControllerPublishCreatePostReturnsOkForConflict(string mediaTypeName, string eventType)
+        public async Task WebhooksControllerPublishCreatePostReturnsOkForConflict(string eventType)
         {
-            // Arrange
+            // arrange
             const HttpStatusCode expectedResponse = HttpStatusCode.OK;
             var eventGridEvents = BuildValidEventGridEvent(eventType, new EventGridEventData { ItemId = ItemIdForCreate.ToString(), Api = "https://somewhere.com", });
-            var controller = BuildWebhooksController(mediaTypeName);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.Conflict);
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.Conflict);
 
-            // Act
+            // act
             var result = await controller.ReceiveEvents().ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
             var okResult = Assert.IsType<OkResult>(result);
 
             Assert.Equal((int)expectedResponse, okResult.StatusCode);
-
-            controller.Dispose();
         }
 
         [Theory]
         [MemberData(nameof(InvalidIdValues))]
         public async Task WebhooksControllerPostReturnsErrorForInvalidEventId(string id)
         {
-            // Arrange
+            // arrange
             var eventGridEvents = BuildValidEventGridEvent(EventTypePublished, new EventGridEventData { ItemId = Guid.NewGuid().ToString(), Api = "https://somewhere.com", });
-            var controller = BuildWebhooksController(MediaTypeNames.Application.Json);
+            var controller = BuildWebhooksController();
             eventGridEvents.First().Id = id;
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            // Act
+            // act
             await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents().ConfigureAwait(false)).ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
-
-            controller.Dispose();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
         }
 
         [Theory]
         [MemberData(nameof(InvalidIdValues))]
         public async Task WebhooksControllerPostReturnsErrorForInvalidItemId(string id)
         {
-            // Arrange
+            // arrange
             var eventGridEvents = BuildValidEventGridEvent(EventTypePublished, new EventGridEventData { ItemId = id, Api = "https://somewhere.com", });
-            var controller = BuildWebhooksController(MediaTypeNames.Application.Json);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            // Act
+            // act
             await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents().ConfigureAwait(false)).ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
-
-            controller.Dispose();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
         }
 
         [Fact]
         public async Task WebhooksControllerPostReturnsErrorForUnknownEventType()
         {
-            // Arrange
+            // arrange
             var eventGridEvents = BuildValidEventGridEvent("Unknown", new EventGridEventData { ItemId = Guid.NewGuid().ToString(), Api = "https://somewhere.com", });
-            var controller = BuildWebhooksController(MediaTypeNames.Application.Json);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            // Act
+            // act
             await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents().ConfigureAwait(false)).ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
-
-            controller.Dispose();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
         }
 
         [Fact]
         public async Task WebhooksControllerPostReturnsErrorForInvalidUrl()
         {
-            // Arrange
+            // arrange
             var eventGridEvents = BuildValidEventGridEvent(EventTypePublished, new EventGridEventData { Api = "http:http://badUrl" });
-            var controller = BuildWebhooksController(MediaTypeNames.Application.Json);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            // Act
+            // act
             await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents().ConfigureAwait(false)).ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
-
-            controller.Dispose();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
         }
 
         [Fact]
         public async Task WebhooksControllerSubscriptionValidationReturnsSuccess()
         {
-            // Arrange
+            // arrange
             const HttpStatusCode expectedResponse = HttpStatusCode.OK;
             string expectedValidationCode = Guid.NewGuid().ToString();
             var eventGridEvents = BuildValidEventGridEvent(Microsoft.Azure.EventGrid.EventTypes.EventGridSubscriptionValidationEvent, new SubscriptionValidationEventData(expectedValidationCode, "https://somewhere.com"));
-            var controller = BuildWebhooksController(MediaTypeNames.Application.Json);
+            var controller = BuildWebhooksController();
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
-            // Act
+            // act
             var result = await controller.ReceiveEvents().ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeWebhooksService.ProcessMessageAsync(A<WebhookCacheOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
+            // assert
+            A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             var response = Assert.IsAssignableFrom<SubscriptionValidationResponse>(jsonResult.Value);
 
             Assert.Equal((int)expectedResponse, jsonResult.StatusCode);
             Assert.Equal(expectedValidationCode, response.ValidationResponse);
+        }
 
-            controller.Dispose();
+        protected EventGridEvent[] BuildValidEventGridEvent<TModel>(string eventType, TModel data)
+        {
+            var models = new EventGridEvent[]
+            {
+                new EventGridEvent
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Subject = $"{ContentTypePages}/a-canonical-name",
+                    Data = data,
+                    EventType = eventType,
+                    EventTime = DateTime.Now,
+                    DataVersion = "1.0",
+                },
+            };
+
+            return models;
+        }
+
+        protected Stream BuildStreamFromModel<TModel>(TModel model)
+        {
+            var jsonData = JsonConvert.SerializeObject(model);
+            byte[] byteArray = Encoding.ASCII.GetBytes(jsonData);
+            MemoryStream stream = new MemoryStream(byteArray);
+
+            return stream;
+        }
+
+        protected WebhooksController BuildWebhooksController()
+        {
+            _mockLogger = A.Fake<ILogger<WebhooksController>>();
+            _mockService = A.Fake<IProvideWebhooks>();
+
+            var controller = new WebhooksController(_mockLogger, _mockService);
+
+            return controller;
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿// TODO: more content cache quewstions, don't understand what it does...
-#pragma warning disable S125 // Sections of code should not be commented out
-#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
-#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
-using DFC.App.JobProfile.Cacheing.Models;
+﻿using DFC.App.JobProfile.Cacheing.Models;
 using DFC.App.JobProfile.ContentAPI.Services;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.EventProcessing.Models;
@@ -12,13 +8,10 @@ using DFC.Compui.Cosmos.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-
-//using IContentCacheService = DFC.Content.Pkg.Netcore.Data.Contracts.IContentCacheService;
 
 namespace DFC.App.JobProfile.Webhooks.Services
 {
@@ -31,7 +24,6 @@ namespace DFC.App.JobProfile.Webhooks.Services
         private readonly IEventMessageService<JobProfileCached> _eventMessage;
         private readonly IProvideGraphContent _graphContent;
         private readonly IContentPageService<JobProfileCached> _pageContent;
-        //private readonly IContentCacheService _otherCacheThingy;
         private readonly IEventGridService<JobProfileCached> _eventGrid;
 
         public WebhooksProvider(
@@ -40,7 +32,6 @@ namespace DFC.App.JobProfile.Webhooks.Services
             IEventMessageService<JobProfileCached> eventMessageService,
             IProvideGraphContent cmsApiService,
             IContentPageService<JobProfileCached> pageService,
-            //IContentCacheService otherCacheThingy,
             IEventGridService<JobProfileCached> eventGridService)
         {
             _logger = logger;
@@ -48,7 +39,6 @@ namespace DFC.App.JobProfile.Webhooks.Services
             _eventMessage = eventMessageService;
             _graphContent = cmsApiService;
             _pageContent = pageService;
-            //_otherCacheThingy = otherCacheThingy;
             _eventGrid = eventGridService;
         }
 
@@ -100,9 +90,6 @@ namespace DFC.App.JobProfile.Webhooks.Services
                 || contentResult == HttpStatusCode.Created)
             {
                 await _eventGrid.CompareThenSendEvent(existingContentPageModel, contentPageModel);
-
-                //var contentItemIds = contentPageModel.AllContentItemIds.ToList();
-                //contentCacheService.AddOrReplace(contentItemId, contentItemIds);
             }
 
             return contentResult;
@@ -116,8 +103,6 @@ namespace DFC.App.JobProfile.Webhooks.Services
             if (result == HttpStatusCode.OK && existingContentPageModel != null)
             {
                 await _eventGrid.SendEvent(EventOperation.Delete, existingContentPageModel);
-
-                //_otherCacheThingy.Remove(contentItemId);
             }
 
             return result;
@@ -172,25 +157,6 @@ namespace DFC.App.JobProfile.Webhooks.Services
             }
 
             return false;
-        }
-
-        public bool TryValidate(JobProfileCached contentModel)
-        {
-            _ = contentModel ?? throw new ArgumentNullException(nameof(contentModel));
-
-            var validationContext = new ValidationContext(contentModel, null, null);
-            var validationResults = new List<ValidationResult>();
-            var isValid = Validator.TryValidateObject(contentModel, validationContext, validationResults, true);
-
-            if (!isValid && validationResults.Any())
-            {
-                foreach (var validationResult in validationResults)
-                {
-                    _logger.LogError($"Error validating {contentModel.CanonicalName} - {contentModel.Uri}: {string.Join(",", validationResult.MemberNames)} - {validationResult.ErrorMessage}");
-                }
-            }
-
-            return isValid;
         }
     }
 }

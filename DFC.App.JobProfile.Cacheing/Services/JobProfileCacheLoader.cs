@@ -1,8 +1,4 @@
-﻿// TODO: content cache service (other cache thingy) don't understand what this does...
-#pragma warning disable S125 // Sections of code should not be commented out
-#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
-#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
-using DFC.App.JobProfile.Cacheing.Models;
+﻿using DFC.App.JobProfile.Cacheing.Models;
 using DFC.App.JobProfile.ContentAPI.Models;
 using DFC.App.JobProfile.ContentAPI.Services;
 using DFC.App.JobProfile.Data.Models;
@@ -62,8 +58,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
         {
             Logger.LogInformation("Process summary list started");
 
-            //_otherCacheThingy.Clear();
-
             foreach (var item in summaryList.OrderByDescending(o => o.Published))
             {
                 if (stoppingToken.IsCancellationRequested)
@@ -111,9 +105,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
                     Logger.LogError($"Cache create error status {result} from {item.CanonicalName} - {item.Uri}");
                 }
             }
-
-            //var contentItemIds = contentPageModel.AllContentItemIds.ToList();
-            //_otherCacheThingy.AddOrReplace(contentPageModel.Id, contentItemIds);
         }
 
         internal async Task DeleteStaleCacheEntries(
@@ -246,8 +237,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             whatYouWillDo.WorkingUniform = GetDescriptions(contentItems, "WorkingUniform");
 
             // career path (content items)
-            //careerPathSegment.ApprenticeshipStandard = apiDataModel.ContentItems.Where(x => x.ContentType == "ApprenticeshipStandard").ToList();
-
+            // careerPathSegment.ApprenticeshipStandard = GetDescriptions(contentItems, "ApprenticeshipStandard")
             return apiDataModel;
         }
 
@@ -301,7 +291,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             route.FurtherInformation = content.FurtherInformation;
             route.RequirementsAndReading = item;
 
-            //item.Preface = GetDescription(branches, "RequirementsPrefix");
+            // item.Preface = GetDescription(branches, "RequirementsPrefix")
             item.Requirements = GetTexts(branches, $"{contentTopic}Requirement");
             item.FurtherReading = GetAnchorLinks(branches, $"{contentTopic}Link");
 

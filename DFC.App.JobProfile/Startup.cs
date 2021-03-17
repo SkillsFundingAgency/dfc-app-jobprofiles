@@ -1,7 +1,4 @@
-﻿// TODO: fix(?) me!
-#pragma warning disable S125 // Sections of code should not be commented out
-#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
-using DFC.App.JobProfile.Cacheing.Models;
+﻿using DFC.App.JobProfile.Cacheing.Models;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.Services.Common.Registration;
 using DFC.Compui.Cosmos;
@@ -20,11 +17,10 @@ namespace DFC.App.JobProfile
 {
     public class Startup
     {
-        public const string JobProfileStoreSettings = "Configuration:DocumentStore:JobProfile";
-        public const string CurrentOpportunitiesStoreSettings = "Configuration:DocumentStore:CurrentOpportunities";
-        public const string SegmentOpportunitiesStoreSettings = "Configuration:DocumentStore:OldCurrentOpportunities";
-        public const string StaticContentStoreSettings = "Configuration:DocumentStore:StaticContent";
-        public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
+        private const string JobProfileStoreSettings = "Configuration:DocumentStore:JobProfile";
+        private const string CurrentOpportunitiesStoreSettings = "Configuration:DocumentStore:CurrentOpportunities";
+        private const string SegmentOpportunitiesStoreSettings = "Configuration:DocumentStore:OldCurrentOpportunities";
+        private const string StaticContentStoreSettings = "Configuration:DocumentStore:StaticContent";
 
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
@@ -37,14 +33,6 @@ namespace DFC.App.JobProfile
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // check this!!! breaking changes...
-            //app.UseCorrelationId(new CorrelationIdOptions
-            //{
-            //    Header = "DssCorrelationId",
-            //    UseGuidForCorrelationId = true,
-            //    UpdateTraceIdentifier = false,
-            //});
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -52,8 +40,6 @@ namespace DFC.App.JobProfile
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-
-                // see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -103,7 +89,6 @@ namespace DFC.App.JobProfile
                 .AddApiServices(_configuration, policyRegistry)
                 .Configure<CookiePolicyOptions>(options =>
                 {
-                    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                     options.CheckConsentNeeded = context => true;
                     options.MinimumSameSitePolicy = SameSiteMode.None;
                 })
@@ -112,16 +97,6 @@ namespace DFC.App.JobProfile
                 .AddContentPageServices<SegmentCurrentOpportunity>(ocoStorageProperties, isDev)
                 .AddContentPageServices<StaticItemCached>(scStorageProperties, isDev)
                 .AddControllersWithViews();
-
-            // check this!!! breaking changes...
-            // services.AddCorrelationId()
-
-            // what are these and do we need them??
-            //services.AddScoped<ISharedContentService, SharedContentService>();
-            //services.AddTransient<CorrelationIdDelegatingHandler>();
-            //services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"])
-            //services.AddSingleton(_configuration.GetSection(nameof(OverviewDetails)).Get<OverviewDetails>() ?? new OverviewDetails());
-            //services.AddSingleton<IContentCacheService, CacheContentService.ContentCacheService>();
         }
     }
 }

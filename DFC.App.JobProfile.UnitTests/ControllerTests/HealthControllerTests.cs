@@ -18,9 +18,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
     public class HealthControllerTests
     {
         private ILogger<HealthController> _mockLogger;
-
         private IProvideJobProfiles _mockService;
-
         private IMapper _mockMapper;
 
         [Fact]
@@ -93,7 +91,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
             A.Equals((int)HttpStatusCode.OK, statusResult.StatusCode);
         }
 
-        public HealthController BuildHealthController() =>
-            new HealthController(_mockLogger, _mockService, _mockMapper);
+        private HealthController BuildHealthController()
+        {
+            _mockLogger = A.Fake<ILogger<HealthController>>();
+            _mockService = A.Fake<IProvideJobProfiles>();
+            _mockMapper = A.Fake<IMapper>();
+
+            return new HealthController(_mockLogger, _mockService, _mockMapper);
+        }
     }
 }

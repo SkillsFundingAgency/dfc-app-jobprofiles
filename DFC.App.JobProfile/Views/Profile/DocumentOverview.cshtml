@@ -1,10 +1,12 @@
-﻿@*@model HeroViewModel
+﻿@model HeroViewModel
 
-<div class="result-description" style="height: 170px;">
+<div class="result-description"
+     style="height: 170px;">
+
     <h3 class="govuk-heading-s">
         <a href="@Model.PageLocation">@Model.Title</a>
     </h3>
     @Html.Raw(Model.Description)
 </div>
 
-<partial name="_jbOverviewSegment" model="Model" />*@
+<partial name="__HeroBannerOverview" model=@Model />

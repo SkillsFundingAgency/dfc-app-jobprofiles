@@ -26,7 +26,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
 
             // assert
             var contentResult = Assert.IsType<ContentResult>(result);
-
             contentResult.ContentType.Should().Be(MediaTypeNames.Text.Plain);
         }
 
@@ -35,10 +34,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             _mockLogger = A.Fake<ILogger<RobotController>>();
             _mockEnvironment = A.Fake<IHostEnvironment>();
 
-            var controller = new RobotController(_mockLogger, _mockEnvironment);
-
-            return controller;
+            return new RobotController(_mockLogger, _mockEnvironment);
         }
-
     }
 }

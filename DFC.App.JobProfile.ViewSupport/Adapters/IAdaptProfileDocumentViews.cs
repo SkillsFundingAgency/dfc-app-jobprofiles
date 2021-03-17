@@ -10,11 +10,6 @@ namespace DFC.App.JobProfile.ViewSupport.Adapters
         Task<IActionResult> GetSummaryView(
             Func<IndexViewModel, IActionResult> contentResult);
 
-        Task<IActionResult> GetDocumentViewFor(
-            string occupationName,
-            string address,
-            Func<DocumentViewModel, IActionResult> contentResult);
-
         Task<IActionResult> GetHeadViewFor(
             string occupationName,
             string address,
@@ -28,5 +23,15 @@ namespace DFC.App.JobProfile.ViewSupport.Adapters
         Task<IActionResult> GetBodyViewFor(
             Guid occupationID,
             Func<BodyViewModel, IActionResult> contentResult);
+
+        Task<IActionResult> GetDocumentOverviewFor(
+            string occupationName,
+            string address,
+            Func<HeroViewModel, IActionResult> contentResult);
+
+        Task<IActionResult> GetDocumentViewFor(
+            string occupationName,
+            string address,
+            Func<DocumentViewModel, IActionResult> contentResult);
     }
 }

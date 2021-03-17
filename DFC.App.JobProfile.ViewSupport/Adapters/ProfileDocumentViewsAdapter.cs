@@ -35,12 +35,6 @@ namespace DFC.App.JobProfile.ViewSupport.Adapters
             Func<IndexViewModel, IActionResult> contentResult) =>
                 Adapter.Run(() => ProcessGetSummary(), contentResult, $"Getting the document summaries");
 
-        Task<IActionResult> IAdaptProfileDocumentViews.GetDocumentViewFor(
-            string occupationName,
-            string address,
-            Func<DocumentViewModel, IActionResult> contentResult) =>
-                Adapter.Run(() => ProcessGetDocument(occupationName, address), contentResult, $"Getting the document for '{occupationName}'");
-
         Task<IActionResult> IAdaptProfileDocumentViews.GetHeadViewFor(
             string occupationName,
             string address,
@@ -57,6 +51,18 @@ namespace DFC.App.JobProfile.ViewSupport.Adapters
             Guid occupationID,
             Func<BodyViewModel, IActionResult> contentResult) =>
                 Adapter.Run(() => ProcessGetBody(occupationID), contentResult, $"Getting the document body for '{occupationID}'");
+
+        Task<IActionResult> IAdaptProfileDocumentViews.GetDocumentOverviewFor(
+            string occupationName,
+            string address,
+            Func<HeroViewModel, IActionResult> contentResult) =>
+                Adapter.Run(() => ProcessGetHeroBanner(occupationName, address), contentResult, $"Getting the document overview for '{occupationName}'");
+
+        Task<IActionResult> IAdaptProfileDocumentViews.GetDocumentViewFor(
+            string occupationName,
+            string address,
+            Func<DocumentViewModel, IActionResult> contentResult) =>
+                Adapter.Run(() => ProcessGetDocument(occupationName, address), contentResult, $"Getting the document for '{occupationName}'");
 
         internal Task<HttpResponseMessage> ProcessGetSummary() =>
             Coordinator.GetSummaryDocuments();

@@ -7,5 +7,12 @@
 
 <partial name="_HeroBanner" model="@Model.HeroBanner" />
 
-<partial name="_BodyContent" model="@Model.Body" />
-
+<div class="govuk-main-wrapper">
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="_BodyContent" model="@Model.Body" />
+            </div>
+        </div>
+    </div>
+</div>

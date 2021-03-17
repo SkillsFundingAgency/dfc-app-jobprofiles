@@ -1,51 +1,47 @@
 ﻿@model BodyViewModel
 
-<div class="govuk-main-wrapper">
-    <div class="govuk-width-container">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds">
-                        <div class="job-profile-sections">
-                            <partial name="_SegmentLinks" />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="job-profile-sections">
 
-                            @if (It.Has(Model.HowToBecomeSegment))
-                            {
-                                <partial name="_SegmentHowToBecome" model="@Model.HowToBecomeSegment" />
-                            }
+            <div class="govuk-accordion"
+                 data-module="govuk-accordion"
+                 id="job-profile-accordion-with-summary-sections">
 
-                            @if (It.Has(Model.WhatItTakesSegment))
-                            {
-                                <partial name="_SegmentWhatItTakes" model="@Model.WhatItTakesSegment" />
-                            }
+                @if (It.Has(Model.HowToBecomeSegment))
+                {
+                    <partial name="_SegmentHowToBecome" model="@Model.HowToBecomeSegment" />
+                }
 
-                            @if (It.Has(Model.WhatYouWillDoSegment))
-                            {
-                                <partial name="_SegmentWhatYouWillDo" model="@Model.WhatYouWillDoSegment" />
-                            }
+                @if (It.Has(Model.WhatItTakesSegment))
+                {
+                    <partial name="_SegmentWhatItTakes" model="@Model.WhatItTakesSegment" />
+                }
 
-                            @if (It.Has(Model.CareerPathSegment))
-                            {
-                                <partial name="_SegmentCareerPath" model="@Model.CareerPathSegment" />
-                            }
+                @if (It.Has(Model.WhatYouWillDoSegment))
+                {
+                    <partial name="_SegmentWhatYouWillDo" model="@Model.WhatYouWillDoSegment" />
+                }
 
-                            @if (Model.HasCurrentOpportunities())
-                            {
-                                <partial name="_SegmentCurrentOpportunities" model="@Model.CurrentOpportunities" />
-                            }
-                        </div>
-                    </div>
+                @if (It.Has(Model.CareerPathSegment))
+                {
+                    <partial name="_SegmentCareerPath" model="@Model.CareerPathSegment" />
+                }
 
-                    <div class="govuk-grid-column-one-third">
-                        <partial name="_StaticWriteRawString" model="@Model.NotWhatYoureLookingFor" />
-                        <partial name="_SegmentRelatedCareers" model="@Model" />
-                        <partial name="_StaticWriteRawString" model="@Model.SkillsAssessment" />
-                        <partial name="_StaticWriteRawString" model="@Model.SpeakToAnAdvisor" />
-                    </div>
-                </div>
-
-                <partial name="_FeedbackYesOrNo" />
+                @if (Model.HasCurrentOpportunities())
+                {
+                    <partial name="_SegmentCurrentOpportunities" model="@Model.CurrentOpportunities" />
+                }
             </div>
         </div>
     </div>
+
+    <div class="govuk-grid-column-one-third">
+        <partial name="_StaticWriteRawString" model="@Model.NotWhatYoureLookingFor" />
+        <partial name="_SegmentRelatedCareers" model="@Model" />
+        <partial name="_StaticWriteRawString" model="@Model.SkillsAssessment" />
+        <partial name="_StaticWriteRawString" model="@Model.SpeakToAnAdvisor" />
+    </div>
 </div>
+
+<partial name="_FeedbackYesOrNo" />

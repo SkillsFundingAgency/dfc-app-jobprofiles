@@ -1,81 +1,100 @@
 ﻿@model JobProfileHowToBecome
 
-<section id="HowToBecome">
+@{
+    const int itemPosition = 1;
+}
 
-    <h2 class="job-profile-heading">How to become @Model.Title</h2>
+<div class="govuk-accordion__section ">
 
-    <p>You can get into this job through:</p>
+    <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button"
+                  id="job-profile-accordion-with-summary-sections-heading-@itemPosition">
+                How to become @Model.Title
+            </span>
+        </h2>
+    </div>
 
-    <ul>
+    <div class="govuk-accordion__section-summary govuk-body"
+         id="job-profile-accordion-with-summary-sections-summary-@itemPosition">
+    </div>
+
+    <div id="job-profile-accordion-with-summary-sections-content-@itemPosition"
+         class="govuk-accordion__section-content"
+         aria-labelledby="job-profile-accordion-with-summary-sections-heading-@itemPosition">
+
+        <p>You can get into this job through:</p>
+
+        <ul>
+            @if (It.Has(Model.UniversityRoute))
+            {
+                <li>a university degree</li>
+            }
+
+            @if (It.Has(Model.CollegeRoute))
+            {
+                <li>studying at college</li>
+            }
+
+            @if (It.Has(Model.ApprenticeshipRoute))
+            {
+                <li>an apprenticeship</li>
+            }
+
+            @if (It.Has(Model.VolunteeringRoute))
+            {
+                <li>participating in voluntary work</li>
+            }
+
+            @if (It.Has(Model.DirectRoute))
+            {
+                <li>directly applying to a potential employer</li>
+            }
+
+            @if (It.Has(Model.OtherRoute))
+            {
+                <li>specialist courses through employers or professional bodies</li>
+            }
+        </ul>
+
         @if (It.Has(Model.UniversityRoute))
         {
-            <li>a university degree</li>
+            <partial name="_HowToBecomeEducationalRoute" model="@Model.UniversityRoute" />
         }
 
         @if (It.Has(Model.CollegeRoute))
         {
-            <li>studying at college</li>
+            <partial name="_HowToBecomeEducationalRoute" model="@Model.CollegeRoute" />
         }
 
         @if (It.Has(Model.ApprenticeshipRoute))
         {
-            <li>an apprenticeship</li>
+            <partial name="_HowToBecomeEducationalRoute" model="@Model.ApprenticeshipRoute" />
+        }
+
+        @if (It.Has(Model.WorkRoute))
+        {
+            <partial name="_HowToBecomeGeneralRoute" model="@Model.WorkRoute" />
         }
 
         @if (It.Has(Model.VolunteeringRoute))
         {
-            <li>participating in voluntary work</li>
+            <partial name="_HowToBecomeGeneralRoute" model="@Model.VolunteeringRoute" />
         }
 
         @if (It.Has(Model.DirectRoute))
         {
-            <li>directly applying to a potential employer</li>
+            <partial name="_HowToBecomeGeneralRoute" model="@Model.DirectRoute" />
         }
 
         @if (It.Has(Model.OtherRoute))
         {
-            <li>specialist courses through employers or professional bodies</li>
+            <partial name="_HowToBecomeGeneralRoute" model="@Model.OtherRoute" />
         }
-    </ul>
 
-    @if (It.Has(Model.UniversityRoute))
-    {
-        <partial name="_HowToBecomeEducationalRoute" model="@Model.UniversityRoute" />
-    }
-
-    @if (It.Has(Model.CollegeRoute))
-    {
-        <partial name="_HowToBecomeEducationalRoute" model="@Model.CollegeRoute" />
-    }
-
-    @if (It.Has(Model.ApprenticeshipRoute))
-    {
-        <partial name="_HowToBecomeEducationalRoute" model="@Model.ApprenticeshipRoute" />
-    }
-
-    @if (It.Has(Model.WorkRoute))
-    {
-        <partial name="_HowToBecomeGeneralRoute" model="@Model.WorkRoute" />
-    }
-
-    @if (It.Has(Model.VolunteeringRoute))
-    {
-        <partial name="_HowToBecomeGeneralRoute" model="@Model.VolunteeringRoute" />
-    }
-
-    @if (It.Has(Model.DirectRoute))
-    {
-        <partial name="_HowToBecomeGeneralRoute" model="@Model.DirectRoute" />
-    }
-
-    @if (It.Has(Model.OtherRoute))
-    {
-        <partial name="_HowToBecomeGeneralRoute" model="@Model.OtherRoute" />
-    }
-
-    @if (It.Has(Model.MoreInformation))
-    {
-        <partial name="_HowToBecomeMoreInformation" model="@Model.MoreInformation" />
-    }
-
-</section>
+        @if (It.Has(Model.MoreInformation))
+        {
+            <partial name="_HowToBecomeMoreInformation" model="@Model.MoreInformation" />
+        }
+    </div>
+</div>

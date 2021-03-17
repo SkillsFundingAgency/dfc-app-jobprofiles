@@ -231,12 +231,14 @@ namespace DFC.App.JobProfile.Cacheing.Services
             moreInfo.Registration = GetDescription(contentItems, "Registration");
 
             // what it takes (content items)
-            var witAddition = GetDescription(contentItems, "DigitalSkillsLevel");
             whatItTakes.Restrictions = GetDescriptions(contentItems, "Restriction");
             whatItTakes.OtherRequirements = GetDescriptions(contentItems, "OtherRequirement");
-            whatItTakes.Skills = GetDescriptions(contentItems, "ONetSkill")
-                .Concat(new string[] { witAddition })
-                .AsSafeReadOnlyList();
+
+            var witAddition = GetRawText(contentItems, "DigitalSkillsLevel");
+            var skills = GetDescriptions(contentItems, "ONetSkill");
+            whatItTakes.Skills = It.Has(witAddition)
+                ? skills.Concat(new string[] { witAddition }).AsSafeReadOnlyList()
+                : skills.AsSafeReadOnlyList();
 
             // what you'll do (content items)
             whatYouWillDo.WorkingEnvironment = GetDescriptions(contentItems, "WorkingEnvironment");

@@ -1,59 +1,77 @@
 ﻿@model JobProfileWhatItTakes
 
-<section id="WhatItTakes"
-         class="jobprofiles-section">
+@{
+    const int itemPosition = 2;
+}
 
-    <h2 class="job-profile-headings">What it takes</h2>
+<div class="govuk-accordion__section ">
 
-    @if (Model.Skills.Any())
-    {
-        <section class="job-profile-subsection"
-                 id="skills">
+    <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button"
+                  id="job-profile-accordion-with-summary-sections-heading-@itemPosition">
+                What it takes
+            </span>
+        </h2>
+    </div>
 
-            <h3>Skills and knowledge</h3>
+    <div class="govuk-accordion__section-summary govuk-body"
+         id="job-profile-accordion-with-summary-sections-summary-@itemPosition">
+    </div>
 
-            <div class="job-profile-subsection-content">
+    <div id="job-profile-accordion-with-summary-sections-content-@itemPosition"
+         class="govuk-accordion__section-content"
+         aria-labelledby="job-profile-accordion-with-summary-sections-heading-@itemPosition">
 
-                <p>@Model.Preface</p>
+        @if (Model.Skills.Any())
+        {
+            <section class="job-profile-subsection"
+                     id="skills">
 
-                <ul>
-                    @foreach (var skill in Model.Skills)
-                    {
-                        <li>@skill</li>
-                    }
-                </ul>
-            </div>
-        </section>
-    }
+                <h3>Skills and knowledge</h3>
 
-    @if (Model.Restrictions.Any() || Model.OtherRequirements.Any())
-    {
-        <section class="job-profile-subsection"
-                 id="restrictions">
+                <div class="job-profile-subsection-content">
 
-            <h3>Restrictions and Requirements</h3>
+                    <p>@Model.Preface</p>
 
-            <div class="job-profile-subsection-content">
-
-                @if (Model.Restrictions.Any())
-                {
                     <ul>
-                        @foreach (var restriction in Model.Restrictions)
+                        @foreach (var skill in Model.Skills)
                         {
-                            <li>@Html.Raw(restriction)</li>
+                            <li>@skill</li>
                         }
                     </ul>
-                }
+                </div>
+            </section>
+        }
 
-                @if (Model.Restrictions.Any())
-                {
-                    foreach (var requirement in Model.OtherRequirements)
+        @if (Model.Restrictions.Any() || Model.OtherRequirements.Any())
+        {
+            <section class="job-profile-subsection"
+                     id="restrictions">
+
+                <h3>Restrictions and Requirements</h3>
+
+                <div class="job-profile-subsection-content">
+
+                    @if (Model.Restrictions.Any())
                     {
-                        @Html.Raw(requirement)
+                        <ul>
+                            @foreach (var restriction in Model.Restrictions)
+                            {
+                                <li>@Html.Raw(restriction)</li>
+                            }
+                        </ul>
                     }
-                }
-            </div>
-        </section>
-    }
 
-</section>
+                    @if (Model.Restrictions.Any())
+                    {
+                        foreach (var requirement in Model.OtherRequirements)
+                        {
+                            @Html.Raw(requirement)
+                        }
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</div>

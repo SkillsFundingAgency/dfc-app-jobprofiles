@@ -234,7 +234,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             whatItTakes.Restrictions = GetDescriptions(contentItems, "Restriction");
             whatItTakes.OtherRequirements = GetDescriptions(contentItems, "OtherRequirement");
 
-            var witAddition = GetRawText(contentItems, "DigitalSkillsLevel");
+            var witAddition = GetText(contentItems, "DigitalSkillsLevel");
             var skills = GetDescriptions(contentItems, "ONetSkill");
             whatItTakes.Skills = It.Has(witAddition)
                 ? skills.Concat(new string[] { witAddition }).AsSafeReadOnlyList()
@@ -263,14 +263,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
         internal IReadOnlyCollection<string> GetDescriptions(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
             GetContentItems(branches, contentType)
                 .Select(x => x.Description)
-                .ToList();
-
-        internal string GetRawText(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
-            GetRawTexts(branches, contentType).FirstOrDefault();
-
-        internal IReadOnlyCollection<string> GetRawTexts(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
-            GetContentItems(branches, contentType)
-                .Select(x => x.Title)
                 .ToList();
 
         internal string GetText(IEnumerable<ContentApiBranchElement> branches, string contentType) =>

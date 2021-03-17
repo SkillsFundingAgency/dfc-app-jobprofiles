@@ -1,23 +1,39 @@
 ﻿@model JobProfileCareerPath
 
-<section id="CareerPathAndProgression"
-         data-gtm-vis-recent-on-screen-8675592_57="18871038"
-         data-gtm-vis-first-on-screen-8675592_57="18871039"
-         data-gtm-vis-total-visible-time-8675592_57="100"
-         data-gtm-vis-has-fired-8675592_57="1">
+@{
+    const int itemPosition = 4;
+}
 
-    <h2 class="job-profile-heading">Career path and progression</h2>
+<div class="govuk-accordion__section ">
 
-    @Html.Raw(Model.CareerPathAndProgression)
+    <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button"
+                  id="job-profile-accordion-with-summary-sections-heading-@itemPosition">
+                Career path and progression
+            </span>
+        </h2>
+    </div>
 
-    @*@if (Model.ApprecticeshipStandard.Any())
-    {
-        <h3>Apprenticeship Standards</h3>
-        <ul>
-            @foreach (var standard in Model.ApprecticeshipStandard)
+    <div class="govuk-accordion__section-summary govuk-body"
+         id="job-profile-accordion-with-summary-sections-summary-@itemPosition">
+    </div>
+
+    <div id="job-profile-accordion-with-summary-sections-content-@itemPosition"
+         class="govuk-accordion__section-content"
+         aria-labelledby="job-profile-accordion-with-summary-sections-heading-@itemPosition">
+
+        @Html.Raw(Model.CareerPathAndProgression)
+
+        @*@if (Model.ApprecticeshipStandard.Any())
             {
-                <li>@Html.Raw(standard.Content)</li>
-            }
-        </ul>
-    }*@
-</section>
+                <h3>Apprenticeship Standards</h3>
+                <ul>
+                    @foreach (var standard in Model.ApprecticeshipStandard)
+                    {
+                        <li>@Html.Raw(standard.Content)</li>
+                    }
+                </ul>
+            }*@
+    </div>
+</div>

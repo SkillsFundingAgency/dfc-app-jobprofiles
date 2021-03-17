@@ -1,6 +1,8 @@
 ﻿@model CurrentOpportunities
 
 @{
+    const int itemPosition = 5;
+
     var apprenticeships = Enumerable.Empty<OpportunityApprenticeship>();
     var courses = Enumerable.Empty<OpportunityCourse>();
 
@@ -11,67 +13,83 @@
     }
 }
 
-<section id="CurrentOpportunities">
+<div class="govuk-accordion__section ">
 
-    <h2 class="job-profile-headings">Current opportunities</h2>
+    <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button"
+                  id="job-profile-accordion-with-summary-sections-heading-@itemPosition">
+                Current opportunities
+            </span>
+        </h2>
+    </div>
 
-    <div class="govuk-grid-row"
-         id="appGeneric">
+    <div class="govuk-accordion__section-summary govuk-body"
+         id="job-profile-accordion-with-summary-sections-summary-@itemPosition">
+    </div>
 
-        <div class="govuk-grid-column-full">
+    <div id="job-profile-accordion-with-summary-sections-content-@itemPosition"
+         class="govuk-accordion__section-content"
+         aria-labelledby="job-profile-accordion-with-summary-sections-heading-@itemPosition">
 
-            <h3 class="govuk-heading-m">
-                Apprenticeships
-                <span class="govuk-caption-m">In England</span>
-            </h3>
+        <div class="govuk-grid-row"
+             id="appGeneric">
+
+            <div class="govuk-grid-column-full">
+
+                <h3 class="govuk-heading-m">
+                    Apprenticeships
+                    <span class="govuk-caption-m">In England</span>
+                </h3>
+            </div>
+
+            @if (apprenticeships.Any())
+            {
+                foreach (var apprenticeship in apprenticeships)
+                {
+                    <partial name="_NewApprenticeship" model=@apprenticeship />
+                }
+
+                <div class="govuk-grid-column-full govuk-body-m dfc-code-jp-vacancyText">
+                    <a href="https://www.findapprenticeship.service.gov.uk/apprenticeshipsearch">Find apprenticeships near you</a>
+                </div>
+            }
+            else
+            {
+                <div class="govuk-grid-column-full govuk-body dfc-code-jp-novacancyText">
+                    <p>We can't find any apprenticeship vacancies in England for an @Model.Title right now.</p>
+                    <p>The <a href="https://www.gov.uk/apply-apprenticeship">Find an apprenticeship service</a> can help you with your search, send alerts when new apprenticeships become available and has advice on how to apply.</p>
+                </div>
+            }
         </div>
 
-        @if (apprenticeships.Any())
-        {
-            foreach (var apprenticeship in apprenticeships)
+        <div class="govuk-grid-row dfc-code-jp-trainingCourse">
+
+            <div class="govuk-grid-column-full">
+
+                <h3 class="govuk-heading-m">
+                    Courses
+                    <span class="govuk-caption-m">In England</span>
+                </h3>
+            </div>
+
+            @foreach (var course in courses)
             {
-                <partial name="_NewApprenticeship" model=@apprenticeship />
+                <partial name="_NewCourse" model=@course />
             }
 
-            <div class="govuk-grid-column-full govuk-body-m dfc-code-jp-vacancyText">
-                <a href="https://www.findapprenticeship.service.gov.uk/apprenticeshipsearch">Find apprenticeships near you</a>
+            <div class="govuk-grid-column-full govuk-body dfc-code-jp-TrainingCoursesText">
+                <a href="/find-a-course/search">Find courses near you</a>
             </div>
-        }
-        else
-        {
-            <div class="govuk-grid-column-full govuk-body dfc-code-jp-novacancyText">
-                <p>We can't find any apprenticeship vacancies in England for an @Model?.Title right now.</p>
-                <p>The <a href="https://www.gov.uk/apply-apprenticeship">Find an apprenticeship service</a> can help you with your search, send alerts when new apprenticeships become available and has advice on how to apply.</p>
-            </div>
-        }
-    </div>
+        </div>
 
-    <div class="govuk-grid-row dfc-code-jp-trainingCourse">
-
-        <div class="govuk-grid-column-full">
-
+        <div>
             <h3 class="govuk-heading-m">
-                Courses
-                <span class="govuk-caption-m">In England</span>
+                Jobs
+                <span class="govuk-caption-m">In the United Kingdom</span>
             </h3>
-        </div>
 
-        @foreach (var course in courses)
-        {
-            <partial name="_NewCourse" model=@course />
-        }
-
-        <div class="govuk-grid-column-full govuk-body dfc-code-jp-TrainingCoursesText">
-            <a href="/find-a-course/search">Find courses near you</a>
+            <p>The <a href="https://findajob.dwp.gov.uk">Find a job service</a> can help you with your search for jobs and send alerts when new jobs become available.</p>
         </div>
     </div>
-
-    <div>
-        <h3 class="govuk-heading-m">
-            Jobs
-            <span class="govuk-caption-m">In the United Kingdom</span>
-        </h3>
-
-        <p>The <a href="https://findajob.dwp.gov.uk">Find a job service</a> can help you with your search for jobs and send alerts when new jobs become available.</p>
-    </div>
-</section>
+</div>

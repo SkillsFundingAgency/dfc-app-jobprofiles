@@ -1,3 +1,4 @@
 ﻿@model HeroViewModel
 
 <partial name="_Hero" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview)?.Markup />
+<partial name="_LmiLink"/>

@@ -26,7 +26,8 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.Pages
 
         public JobProfilePage NavigagteToJobProfilePage(string profile)
         {
-            this.Context.GetWebDriver().Url = this.Context.GetSettingsLibrary<AppSettings>().AppSettings.AppBaseUrl.ToString();
+            var baseUrl = this.Context.GetSettingsLibrary<AppSettings>().AppSettings.AppBaseUrl.ToString();
+            this.Context.GetWebDriver().Url = baseUrl + profile;
             return this;
         }
     }

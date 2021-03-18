@@ -45,7 +45,7 @@ namespace DFC.App.JobProfile
         public void SetApplicationUrl()
         {
             string appBaseUrl = this.Context.GetSettingsLibrary<AppSettings>().AppSettings.AppBaseUrl.ToString();
-            this.Context.GetSettingsLibrary<AppSettings>().AppSettings.AppBaseUrl = new Uri($"{appBaseUrl}job-profiles");
+            this.Context.GetSettingsLibrary<AppSettings>().AppSettings.AppBaseUrl = new Uri($"{appBaseUrl}job-profiles/");
         }
 
         [BeforeScenario(Order = 3)]

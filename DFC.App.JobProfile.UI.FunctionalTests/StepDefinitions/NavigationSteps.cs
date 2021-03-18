@@ -23,5 +23,14 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
 
         private ScenarioContext Context { get; set; }
 
+        [Given(@"I navigate to the (.*) profile")]
+        public void GivenINavigateToTheMPProfile(string profile)
+        {
+            var jobProfilePage = new JobProfilePage(this.Context);
+            jobProfilePage.NavigagteToJobProfilePage(profile);
+        }
+
+
+
     }
 }

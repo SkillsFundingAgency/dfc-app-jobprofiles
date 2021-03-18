@@ -1,4 +1,6 @@
-﻿<div class="job-profile-feedback js-visible">
+﻿@model BodyViewModel
+
+<div class="job-profile-feedback js-visible">
 
     <div class="job-profile-feedback-start">
         <p>Is this page useful?</p>
@@ -13,10 +15,9 @@
 
     <div class="job-profile-feedback-end-no js-hidden">
         <p>
-            @*TODO: fix me!! this link is hard coded to the /job-profiles/agricultural-inspector*@
             Thank you for your feedback.
             <a id="job-profile-feedback-survey"
-               href="https://www.smartsurvey.co.uk/s/ExploreCareersJobProfileFeedback/?url=https://nationalcareers.service.gov.uk/job-profiles/agricultural-inspector">
+               href="@Model.GetFeedbackSurveyLink()">
                 Click here
             </a>
             if you'd like to let us know how we can improve the service.

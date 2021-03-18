@@ -10,50 +10,51 @@
         <h2 class="govuk-accordion__section-heading">
             <span class="govuk-accordion__section-button"
                   id="job-profile-accordion-with-summary-sections-heading-@itemPosition">
-                How to become @Model.Title
+                How to become
             </span>
         </h2>
-    </div>
-
-    <div class="govuk-accordion__section-summary govuk-body"
-         id="job-profile-accordion-with-summary-sections-summary-@itemPosition">
     </div>
 
     <div id="job-profile-accordion-with-summary-sections-content-@itemPosition"
          class="govuk-accordion__section-content"
          aria-labelledby="job-profile-accordion-with-summary-sections-heading-@itemPosition">
 
-        <p>You can get into this job through:</p>
+        <p>You can get into this role if you:</p>
 
         <ul>
             @if (It.Has(Model.UniversityRoute))
             {
-                <li>a university degree</li>
+                <li>do a university course</li>
             }
 
             @if (It.Has(Model.CollegeRoute))
             {
-                <li>studying at college</li>
+                <li>do a college course</li>
             }
 
             @if (It.Has(Model.ApprenticeshipRoute))
             {
-                <li>an apprenticeship</li>
+                <li>complete an apprenticeship</li>
+            }
+
+            @if (It.Has(Model.WorkRoute))
+            {
+                <li>work your way up</li>
             }
 
             @if (It.Has(Model.VolunteeringRoute))
             {
-                <li>participating in voluntary work</li>
+                <li>participate in voluntary work</li>
             }
 
             @if (It.Has(Model.DirectRoute))
             {
-                <li>directly applying to a potential employer</li>
+                <li>apply directly</li>
             }
 
             @if (It.Has(Model.OtherRoute))
             {
-                <li>specialist courses through employers or professional bodies</li>
+                <li>take specialist training</li>
             }
         </ul>
 

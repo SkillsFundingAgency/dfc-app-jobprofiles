@@ -24,7 +24,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<SegmentCourse, OpportunityCourse>()
                 .ForMember(x => x.Header, s => s.MapFrom(x => new Anchor { Link = x.URL, Text = x.Title }))
                 .ForMember(x => x.Provider, s => s.MapFrom(x => x.Provider))
-                .ForMember(x => x.StartDate, s => s.MapFrom(x => x.StartDate.ToString("ddd dd MM yyyy")))
+                .ForMember(x => x.StartDate, s => s.MapFrom(x => x.StartDate.ToString("ddd dd MMM yyyy")))
                 .ForMember(x => x.Location, s => s.MapFrom(x => x.Town));
             CreateMap<SegmentCurrentOpportunity, CurrentOpportunities>()
                 .ForMember(x => x.Apprenticeships, s => s.MapFrom(x => x.Data.Apprenticeship.Vacancies))

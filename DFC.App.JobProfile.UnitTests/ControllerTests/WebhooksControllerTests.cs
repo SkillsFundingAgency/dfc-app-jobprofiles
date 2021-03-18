@@ -69,7 +69,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.Created);
 
             // act
-            var result = await controller.ReceiveEvents().ConfigureAwait(false);
+            var result = await controller.ReceiveEvents();
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
@@ -91,7 +91,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(expectedResponse);
 
             // act
-            var result = await controller.ReceiveEvents().ConfigureAwait(false);
+            var result = await controller.ReceiveEvents();
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
@@ -113,7 +113,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(expectedResponse);
 
             // act
-            var result = await controller.ReceiveEvents().ConfigureAwait(false);
+            var result = await controller.ReceiveEvents();
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
@@ -135,7 +135,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.AlreadyReported);
 
             // act
-            var result = await controller.ReceiveEvents().ConfigureAwait(false);
+            var result = await controller.ReceiveEvents();
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
@@ -157,7 +157,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).Returns(HttpStatusCode.Conflict);
 
             // act
-            var result = await controller.ReceiveEvents().ConfigureAwait(false);
+            var result = await controller.ReceiveEvents();
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustHaveHappenedOnceExactly();
@@ -177,7 +177,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
             // act
-            await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents().ConfigureAwait(false)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents());
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
@@ -193,7 +193,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
             // act
-            await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents().ConfigureAwait(false)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents());
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
@@ -208,7 +208,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
             // act
-            await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents().ConfigureAwait(false)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents());
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
@@ -223,7 +223,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
             // act
-            await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents().ConfigureAwait(false)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<InvalidDataException>(async () => await controller.ReceiveEvents());
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
@@ -240,7 +240,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests
             controller.HttpContext.Request.Body = BuildStreamFromModel(eventGridEvents);
 
             // act
-            var result = await controller.ReceiveEvents().ConfigureAwait(false);
+            var result = await controller.ReceiveEvents();
 
             // assert
             A.CallTo(() => _mockService.ProcessMessage(A<EventOperation>.Ignored, A<Guid>.Ignored, A<Guid>.Ignored, A<string>.Ignored)).MustNotHaveHappened();

@@ -158,7 +158,7 @@ namespace DFC.App.Services.Common.Tests.Providers
 
             // assert
             // this count will be one more than the assembly fault registrations, as the fallback is a manual mapping.
-            sut.Map.Count.Should().Be(5);
+            sut.Map.Count.Should().Be(6);
         }
 
         [TestMethod]

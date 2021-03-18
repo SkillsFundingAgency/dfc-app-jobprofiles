@@ -22,7 +22,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
         private IMapper _mockMapper;
 
         [Fact]
-        public async Task HealthControllerHealthReturnsSuccessWhenhealthy()
+        public async Task HealthControllerHealthReturnsSuccessWhenHealthy()
         {
             // arrange
             const bool expectedResult = true;
@@ -30,17 +30,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
             A.CallTo(() => _mockService.Ping()).Returns(expectedResult);
 
             // act
-            var result = await controller.Health().ConfigureAwait(false);
+            var result = await controller.Health();
 
             // assert
             A.CallTo(() => _mockService.Ping()).MustHaveHappenedOnceExactly();
 
-            var jsonResult = Assert.IsType<OkObjectResult>(result);
-            var models = Assert.IsAssignableFrom<List<HealthItemViewModel>>(jsonResult.Value);
-
-            models.Count.Should().BeGreaterThan(0);
-            models.First().Service.Should().NotBeNullOrWhiteSpace();
-            models.First().Message.Should().NotBeNullOrWhiteSpace();
+            var jsonResult = Assert.IsType<StatusCodeResult>(result);
+            Assert.Equal((int)HttpStatusCode.OK, jsonResult.StatusCode);
         }
 
         [Fact]
@@ -52,7 +48,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
             A.CallTo(() => _mockService.Ping()).Returns(expectedResult);
 
             // act
-            var result = await controller.Health().ConfigureAwait(false);
+            var result = await controller.Health();
 
             // assert
             A.CallTo(() => _mockService.Ping()).MustHaveHappenedOnceExactly();
@@ -68,7 +64,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
             A.CallTo(() => _mockService.Ping()).Throws<Exception>();
 
             // act
-            var result = await controller.Health().ConfigureAwait(false);
+            var result = await controller.Health();
 
             // assert
             A.CallTo(() => _mockService.Ping()).MustHaveHappenedOnceExactly();

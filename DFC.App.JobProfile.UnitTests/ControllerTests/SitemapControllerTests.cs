@@ -32,7 +32,7 @@
 //            A.CallTo(() => _mockService.GetAllItems()).Returns(expectedResults);
 
 //            // Act
-//            var result = await controller.Sitemap().ConfigureAwait(false);
+//            var result = await controller.Sitemap();
 
 //            // Assert
 //            A.CallTo(() => _mockService.GetAllItems()).MustHaveHappenedOnceExactly();

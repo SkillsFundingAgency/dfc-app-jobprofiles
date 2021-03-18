@@ -42,7 +42,7 @@ namespace DFC.App.Services.Common.Tests.Registration
             var registrations = assembly.GetCustomAttributes<FaultResponseRegistrationAttribute>();
 
             //assert
-            registrations.Count().Should().Be(4);
+            registrations.Count().Should().Be(5);
         }
     }
 }

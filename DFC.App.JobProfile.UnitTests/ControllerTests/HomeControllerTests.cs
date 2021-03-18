@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.ViewSupport.ViewModels;
 using FakeItEasy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Xunit;
@@ -29,7 +30,13 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HomeControllerTests
         {
             _mockLogger = A.Fake<ILogger<HomeController>>();
 
-            return new HomeController(_mockLogger);
+            return new HomeController(_mockLogger)
+            {
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = new DefaultHttpContext()
+                },
+            };
         }
 
     }

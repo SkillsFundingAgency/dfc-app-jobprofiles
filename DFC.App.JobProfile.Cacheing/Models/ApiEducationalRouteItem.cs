@@ -4,7 +4,7 @@ namespace DFC.App.JobProfile.Cacheing.Models
 {
     public sealed class ApiEducationalRouteItem
     {
-        public string Preface { get; set; } = "You may need:";
+        public string Preface { get; set; } = "You'll usually need:";
 
         public IReadOnlyCollection<string> Requirements { get; set; }
 

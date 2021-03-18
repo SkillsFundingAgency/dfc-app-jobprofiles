@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.Services.Common.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +6,8 @@ namespace DFC.App.JobProfile.ViewSupport.ViewModels
 {
     public class BodyViewModel
     {
+        public string PageLocation { get; set; }
+
         public string SmartSurveyJP { get; set; }
 
         public string SpeakToAnAdvisor { get; set; }
@@ -26,6 +27,9 @@ namespace DFC.App.JobProfile.ViewSupport.ViewModels
         public CurrentOpportunities CurrentOpportunities { get; set; }
 
         public IReadOnlyCollection<Anchor> RelatedCareers { get; set; }
+
+        public string GetFeedbackSurveyLink() =>
+            $"{SmartSurveyJP}{PageLocation}";
 
         public bool HasCurrentOpportunities() =>
             CurrentOpportunities?.HasItemsToDisplay() ?? false;

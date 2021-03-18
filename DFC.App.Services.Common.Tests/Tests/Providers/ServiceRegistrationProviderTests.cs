@@ -31,16 +31,6 @@ namespace DFC.App.Services.Common.Tests.Providers
         }
 
         [TestMethod]
-        public void ConstructorFailsWithNullConfigThrows()
-        {
-            // arrange
-            var details = MakeStrictMock<IProvideRegistrationDetails>();
-
-            // act / assert
-            Assert.ThrowsException<ArgumentNullException>(() => new ServiceRegistrationProvider(details, null));
-        }
-
-        [TestMethod]
         public void AddScopedMeetsExpectation()
         {
             // arrange

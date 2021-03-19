@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
+using DFC.App.JobProfile.Data;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ViewModels;
+using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
@@ -13,7 +17,11 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<JobProfileModel, JobProfileModel>();
             CreateMap<JobProfileModel, BodyViewModel>()
                 .ForMember(d => d.SmartSurveyJP, s => s.Ignore());
-            CreateMap<JobProfileModel, HeroViewModel>();
+            CreateMap<JobProfileModel, HeroViewModel>().ForMember(d => d.LmiLink, s => s.MapFrom(a => a));
+
+            CreateMap<JobProfileModel, LmiLinkViewModel>()
+                .ForMember(d => d.CanonicalName, s => s.MapFrom(a => a.CanonicalName))
+                .ForMember(d => d.OverviewSegmentModel, s => s.MapFrom(a => JsonConvert.DeserializeObject<OverviewSegmentModel>(a.Segments.Any(x => x.Segment == JobProfileSegment.Overview) ? a.Segments.FirstOrDefault(x => x.Segment == JobProfileSegment.Overview).JsonV1 : string.Empty)));
 
             CreateMap<JobProfileModel, DocumentViewModel>()
                 .ForMember(d => d.Breadcrumb, s => s.Ignore())

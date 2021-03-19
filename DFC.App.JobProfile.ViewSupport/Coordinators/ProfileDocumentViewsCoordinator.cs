@@ -26,7 +26,8 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
             IProvideCurrentOpportunities opportunities,
             IProvideSharedContent sharedContent,
             IMapper mapper,
-            IFeedbackLinks feedbackLinks,
+            IConfiguredLabourMarketLinks lmiLinks,
+            IConfiguredFeedbackLinks feedbackLinks,
             ICreateHttpResponseMessages response)
         {
             It.IsNull(jobProfiles)
@@ -35,6 +36,8 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
                 .AsGuard<ArgumentNullException>(nameof(opportunities));
             It.IsNull(mapper)
                 .AsGuard<ArgumentNullException>(nameof(mapper));
+            It.IsNull(lmiLinks)
+                .AsGuard<ArgumentNullException>(nameof(lmiLinks));
             It.IsNull(feedbackLinks)
                 .AsGuard<ArgumentNullException>(nameof(feedbackLinks));
             It.IsNull(response)
@@ -44,6 +47,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
             Opportunities = opportunities;
             SharedContent = sharedContent;
             Mapper = mapper;
+            LabourLinks = lmiLinks;
             FeedbackLinks = feedbackLinks;
             Response = response;
         }
@@ -58,7 +62,9 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
 
         internal IMapper Mapper { get; }
 
-        internal IFeedbackLinks FeedbackLinks { get; }
+        internal IConfiguredLabourMarketLinks LabourLinks { get; }
+
+        internal IConfiguredFeedbackLinks FeedbackLinks { get; }
 
         public async Task<HttpResponseMessage> GetSummaryDocuments()
         {
@@ -77,13 +83,16 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
         public async Task<HttpResponseMessage> GetDocumentFor(string occupationName, string address)
         {
             var details = await GetDetailsFor<DocumentViewModel>(occupationName);
+            var candidate = details.Model;
+            var jobProfile = details.Occupation;
 
-            details.Model.Body = await AddSupplementalsTo(details.Model.Body);
-            details.Model.Body = await AddOpportunitiesTo(details.Model.Body, details.Occupation.CanonicalName);
+            candidate.Body = await AddSupplementalsTo(candidate.Body, jobProfile.CanonicalName);
+            candidate.Body = await AddOpportunitiesTo(candidate.Body, jobProfile.CanonicalName);
 
-            details.Model.HeroBanner.Breadcrumb = BuildBreadcrumb(details.Occupation, address);
+            candidate.HeroBanner.LabourMarketInformationLink = GetFullyFormedPathFrom(LabourLinks.URLFormat, jobProfile.SocCode, jobProfile.CanonicalName);
+            candidate.HeroBanner.Breadcrumb = BuildBreadcrumb(jobProfile, address);
 
-            return await Response.Create(HttpStatusCode.OK, details.Model);
+            return await Response.Create(HttpStatusCode.OK, candidate);
         }
 
         public async Task<HttpResponseMessage> GetHeadFor(string occupationName, string address)
@@ -98,9 +107,13 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
         public async Task<HttpResponseMessage> GetHeroBannerFor(string occupationName, string address)
         {
             var details = await GetDetailsFor<HeroViewModel>(occupationName);
-            details.Model.Breadcrumb = BuildBreadcrumb(details.Occupation, address);
+            var candidate = details.Model;
+            var jobProfile = details.Occupation;
 
-            return await Response.Create(HttpStatusCode.OK, details.Model);
+            candidate.LabourMarketInformationLink = GetFullyFormedPathFrom(LabourLinks.URLFormat, jobProfile.SocCode, jobProfile.CanonicalName);
+            candidate.Breadcrumb = BuildBreadcrumb(jobProfile, address);
+
+            return await Response.Create(HttpStatusCode.OK, candidate);
         }
 
         public async Task<HttpResponseMessage> GetBodyFor(Guid occupationID)
@@ -112,7 +125,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
 
             var model = Mapper.Map<BodyViewModel>(jobProfile);
 
-            model = await AddSupplementalsTo(model);
+            model = await AddSupplementalsTo(model, jobProfile.CanonicalName);
             model = await AddOpportunitiesTo(model, jobProfile.CanonicalName);
 
             return await Response.Create(HttpStatusCode.OK, model);
@@ -129,7 +142,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
             return (Mapper.Map<TModel>(jobProfile), jobProfile);
         }
 
-        internal async Task<BodyViewModel> AddSupplementalsTo(BodyViewModel candidate)
+        internal async Task<BodyViewModel> AddSupplementalsTo(BodyViewModel candidate, string occupationName)
         {
             var sharedContent = await SharedContent.GetAllItems();
 
@@ -137,7 +150,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
             candidate.SpeakToAnAdvisor = GetContent(sharedContent, "speak-to-an-adviser-2");
             candidate.NotWhatYoureLookingFor = GetContent(sharedContent, "not-what-youre-looking-for");
 
-            candidate.SmartSurveyJP = FeedbackLinks.SmartSurveyJP;
+            candidate.SmartSurveyJP = GetFullyFormedPathFrom(FeedbackLinks.URLFormat, occupationName);
 
             return candidate;
         }
@@ -161,5 +174,8 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
 
         internal string GetContent(IReadOnlyCollection<StaticItemCached> items, string candidate) =>
             items.FirstOrDefault(x => x.CanonicalName == candidate)?.Content;
+
+        internal string GetFullyFormedPathFrom(string format, params string[] parameters) =>
+            string.Format(format, parameters);
     }
 }

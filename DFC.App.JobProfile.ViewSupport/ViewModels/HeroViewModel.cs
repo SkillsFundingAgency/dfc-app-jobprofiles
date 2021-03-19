@@ -18,5 +18,7 @@ namespace DFC.App.JobProfile.ViewSupport.ViewModels
         public JobProfileOverview OverviewSegment { get; set; }
 
         public Breadcrumb Breadcrumb { get; set; }
+
+        public string LabourMarketInformationLink { get; set; }
     }
 }

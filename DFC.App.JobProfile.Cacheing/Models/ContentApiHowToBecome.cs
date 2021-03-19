@@ -2,8 +2,6 @@
 {
     public sealed class ContentApiHowToBecome
     {
-        public string Title { get; set; }
-
         public ApiEducationalRoute UniversityRoute { get; set; }
 
         public ApiEducationalRoute CollegeRoute { get; set; }

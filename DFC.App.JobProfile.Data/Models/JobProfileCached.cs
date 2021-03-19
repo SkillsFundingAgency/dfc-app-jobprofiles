@@ -31,6 +31,8 @@ namespace DFC.App.JobProfile.Data.Models
 
         public string Keywords { get; set; }
 
+        public string SocCode { get; set; }
+
         public JobProfileOverview Overview { get; set; }
 
         public JobProfileWhatYouWillDo WhatYouWillDo { get; set; }

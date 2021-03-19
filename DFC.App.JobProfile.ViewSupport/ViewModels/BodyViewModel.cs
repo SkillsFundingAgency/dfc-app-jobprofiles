@@ -28,9 +28,6 @@ namespace DFC.App.JobProfile.ViewSupport.ViewModels
 
         public IReadOnlyCollection<Anchor> RelatedCareers { get; set; }
 
-        public string GetFeedbackSurveyLink() =>
-            $"{SmartSurveyJP}{PageLocation}";
-
         public bool HasCurrentOpportunities() =>
             CurrentOpportunities?.HasItemsToDisplay() ?? false;
 

@@ -38,6 +38,5 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HomeControllerTests
                 },
             };
         }
-
     }
 }

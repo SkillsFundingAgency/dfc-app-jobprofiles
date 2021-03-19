@@ -34,11 +34,11 @@ namespace DFC.App.JobProfile.Cacheing.Models
 
         public string AlternativeTitle { get; set; }
 
-        public string TitleOptions { get; set; }
-
         public string Keywords { get; set; }
 
         #region job profile overview mapping
+
+        public string SocCode { get; set; }
 
         public decimal MinimumHours { get; set; }
 

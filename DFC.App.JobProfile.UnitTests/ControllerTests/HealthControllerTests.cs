@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Providers;
-using DFC.App.JobProfile.ViewSupport.ViewModels;
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,24 +16,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
         private ILogger<HealthController> _mockLogger;
         private IProvideJobProfiles _mockService;
         private IMapper _mockMapper;
-
-        [Fact]
-        public async Task HealthControllerHealthReturnsSuccessWhenHealthy()
-        {
-            // arrange
-            const bool expectedResult = true;
-            var controller = BuildHealthController();
-            A.CallTo(() => _mockService.Ping()).Returns(expectedResult);
-
-            // act
-            var result = await controller.Health();
-
-            // assert
-            A.CallTo(() => _mockService.Ping()).MustHaveHappenedOnceExactly();
-
-            var jsonResult = Assert.IsType<StatusCodeResult>(result);
-            Assert.Equal((int)HttpStatusCode.OK, jsonResult.StatusCode);
-        }
 
         [Fact]
         public async Task HealthControllerHealthReturnsServiceUnavailableWhenUnhealthy()

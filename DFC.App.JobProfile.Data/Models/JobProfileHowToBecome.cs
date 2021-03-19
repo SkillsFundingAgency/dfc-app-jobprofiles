@@ -2,8 +2,6 @@
 {
     public class JobProfileHowToBecome
     {
-        public string Title { get; set; }
-
         public EducationalRoute UniversityRoute { get; set; }
 
         public EducationalRoute CollegeRoute { get; set; }

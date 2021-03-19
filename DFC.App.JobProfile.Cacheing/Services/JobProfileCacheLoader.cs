@@ -154,17 +154,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
             }
         }
 
-        internal string ConjunctiveMapping(string candidate, string title) =>
-            candidate switch
-            {
-                "as_defined" => title.ToLowerInvariant(),
-                "no_title" => string.Empty,
-                "no_prefix" => title.ToLowerInvariant(),
-                "prefix_with_a" => $"a {title.ToLowerInvariant()}",
-                "prefix_with_an" => $"an {title.ToLowerInvariant()}",
-                _ => throw new NotImplementedException()
-            };
-
         internal ContentApiRootElement OrganiseSegments(ContentApiRootElement apiDataModel)
         {
             var contentItems = apiDataModel.ContentItems.Flatten(s => s.ContentItems);
@@ -172,8 +161,6 @@ namespace DFC.App.JobProfile.Cacheing.Services
             // how to become (root items)
             var moreInfo = new ContentApiHowToBecomeMoreInformation();
             var howToBecome = new ContentApiHowToBecome();
-
-            howToBecome.Title = ConjunctiveMapping(apiDataModel.TitleOptions, apiDataModel.Title);
 
             moreInfo.CareerTips = apiDataModel.HowToBecomeCareerTips;
             moreInfo.ProfessionalBodies = apiDataModel.HowToBecomeProfessionalBodies;
@@ -206,7 +193,8 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 return apiDataModel;
             }
 
-            // root element (content items)
+            // root element (content stubs)
+            apiDataModel.SocCode = GetRawText(contentItems, "SOCCode");
             apiDataModel.RelatedCareers = Make5RelatedCareers(contentItems);
 
             // how to become (content items)
@@ -255,6 +243,14 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 .Select(x => x.Description)
                 .ToList();
 
+        internal string GetRawText(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            GetRawTexts(branches, contentType).FirstOrDefault();
+
+        internal IReadOnlyCollection<string> GetRawTexts(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
+            GetContentItems(branches, contentType)
+                .Select(x => x.Title)
+                .ToList();
+
         internal string GetText(IEnumerable<ContentApiBranchElement> branches, string contentType) =>
             GetTexts(branches, contentType).FirstOrDefault();
 
@@ -286,7 +282,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
             var route = new ApiEducationalRoute();
             var item = new ApiEducationalRouteItem();
 
-            route.Topic = contentTopic;
+            route.Topic = GetRouteTopic(contentTopic);
             route.RelevantSubjects = content.RelevantSubjects;
             route.FurtherInformation = content.FurtherInformation;
             route.RequirementsAndReading = item;
@@ -307,10 +303,19 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             var route = new ApiGeneralRoute();
 
-            route.Topic = contentTopic;
+            route.Topic = GetRouteTopic(contentTopic);
             route.Descriptions = GetDescriptions(branches, $"{contentTopic}Route");
 
             return route;
         }
+
+        internal string GetRouteTopic(string candidate) =>
+            candidate switch
+            {
+                "Direct" => "Direct Application",
+                "Volunteering" => "Volunteering and work experience",
+                "Other" => "Specialist training",
+                _ => candidate,
+            };
     }
 }

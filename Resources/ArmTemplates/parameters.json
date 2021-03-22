@@ -88,6 +88,9 @@
         },
         "apimContentApiKey": {
             "value": "__apimContentApiKey__"
+        },
+        "LmiBaseEndPoint": {
+            "value": "__LmiBaseEndPoint__"
         }
     }
 }

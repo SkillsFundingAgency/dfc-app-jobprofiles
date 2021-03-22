@@ -67,6 +67,9 @@
         },
         "apimContentApiKey": {
             "value": "FakeKey"
+        },
+        "LmiBaseEndPoint": {
+            "value": "https://foo"
         }
     }
 }

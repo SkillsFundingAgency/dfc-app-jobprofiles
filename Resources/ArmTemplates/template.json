@@ -119,6 +119,9 @@
         },
         "apimContentApiKey": {
             "type": "securestring"
+        },
+        "LmiBaseEndPoint": {
+            "type": "string"
         }
     },
     "variables": {
@@ -486,6 +489,10 @@
                             {
                                 "name": "CmsApiClientOptions__SummaryEndpoint",
                                 "value": "content/getcontent/api/execute/jobprofile"
+                            },
+                            {
+                                "name": "LmiBaseEndPoint",
+                                "value": "[parameters('LmiBaseEndPoint')]"
                             }
 
                         ]

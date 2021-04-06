@@ -4,6 +4,9 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <CodeAnalysisRuleSet>../DFC.Digital.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\stylecop.json" />
     </ItemGroup>

@@ -11,6 +11,9 @@
 		-->
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Views\Home\**" />
 		<Content Remove="Views\Home\**" />

@@ -35,8 +35,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<IGraphItem, ContentApiBranchElement>();
 
-            CreateMap<ContentApiRootElement, JobProfileOverview>();
-            CreateMap<ContentApiRootElement, JobProfileCached>()
+            CreateMap<ContentApiJobProfile, JobProfileOverview>();
+            CreateMap<ContentApiJobProfile, JobProfileCached>()
                 .ForPath(d => d.Overview, s => s.MapFrom(model => model));
 
             CreateMap<ContentApiHowToBecome, JobProfileHowToBecome>();

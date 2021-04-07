@@ -5,7 +5,7 @@ namespace DFC.App.JobProfile.ContentAPI.Models
     internal sealed class GraphRelationship :
         IGraphRelation
     {
-        public GraphRelationship(string relationship, IReadOnlyCollection<IGraphItem> items, TypeOfRelationship type = TypeOfRelationship.Singular)
+        public GraphRelationship(string relationship, IReadOnlyCollection<IGraphItem> items, TypeOfRelationship type = TypeOfRelationship.One)
         {
             Relationship = relationship;
             RelationshipType = type;

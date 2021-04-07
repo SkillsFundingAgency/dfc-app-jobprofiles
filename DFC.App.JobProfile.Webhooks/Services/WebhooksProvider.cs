@@ -69,7 +69,7 @@ namespace DFC.App.JobProfile.Webhooks.Services
 
         public async Task<HttpStatusCode> ProcessContentItem(Uri url, Guid contentItemId)
         {
-            var apiDataModel = await _graphContent.GetComposedItem<ContentApiRootElement, ContentApiBranchElement>(url);
+            var apiDataModel = await _graphContent.GetContentItem<ContentApiJobProfile, ContentApiBranchElement>(url);
             var contentPageModel = _mapper.Map<JobProfileCached>(apiDataModel);
 
             if (contentPageModel == null)

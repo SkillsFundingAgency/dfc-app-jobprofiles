@@ -1,4 +1,5 @@
-﻿using DFC.App.Services.Common.Registration;
+﻿using DFC.App.Services.Common.Helpers;
+using DFC.App.Services.Common.Registration;
 using Microsoft.Azure.EventGrid;
 using Microsoft.Azure.EventGrid.Models;
 using Microsoft.Extensions.Logging;
@@ -26,7 +27,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
             _ = topicEndpoint ?? throw new ArgumentNullException(nameof(topicEndpoint));
             _ = topicKey ?? throw new ArgumentNullException(nameof(topicKey));
 
-            _logger.LogInformation($"Sending Event Grid message for: {logMessage}");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Sending Event Grid message for: {logMessage}");
 
             try
             {
@@ -36,11 +37,11 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
                 await client.PublishEventsAsync(topicHostname, eventGridEvents.ToList());
 
-                _logger.LogInformation($"Sent Event Grid message for: {logMessage}");
+                _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Sent Event Grid message for: {logMessage}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Exception sending Event Grid message for: {logMessage}");
+                _logger.LogError(ex, $"{Utils.LoggerMethodNamePrefix()} Exception sending Event Grid message for: {logMessage}");
             }
         }
     }

@@ -34,90 +34,102 @@ namespace DFC.App.JobProfile.Cacheing.Services
             _messageService = eventMessageService;
         }
 
-        public override async Task Load(CancellationToken stoppingToken)
+        public override async Task LoadJobProfileCache(CancellationToken stoppingToken)
         {
-            Logger.LogInformation("Reload cache started, get summary list");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Reload cache started, getting list of Job Profile summaries");
 
-            var summaryList = await GraphContent.GetSummaryItems<ContentApiSummaryItem>();
+            var jobProfileSummaries = await GraphContent.GetSummaryItems<ContentApiSummaryItem>();
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Getting list of job profile summaries completed");
 
-            Logger.LogInformation("Get summary list completed");
-
-            if (summaryList.Any())
+            if (jobProfileSummaries.Any())
             {
-                await ProcessSummaryList(summaryList, stoppingToken);
-
-                await DeleteStaleCacheEntries(summaryList, stoppingToken);
+                await GetIndividualJobProfileContentItemsAndStoreInCache(jobProfileSummaries, stoppingToken);
+                await DeleteStaleCacheEntries(jobProfileSummaries, stoppingToken);
             }
 
-            Logger.LogInformation("Reload cache completed");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Reload of Job Profile cache completed");
         }
 
-        internal async Task ProcessSummaryList(
-            IReadOnlyCollection<IGraphSummaryItem> summaryList,
+        internal async Task GetIndividualJobProfileContentItemsAndStoreInCache(
+            IReadOnlyCollection<IGraphSummaryItem> jobProfileSummaries,
             CancellationToken stoppingToken)
         {
-            Logger.LogInformation("Process summary list started");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Iterating job profile summary list started");
 
-            foreach (var item in summaryList.OrderByDescending(o => o.Published))
+            foreach (var jobProfileSummary in jobProfileSummaries.OrderByDescending(o => o.ModifiedDateTime))
             {
                 if (stoppingToken.IsCancellationRequested)
                 {
-                    Logger.LogWarning("Process summary list cancelled");
+                    Logger.LogWarning($"{Utils.LoggerMethodNamePrefix()} Iterating job profile summary list cancelled");
+
                     return;
                 }
 
-                await GetAndSaveItem(item);
+                Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Getting and caching job profile - {jobProfileSummary.CanonicalName} - {jobProfileSummary.Uri}");
+
+                await GetJobProfileFromContentAPIAndStoreInCache(jobProfileSummary);
             }
 
-            Logger.LogInformation("Process summary list completed");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Iterating job profile summary list completed");
         }
 
-        internal async Task GetAndSaveItem(IGraphSummaryItem item)
+        internal async Task GetJobProfileFromContentAPIAndStoreInCache(IGraphSummaryItem jobProfileSummary)
         {
-            _ = item ?? throw new ArgumentNullException(nameof(item));
+            var contentApiJobProfile = await GetJobProfileFromContentAPI(jobProfileSummary);
+            var cacheJobProfile = Mapper.Map<JobProfileCached>(contentApiJobProfile);
+            await StoreJobProfileInCache(jobProfileSummary, cacheJobProfile);
+        }
 
-            Logger.LogInformation($"Get details for {item.CanonicalName} - {item.Uri}");
+        internal async Task<ContentApiJobProfile> GetJobProfileFromContentAPI(IGraphSummaryItem jobProfileSummary)
+        {
+            _ = jobProfileSummary ?? throw new ArgumentNullException(nameof(jobProfileSummary));
 
-            var apiDataModel = await GraphContent
-                .GetComposedItem<ContentApiRootElement, ContentApiBranchElement>(item.Uri);
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Getting job profile - {jobProfileSummary.CanonicalName} - {jobProfileSummary.Uri}");
 
-            if (apiDataModel == null || apiDataModel.IsFaultedState())
+            var contentApiJobProfile = await GraphContent.GetContentItem<ContentApiJobProfile, ContentApiBranchElement>(jobProfileSummary.Uri);
+            if (contentApiJobProfile == null || contentApiJobProfile.IsFaultedState())
             {
-                Logger.LogWarning($"No details returned from {item.CanonicalName} - {item.Uri}");
-                return;
+                var errorMessage = $"{Utils.LoggerMethodNamePrefix()} *** JOB PROFILE NOT FOUND ON CONTENT API *** - {jobProfileSummary.CanonicalName} - {jobProfileSummary.Uri}";
+                Logger.LogWarning(errorMessage);
+
+                throw new ArgumentException(errorMessage);
             }
 
-            apiDataModel = OrganiseSegments(apiDataModel);
-            var contentPageModel = Mapper.Map<JobProfileCached>(apiDataModel);
+            contentApiJobProfile = PopulateJobProfileSections(contentApiJobProfile);
 
-            Logger.LogInformation($"Updating cache with {item.CanonicalName} - {item.Uri}");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Returning job profile - {jobProfileSummary.CanonicalName} - {jobProfileSummary.Uri}");
 
-            var result = await _messageService.UpdateAsync(contentPageModel);
+            return contentApiJobProfile;
+        }
 
+        internal async Task StoreJobProfileInCache(IGraphSummaryItem jobProfileSummary, JobProfileCached jobProfileCacheModel)
+        {
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Updating job profile cache with {jobProfileSummary.CanonicalName} - {jobProfileSummary.Uri}");
+
+            var result = await _messageService.UpdateAsync(jobProfileCacheModel);
             if (result == HttpStatusCode.NotFound)
             {
-                Logger.LogInformation($"Does not exist, creating cache with {item.CanonicalName} - {item.Uri}");
+                Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Job profile not in cache. Creating cache entry for {jobProfileSummary.CanonicalName} - {jobProfileSummary.Uri}");
 
-                result = await _messageService.CreateAsync(contentPageModel);
-
+                result = await _messageService.CreateAsync(jobProfileCacheModel);
                 if (result != HttpStatusCode.Created)
                 {
-                    Logger.LogError($"Cache create error status {result} from {item.CanonicalName} - {item.Uri}");
+                    Logger.LogError($"{Utils.LoggerMethodNamePrefix()} *** FAILED TO CREATE JOB PROFILE CACHE ENTRY FOR {jobProfileSummary.CanonicalName} - {jobProfileSummary.Uri}  ERROR STATUS {result}***");
                 }
             }
         }
 
         internal async Task DeleteStaleCacheEntries(
-            IReadOnlyCollection<IGraphSummaryItem> summaryList,
+            IReadOnlyCollection<IGraphSummaryItem> graphSummaryItems,
             CancellationToken stoppingToken)
         {
-            Logger.LogInformation("Delete stale cache items started");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Delete stale cache items started");
 
             var cachedContentPages = (await _messageService.GetAllCachedCanonicalNamesAsync()).AsSafeReadOnlyList();
 
             if (cachedContentPages.Any())
             {
-                var hashedSummaryList = new HashSet<Uri>(summaryList.Select(p => p.Uri));
+                var hashedSummaryList = new HashSet<Uri>(graphSummaryItems.Select(p => p.Uri));
                 var staleContentPages = cachedContentPages.Where(p => !hashedSummaryList.Contains(p.Uri)).ToList();
 
                 if (staleContentPages.Any())
@@ -126,7 +138,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 }
             }
 
-            Logger.LogInformation("Delete stale cache items completed");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Delete stale cache items completed");
         }
 
         internal async Task DeleteStaleItems(
@@ -139,70 +151,65 @@ namespace DFC.App.JobProfile.Cacheing.Services
             {
                 if (stoppingToken.IsCancellationRequested)
                 {
-                    Logger.LogWarning("Delete stale cache items cancelled");
+                    Logger.LogWarning($"{Utils.LoggerMethodNamePrefix()} Delete stale cache items cancelled");
                     return;
                 }
 
-                Logger.LogInformation($"Deleting cache with {staleContentPage.CanonicalName} - {staleContentPage.Id}");
+                Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Deleting cache with {staleContentPage.CanonicalName} - {staleContentPage.Id}");
 
                 var deletionResult = await _messageService.DeleteAsync(staleContentPage.Id);
 
                 if (deletionResult != HttpStatusCode.OK)
                 {
-                    Logger.LogError($"Cache delete error status {deletionResult} from {staleContentPage.CanonicalName} - {staleContentPage.Id}");
+                    Logger.LogError($"{Utils.LoggerMethodNamePrefix()} Cache delete error status {deletionResult} from {staleContentPage.CanonicalName} - {staleContentPage.Id}");
                 }
             }
         }
 
-        internal ContentApiRootElement OrganiseSegments(ContentApiRootElement apiDataModel)
+        internal ContentApiJobProfile PopulateJobProfileSections(ContentApiJobProfile contentApiJobProfile)
         {
-            var contentItems = apiDataModel.ContentItems.Flatten(s => s.ContentItems);
+            var contentItems = contentApiJobProfile.ContentItems.Flatten(s => s.ContentItems);
 
             // how to become (root items)
             var moreInfo = new ContentApiHowToBecomeMoreInformation();
             var howToBecome = new ContentApiHowToBecome();
 
-            moreInfo.CareerTips = apiDataModel.HowToBecomeCareerTips;
-            moreInfo.ProfessionalBodies = apiDataModel.HowToBecomeProfessionalBodies;
-            moreInfo.FurtherInformation = apiDataModel.HowToBecomeFurtherInformation;
+            moreInfo.CareerTips = contentApiJobProfile.HowToBecomeCareerTips;
+            moreInfo.ProfessionalBodies = contentApiJobProfile.HowToBecomeProfessionalBodies;
+            moreInfo.FurtherInformation = contentApiJobProfile.HowToBecomeFurtherInformation;
 
             howToBecome.MoreInformation = moreInfo;
-            apiDataModel.HowToBecome = howToBecome;
+            contentApiJobProfile.HowToBecome = howToBecome;
 
             // what it takes (root items)
             var whatItTakes = new ContentApiWhatItTakes();
-
-            apiDataModel.WhatItTakes = whatItTakes;
+            contentApiJobProfile.WhatItTakes = whatItTakes;
 
             // what you'll do (root items)
             var whatYouWillDo = new ContentApiWhatYouWillDo();
-
-            whatYouWillDo.DayToDayTasks = apiDataModel.WhatYouWillDoDayToDayTasks;
-
-            apiDataModel.WhatYouWillDo = whatYouWillDo;
+            whatYouWillDo.DayToDayTasks = contentApiJobProfile.WhatYouWillDoDayToDayTasks;
+            contentApiJobProfile.WhatYouWillDo = whatYouWillDo;
 
             // career path (root items)
             var careerPathSegment = new ContentApiCareerPath();
-            careerPathSegment.CareerPathAndProgression = apiDataModel.CareerPathAndProgression;
-
-            apiDataModel.CareerPath = careerPathSegment;
+            careerPathSegment.CareerPathAndProgression = contentApiJobProfile.CareerPathAndProgression;
+            contentApiJobProfile.CareerPath = careerPathSegment;
 
             if (!contentItems.Any())
             {
-                Logger.LogError($"No Content Items for '{apiDataModel.CanonicalName}'");
-                return apiDataModel;
+                Logger.LogError($"{Utils.LoggerMethodNamePrefix()} No Content Items for '{contentApiJobProfile.CanonicalName}'");
+                return contentApiJobProfile;
             }
 
             // root element (content stubs)
-            apiDataModel.SocCode = GetRawText(contentItems, "SOCCode");
-            apiDataModel.RelatedCareers = Make5RelatedCareers(contentItems);
+            contentApiJobProfile.SocCode = GetRawText(contentItems, "SOCCode");
+            contentApiJobProfile.RelatedCareers = Make5RelatedCareers(contentItems);
 
             // how to become (content items)
             howToBecome.DirectRoute = GetGeneralRoute(contentItems, "Direct");
             howToBecome.OtherRoute = GetGeneralRoute(contentItems, "Other");
             howToBecome.VolunteeringRoute = GetGeneralRoute(contentItems, "Volunteering");
             howToBecome.WorkRoute = GetGeneralRoute(contentItems, "Work");
-
             howToBecome.ApprenticeshipRoute = GetEducationalRoute(contentItems, "Apprenticeship");
             howToBecome.CollegeRoute = GetEducationalRoute(contentItems, "College");
             howToBecome.UniversityRoute = GetEducationalRoute(contentItems, "University");
@@ -226,7 +233,7 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
             // career path (content items)
             // careerPathSegment.ApprenticeshipStandard = GetDescriptions(contentItems, "ApprenticeshipStandard")
-            return apiDataModel;
+            return contentApiJobProfile;
         }
 
         internal IReadOnlyCollection<ContentApiBranchElement> GetContentItems(IEnumerable<ContentApiBranchElement> branches, string contentType) =>

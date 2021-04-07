@@ -19,20 +19,20 @@ namespace DFC.App.JobProfile.ContentAPI.Services
             _options = options;
         }
 
-        public IReadOnlyCollection<IGraphRelation> GetRelations(IContainGraphCuries container) =>
-            GetRelationsFrom(container.Curies);
+        public IReadOnlyCollection<IGraphRelation> GetContentItemLinkedItems(IContainGraphLink container) =>
+            GetLinkedItem(container.ContentLinks);
 
-        internal IReadOnlyCollection<IGraphRelation> GetRelationsFrom(JObject curies)
+        internal IReadOnlyCollection<IGraphRelation> GetLinkedItem(JObject links)
         {
             var contentLinks = new List<IGraphRelation>();
-            var baseReference = GetBaseReference(curies);
+            var baseReference = GetBaseReference(links);
 
             if (baseReference == null)
             {
                 return contentLinks;
             }
 
-            foreach (var (key, token) in curies)
+            foreach (var (key, token) in links)
             {
                 if (token == null
                     || !key.StartsWith(baseReference.Name, StringComparison.InvariantCultureIgnoreCase))
@@ -40,23 +40,23 @@ namespace DFC.App.JobProfile.ContentAPI.Services
                     continue;
                 }
 
-                var candidate = key.Replace($"{baseReference.Name}:", string.Empty, StringComparison.InvariantCultureIgnoreCase);
+                var relationship = key.Replace($"{baseReference.Name}:", string.Empty, StringComparison.InvariantCultureIgnoreCase);
 
-                if (!_options.SupportedRelationships.Any(x => x.Equals(candidate, StringComparison.InvariantCultureIgnoreCase)))
+                if (!_options.SupportedRelationships.Any(x => x.Equals(relationship, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     continue;
                 }
 
                 if (token is JArray)
                 {
-                    contentLinks.Add(GetRelationshipFrom(token, candidate, baseReference.Href));
+                    contentLinks.Add(GetRelationshipFrom(token, relationship, baseReference.Href));
                 }
                 else
                 {
                     var child = token.ToObject<GraphItem>();
                     child.Uri = new Uri($"{baseReference.Href}{child.Href}");
 
-                    contentLinks.Add(new GraphRelationship(candidate, new List<IGraphItem> { child }));
+                    contentLinks.Add(new GraphRelationship(relationship, new List<IGraphItem> { child }));
                 }
             }
 
@@ -72,7 +72,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
 
             links.ForEach(x => x.Uri = new Uri($"{baseHref}{x.Href}"));
 
-            return new GraphRelationship(relationshipKey, links, TypeOfRelationship.Plural);
+            return new GraphRelationship(relationshipKey, links, TypeOfRelationship.Many);
         }
     }
 }

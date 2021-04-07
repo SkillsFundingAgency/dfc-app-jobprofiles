@@ -9,7 +9,7 @@ namespace DFC.App.JobProfile.Cacheing.Models
     // i've left json property mappings in to re-enforce
     // where the data values are coming from
     public class ContentApiBranchElement :
-        IBranchContentItem<ContentApiBranchElement>,
+        ILinkedContentItem<ContentApiBranchElement>,
         IContentApiBranchElement
     {
         [JsonProperty("id")]
@@ -24,7 +24,7 @@ namespace DFC.App.JobProfile.Cacheing.Models
         public DateTime Published { get; set; } = DateTime.UtcNow;
 
         [JsonProperty("_links")]
-        public JObject Curies { get; set; }
+        public JObject ContentLinks { get; set; }
 
         public ICollection<ContentApiBranchElement> ContentItems { get; set; } = new List<ContentApiBranchElement>();
 

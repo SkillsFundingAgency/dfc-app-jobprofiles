@@ -10,12 +10,12 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         Task<IReadOnlyCollection<TApiModel>> GetSummaryItems<TApiModel>()
             where TApiModel : class, IGraphSummaryItem;
 
-        Task<TRoot> GetComposedItem<TRoot, TBranch>(Uri uri)
+        Task<TRoot> GetContentItem<TRoot, TBranch>(Uri uri)
             where TRoot : class, IRootContentItem<TBranch>, new()
-            where TBranch : class, IBranchContentItem<TBranch>, new();
+            where TBranch : class, ILinkedContentItem<TBranch>, new();
 
-        Task<TBranch> GetBranchItem<TBranch>(Uri uri)
-            where TBranch : class, IBranchContentItem<TBranch>, new();
+        Task<TBranch> GetLinkedItem<TBranch>(Uri uri)
+            where TBranch : class, ILinkedContentItem<TBranch>, new();
 
         Task<IReadOnlyCollection<TApiModel>> GetStaticItems<TApiModel>()
             where TApiModel : class;

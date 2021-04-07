@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.ViewSupport.ViewModels;
+using DFC.App.Services.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -17,7 +18,7 @@ namespace DFC.App.JobProfile.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            _logger.LogInformation($"{nameof(Error)} has been called");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} has been called");
 
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }

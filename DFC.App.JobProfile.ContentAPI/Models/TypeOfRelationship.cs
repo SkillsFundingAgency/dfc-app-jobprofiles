@@ -2,8 +2,7 @@
 {
     public enum TypeOfRelationship
     {
-        Singular,
-
-        Plural,
+        One,
+        Many,
     }
 }

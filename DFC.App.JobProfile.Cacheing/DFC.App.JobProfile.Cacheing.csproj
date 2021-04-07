@@ -31,7 +31,6 @@
         <ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Models\" />
         <Folder Include="Services\" />
         <Folder Include="Registration\" />
     </ItemGroup>

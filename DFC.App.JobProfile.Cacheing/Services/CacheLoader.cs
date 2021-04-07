@@ -33,9 +33,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
         internal IProvideSafeOperations SafeOperation { get; }
 
         Task ILoadCacheData.Reload(CancellationToken stoppingToken) =>
-            SafeOperation.Try(() => Load(stoppingToken), x => LoadError(x));
+            SafeOperation.Try(() => LoadJobProfileCache(stoppingToken), x => LoadError(x));
 
-        public abstract Task Load(CancellationToken stoppingToken);
+        public abstract Task LoadJobProfileCache(CancellationToken stoppingToken);
 
         internal Task LoadError(Exception exception)
         {

@@ -1,4 +1,5 @@
-﻿using DFC.App.Services.Common.Registration;
+﻿using DFC.App.Services.Common.Helpers;
+using DFC.App.Services.Common.Registration;
 using DFC.Compui.Cosmos.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
@@ -47,7 +48,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
             var response = await _pageService.UpsertAsync(upsertDocumentModel);
 
-            _logger.LogInformation($"{nameof(CreateAsync)} has upserted content for: {upsertDocumentModel.CanonicalName} with response code {response}");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} has upserted content for: {upsertDocumentModel.CanonicalName} with response code {response}");
 
             return response;
         }
@@ -69,7 +70,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
             var response = await _pageService.UpsertAsync(upsertDocumentModel);
 
-            _logger.LogInformation($"{nameof(UpdateAsync)} has upserted content for: {upsertDocumentModel.CanonicalName} with response code {response}");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} has upserted content for: {upsertDocumentModel.CanonicalName} with response code {response}");
 
             return response;
         }
@@ -80,12 +81,12 @@ namespace DFC.App.JobProfile.EventProcessing.Services
 
             if (isDeleted)
             {
-                _logger.LogInformation($"{nameof(DeleteAsync)} has deleted content for document Id: {id}");
+                _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} has deleted content for document Id: {id}");
                 return HttpStatusCode.OK;
             }
             else
             {
-                _logger.LogWarning($"{nameof(DeleteAsync)} has returned no content for: {id}");
+                _logger.LogWarning($"{Utils.LoggerMethodNamePrefix()} has returned no content for: {id}");
                 return HttpStatusCode.NotFound;
             }
         }

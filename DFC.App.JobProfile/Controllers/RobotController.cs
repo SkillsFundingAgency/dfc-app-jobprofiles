@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Models.Robots;
+using DFC.App.Services.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -26,17 +27,17 @@ namespace DFC.App.JobProfile.Controllers
         {
             try
             {
-                _logger.LogInformation("Generating Robots.txt");
+                _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Generating Robots.txt");
 
                 var robot = GenerateThisSiteRobot();
 
-                _logger.LogInformation("Generated Robots.txt");
+                _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Generated Robots.txt");
 
                 return Content(robot.Data, MediaTypeNames.Text.Plain);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(Robot)}: {ex.Message}");
+                _logger.LogError($"{Utils.LoggerMethodNamePrefix()} {ex.Message}");
             }
 
             // fall through from errors

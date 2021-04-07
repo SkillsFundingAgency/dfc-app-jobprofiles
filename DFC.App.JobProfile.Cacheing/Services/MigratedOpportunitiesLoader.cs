@@ -36,9 +36,9 @@ namespace DFC.App.JobProfile.Cacheing.Services
             _pageService = pageService;
         }
 
-        public override async Task Load(CancellationToken stoppingToken)
+        public override async Task LoadJobProfileCache(CancellationToken stoppingToken)
         {
-            Logger.LogInformation("Reload current opportunities commenced");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Reload current opportunities commenced");
 
             var candidates = await _pageService.GetAllAsync().AsSafeReadOnlyList();
 
@@ -47,47 +47,47 @@ namespace DFC.App.JobProfile.Cacheing.Services
                 await ProcessContentAsync(candidates, stoppingToken);
             }
 
-            Logger.LogInformation("Reload static content completed");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Reload static content completed");
         }
 
         public async Task ProcessContentAsync(
             IReadOnlyCollection<SegmentCurrentOpportunity> candidates,
             CancellationToken stoppingToken)
         {
-            Logger.LogInformation("Process summary list started");
+            Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Process summary list started");
 
             foreach (var item in candidates)
             {
                 if (stoppingToken.IsCancellationRequested)
                 {
-                    Logger.LogWarning("Process summary list cancelled");
+                    Logger.LogWarning($"{Utils.LoggerMethodNamePrefix()} Process summary list cancelled");
                     return;
                 }
 
                 var candidate = Mapper.Map<CurrentOpportunities>(item);
 
-                Logger.LogInformation($"Updating current opportunity cache with {candidate.Id} - {candidate.CanonicalName}");
+                Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Updating current opportunity cache with {candidate.Id} - {candidate.CanonicalName}");
 
                 var result = await _messageService.UpdateAsync(candidate);
 
                 if (result == HttpStatusCode.NotFound)
                 {
-                    Logger.LogInformation($"Does not exist, creating static content cache with {candidate.Id} - {candidate.CanonicalName}");
+                    Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Does not exist, creating static content cache with {candidate.Id} - {candidate.CanonicalName}");
 
                     result = await _messageService.CreateAsync(candidate);
 
                     if (result == HttpStatusCode.OK)
                     {
-                        Logger.LogInformation($"Created static content cache with {candidate.Id} - {candidate.CanonicalName}");
+                        Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Created static content cache with {candidate.Id} - {candidate.CanonicalName}");
                     }
                     else
                     {
-                        Logger.LogError($"Static content cache create error status {result} from {candidate.Id} - {candidate.CanonicalName}");
+                        Logger.LogError($"{Utils.LoggerMethodNamePrefix()} Static content cache create error status {result} from {candidate.Id} - {candidate.CanonicalName}");
                     }
                 }
                 else
                 {
-                    Logger.LogInformation($"Updated static content cache with {candidate.Id} - {candidate.CanonicalName}");
+                    Logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Updated static content cache with {candidate.Id} - {candidate.CanonicalName}");
                 }
             }
         }

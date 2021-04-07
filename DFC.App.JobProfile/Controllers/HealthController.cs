@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.Data.Providers;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.ViewSupport.ViewModels;
+using DFC.App.Services.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -31,7 +32,7 @@ namespace DFC.App.JobProfile.Controllers
         {
             string message;
 
-            _logger.LogInformation($"{nameof(Health)} has been called");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} has been called");
 
             try
             {
@@ -40,19 +41,19 @@ namespace DFC.App.JobProfile.Controllers
                 if (isHealthy)
                 {
                     message = "Document store is available";
-                    _logger.LogInformation($"{nameof(Health)} responded with: {resourceName} - {message}");
+                    _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} responded with: {resourceName} - {message}");
 
                     var viewModel = CreateHealthViewModel(message);
 
                     return this.NegotiateContentResult(viewModel, viewModel.HealthItems);
                 }
 
-                _logger.LogError($"{nameof(Health)}: Ping to {resourceName} has failed");
+                _logger.LogError($"{Utils.LoggerMethodNamePrefix()} Ping to {resourceName} has failed");
             }
             catch (Exception ex)
             {
                 message = $"{resourceName} exception: {ex.Message}";
-                _logger.LogError($"{nameof(Health)}: {message}");
+                _logger.LogError($"{Utils.LoggerMethodNamePrefix()} {message}");
             }
 
             return StatusCode((int)HttpStatusCode.ServiceUnavailable);
@@ -61,7 +62,7 @@ namespace DFC.App.JobProfile.Controllers
         [HttpGet]
         public IActionResult Ping()
         {
-            _logger.LogInformation($"{nameof(Ping)} has been called");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} has been called");
 
             return Ok();
         }

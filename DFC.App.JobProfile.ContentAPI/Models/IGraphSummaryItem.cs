@@ -7,6 +7,6 @@ namespace DFC.App.JobProfile.ContentAPI.Models
     {
         string CanonicalName { get; }
 
-        DateTime Published { get; }
+        DateTime ModifiedDateTime { get; }
     }
 }

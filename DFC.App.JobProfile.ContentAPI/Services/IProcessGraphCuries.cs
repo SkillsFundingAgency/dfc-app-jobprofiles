@@ -5,6 +5,6 @@ namespace DFC.App.JobProfile.ContentAPI.Services
 {
     public interface IProcessGraphCuries
     {
-        IReadOnlyCollection<IGraphRelation> GetRelations(IContainGraphCuries container);
+        IReadOnlyCollection<IGraphRelation> GetContentItemLinkedItems(IContainGraphLink container);
     }
 }

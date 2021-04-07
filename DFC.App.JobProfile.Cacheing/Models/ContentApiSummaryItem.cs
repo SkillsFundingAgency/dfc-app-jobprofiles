@@ -16,6 +16,6 @@ namespace DFC.App.JobProfile.Cacheing.Models
         public DateTime CreatedDate { get; set; } = DateTime.MinValue;
 
         [JsonProperty(PropertyName = "ModifiedDate")]
-        public DateTime Published { get; set; } = DateTime.MinValue;
+        public DateTime ModifiedDateTime { get; set; } = DateTime.MinValue;
     }
 }

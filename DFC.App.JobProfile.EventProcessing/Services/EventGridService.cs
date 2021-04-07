@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.EventProcessing.Models;
+using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using DFC.Compui.Cosmos.Contracts;
 using Microsoft.Azure.EventGrid.Models;
@@ -33,7 +34,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
         {
             _ = changedModel ?? throw new ArgumentNullException(nameof(changedModel));
 
-            _logger.LogInformation($"Comparing differences to new: {changedModel.Id} - {changedModel.CanonicalName}");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Comparing differences to new: {changedModel.Id} - {changedModel.CanonicalName}");
 
             if (ContainsDifferences(currentModel, changedModel))
             {
@@ -41,7 +42,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
             }
             else
             {
-                _logger.LogInformation($"No differences to create Event Grid message for: {changedModel.Id} - {changedModel.CanonicalName}");
+                _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} No differences to create Event Grid message for: {changedModel.Id} - {changedModel.CanonicalName}");
             }
         }
 
@@ -55,7 +56,7 @@ namespace DFC.App.JobProfile.EventProcessing.Services
             _ = changedModel ?? throw new ArgumentNullException(nameof(changedModel));
 
             var logMessage = $"{operation} - {changedModel.Id} - {changedModel.CanonicalName}";
-            _logger.LogInformation($"Sending Event Grid message for: {logMessage}");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Sending Event Grid message for: {logMessage}");
 
             var eventGridEvents = new List<EventGridEvent>
             {

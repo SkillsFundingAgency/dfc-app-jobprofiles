@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.Data.Providers;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
+using DFC.App.Services.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,7 +27,7 @@ namespace DFC.App.JobProfile.Controllers
         {
             try
             {
-                logService.LogInformation("Generating Sitemap");
+                logService.LogInformation($"{Utils.LoggerMethodNamePrefix()} Generating Sitemap");
 
                 var sitemapUrlPrefix = $"{Request.GetBaseAddress()}{ProfileController.ProfilePathRoot}";
                 var sitemap = new Sitemap();
@@ -57,13 +58,13 @@ namespace DFC.App.JobProfile.Controllers
                 // extract the sitemap
                 var xmlString = sitemap.WriteSitemapToString();
 
-                logService.LogInformation("Generated Sitemap");
+                logService.LogInformation($"{Utils.LoggerMethodNamePrefix()} Generated Sitemap");
 
                 return Content(xmlString, MediaTypeNames.Application.Xml);
             }
             catch (Exception ex)
             {
-                logService.LogError($"{nameof(Sitemap)}: {ex.Message}");
+                logService.LogError($"{Utils.LoggerMethodNamePrefix()} {ex.Message}");
             }
 
             return null;

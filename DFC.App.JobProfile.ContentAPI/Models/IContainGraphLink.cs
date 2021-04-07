@@ -2,8 +2,8 @@
 
 namespace DFC.App.JobProfile.ContentAPI.Models
 {
-    public interface IContainGraphCuries
+    public interface IContainGraphLink
     {
-        JObject Curies { get; }
+        JObject ContentLinks { get; }
     }
 }

@@ -2,9 +2,9 @@
 
 namespace DFC.App.JobProfile.ContentAPI.Models
 {
-    public interface IBranchContentItem<TModel> :
+    public interface ILinkedContentItem<TModel> :
         IResourceLocatable,
-        IContainGraphCuries
+        IContainGraphLink
             where TModel : class
     {
         ICollection<TModel> ContentItems { get; }

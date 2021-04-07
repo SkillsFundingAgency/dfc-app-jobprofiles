@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
-    public sealed class ContentApiRootElement :
+    public sealed class ContentApiJobProfile :
         IRootContentItem<ContentApiBranchElement>
     {
         [JsonProperty("id")]
@@ -27,7 +27,7 @@ namespace DFC.App.JobProfile.Cacheing.Models
         public string PageLocation { get; set; }
 
         [JsonProperty("_links")]
-        public JObject Curies { get; set; }
+        public JObject ContentLinks { get; set; }
 
         [JsonProperty("skos__prefLabel")]
         public string Title { get; set; }

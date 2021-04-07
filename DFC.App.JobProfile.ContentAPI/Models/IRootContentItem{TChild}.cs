@@ -2,9 +2,8 @@
 
 namespace DFC.App.JobProfile.ContentAPI.Models
 {
-    public interface IRootContentItem<TChild> :
-        IContainGraphCuries
-        where TChild : class, IBranchContentItem<TChild>
+    public interface IRootContentItem<TChild> : IContainGraphLink
+        where TChild : class, ILinkedContentItem<TChild>
     {
         ICollection<TChild> ContentItems { get; }
 

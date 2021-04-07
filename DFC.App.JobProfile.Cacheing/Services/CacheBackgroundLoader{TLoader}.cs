@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.ContentAPI.Configuration;
+using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using DFC.Compui.Telemetry.HostedService;
 using Microsoft.Extensions.Hosting;
@@ -32,14 +33,14 @@ namespace DFC.App.JobProfile.Cacheing.Services
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Cache reload started");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Cache reload started");
 
             return base.StartAsync(cancellationToken);
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Cache reload stopped");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Cache reload stopped");
 
             return base.StopAsync(cancellationToken);
         }
@@ -48,13 +49,13 @@ namespace DFC.App.JobProfile.Cacheing.Services
         {
             if (_clientConfig.BaseAddress != null)
             {
-                _logger.LogInformation("Cache reload executing");
+                _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Cache reload executing");
 
                 var task = _serviceTelemetryWrapper.Execute(() => _cacheLoader.Reload(stoppingToken), nameof(CacheBackgroundLoader<TLoader>));
 
                 if (!task.IsCompletedSuccessfully)
                 {
-                    _logger.LogInformation("Cache reload didn't complete successfully");
+                    _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Cache reload didn't complete successfully");
                     if (task.Exception != null)
                     {
                         _logger.LogError(task.Exception.ToString());

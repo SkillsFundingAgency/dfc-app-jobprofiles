@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.Webhooks;
 using DFC.App.JobProfile.Webhooks.Services;
+using DFC.App.Services.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.EventGrid;
 using Microsoft.Azure.EventGrid.Models;
@@ -44,7 +45,7 @@ namespace DFC.App.JobProfile.Controllers
         {
             using var reader = new StreamReader(Request.Body, Encoding.UTF8);
             string requestContent = await reader.ReadToEndAsync();
-            _logger.LogInformation($"Received events: {requestContent}");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Received events: {requestContent}");
 
             var eventGridSubscriber = new EventGridSubscriber();
             foreach (var key in acceptedEventTypes.Keys)
@@ -63,7 +64,7 @@ namespace DFC.App.JobProfile.Controllers
 
                 if (eventGridEvent.Data is SubscriptionValidationEventData subscriptionValidationEventData)
                 {
-                    _logger.LogInformation($"Got SubscriptionValidation event data, validationCode: {subscriptionValidationEventData!.ValidationCode},  validationUrl: {subscriptionValidationEventData.ValidationUrl}, topic: {eventGridEvent.Topic}");
+                    _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Got SubscriptionValidation event data, validationCode: {subscriptionValidationEventData!.ValidationCode},  validationUrl: {subscriptionValidationEventData.ValidationUrl}, topic: {eventGridEvent.Topic}");
 
                     // Do any additional validation (as required) such as validating that the Azure resource ID of the topic matches
                     // the expected topic and then return back the below response
@@ -78,17 +79,17 @@ namespace DFC.App.JobProfile.Controllers
                 {
                     if (!Guid.TryParse(eventGridEventData.ItemId, out Guid contentId))
                     {
-                        throw new InvalidDataException($"Invalid Guid for EventGridEvent.Data.ItemId '{eventGridEventData.ItemId}'");
+                        throw new InvalidDataException($"{Utils.LoggerMethodNamePrefix()} Invalid Guid for EventGridEvent.Data.ItemId '{eventGridEventData.ItemId}'");
                     }
 
                     if (!Uri.TryCreate(eventGridEventData.Api, UriKind.Absolute, out Uri url))
                     {
-                        throw new InvalidDataException($"Invalid Api url '{eventGridEventData.Api}' received for Event Id: {eventId}");
+                        throw new InvalidDataException($"{Utils.LoggerMethodNamePrefix()} Invalid Api url '{eventGridEventData.Api}' received for Event Id: {eventId}");
                     }
 
                     var cacheOperation = acceptedEventTypes[eventGridEvent.EventType];
 
-                    _logger.LogInformation($"Got Event Id: {eventId}: {eventGridEvent.EventType}: Cache operation: {cacheOperation} {url}");
+                    _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Got Event Id: {eventId}: {eventGridEvent.EventType}: Cache operation: {cacheOperation} {url}");
 
                     var result = await _webhooks.ProcessMessage(cacheOperation, eventId, contentId, eventGridEventData.Api);
 
@@ -96,7 +97,7 @@ namespace DFC.App.JobProfile.Controllers
                 }
                 else
                 {
-                    throw new InvalidDataException($"Invalid event type '{eventGridEvent.EventType}' received for Event Id: {eventId}, should be one of '{string.Join(",", acceptedEventTypes.Keys)}'");
+                    throw new InvalidDataException($"{Utils.LoggerMethodNamePrefix()} Invalid event type '{eventGridEvent.EventType}' received for Event Id: {eventId}, should be one of '{string.Join(",", acceptedEventTypes.Keys)}'");
                 }
             }
 
@@ -108,19 +109,19 @@ namespace DFC.App.JobProfile.Controllers
             switch (result)
             {
                 case HttpStatusCode.OK:
-                    _logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Updated Content Page");
+                    _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Event Id: {eventId}, Content Page Id: {contentPageId}: Updated Content Page");
                     break;
 
                 case HttpStatusCode.Created:
-                    _logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Created Content Page");
+                    _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Event Id: {eventId}, Content Page Id: {contentPageId}: Created Content Page");
                     break;
 
                 case HttpStatusCode.AlreadyReported:
-                    _logger.LogInformation($"Event Id: {eventId}, Content Page Id: {contentPageId}: Content Page previously updated");
+                    _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} Event Id: {eventId}, Content Page Id: {contentPageId}: Content Page previously updated");
                     break;
 
                 default:
-                    _logger.LogWarning($"Event Id: {eventId}, Content Page Id: {contentPageId}: Content Page not Posted: Status: {result}");
+                    _logger.LogWarning($"{Utils.LoggerMethodNamePrefix()} Event Id: {eventId}, Content Page Id: {contentPageId}: Content Page not Posted: Status: {result}");
                     break;
             }
         }

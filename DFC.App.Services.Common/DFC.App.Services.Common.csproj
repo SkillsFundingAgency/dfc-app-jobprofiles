@@ -31,7 +31,6 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Helpers\" />
         <Folder Include="Registration\" />
         <Folder Include="Registration\Attributes\" />
         <Folder Include="Exceptions\" />

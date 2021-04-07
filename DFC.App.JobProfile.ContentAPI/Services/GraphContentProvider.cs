@@ -5,6 +5,7 @@ using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -48,25 +49,21 @@ namespace DFC.App.JobProfile.ContentAPI.Services
             return GetSummaryItemsFor<TApiModel>(summaryEndpoint);
         }
 
-        public async Task<TRoot> GetComposedItem<TRoot, TBranch>(Uri uri)
-            where TRoot : class, IRootContentItem<TBranch>, new()
-            where TBranch : class, IBranchContentItem<TBranch>, new()
+        public async Task<TRoot> GetContentItem<TRoot, TLinkedItem>(Uri uri)
+            where TRoot : class, IRootContentItem<TLinkedItem>, new()
+            where TLinkedItem : class, ILinkedContentItem<TLinkedItem>, new()
         {
-            var apiDataModel = await _dataProcessor
-                .GetAsync<TRoot>(_httpClient, uri)
-                    ?? new TRoot();
-
-            var links = _curieProcessor.GetRelations(apiDataModel);
-            var candidates = await GetBranchedContentItems<TBranch>(links);
+            var apiDataModel = await _dataProcessor.GetAsync<TRoot>(_httpClient, uri) ?? new TRoot();
+            var links = _curieProcessor.GetContentItemLinkedItems(apiDataModel);
+            var candidates = await GetLinkedContentItems<TLinkedItem>(links);
             candidates.ForEach(apiDataModel.ContentItems.Add);
 
             return apiDataModel;
         }
 
-        public async Task<TBranch> GetBranchItem<TBranch>(Uri uri)
-            where TBranch : class, IBranchContentItem<TBranch>, new() =>
-                await _dataProcessor.GetAsync<TBranch>(_httpClient, uri)
-                    ?? new TBranch();
+        public async Task<TLinkedItem> GetLinkedItem<TLinkedItem>(Uri uri)
+            where TLinkedItem : class, ILinkedContentItem<TLinkedItem>, new() =>
+                await _dataProcessor.GetAsync<TLinkedItem>(_httpClient, uri) ?? new TLinkedItem();
 
         public async Task<IReadOnlyCollection<TApiModel>> GetStaticItems<TApiModel>()
             where TApiModel : class
@@ -90,62 +87,84 @@ namespace DFC.App.JobProfile.ContentAPI.Services
             return contentList;
         }
 
-        private async Task<List<TBranch>> GetBranchedContentItems<TBranch>(IReadOnlyCollection<IGraphRelation> relations)
-            where TBranch : class, IBranchContentItem<TBranch>, new()
-        {
-            var list = new List<TBranch>();
-
-            foreach (var relation in relations)
-            {
-                foreach (var link in relation.Items)
-                {
-                    if (link != null)
-                    {
-                        var descendent = GetFromApiCache<TBranch>(link.Uri);
-
-                        if (descendent == null)
-                        {
-                            descendent = await GetBranchItem<TBranch>(link.Uri);
-
-                            if (!descendent.IsFaultedState())
-                            {
-                                AddToApiCache(descendent);
-
-                                _mapper.Map(link, descendent);
-
-                                list.Add(descendent);
-
-                                if (_clientConfig.RelationshipStubs.Any(x => x.ComparesWith(relation.Relationship)))
-                                {
-                                    continue;
-                                }
-
-                                var modelLinks = _curieProcessor.GetRelations(descendent);
-                                var candidates = await GetBranchedContentItems<TBranch>(modelLinks);
-                                candidates.ForEach(descendent.ContentItems.Add);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return list;
-        }
-
         private async Task<IReadOnlyCollection<TApiModel>> GetSummaryItemsFor<TApiModel>(Uri thisResource)
-            where TApiModel : class, IResourceLocatable
+             where TApiModel : class, IResourceLocatable
         {
             var result = await _dataProcessor
                 .GetAsync<IReadOnlyCollection<TApiModel>>(_httpClient, thisResource)
-                    ?? new List<TApiModel>();
+                ?? new List<TApiModel>();
 
             _cacheService.Clear();
 
             return result;
         }
 
+        private async Task<List<TLinkedItem>> GetLinkedContentItems<TLinkedItem>(IReadOnlyCollection<IGraphRelation> relations)
+            where TLinkedItem : class, ILinkedContentItem<TLinkedItem>, new()
+        {
+            var list = new List<TLinkedItem>();
+
+            if (relations != null)
+            {
+                foreach (var relation in relations)
+                {
+                    await GetRelation(list, relation);
+                }
+            }
+
+            return list;
+        }
+
+        private async Task GetRelation<TLinkedItem>(
+            List<TLinkedItem> list,
+            IGraphRelation relation)
+                where TLinkedItem : class, ILinkedContentItem<TLinkedItem>, new()
+        {
+            if (relation != null && relation.Items != null)
+            {
+                foreach (var graphItem in relation.Items)
+                {
+                    await GetGraphItem(list, relation, graphItem);
+                }
+            }
+        }
+
+        private async Task GetGraphItem<TLinkedItem>(
+            List<TLinkedItem> list,
+            IGraphRelation relation,
+            IGraphItem graphItem)
+                 where TLinkedItem : class, ILinkedContentItem<TLinkedItem>, new()
+        {
+            if (graphItem != null && graphItem.Uri != null)
+            {
+                var descendent = GetFromApiCache<TLinkedItem>(graphItem.Uri);
+                if (descendent != null)
+                {
+                    return;
+                }
+
+                descendent = await GetLinkedItem<TLinkedItem>(graphItem.Uri);
+
+                if (!descendent.IsFaultedState())
+                {
+                    AddToApiCache(descendent);
+
+                    _mapper.Map(graphItem, descendent);
+
+                    list.Add(descendent);
+
+                    if (!_clientConfig.RelationshipStubs.Any(x => x.ComparesWith(relation.Relationship)))
+                    {
+                        var modelLinks = _curieProcessor.GetContentItemLinkedItems(descendent);
+                        var candidates = await GetLinkedContentItems<TLinkedItem>(modelLinks);
+                        candidates.ForEach(descendent.ContentItems.Add);
+                    }
+                }
+            }
+        }
+
         private void AddToApiCache<TModel>(TModel model)
-            where TModel : class, IBranchContentItem<TModel>
+            where TModel : class, ILinkedContentItem<TModel>
         {
             if (model.Uri == UriExtra.Empty)
             {
@@ -156,7 +175,6 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         }
 
         private TModel GetFromApiCache<TModel>(Uri uri)
-            where TModel : class, IBranchContentItem<TModel> =>
-                _cacheService.Retrieve<TModel>(uri);
+            where TModel : class, ILinkedContentItem<TModel> => _cacheService.Retrieve<TModel>(uri);
     }
 }

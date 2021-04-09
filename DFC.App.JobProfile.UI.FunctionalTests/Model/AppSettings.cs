@@ -6,7 +6,7 @@
 using DFC.TestAutomation.UI.Settings;
 using System;
 
-namespace DFC.App.JobGroups.Model
+namespace DFC.App.JobProfile.Model
 {
     internal class AppSettings : IAppSettings
     {

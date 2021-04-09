@@ -3,10 +3,12 @@ using DFC.Compui.Telemetry.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DFC.App.JobProfile.Data.Models
 {
+    [ExcludeFromCodeCoverage]
     public sealed class CurrentOpportunities :
         RequestTrace,
         IContentPageModel

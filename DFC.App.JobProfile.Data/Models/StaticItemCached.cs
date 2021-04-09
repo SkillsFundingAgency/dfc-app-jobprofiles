@@ -4,9 +4,11 @@ using DFC.Compui.Telemetry.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.Data.Models
 {
+    [ExcludeFromCodeCoverage]
     public class StaticItemCached :
         RequestTrace,
         IContentPageModel,

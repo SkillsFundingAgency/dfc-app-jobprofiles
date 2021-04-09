@@ -6,12 +6,14 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Mime;
 using System.Text;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests
 {
+    [ExcludeFromCodeCoverage]
     public class WebhooksControllerTests
     {
         private ILogger<WebhooksController> _mockLogger;

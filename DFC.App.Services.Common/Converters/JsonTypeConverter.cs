@@ -2,12 +2,14 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.Services.Common.Converters
 {
     /// <summary>
     /// Json type converter (implementation).
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class JsonTypeConverter :
         IConvertJsonTypes,
         IRequireServiceRegistration

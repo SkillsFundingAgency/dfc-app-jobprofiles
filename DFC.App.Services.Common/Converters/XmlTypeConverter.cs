@@ -1,6 +1,7 @@
 ﻿using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
@@ -11,11 +12,13 @@ namespace DFC.App.Services.Common.Converters
     /// <summary>
     /// XML type converter.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class XmlTypeConverter :
         IConvertXmlTypes,
         IRequireServiceRegistration
     {
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public TConversion FromString<TConversion>(string typeToConvert)
         {
             It.IsNull(typeToConvert)
@@ -25,6 +28,7 @@ namespace DFC.App.Services.Common.Converters
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public object FromString(string typeToConvert, Type classType)
         {
             It.IsNull(typeToConvert)
@@ -34,6 +38,7 @@ namespace DFC.App.Services.Common.Converters
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public string ToString<TConversion>(TConversion typeToConvert)
         {
             var decodedBytes = ToBytes(typeToConvert, typeof(TConversion));
@@ -41,12 +46,14 @@ namespace DFC.App.Services.Common.Converters
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public string ToString(object typeToConvert, Type classType)
         {
             var decodedBytes = ToBytes(typeToConvert, classType);
             return Encoding.UTF8.GetString(decodedBytes, 0, decodedBytes.Length);
         }
 
+        [ExcludeFromCodeCoverage]
         private static byte[] ToBytes(object item, Type type)
         {
             It.IsNull(item)
@@ -75,6 +82,7 @@ namespace DFC.App.Services.Common.Converters
             return output;
         }
 
+        [ExcludeFromCodeCoverage]
         private static object FromBytes(byte[] item, Type classType)
         {
             It.IsNull(item)

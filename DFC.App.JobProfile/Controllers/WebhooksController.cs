@@ -9,6 +9,7 @@ using Microsoft.Azure.EventGrid.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [Route("api/webhook")]
     public class WebhooksController : Controller
     {

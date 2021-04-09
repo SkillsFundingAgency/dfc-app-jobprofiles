@@ -1,5 +1,8 @@
-﻿namespace DFC.App.JobProfile.EventProcessing.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DFC.App.JobProfile.EventProcessing.Models
 {
+    [ExcludeFromCodeCoverage]
     public class EventGridEventData
     {
         public string Api { get; set; }

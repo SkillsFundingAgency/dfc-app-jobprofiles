@@ -8,6 +8,7 @@ using DFC.Compui.Cosmos.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Webhooks.Services
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class WebhooksProvider :
         IProvideWebhooks,
         IRequireServiceRegistration

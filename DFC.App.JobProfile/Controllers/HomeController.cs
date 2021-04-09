@@ -3,9 +3,11 @@ using DFC.App.Services.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private const string JobProfileStoreSettings = "Configuration:DocumentStore:JobProfile";

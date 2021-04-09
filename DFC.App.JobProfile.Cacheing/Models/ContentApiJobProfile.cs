@@ -3,9 +3,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
+    [ExcludeFromCodeCoverage]
     public sealed class ContentApiJobProfile :
         IRootContentItem<ContentApiBranchElement>
     {

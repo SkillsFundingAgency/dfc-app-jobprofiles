@@ -5,6 +5,7 @@ using DFC.App.Services.Common.Registration;
 using DFC.App.Services.Common.Registration.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -16,6 +17,7 @@ namespace DFC.App.Services.Common.Providers
     /// <summary>
     /// The fault response provider (implementation).
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class FaultResponseProvider :
         IProvideFaultResponses,
         IRequireServiceRegistration

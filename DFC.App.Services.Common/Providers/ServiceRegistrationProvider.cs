@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace DFC.App.Services.Common.Providers
@@ -14,6 +15,7 @@ namespace DFC.App.Services.Common.Providers
     {
         private bool isInitialised = false;
 
+        [ExcludeFromCodeCoverage]
         public ServiceRegistrationProvider(
             IProvideRegistrationDetails details,
             IConfiguration configuration)

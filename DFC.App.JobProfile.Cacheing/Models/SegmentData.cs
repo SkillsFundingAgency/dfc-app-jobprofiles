@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
+    [ExcludeFromCodeCoverage]
     public sealed class SegmentData
     {
         [JsonProperty("Apprenticeships")]

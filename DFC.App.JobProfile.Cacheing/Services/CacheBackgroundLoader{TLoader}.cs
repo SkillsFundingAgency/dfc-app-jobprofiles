@@ -4,11 +4,13 @@ using DFC.App.Services.Common.Registration;
 using DFC.Compui.Telemetry.HostedService;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Cacheing.Services
 {
+    [ExcludeFromCodeCoverage]
     internal abstract class CacheBackgroundLoader<TLoader> :
         BackgroundService,
         IRequireServiceRegistration

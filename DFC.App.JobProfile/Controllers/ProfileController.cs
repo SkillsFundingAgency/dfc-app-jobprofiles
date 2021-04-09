@@ -1,10 +1,12 @@
 ﻿using DFC.App.JobProfile.ViewSupport.Adapters;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class ProfileController : Controller
     {
         public const string ProfilePathRoot = "job-profiles";

@@ -1,5 +1,8 @@
-﻿namespace DFC.App.JobProfile.ViewSupport.ViewModels
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DFC.App.JobProfile.ViewSupport.ViewModels
 {
+    [ExcludeFromCodeCoverage]
     public class DocumentViewModel
     {
         public HeadViewModel Head { get; set; } = new HeadViewModel();

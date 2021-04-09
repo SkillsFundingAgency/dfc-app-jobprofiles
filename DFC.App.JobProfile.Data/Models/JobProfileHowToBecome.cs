@@ -1,5 +1,8 @@
-﻿namespace DFC.App.JobProfile.Data.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DFC.App.JobProfile.Data.Models
 {
+    [ExcludeFromCodeCoverage]
     public class JobProfileHowToBecome
     {
         public EducationalRoute UniversityRoute { get; set; }

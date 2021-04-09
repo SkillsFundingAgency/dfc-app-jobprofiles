@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.Services.Common.Helpers
 {
     /// <summary>
     /// A collection of routine grafts for strings.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class StringHelpers
     {
         public static bool ComparesWith(this string source, string candidate)

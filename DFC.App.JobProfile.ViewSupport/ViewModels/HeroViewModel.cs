@@ -1,8 +1,10 @@
 ﻿using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ViewSupport.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.ViewSupport.ViewModels
 {
+    [ExcludeFromCodeCoverage]
     public class HeroViewModel
     {
         public string Title { get; set; }

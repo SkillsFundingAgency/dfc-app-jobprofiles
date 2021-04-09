@@ -1,6 +1,7 @@
 ﻿using DFC.App.Services.Common.Converters;
 using DFC.App.Services.Common.Providers;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.Services.Common.Registration
 {
@@ -16,6 +17,7 @@ namespace DFC.App.Services.Common.Registration
         /// </summary>
         /// <param name="configuration">The configuration binder.</param>
         /// <returns>A service registrar.</returns>
+        [ExcludeFromCodeCoverage]
         public static IProvideRegistrationServices Create(IConfiguration configuration)
         {
             var assets = new AssetProvider();

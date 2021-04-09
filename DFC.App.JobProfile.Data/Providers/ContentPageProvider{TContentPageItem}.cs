@@ -1,12 +1,14 @@
 ﻿using DFC.App.Services.Common.Registration;
 using DFC.Compui.Cosmos.Contracts;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Providers
 {
+    [ExcludeFromCodeCoverage]
     internal abstract class ContentPageProvider<TContentPageItem> :
         IProvidePageContent<TContentPageItem>,
         IRequireServiceRegistration

@@ -3,6 +3,7 @@ using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -14,6 +15,7 @@ namespace DFC.App.Services.Common.Providers
     {
         private const string _forAssemblies = @"participating_assemblies.json";
 
+        [ExcludeFromCodeCoverage]
         public RegistrationDetailProvider(IProvideAssets assets, IConvertJsonTypes converter)
         {
             It.IsNull(assets)

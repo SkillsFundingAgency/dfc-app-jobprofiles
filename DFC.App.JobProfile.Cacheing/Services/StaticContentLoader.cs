@@ -7,6 +7,7 @@ using DFC.App.Services.Common.Providers;
 using DFC.App.Services.Common.Registration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Cacheing.Services
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class StaticContentLoader :
         CacheLoader,
         ILoadStaticContent,

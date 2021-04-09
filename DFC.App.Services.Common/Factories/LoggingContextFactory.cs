@@ -10,6 +10,7 @@ namespace DFC.App.Services.Common.Factories
     /// <summary>
     /// The context logging factory (implementation).
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class LoggingContextFactory :
         ICreateLoggingContexts,
         IRequireServiceRegistration

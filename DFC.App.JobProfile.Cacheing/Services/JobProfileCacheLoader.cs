@@ -9,6 +9,7 @@ using DFC.App.Services.Common.Registration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Cacheing.Services
 {
+    [ExcludeFromCodeCoverage]
     internal sealed partial class JobProfileCacheLoader :
         CacheLoader,
         ILoadJobProfileContent,

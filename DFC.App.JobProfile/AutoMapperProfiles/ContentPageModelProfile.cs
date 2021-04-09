@@ -4,12 +4,13 @@ using DFC.App.JobProfile.ContentAPI.Models;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewSupport.ViewModels;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
-    public sealed class ContentPageModelProfile :
-        Profile
+    public sealed class ContentPageModelProfile : Profile
     {
+        [ExcludeFromCodeCoverage]
         public ContentPageModelProfile()
         {
             // service ping models

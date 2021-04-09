@@ -5,12 +5,14 @@ using DFC.App.Services.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class SitemapController : Controller
     {
         private readonly ILogger<SitemapController> logService;

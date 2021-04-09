@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.EventProcessing.Models
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class EventGridSubscriptionConfiguration :
         IEventGridSubscriptionConfiguration
     {

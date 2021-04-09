@@ -1,9 +1,11 @@
 ﻿using DFC.App.JobProfile.ContentAPI.Models;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class ContentApiSummaryItem :
         IGraphSummaryItem
     {

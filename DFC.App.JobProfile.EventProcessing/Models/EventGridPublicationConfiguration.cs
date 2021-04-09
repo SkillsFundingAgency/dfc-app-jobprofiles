@@ -1,8 +1,10 @@
 ﻿using DFC.App.Services.Common.Registration;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.EventProcessing.Models
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class EventGridPublicationConfiguration :
         IEventGridPublicationConfiguration,
         IRequireConfigurationRegistration

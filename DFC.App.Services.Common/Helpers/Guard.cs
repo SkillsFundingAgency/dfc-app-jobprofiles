@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace DFC.App.Services.Common.Helpers
@@ -6,6 +7,7 @@ namespace DFC.App.Services.Common.Helpers
     /// <summary>
     /// The guard helper.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class Guard
     {
         /// <summary>

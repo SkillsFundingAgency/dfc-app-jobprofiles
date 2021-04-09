@@ -1,6 +1,7 @@
 using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace DFC.App.Services.Common.Providers
     /// The asset manager (implementation).
     /// </summary>
     /// <seealso cref="IProvideAssets" />
+    [ExcludeFromCodeCoverage]
     public sealed class AssetProvider :
         IProvideAssets,
         IRequireServiceRegistration

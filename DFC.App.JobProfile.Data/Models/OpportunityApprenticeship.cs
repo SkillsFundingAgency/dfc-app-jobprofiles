@@ -1,5 +1,8 @@
-﻿namespace DFC.App.JobProfile.Data.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DFC.App.JobProfile.Data.Models
 {
+    [ExcludeFromCodeCoverage]
     public class OpportunityApprenticeship
     {
         public Anchor Header { get; set; }

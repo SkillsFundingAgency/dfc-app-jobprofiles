@@ -4,10 +4,12 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.HomeControllerTests
 {
+    [ExcludeFromCodeCoverage]
     public class HomeControllerErrorTests
     {
         private ILogger<HomeController> _mockLogger;

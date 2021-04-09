@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
+    [ExcludeFromCodeCoverage]
     public sealed class ApiEducationalRouteItem
     {
         public string Preface { get; set; } = "You'll usually need:";

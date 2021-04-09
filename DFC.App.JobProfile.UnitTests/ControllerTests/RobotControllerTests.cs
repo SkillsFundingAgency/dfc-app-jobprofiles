@@ -4,11 +4,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests
 {
+    [ExcludeFromCodeCoverage]
     public class RobotControllerTests
     {
         private ILogger<RobotController> _mockLogger;

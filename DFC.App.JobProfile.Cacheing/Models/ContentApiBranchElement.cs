@@ -3,11 +3,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
     // i've left json property mappings in to re-enforce
     // where the data values are coming from
+    [ExcludeFromCodeCoverage]
     public class ContentApiBranchElement :
         ILinkedContentItem<ContentApiBranchElement>,
         IContentApiBranchElement

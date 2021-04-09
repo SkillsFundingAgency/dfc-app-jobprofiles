@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DFC.App.JobProfile.Cacheing.Models
 {
+    [ExcludeFromCodeCoverage]
     public static class LinqExtensions
     {
         public static IReadOnlyCollection<TItem> Flatten<TItem, TRecursion>(

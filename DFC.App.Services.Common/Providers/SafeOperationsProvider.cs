@@ -1,5 +1,6 @@
 ﻿using DFC.App.Services.Common.Registration;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace DFC.App.Services.Common.Providers
@@ -12,6 +13,7 @@ namespace DFC.App.Services.Common.Providers
         IRequireServiceRegistration
     {
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public async Task Try(Func<Task> doAction, Func<Exception, Task> handleError)
         {
             try

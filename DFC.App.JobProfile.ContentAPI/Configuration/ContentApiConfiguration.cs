@@ -1,8 +1,10 @@
 ﻿using DFC.App.Services.Common.Registration;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.ContentAPI.Configuration
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class ContentApiConfiguration :
         ClientOptionsModel,
         IContentApiConfiguration,

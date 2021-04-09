@@ -2,6 +2,7 @@
 using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace DFC.App.Services.Common.Factories
     /// <summary>
     /// The http response message factory (implementation).
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class HttpResponseMessageFactory :
         ICreateHttpResponseMessages,
         IRequireServiceRegistration

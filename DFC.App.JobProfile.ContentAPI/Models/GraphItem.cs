@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DFC.App.JobProfile.ContentAPI.Models
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class GraphItem :
         IGraphItem
     {

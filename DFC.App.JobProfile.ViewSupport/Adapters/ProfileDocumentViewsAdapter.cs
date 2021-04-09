@@ -5,11 +5,13 @@ using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.ViewSupport.Adapters
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class ProfileDocumentViewsAdapter :
         IAdaptProfileDocumentViews,
         IRequireServiceRegistration

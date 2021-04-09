@@ -1,9 +1,11 @@
 ﻿using DFC.App.JobProfile.Data.Models;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DFC.App.JobProfile.ViewSupport.ViewModels
 {
+    [ExcludeFromCodeCoverage]
     public class BodyViewModel
     {
         public string PageLocation { get; set; }

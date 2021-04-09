@@ -5,12 +5,14 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.HealthControllerTests
 {
+    [ExcludeFromCodeCoverage]
     public class HealthControllerTests
     {
         private ILogger<HealthController> _mockLogger;

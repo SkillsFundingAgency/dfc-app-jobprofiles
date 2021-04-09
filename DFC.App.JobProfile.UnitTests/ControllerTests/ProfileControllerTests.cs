@@ -5,11 +5,13 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests
 {
+    [ExcludeFromCodeCoverage]
     public sealed class ProfileControllerTests
     {
         private const string AnyOldArticleName = "any-old-article-name";

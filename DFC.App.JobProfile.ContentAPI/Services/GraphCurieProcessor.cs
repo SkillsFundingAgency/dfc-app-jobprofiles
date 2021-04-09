@@ -4,10 +4,12 @@ using DFC.App.Services.Common.Registration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DFC.App.JobProfile.ContentAPI.Services
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class GraphCurieProcessor :
         IProcessGraphCuries,
         IRequireServiceRegistration

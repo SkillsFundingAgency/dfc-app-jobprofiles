@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml.Serialization;
 
 namespace DFC.App.JobProfile.Models
 {
-    [XmlRoot("urlset", Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")]
+    [ExcludeFromCodeCoverage]
+    [XmlRoot("urlset", Namespace = "https://www.sitemaps.org/schemas/sitemap/0.9")]
     public class Sitemap
     {
         private readonly ArrayList map;
@@ -70,7 +72,7 @@ namespace DFC.App.JobProfile.Models
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-                ns.Add("image", "http://www.google.com/schemas/sitemap-image/1.1");
+                ns.Add("image", "https://www.google.com/schemas/sitemap-image/1.1");
 
                 XmlSerializer xs = new XmlSerializer(typeof(Sitemap));
                 xs.Serialize(fs, this, ns);
@@ -82,7 +84,7 @@ namespace DFC.App.JobProfile.Models
             using (StringWriter sw = new StringWriter())
             {
                 XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-                ns.Add("image", "http://www.google.com/schemas/sitemap-image/1.1");
+                ns.Add("image", "https://www.google.com/schemas/sitemap-image/1.1");
 
                 XmlSerializer xs = new XmlSerializer(typeof(Sitemap));
                 xs.Serialize(sw, this, ns);

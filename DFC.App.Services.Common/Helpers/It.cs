@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DFC.App.Services.Common.Helpers
@@ -6,6 +7,7 @@ namespace DFC.App.Services.Common.Helpers
     /// <summary>
     /// A static helper class to increase code readability.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class It
     {
         /// <summary>

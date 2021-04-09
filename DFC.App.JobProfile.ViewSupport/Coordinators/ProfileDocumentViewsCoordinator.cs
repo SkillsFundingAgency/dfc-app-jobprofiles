@@ -10,6 +10,7 @@ using DFC.App.Services.Common.Helpers;
 using DFC.App.Services.Common.Registration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.ViewSupport.Coordindators
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class ProfileDocumentViewsCoordinator :
         ICoordinateProfileDocumentViews,
         IRequireServiceRegistration

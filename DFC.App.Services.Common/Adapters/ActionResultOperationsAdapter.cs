@@ -4,11 +4,13 @@ using DFC.App.Services.Common.Providers;
 using DFC.App.Services.Common.Registration;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DFC.App.Services.Common.Adapters
 {
+    [ExcludeFromCodeCoverage]
     public sealed class ActionResultOperationsAdapter :
         IAdaptActionResultOperations,
         IRequireServiceRegistration

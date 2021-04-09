@@ -21,5 +21,23 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
 
         private ScenarioContext Context { get; set; }
 
+        [Then(@"I am on the (.*) page")]
+        public void ThenIAmOnThePage(string pageName)
+        {
+            By locator = null;
+
+            switch (pageName.ToLower(CultureInfo.CurrentCulture))
+            {
+                case "job group: Elected officers and representatives":
+                    locator = By.CssSelector("h1");
+                    break;
+
+                default:
+                    locator = By.CssSelector("h1");
+                    break;
+            }
+
+            this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForElementToContainText(locator, pageName);
+        }
     }
 }

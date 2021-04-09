@@ -5,7 +5,7 @@
 
 using DFC.TestAutomation.UI.Extension;
 using OpenQA.Selenium;
-using System.Linq;
+using System;
 using TechTalk.SpecFlow;
 
 namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
@@ -20,5 +20,19 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
 
         private ScenarioContext Context { get; set; }
 
+
+        [When(@"I click the (.*) link")]
+        public void WhenIClickTheLink(string linkText)
+        {
+
+            var link = this.Context.GetWebDriver().FindElement(By.LinkText(linkText));
+
+            if (!link.Displayed)
+            {
+                throw new OperationCanceledException($"Unable to perform the step: {this.Context.StepContext.StepInfo.Text}. The {linkText} link is not displayed");
+            }
+
+            link.Click();
+        }
     }
 }

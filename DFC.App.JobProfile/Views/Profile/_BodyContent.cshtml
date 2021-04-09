@@ -1,21 +1,47 @@
-﻿@model DocumentViewModel
+﻿@model BodyViewModel
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="job-profile-sections">
-                <partial name="_SegmentLinks" />
-                <partial name="_jbHowToBecomeSegment" model="@Model.HowToBecomeSegment" />
-                <partial name="_jbWhatItTakesSegment" model="@Model.WhatItTakesSegment" />
-                <partial name="_jbWhatYouWillDoSegment" model="@Model.WhatYoullDoSegment" />
-                <partial name="_jbCareerPathSegment" model="@Model.CareerPathSegment" />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="job-profile-sections">
+
+            <div class="govuk-accordion"
+                 data-module="govuk-accordion"
+                 id="job-profile-accordion-with-summary-sections">
+
+                @if (It.Has(Model.HowToBecomeSegment))
+                {
+                    <partial name="_SegmentHowToBecome" model="@Model.HowToBecomeSegment" />
+                }
+
+                @if (It.Has(Model.WhatItTakesSegment))
+                {
+                    <partial name="_SegmentWhatItTakes" model="@Model.WhatItTakesSegment" />
+                }
+
+                @if (It.Has(Model.WhatYouWillDoSegment))
+                {
+                    <partial name="_SegmentWhatYouWillDo" model="@Model.WhatYouWillDoSegment" />
+                }
+
+                @if (It.Has(Model.CareerPathSegment))
+                {
+                    <partial name="_SegmentCareerPath" model="@Model.CareerPathSegment" />
+                }
+
+                @if (Model.HasCurrentOpportunities())
+                {
+                    <partial name="_SegmentCurrentOpportunities" model="@Model.CurrentOpportunities" />
+                }
             </div>
         </div>
-        
-        <div class="govuk-grid-column-one-third">
-            <partial name="_Search" model="@Model.SharedContent.Where(x => x.CanonicalName == "notwhatyourlookingfor").FirstOrDefault()" />
-            <partial name="_jbRelatedCareersSegment" model="@Model" />
-            <partial name="_SkillsAssessmentSnippet" model="@Model.SharedContent.Where(x => x.CanonicalName == "skillsassessment").FirstOrDefault()" />
-            <partial name="_speakToAnAdvisor" model="@Model.SharedContent.Where(x => x.CanonicalName == "speaktoanadvisor").FirstOrDefault()" />
-        </div>
     </div>
-<partial name="_FeedbackYesOrNo"/>
+
+    <div class="govuk-grid-column-one-third">
+        <partial name="_StaticWriteRawString" model="@Model.NotWhatYoureLookingFor" />
+        <partial name="_SegmentRelatedCareers" model="@Model" />
+        <partial name="_StaticWriteRawString" model="@Model.SkillsAssessment" />
+        <partial name="_StaticWriteRawString" model="@Model.SpeakToAnAdvisor" />
+    </div>
+</div>
+
+<partial name="_FeedbackYesOrNo" model="@Model" />

@@ -1,58 +1,61 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data.Providers;
 using DFC.App.JobProfile.Extensions;
-using DFC.App.JobProfile.ViewModels;
+using DFC.App.JobProfile.ViewSupport.ViewModels;
+using DFC.App.Services.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class HealthController : Controller
     {
-        private readonly ILogger<HealthController> logService;
-        private readonly IJobProfileService jobProfileService;
-        private readonly AutoMapper.IMapper mapper;
+        private readonly ILogger<HealthController> _logger;
+        private readonly IProvideJobProfiles _jobProfiles;
         private readonly string resourceName = typeof(Program).Namespace!;
 
-        public HealthController(ILogger<HealthController> logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public HealthController(
+            ILogger<HealthController> logService,
+            IProvideJobProfiles jobProfileService,
+            AutoMapper.IMapper fakeAutoMapper)
         {
-            this.logService = logService;
-            this.jobProfileService = jobProfileService;
-            this.mapper = mapper;
+            _logger = logService;
+            _jobProfiles = jobProfileService;
         }
 
         [HttpGet]
         [Route("health")]
         public async Task<IActionResult> Health()
         {
-            string resourceName = typeof(Program).Namespace;
             string message;
 
-            logService.LogInformation($"{nameof(Health)} has been called");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} has been called");
 
             try
             {
-                var isHealthy = await jobProfileService.PingAsync().ConfigureAwait(false);
+                var isHealthy = await _jobProfiles.Ping();
 
                 if (isHealthy)
                 {
                     message = "Document store is available";
-                    logService.LogInformation($"{nameof(Health)} responded with: {resourceName} - {message}");
+                    _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} responded with: {resourceName} - {message}");
 
                     var viewModel = CreateHealthViewModel(message);
 
                     return this.NegotiateContentResult(viewModel, viewModel.HealthItems);
                 }
 
-                logService.LogError($"{nameof(Health)}: Ping to {resourceName} has failed");
+                _logger.LogError($"{Utils.LoggerMethodNamePrefix()} Ping to {resourceName} has failed");
             }
             catch (Exception ex)
             {
                 message = $"{resourceName} exception: {ex.Message}";
-                logService.LogError($"{nameof(Health)}: {message}");
+                _logger.LogError($"{Utils.LoggerMethodNamePrefix()} {message}");
             }
 
             return StatusCode((int)HttpStatusCode.ServiceUnavailable);
@@ -61,7 +64,7 @@ namespace DFC.App.JobProfile.Controllers
         [HttpGet]
         public IActionResult Ping()
         {
-            logService.LogInformation($"{nameof(Ping)} has been called");
+            _logger.LogInformation($"{Utils.LoggerMethodNamePrefix()} has been called");
 
             return Ok();
         }

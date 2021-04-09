@@ -1,0 +1,15 @@
+﻿@model GeneralRoute
+
+<section class="job-profile-subsection"
+         id="@Model.Topic">
+
+    <h3>@Model.Topic</h3>
+
+    <div class="job-profile-subsection-content">
+        @foreach (var description in Model.Descriptions)
+        {
+            @Html.Raw(description)
+        }
+    </div>
+
+</section>

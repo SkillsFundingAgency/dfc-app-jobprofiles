@@ -1,0 +1,26 @@
+﻿@model HeroViewModel
+
+<header class="job-profile-hero">
+    <div class="govuk-width-container">
+        @if (Model.Breadcrumb.Items.Any())
+        {
+            <partial name="_Breadcrumb" model="Model.Breadcrumb" />
+        }
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1> @Model.Title</h1>
+
+                <h2 class="govuk-!-margin-top-5 govuk-!-margin-bottom-3">
+                    <span class="sr-hidden">Alternative titles for this job include </span>
+                    @Model.AlternativeTitle
+                </h2>
+
+                @Html.Raw(Model.Description)
+            </div>
+        </div>
+
+        <partial name="_HeroBannerOverview" model="@Model.OverviewSegment" />
+        <partial name="_HeroBannerLMI" model="@Model.LabourMarketInformationLink" />
+    </div>
+</header>

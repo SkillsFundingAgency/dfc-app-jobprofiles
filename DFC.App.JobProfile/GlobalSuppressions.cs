@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1210:Using directives should be ordered alphabetically by namespace", Justification = "<Pending>")]
+[assembly: SuppressMessage("StyleCop.CSharp", "SA0001:XML Analysis", Justification = "documentation not required")]

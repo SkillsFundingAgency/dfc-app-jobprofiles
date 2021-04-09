@@ -1,0 +1,35 @@
+﻿@model JobProfileCareerPath
+
+@{
+    const int itemPosition = 4;
+}
+
+<div class="govuk-accordion__section ">
+
+    <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button"
+                  id="job-profile-accordion-with-summary-sections-heading-@itemPosition">
+                Career path and progression
+            </span>
+        </h2>
+    </div>
+
+    <div id="job-profile-accordion-with-summary-sections-content-@itemPosition"
+         class="govuk-accordion__section-content"
+         aria-labelledby="job-profile-accordion-with-summary-sections-heading-@itemPosition">
+
+        @Html.Raw(Model.CareerPathAndProgression)
+
+        @*@if (Model.ApprecticeshipStandard.Any())
+            {
+                <h3>Apprenticeship Standards</h3>
+                <ul>
+                    @foreach (var standard in Model.ApprecticeshipStandard)
+                    {
+                        <li>@Html.Raw(standard.Content)</li>
+                    }
+                </ul>
+            }*@
+    </div>
+</div>

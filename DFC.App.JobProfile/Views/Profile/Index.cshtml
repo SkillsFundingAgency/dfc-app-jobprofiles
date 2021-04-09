@@ -1,22 +1,24 @@
 ﻿@model IndexViewModel
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Job profiles Summary List</title>
-</head>
-<body>
-    @if (Model.Documents?.Count() > 0)
-    {
-        <h2>Job Profiles Summary List</h2>
-        <ul>
-            @foreach (var document in Model.Documents)
-            {
-                <li>
-                    <a href="/profile/@document.JobProfileWebsiteUrl">@document.JobProfileWebsiteUrl</a>
-                </li>
-            }
-        </ul>
-    }
-</body>
-</html>
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Job Profiles Summary List...";
+}
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <ul>
+                    @foreach (var document in Model.OccupationSummaries)
+                    {
+                        <li>
+                            <a href="/profile/@document.JobProfileWebsiteUrl">@document.CanonicalName</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+

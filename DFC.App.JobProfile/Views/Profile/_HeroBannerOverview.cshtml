@@ -1,0 +1,52 @@
+﻿@model JobProfileOverview
+
+<div class="govuk-grid-row">
+    <div id="Salary"
+         class="column-40 job-profile-heroblock">
+        <h2>
+            Average salary
+            <span>(a year)</span>
+        </h2>
+
+        <div class="job-profile-salary job-profile-heroblock-content">
+            @if (Model.SalaryStarter.ComparesWith("variable") || Model.SalaryExperienced.ComparesWith("variable"))
+            {
+                <h5 class="dfc-code-jpsalaryblank">Variable</h5>
+            }
+            else
+            {
+                <p class="dfc-code-jpsstarter">@Model.SalaryStarter <span>Starter</span></p>
+                <em class="sr-hidden">to</em>
+                <p class="dfc-code-jpsexperienced">@Model.SalaryExperienced <span>Experienced</span></p>
+            }
+        </div>
+    </div>
+    <div id="WorkingHours" class="column-30 job-profile-heroblock">
+        <h2>Typical hours <span>(a week)</span></h2>
+        <div class="job-profile-hours job-profile-heroblock-content">
+            <p class="dfc-code-jphours">
+                @if (Model.MinimumHours == 0 || Model.MaximumHours == 0)
+                {
+                    @("Variable")
+                }
+                else
+                {
+                    @Model.MinimumHours @(" to ") @Model.MaximumHours
+                }
+
+                <span class="dfc-code-jpwhoursdetail">@Model.WorkingHoursDetails</span>
+            </p>
+        </div>
+    </div>
+    <div id="WorkingHoursPatterns" class="column-30 job-profile-heroblock">
+        <h2>
+            You could work
+        </h2>
+        <div class="job-profile-pattern job-profile-heroblock-content">
+            <p class="dfc-code-jpwpattern">
+                @Model.WorkingPattern
+                <span class="dfc-code-jpwpatterndetail">@Model.WorkingPatternDetails</span>
+            </p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+﻿@model HowToBecomeMoreInformation
+
+@if (Model.HasItemsToDisplay())
+{
+    <section class="job-profile-subsection" id="moreinfo">
+        <h3>More information</h3>
+        <div class="job-profile-subsection-content">
+
+            @if (It.Has(Model.Registration))
+            {
+                <h4>Registration</h4>
+                @Html.Raw(Model.Registration)
+            }
+
+            @if (It.Has(Model.CareerTips))
+            {
+                <h4>Career Tips</h4>
+                @Html.Raw(Model.CareerTips)
+            }
+
+            @if (It.Has(Model.ProfessionalBodies))
+            {
+                <h4>Professional And Industry Bodies</h4>
+                @Html.Raw(Model.ProfessionalBodies)
+            }
+
+            @if (It.Has(Model.FurtherInformation))
+            {
+                <h4>Further information</h4>
+                @Html.Raw(Model.FurtherInformation)
+            }
+        </div>
+    </section>
+}

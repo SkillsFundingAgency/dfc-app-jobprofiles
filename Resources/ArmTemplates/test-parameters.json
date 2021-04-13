@@ -20,6 +20,9 @@
         "cosmosDBName": {
             "value": "dfc-dev-app-sharedresources-cdb"
         },
+        "CosmosDbResourceGroup": {
+            "value": "dfc-dev-app-sharedresources-rg"
+        },
         "cosmosDbKey": {
             "value": "not-a-real-key"
         },
@@ -35,6 +38,15 @@
         "cosmosDbCollectionName": {
             "value": "a-collection"
         },
+        "cosmossharedcontentDbCollectionName": {
+            "value": "b-collection"
+        },
+        "sharedcontentAppDatabaseNeedsCreation": {
+            "value": true
+        },
+        "sharedcontentAppDatabaseThroughput": {
+            "value": 2
+        },
         "surveyUrl": {
             "value": "https://some.survey.site/link/to/survey"
         },
@@ -44,17 +56,23 @@
         "ExceptionCountThreshold":{
             "value": "0"
         },
-        "MemoryPercentageThreshold": {
-            "value": "0"
-        },
-        "CPUPercentageThreshold": {
-            "value": "0"
-        },
         "EventGridSubscriptionModelEndpoint": {
             "value": "foo"
         },
         "EventGridSubscriptionClientOptionsEndpoint": {
             "value": "foo"
+        },
+        "EventGridAegSasKey": {
+            "value": "a key"
+        },
+        "EventGridTopicUrl": {
+            "value": "a url"
+        },
+        "EventGridPublishClientOptionsApiEndpoint": {
+            "value": "a url"
+        },
+        "EventGridSubjectPrefix": {
+            "value": "anothervalue"
         },
         "apimCompositeApiKey": {
             "value": "FakeKey"
@@ -62,8 +80,17 @@
         "apimProxyAddress": {
             "value": "https://foo"
         },
-        "AllowedRedirects": {
-            "value": "nationalcareers"
+        "ContentBaseAddress": {
+            "value": "https://foo"
+        },
+        "OverviewDetailsLink": {
+            "value": "https://foo"
+        },
+        "SubscriptionApiEndpointUrl": {
+            "value": "https://url"
+        },
+        "ApplicationWebhookReceiverEndpointUrl": {
+            "value": "https://url"
         },
         "apimContentApiKey": {
             "value": "FakeKey"

@@ -34,10 +34,10 @@
             "type": "string",
             "defaultValue": ""
         },
-        "AllowedRedirects": {
+        "brandingAssetsAppCssFilePath": {
             "type": "string"
         },
-        "brandingAssetsAppCssFilePath": {
+        "CosmosDbResourceGroup": {
             "type": "string"
         },
         "cosmosDbName": {
@@ -62,6 +62,18 @@
             "metadata": {
                 "description": "The name of the collection to create"
             }
+        },
+        "cosmossharedcontentDbCollectionName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the collection to create"
+            }
+        },
+        "sharedcontentAppDatabaseNeedsCreation": {
+            "type": "bool"
+        },
+        "sharedcontentAppDatabaseThroughput": {
+            "type": "int"
         },
         "cmsTopicName": {
             "type": "string",
@@ -99,22 +111,40 @@
         "ExceptionCountThreshold": {
             "type": "string"
         },
-        "CPUPercentageThreshold": {
-            "type": "string"
-        },
-        "MemoryPercentageThreshold": {
-            "type": "string"
-        },
         "EventGridSubscriptionModelEndpoint": {
             "type": "string"
         },
         "EventGridSubscriptionClientOptionsEndpoint": {
             "type": "string"
         },
+        "EventGridAegSasKey": {
+            "type": "string"
+        },
+        "EventGridTopicUrl": {
+            "type": "string"
+        },
+        "EventGridPublishClientOptionsApiEndpoint": {
+            "type": "string"
+        },
+        "EventGridSubjectPrefix": {
+            "type": "string"
+        },
         "apimCompositeApiKey": {
             "type": "securestring"
         },
+        "SubscriptionApiEndpointUrl": {
+            "type": "string"
+        },
+        "OverviewDetailsLink": {
+            "type": "string"
+        },
+        "ApplicationWebhookReceiverEndpointUrl": {
+            "type": "string"
+        },
         "apimProxyAddress": {
+            "type": "string"
+        },
+        "ContentBaseAddress": {
             "type": "string"
         },
         "apimContentApiKey": {
@@ -127,9 +157,11 @@
         "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "cosmosDbCollectionPartitionKey": "/PartitionKey",
+        "cosmossharedcontentDbCollectionPartitionKey": "/PartitionKey",
         "cosmosDbDatabaseName": "dfc-app-jobprofiles",
+        "cosmosDbSharedContentDatabaseName": "dfc-shared-content",
         "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
-        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
+        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-stax-jobprof'))]",
         "urlJobprofiles": "[toLower(concat('https://', variables('webAppName'), '.', parameters('appServiceDomain')))]",
         "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofover-as.', parameters('appServiceDomain')))]",
         "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofcops-as.', parameters('appServiceDomain')))]",
@@ -240,6 +272,10 @@
                                 "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
                             },
                             {
+                                "name": "ApplicationInsights:InstrumentationKey",
+                                "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
+                            },
+                            {
                                 "name": "AzureWebJobsStorage",
                                 "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('appSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('appSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
                             },
@@ -268,6 +304,26 @@
                                 "value": "[variables('cosmosDbCollectionPartitionKey')]"
                             },
                             {
+                                "name": "Configuration__CosmosDbConnections__StaticContent__PartitionKey",
+                                "value": "[variables('cosmossharedcontentDbCollectionPartitionKey')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__StaticContent__AccessKey",
+                                "value": "[parameters('cosmosDbKey')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__StaticContent__EndpointUrl",
+                                "value": "[variables('cosmosDbEndpoint')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__StaticContent__DatabaseId",
+                                "value": "[variables('cosmosDbSharedContentDatabaseName')]"
+                            },
+                            {
+                                "name": "Configuration__CosmosDbConnections__StaticContent__CollectionId",
+                                "value": "[parameters('cosmossharedcontentDbCollectionName')]"
+                            },
+                            {
                                 "name": "Policies__HttpCircuitBreaker__DurationOfBreak",
                                 "value": "00:01:00"
                             },
@@ -282,10 +338,6 @@
                             {
                                 "name": "Policies__HttpRetry__Count",
                                 "value": 3
-                            },
-                            {
-                                "name": "AllowedRedirects",
-                                "value": "[parameters('AllowedRedirects')]"
                             },
                             {
                                 "name": "OverviewBannerSegmentClientOptions__Timeout",
@@ -432,6 +484,10 @@
                                 "value": "[parameters('surveyUrl')]"
                             },
                             {
+                                "name": "OverviewDetails__Link",
+                                "value": "[parameters('OverviewDetailsLink')]"
+                            },
+                            {
                                 "name": "Logging__ApplicationInsights__LogLevel__Default",
                                 "value": "Error"
                             },
@@ -441,7 +497,7 @@
                             },
                             {
                                 "name": "Configuration__ApplicationName",
-                                "value": "DFC-App-Job-Profiles"
+                                "value": "DFC-App-Stax-Job-Profiles"
                             },
                             {
                                 "name": "EventGridSubscriptionModel__Endpoint",
@@ -472,6 +528,58 @@
                                 "value": "[parameters('EventGridSubscriptionClientOptionsEndpoint')]"
                             },
                             {
+                                "name": "EventGridPublishClientOptions__TopicKey",
+                                "value": "[parameters('EventGridAegSasKey')]"
+                            },
+                            {
+                                "name": "EventGridPublishClientOptions__TopicEndpoint",
+                                "value": "[parameters('EventGridTopicUrl')]"
+                            },
+                            {
+                                "name": "EventGridPublishClientOptions__SubjectPrefix",
+                                "value": "[parameters('EventGridSubjectPrefix')]"
+                            },
+                            {
+                                "name": "EventGridPublishClientOptions__ApiEndpoint",
+                                "value": "[parameters('EventGridPublishClientOptionsApiEndpoint')]"
+                            },
+                            {
+                                "name": "SubscriptionSettings__SubscriptionServiceEndpoint",
+                                "value": "[parameters('SubscriptionApiEndpointUrl')]"
+                            },
+                            {
+                                "name": "SubscriptionSettings__SubscriptionRegistrationDelay",
+                                "value": "00:02:00"
+                            },
+                            {
+                                "name": "SubscriptionSettings__Endpoint",
+                                "value": "[parameters('ApplicationWebhookReceiverEndpointUrl')]"
+                            },
+                            {
+                                "name": "SubscriptionSettings__Filter__IncludeEventTypes__0",
+                                "value": "published"
+                            },
+                            {
+                                "name": "SubscriptionSettings__Filter__IncludeEventTypes__1",
+                                "value": "unpublished"
+                            },
+                            {
+                                "name": "SubscriptionSettings__Filter__IncludeEventTypes__2",
+                                "value": "deleted"
+                            },
+                            {
+                                "name": "SubscriptionSettings__Filter__PropertyContainsFilters__0__Key",
+                                "value": "subject"
+                            },
+                            {
+                                "name": "SubscriptionSettings__Filter__PropertyContainsFilters__0__Values__0",
+                                "value": "/content/jobprofile/"
+                            },
+                            {
+                                "name": "SubscriptionSettings__Filter__PropertyContainsFilters__0__Values__1",
+                                "value": "/content/sharedcontent/"
+                            },
+                            {
                                 "name": "CmsApiClientOptions__Timeout",
                                 "value": "00:00:30"
                             },
@@ -481,11 +589,19 @@
                             },
                             {
                                 "name": "CmsApiClientOptions__BaseAddress",
-                                "value": "[parameters('apimProxyAddress')]"
+                                "value": "[parameters('ContentBaseAddress')]"
+                            },
+                            {
+                                "name": "CmsApiClientOptions__StaticContentEndpoint",
+                                "value": "api/execute/shared-content/"
+                            },
+                            {
+                                "name": "CmsApiClientOptions__ContentIds",
+                                "value": "a33ae1e0-f6fd-4c89-86f4-a490954af266,531ed13a-5659-4a36-a822-9f4795b7b1c8,f30a34c7-cf40-4054-bd4a-96537fc9726b"
                             },
                             {
                                 "name": "CmsApiClientOptions__SummaryEndpoint",
-                                "value": "content/getcontent/api/execute/jobprofile"
+                                "value": "api/execute/jobprofile"
                             }
 
                         ]
@@ -624,6 +740,36 @@
             ]
         },
         {
+            "name": "[variables('CosmosDbSharedContentDatabaseName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
+            "apiVersion": "2017-05-10",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'),'CosmosDb/cosmos-database.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "accountName": {
+                        "value": "[parameters('CosmosDbName')]"
+                    },
+                    "databaseName": {
+                        "value": "[variables('CosmosDbSharedContentDatabaseName')]"
+                    },
+                    "useSharedRequestUnits": {
+                        "value": true
+                    },
+                    "offerThroughput": {
+                        "value": "[parameters('sharedcontentAppDatabaseThroughput')]"
+                    },
+                    "databaseNeedsCreation": {
+                        "value": "[parameters('sharedcontentAppDatabaseNeedsCreation')]"
+                    }
+                }
+            }
+        },
+        {
             "apiVersion": "2017-05-10",
             "name": "[parameters('cosmosDbCollectionName')]",
             "type": "Microsoft.Resources/deployments",
@@ -649,6 +795,36 @@
                     },
                     "partitionKey": {
                         "value": "[variables('cosmosDbCollectionPartitionKey')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[parameters('cosmossharedcontentDbCollectionName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'CosmosDb/cosmos-collection.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "accountName": {
+                        "value": "[parameters('cosmosDbName')]"
+                    },
+                    "databaseName": {
+                        "value": "[variables('cosmosDbSharedContentDatabaseName')]"
+                    },
+                    "collectionName": {
+                        "value": "[parameters('cosmossharedcontentDbCollectionName')]"
+                    },
+                    "provisionRequestUnits": {
+                        "value": false
+                    },
+                    "partitionKey": {
+                        "value": "[variables('cosmossharedcontentDbCollectionPartitionKey')]"
                     }
                 }
             }
@@ -734,7 +910,7 @@
                         "value": "GreaterThan"
                     },
                     "threshold": {
-                        "value": "[parameters('ExceptionCountThreshold')]"
+                        "value": "0"
                     },
                     "aggregation": {
                         "value": "Count"
@@ -791,7 +967,7 @@
             "name": "[concat(variables('functionAppInsightsName'), '-metric-exceptions')]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[variables('functionAppInsightsName')]"
+                "[variables('webAppInsightsName')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -867,115 +1043,6 @@
                     }
                 }
             }
-
-        },
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[concat(variables('AppServicePlanName'), '-CPUPercentage')]",
-            "type": "Microsoft.Resources/deployments",
-            "condition": "[not(equals(parameters('sharedAppServicePlanName'), variables('appServicePlanName')))]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(variables('AppServicePlanName'), '-metric-CPUPercentage')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "CpuPercentage"
-                    },
-                    "operator": {
-                        "value": "GreaterThanOrEqual"
-                    },
-                    "threshold": {
-                        "value": "[parameters('CPUPercentageThreshold')]"
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "actionGroupResourceGroup": {
-                        "value": "[parameters('appSharedResourceGroup')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('AppServicePlanName')]"
-            ]
-        },
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[concat(variables('AppServicePlanName'), '-MemoryPercentage')]",
-            "type": "Microsoft.Resources/deployments",
-            "condition": "[not(equals(parameters('sharedAppServicePlanName'), variables('appServicePlanName')))]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(variables('AppServicePlanName'), '-metric-MemoryPercentage')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "MemoryPercentage"
-                    },
-                    "operator": {
-                        "value": "GreaterThanOrEqual"
-                    },
-                    "threshold": {
-                        "value": "[parameters('MemoryPercentageThreshold')]"
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "actionGroupResourceGroup": {
-                        "value": "[parameters('appSharedResourceGroup')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('AppServicePlanName')]"
-            ]
         }
     ],
     "outputs": {

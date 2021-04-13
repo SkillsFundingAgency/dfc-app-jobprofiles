@@ -1,12 +1,26 @@
-﻿<div class="job-profile-feedback">
+﻿@model BodyViewModel
+
+<div class="job-profile-feedback js-visible">
+
     <div class="job-profile-feedback-start">
-        <p>Is this page useful?</p><a class="yes" href="#job-profile-feedback-answered" id="jp-feedback-yes">Yes</a>
+        <p>Is this page useful?</p>
+        <a class="yes" href="#job-profile-feedback-answered" id="jp-feedback-yes">Yes</a>
         <a class="no" href="#job-profile-feedback-answered" id="jp-feedback-no">No</a>
     </div>
-    <div id="job-profile-feedback-answered" class="job-profile-feedback-end-yes js-hidden">
+
+    <div id="job-profile-feedback-answered"
+         class="job-profile-feedback-end-yes js-hidden">
         <p>Thank you for your feedback.</p>
     </div>
+
     <div class="job-profile-feedback-end-no js-hidden">
-        <p>Thank you for your feedback. <a id="job-profile-feedback-survey" href='@Model.SmartSurveyJP'>Click here</a> if you'd like to let us know how we can improve the service.</p>
+        <p>
+            Thank you for your feedback.
+            <a id="job-profile-feedback-survey"
+               href="@Model.SmartSurveyJP">
+                Click here
+            </a>
+            if you'd like to let us know how we can improve the service.
+        </p>
     </div>
 </div>

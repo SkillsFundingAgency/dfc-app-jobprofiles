@@ -44,11 +44,20 @@
         "sharedAppServicePlanResourceGroup": {
             "value": "__appSharedResourceGroup__"
         },
-        "AllowedRedirects": {
-            "value": "__AllowedRedirects__"
+        "CosmosDbResourceGroup": {
+            "value": "__appSharedResourceGroup__"
         },
         "cosmosDbCollectionName": {
             "value": "__cosmosDbCollectionName__"
+        },
+        "cosmossharedcontentDbCollectionName": {
+            "value": "__cosmossharedcontentDbCollectionName__"
+        },
+        "sharedcontentAppDatabaseNeedsCreation": {
+            "value": __CosmosDbDatabaseDoesntExist__
+        },
+        "sharedcontentAppDatabaseThroughput": {
+            "value": __sharedcontentAppDatabaseThroughput__
         },
         "cmsTopicName": {
             "value": "__cmsTopicName__"
@@ -68,23 +77,41 @@
         "ExceptionCountThreshold":{
             "value": "__ExceptionCountThreshold__"
         },
-        "MemoryPercentageThreshold": {
-            "value": "__MemoryPercentageThreshold__"
-        },
-        "CPUPercentageThreshold": {
-            "value": "__CPUPercentageThreshold__"
-        },
         "EventGridSubscriptionModelEndpoint": {
             "value": "__EventGridSubscriptionModelEndpoint__"
         },
         "EventGridSubscriptionClientOptionsEndpoint": {
             "value": "__EventGridSubscriptionClientOptionsEndpoint__"
         },
+        "EventGridAegSasKey": {
+            "value": "__EventGridAegSasKey__"
+        },
+        "EventGridTopicUrl": {
+            "value": "__EventGridTopicUrl__"
+        },
+        "EventGridPublishClientOptionsApiEndpoint": {
+            "value": "__EventGridPublishClientOptionsApiEndpoint__"
+        },
+        "EventGridSubjectPrefix": {
+            "value": "__EventGridSubjectPrefix__"
+        },
         "apimCompositeApiKey": {
             "value": "__apimCompositeApiKey__"
         },
         "apimProxyAddress": {
             "value": "__apimProxyAddress__"
+        },
+        "OverviewDetailsLink": {
+            "value": "__OverviewDetailsLink__"
+        },
+        "ContentBaseAddress": {
+            "value": "__ContentBaseAddress__"
+        },
+        "SubscriptionApiEndpointUrl": {
+            "value": "__SubscriptionApiEndpointUrl__"
+        },
+        "ApplicationWebhookReceiverEndpointUrl": {
+            "value": "__ApplicationWebhookReceiverEndpointUrl__"
         },
         "apimContentApiKey": {
             "value": "__apimContentApiKey__"

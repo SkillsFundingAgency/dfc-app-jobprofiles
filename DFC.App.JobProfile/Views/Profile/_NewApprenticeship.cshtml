@@ -1,0 +1,23 @@
+﻿@model OpportunityApprenticeship
+
+<div class="govuk-grid-column-one-half">
+
+    <div class="opportunity-item">
+
+        <h4 class="govuk-heading-s">
+            <a href="@Model.Header.Link">@Model.Header.Text</a>
+        </h4>
+
+        <ul class="govuk-list">
+            <li>
+                <span class="govuk-body govuk-!-font-weight-bold">Wage: </span>
+                @Model.Wage
+            <span class="govuk-body-s govuk-secondary-colour">
+                @Model.WageFrequency
+            </span>
+            </li>
+
+            <li><span class="govuk-body govuk-!-font-weight-bold">Location: </span>@Model.Location</li>
+        </ul>
+    </div>
+</div>

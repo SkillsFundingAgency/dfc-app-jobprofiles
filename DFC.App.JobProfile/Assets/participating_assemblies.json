@@ -1,0 +1,9 @@
+﻿[
+  "DFC.App.Services.Common",
+  "DFC.App.JobProfile.ContentAPI",
+  "DFC.App.JobProfile.Cacheing",
+  "DFC.App.JobProfile.Webhooks",
+  "DFC.App.JobProfile.Data",
+  "DFC.App.JobProfile.ViewSupport",
+  "DFC.App.JobProfile.EventProcessing"
+]

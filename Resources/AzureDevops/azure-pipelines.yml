@@ -53,11 +53,12 @@ stages:
           PublishWebApp: true
           TestSuffix: UnitTests
 
+#GG The message function app is no longer used but left here in case we need to put it back in
       # Build DFC.App.JobProfile.MessageFunctionApp
-      - template:  AzureDevOpsTemplates\Build\StepTemplates\dfc-dotnetcore-build-notests.yml@dfc-devops
-        parameters:
-          SolutionBaseName: $(SolutionBaseName).MessageFunctionApp
-          BuildPlatform: $(BuildPlatform)
-          BuildConfiguration: $(BuildConfiguration)
-          DotNetCoreVersion: 3.1.101
-          PublishWebApp: true
+      # - template:  AzureDevOpsTemplates\Build\StepTemplates\dfc-dotnetcore-build-notests.yml@dfc-devops
+      #   parameters:
+      #     SolutionBaseName: $(SolutionBaseName).MessageFunctionApp
+      #     BuildPlatform: $(BuildPlatform)
+      #     BuildConfiguration: $(BuildConfiguration)
+      #     DotNetCoreVersion: 3.1.101
+      #     PublishWebApp: true

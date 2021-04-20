@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.UnitTest
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{88FD4BD4-9488-4A50-B2C9-FAD6123A86FF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.MessageFunctionApp", "DFC.App.JobProfile.MessageFunctionApp\DFC.App.JobProfile.MessageFunctionApp.csproj", "{A86B26FF-E467-499A-87FE-346C95FA5994}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D61AF8F-0EDF-4F5B-B11C-5F9E53E089D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A86B26FF-E467-499A-87FE-346C95FA5994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A86B26FF-E467-499A-87FE-346C95FA5994}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A86B26FF-E467-499A-87FE-346C95FA5994}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A86B26FF-E467-499A-87FE-346C95FA5994}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

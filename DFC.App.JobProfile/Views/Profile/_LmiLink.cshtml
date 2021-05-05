@@ -1,0 +1,19 @@
+﻿@model HeroViewModel
+
+
+@if (Model.Segments.Any(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview) && Model.LmiLink.OverviewSegmentModel != null)
+{
+    <div class="job-profile-hero-additional">
+        <div class="govuk-width-container">
+            <div class="grid-row">
+                <div class="column-60 job-profile-heroblock-additional govuk-grid-column-two-thirds">
+                    <h2> Find out more about jobs in this group</h2>
+                    <div class="job-profile-group job-profile-heroblock-content">
+                        <p class="dfc-code-jpwpattern">See which sectors you’ll find this job in, what qualifications you need to work in this area and if these types of jobs are going up or going down. This information can help you make good career decisions.</p>
+                        <p class="dfc-code-jpwpattern govuk-!-padding-top-5"> <a href="@($"/job-groups/{Model.LmiLink.OverviewSegmentModel.Soc}/{Model.LmiLink.CanonicalName}")" class="govuk-link">Explore job trends for this group</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

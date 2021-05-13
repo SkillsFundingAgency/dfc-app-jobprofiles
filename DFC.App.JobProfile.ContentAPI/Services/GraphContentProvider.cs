@@ -19,6 +19,12 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         IProvideGraphContent,
         IRequireServiceRegistration
     {
+        private static readonly string[] _relationshipStubs = new string[]
+       {
+        "HasSocCode",
+        "HasRelatedCareer",
+       };
+
         private readonly IContentApiConfiguration _clientConfig;
         private readonly IApiDataProcessorService _dataProcessor;
         private readonly HttpClient _httpClient;
@@ -155,7 +161,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
 
                     list.Add(descendent);
 
-                    if (!_clientConfig.RelationshipStubs.Any(x => x.ComparesWith(relation.Relationship)))
+                    if (!_relationshipStubs.Any(x => x.ComparesWith(relation.Relationship)))
                     {
                         var modelLinks = _curieProcessor.GetContentItemLinkedItems(descendent);
                         var candidates = await GetLinkedContentItems<TLinkedItem>(modelLinks);

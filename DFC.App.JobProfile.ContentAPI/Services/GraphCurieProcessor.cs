@@ -29,6 +29,34 @@ namespace DFC.App.JobProfile.ContentAPI.Services
             var contentLinks = new List<IGraphRelation>();
             var baseReference = GetBaseReference(links);
 
+            string[] supportedRelationships =
+            {
+                "HasSocCode",
+                "HasHtbUniversityRoute",
+                "HasUniversityRequirement",
+                "HasUniversityLink",
+                "HasHtbCollegeRoute",
+                "HasCollegeRequirement",
+                "HasCollegeLink",
+                "HasHtbApprenticeshipRoute",
+                "HasApprenticeshipRequirement",
+                "HasApprenticeshipLink",
+                "HasHtbWorkRoute",
+                "HasHtbVolunteeringRoute",
+                "HasHtbDirectRoute",
+                "HasHtbOtherRoute",
+                "HasWitRestriction",
+                "HasWitOtherRequirement",
+                "HasONetOccupationalCode",
+                "HasONetSkill",
+                "HasWitDigitalSkillsLevel",
+                "HasDayToDayTask",
+                "HasWorkingEnvironment",
+                "HasWorkingLocation",
+                "HasWorkingUniform",
+                "HasRelatedCareer",
+            };
+
             if (baseReference == null)
             {
                 return contentLinks;
@@ -44,7 +72,7 @@ namespace DFC.App.JobProfile.ContentAPI.Services
 
                 var relationship = key.Replace($"{baseReference.Name}:", string.Empty, StringComparison.InvariantCultureIgnoreCase);
 
-                if (!_options.SupportedRelationships.Any(x => x.Equals(relationship, StringComparison.InvariantCultureIgnoreCase)))
+                if (!supportedRelationships.Any(x => x.Equals(relationship, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     continue;
                 }

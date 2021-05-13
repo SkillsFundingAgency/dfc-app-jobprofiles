@@ -44,20 +44,23 @@
         "sharedAppServicePlanResourceGroup": {
             "value": "__appSharedResourceGroup__"
         },
-        "CosmosDbResourceGroup": {
-            "value": "__appSharedResourceGroup__"
+        "cosmosDbJobProfileCollectionNameStax": {
+            "value": "__cosmosDbJobProfileCollectionNameStax__"
         },
-        "cosmosDbCollectionName": {
-            "value": "__cosmosDbCollectionName__"
+        "cosmosDbCurrentOpportunitiesCollectionNameStax": {
+            "value": "__cosmosDbCurrentOpportunitiesCollectionNameStax__"
         },
-        "cosmossharedcontentDbCollectionName": {
-            "value": "__cosmossharedcontentDbCollectionName__"
+        "cosmosDbSegmentCurrentOpportunitiesCollectionNameStax": {
+            "value": "__cosmosDbSegmentCurrentOpportunitiesCollectionNameStax__"
+        },
+        "cosmossharedcontentDbCollectionNameStax": {
+            "value": "__cosmossharedcontentDbCollectionNameStax__"
         },
         "sharedcontentAppDatabaseNeedsCreation": {
-            "value": __CosmosDbDatabaseDoesntExist__
+            "value": "__CosmosDbDatabaseDoesntExist__"
         },
         "sharedcontentAppDatabaseThroughput": {
-            "value": __sharedcontentAppDatabaseThroughput__
+            "value": "__sharedcontentAppDatabaseThroughput__"
         },
         "cmsTopicName": {
             "value": "__cmsTopicName__"
@@ -72,9 +75,9 @@
             "value": "__surveyFeedbackUrl__"
         },
         "enableAlerts": {
-            "value": __EnableAzureMonitorAlerting__
+            "value": "__EnableAzureMonitorAlerting__"
         },
-        "ExceptionCountThreshold":{
+        "ExceptionCountThreshold": {
             "value": "__ExceptionCountThreshold__"
         },
         "EventGridSubscriptionModelEndpoint": {

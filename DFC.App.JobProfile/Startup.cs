@@ -19,10 +19,10 @@ namespace DFC.App.JobProfile
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        private const string JobProfileStoreSettings = "Configuration:DocumentStore:JobProfile";
-        private const string CurrentOpportunitiesStoreSettings = "Configuration:DocumentStore:CurrentOpportunities";
-        private const string SegmentOpportunitiesStoreSettings = "Configuration:DocumentStore:OldCurrentOpportunities";
-        private const string StaticContentStoreSettings = "Configuration:DocumentStore:StaticContent";
+        private const string JobProfileStoreSettings = "Configuration:CosmosDbConnections:JobProfile";
+        private const string CurrentOpportunitiesStoreSettings = "Configuration:CosmosDbConnections:CurrentOpportunities";
+        private const string SegmentOpportunitiesStoreSettings = "Configuration:CosmosDbConnections:SegmentCurrentOpportunities";
+        private const string StaticContentStoreSettings = "Configuration:CosmosDbConnections:StaticContent";
 
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;

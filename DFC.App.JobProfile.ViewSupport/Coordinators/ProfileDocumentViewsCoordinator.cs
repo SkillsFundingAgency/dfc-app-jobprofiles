@@ -84,17 +84,17 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
 
         public async Task<HttpResponseMessage> GetDocumentFor(string occupationName, string address)
         {
-            var details = await GetDetailsFor<DocumentViewModel>(occupationName);
-            var candidate = details.Model;
-            var jobProfile = details.Occupation;
+            var (candidate, jobProfile) = await GetDetailsFor<DocumentViewModel>(occupationName);
 
             candidate.Body = await AddSupplementalsTo(candidate.Body, jobProfile.CanonicalName);
             candidate.Body = await AddOpportunitiesTo(candidate.Body, jobProfile.CanonicalName);
-
             candidate.HeroBanner.LabourMarketInformationLink = GetFullyFormedPathFrom(LabourLinks.URLFormat, jobProfile.SocCode, jobProfile.CanonicalName);
             candidate.HeroBanner.Breadcrumb = BuildBreadcrumb(jobProfile, address);
-
+            candidate.HeroBanner.OverviewSegment.SalaryExperienced = GetSalary(candidate.HeroBanner.OverviewSegment.SalaryExperienced);
+            candidate.HeroBanner.OverviewSegment.SalaryStarter = GetSalary(candidate.HeroBanner.OverviewSegment.SalaryStarter);
             return await Response.Create(HttpStatusCode.OK, candidate);
+            static string GetSalary(string salary) =>
+                string.IsNullOrWhiteSpace(salary) || salary.Equals("0") ? "Variable" : salary;
         }
 
         public async Task<HttpResponseMessage> GetHeadFor(string occupationName, string address)

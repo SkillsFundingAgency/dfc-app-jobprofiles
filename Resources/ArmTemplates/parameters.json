@@ -1,123 +1,123 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "appServiceDomain": {
-            "value": "__appServiceDomain__"
-        },
-        "appSharedResourceGroup": {
-            "value": "__appSharedResourceGroup__"
-        },
-        "appSharedServiceBusName": {
-            "value": "__appSharedServiceBusName__"
-        },
-        "appSharedStorageAccountName": {
-            "value": "__appSharedStorageAccountName__"
-        },
-        "aseHostingEnvironmentName": {
-            "value": "__aseHostingEnvironmentName__"
-        },
-        "aseResourceGroup": {
-            "value": "__aseResourceGroup__"
-        },
-        "aspTier": {
-            "value": "__aspTier__"
-        },
-        "brandingAssetsAppCssFilePath": {
-            "value": "__brandingAssetsAppCssFilePath__"
-        },
-        "cosmosDBName": {
-            "value": "__appSharedCosmosDBName__"
-        },
-        "cosmosDbKey": {
-            "value": "__appSharedCosmosPrimaryKey__"
-        },
-        "environment": {
-            "value": "__ReleaseEnvironmentName__",
-            "metadata": {
-                "comment": "Bug in tokenisation task prevents referencing Release.EnvironmentName directly.  https://github.com/TotalALM/VSTS-Tasks/issues/29"
-            }
-        },
-        "sharedAppServicePlanName": {
-            "value": "__sharedAppServicePlanName__"
-        },
-        "sharedAppServicePlanResourceGroup": {
-            "value": "__appSharedResourceGroup__"
-        },
-        "cosmosDbJobProfileCollectionNameStax": {
-            "value": "__cosmosDbJobProfileCollectionNameStax__"
-        },
-        "cosmosDbCurrentOpportunitiesCollectionNameStax": {
-            "value": "__cosmosDbCurrentOpportunitiesCollectionNameStax__"
-        },
-        "cosmosDbSegmentCurrentOpportunitiesCollectionNameStax": {
-            "value": "__cosmosDbSegmentCurrentOpportunitiesCollectionNameStax__"
-        },
-        "cosmossharedcontentDbCollectionNameStax": {
-            "value": "__cosmossharedcontentDbCollectionNameStax__"
-        },
-        "sharedcontentAppDatabaseNeedsCreation": {
-            "value": "__CosmosDbDatabaseDoesntExist__"
-        },
-        "sharedcontentAppDatabaseThroughput": {
-            "value": "__sharedcontentAppDatabaseThroughput__"
-        },
-        "cmsTopicName": {
-            "value": "__cmsTopicName__"
-        },
-        "cmsSubscriptionSqlFilter": {
-            "value": "__cmsSubscriptionSqlFilter__"
-        },
-        "refreshTopicName": {
-            "value": "__refreshTopicName__"
-        },
-        "surveyUrl": {
-            "value": "__surveyFeedbackUrl__"
-        },
-        "enableAlerts": {
-            "value": "__EnableAzureMonitorAlerting__"
-        },
-        "ExceptionCountThreshold": {
-            "value": "__ExceptionCountThreshold__"
-        },
-        "EventGridSubscriptionModelEndpoint": {
-            "value": "__EventGridSubscriptionModelEndpoint__"
-        },
-        "EventGridSubscriptionClientOptionsEndpoint": {
-            "value": "__EventGridSubscriptionClientOptionsEndpoint__"
-        },
-        "EventGridAegSasKey": {
-            "value": "__EventGridAegSasKey__"
-        },
-        "EventGridTopicUrl": {
-            "value": "__EventGridTopicUrl__"
-        },
-        "EventGridPublishClientOptionsApiEndpoint": {
-            "value": "__EventGridPublishClientOptionsApiEndpoint__"
-        },
-        "EventGridSubjectPrefix": {
-            "value": "__EventGridSubjectPrefix__"
-        },
-        "apimCompositeApiKey": {
-            "value": "__apimCompositeApiKey__"
-        },
-        "apimProxyAddress": {
-            "value": "__apimProxyAddress__"
-        },
-        "OverviewDetailsLink": {
-            "value": "__OverviewDetailsLink__"
-        },
-        "ContentBaseAddress": {
-            "value": "__ContentBaseAddress__"
-        },
-        "SubscriptionApiEndpointUrl": {
-            "value": "__SubscriptionApiEndpointUrl__"
-        },
-        "ApplicationWebhookReceiverEndpointUrl": {
-            "value": "__ApplicationWebhookReceiverEndpointUrl__"
-        },
-        "apimContentApiKey": {
-            "value": "__apimContentApiKey__"
-        }
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appServiceDomain": {
+      "value": "__appServiceDomain__"
+    },
+    "appSharedResourceGroup": {
+      "value": "__appSharedResourceGroup__"
+    },
+    "appSharedServiceBusName": {
+      "value": "__appSharedServiceBusName__"
+    },
+    "appSharedStorageAccountName": {
+      "value": "__appSharedStorageAccountName__"
+    },
+    "aseHostingEnvironmentName": {
+      "value": "__aseHostingEnvironmentName__"
+    },
+    "aseResourceGroup": {
+      "value": "__aseResourceGroup__"
+    },
+    "aspTier": {
+      "value": "__aspTier__"
+    },
+    "brandingAssetsAppCssFilePath": {
+      "value": "__brandingAssetsAppCssFilePath__"
+    },
+    "cosmosDBName": {
+      "value": "__appSharedCosmosDBName__"
+    },
+    "cosmosDbKey": {
+      "value": "__appSharedCosmosPrimaryKey__"
+    },
+    "environment": {
+      "value": "__ReleaseEnvironmentName__",
+      "metadata": {
+        "comment": "Bug in tokenisation task prevents referencing Release.EnvironmentName directly.  https://github.com/TotalALM/VSTS-Tasks/issues/29"
+      }
+    },
+    "sharedAppServicePlanName": {
+      "value": "__sharedAppServicePlanName__"
+    },
+    "sharedAppServicePlanResourceGroup": {
+      "value": "__appSharedResourceGroup__"
+    },
+    "cosmosDbJobProfileCollectionNameStax": {
+      "value": "__cosmosDbJobProfileCollectionNameStax__"
+    },
+    "cosmosDbCurrentOpportunitiesCollectionNameStax": {
+      "value": "__cosmosDbCurrentOpportunitiesCollectionNameStax__"
+    },
+    "cosmosDbSegmentCurrentOpportunitiesCollectionNameStax": {
+      "value": "__cosmosDbSegmentCurrentOpportunitiesCollectionNameStax__"
+    },
+    "cosmossharedcontentDbCollectionNameStax": {
+      "value": "__cosmossharedcontentDbCollectionNameStax__"
+    },
+    "sharedcontentAppDatabaseNeedsCreation": {
+      "value": __CosmosDbDatabaseDoesntExist__
+    },
+    "sharedcontentAppDatabaseThroughput": {
+      "value": __sharedcontentAppDatabaseThroughput__
+    },
+    "cmsTopicName": {
+      "value": "__cmsTopicName__"
+    },
+    "cmsSubscriptionSqlFilter": {
+      "value": "__cmsSubscriptionSqlFilter__"
+    },
+    "refreshTopicName": {
+      "value": "__refreshTopicName__"
+    },
+    "surveyUrl": {
+      "value": "__surveyFeedbackUrl__"
+    },
+    "enableAlerts": {
+      "value": __EnableAzureMonitorAlerting__
+    },
+    "ExceptionCountThreshold": {
+      "value": "__ExceptionCountThreshold__"
+    },
+    "EventGridSubscriptionModelEndpoint": {
+      "value": "__EventGridSubscriptionModelEndpoint__"
+    },
+    "EventGridSubscriptionClientOptionsEndpoint": {
+      "value": "__EventGridSubscriptionClientOptionsEndpoint__"
+    },
+    "EventGridAegSasKey": {
+      "value": "__EventGridAegSasKey__"
+    },
+    "EventGridTopicUrl": {
+      "value": "__EventGridTopicUrl__"
+    },
+    "EventGridPublishClientOptionsApiEndpoint": {
+      "value": "__EventGridPublishClientOptionsApiEndpoint__"
+    },
+    "EventGridSubjectPrefix": {
+      "value": "__EventGridSubjectPrefix__"
+    },
+    "apimCompositeApiKey": {
+      "value": "__apimCompositeApiKey__"
+    },
+    "apimProxyAddress": {
+      "value": "__apimProxyAddress__"
+    },
+    "OverviewDetailsLink": {
+      "value": "__OverviewDetailsLink__"
+    },
+    "ContentBaseAddress": {
+      "value": "__ContentBaseAddress__"
+    },
+    "SubscriptionApiEndpointUrl": {
+      "value": "__SubscriptionApiEndpointUrl__"
+    },
+    "ApplicationWebhookReceiverEndpointUrl": {
+      "value": "__ApplicationWebhookReceiverEndpointUrl__"
+    },
+    "apimContentApiKey": {
+      "value": "__apimContentApiKey__"
     }
+  }
 }

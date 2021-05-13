@@ -1,99 +1,105 @@
 {
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "appServiceDomain": {
-            "value": "azurewebsites.net"
-        },
-        "appSharedResourceGroup": {
-            "value": "dfc-dev-app-sharedresources-rg"
-        },
-        "appSharedServiceBusName": {
-            "value": "dfc-dev-app-sharedresources-ns"
-        },
-        "appSharedStorageAccountName": {
-            "value": "dfcdevappsharedstr"
-        },
-        "brandingAssetsAppCssFilePath": {
-            "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
-        },
-        "cosmosDBName": {
-            "value": "dfc-dev-app-sharedresources-cdb"
-        },
-        "CosmosDbResourceGroup": {
-            "value": "dfc-dev-app-sharedresources-rg"
-        },
-        "cosmosDbKey": {
-            "value": "not-a-real-key"
-        },
-        "Environment": {
-            "value": "FOO"
-        },
-        "sharedAppServicePlanName": {
-            "value": "dfc-dev-app-shared-asp"
-        },
-        "sharedAppServicePlanResourceGroup": {
-            "value": "dfc-dev-app-sharedresources-rg"
-        },
-        "cosmosDbCollectionName": {
-            "value": "a-collection"
-        },
-        "cosmossharedcontentDbCollectionName": {
-            "value": "b-collection"
-        },
-        "sharedcontentAppDatabaseNeedsCreation": {
-            "value": true
-        },
-        "sharedcontentAppDatabaseThroughput": {
-            "value": 2
-        },
-        "surveyUrl": {
-            "value": "https://some.survey.site/link/to/survey"
-        },
-        "enableAlerts": {
-            "value": false
-        },
-        "ExceptionCountThreshold":{
-            "value": "0"
-        },
-        "EventGridSubscriptionModelEndpoint": {
-            "value": "foo"
-        },
-        "EventGridSubscriptionClientOptionsEndpoint": {
-            "value": "foo"
-        },
-        "EventGridAegSasKey": {
-            "value": "a key"
-        },
-        "EventGridTopicUrl": {
-            "value": "a url"
-        },
-        "EventGridPublishClientOptionsApiEndpoint": {
-            "value": "a url"
-        },
-        "EventGridSubjectPrefix": {
-            "value": "anothervalue"
-        },
-        "apimCompositeApiKey": {
-            "value": "FakeKey"
-        },
-        "apimProxyAddress": {
-            "value": "https://foo"
-        },
-        "ContentBaseAddress": {
-            "value": "https://foo"
-        },
-        "OverviewDetailsLink": {
-            "value": "https://foo"
-        },
-        "SubscriptionApiEndpointUrl": {
-            "value": "https://url"
-        },
-        "ApplicationWebhookReceiverEndpointUrl": {
-            "value": "https://url"
-        },
-        "apimContentApiKey": {
-            "value": "FakeKey"
-        }
+  "parameters": {
+    "appServiceDomain": {
+      "value": "azurewebsites.net"
+    },
+    "appSharedResourceGroup": {
+      "value": "dfc-dev-app-sharedresources-rg"
+    },
+    "appSharedServiceBusName": {
+      "value": "dfc-dev-app-sharedresources-ns"
+    },
+    "appSharedStorageAccountName": {
+      "value": "dfcdevappsharedstr"
+    },
+    "brandingAssetsAppCssFilePath": {
+      "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
+    },
+    "cosmosDBName": {
+      "value": "dfc-dev-app-sharedresources-cdb"
+    },
+    "CosmosDbResourceGroup": {
+      "value": "dfc-dev-app-sharedresources-rg"
+    },
+    "cosmosDbKey": {
+      "value": "not-a-real-key"
+    },
+    "Environment": {
+      "value": "FOO"
+    },
+    "sharedAppServicePlanName": {
+      "value": "dfc-dev-app-shared-asp"
+    },
+    "sharedAppServicePlanResourceGroup": {
+      "value": "dfc-dev-app-sharedresources-rg"
+    },
+    "cosmosDbJobProfileCollectionNameStax": {
+      "value": "a-collection"
+    },
+    "cosmosDbCurrentOpportunitiesCollectionNameStax": {
+      "value": "b-collection"
+    },
+    "cosmosDbSegmentCurrentOpportunitiesCollectionNameStax": {
+      "value": "c-collection"
+    },
+    "cosmossharedcontentDbCollectionNameStax": {
+      "value": "d-collection"
+    },
+    "sharedcontentAppDatabaseNeedsCreation": {
+      "value": true
+    },
+    "sharedcontentAppDatabaseThroughput": {
+      "value": 2
+    },
+    "surveyUrl": {
+      "value": "https://some.survey.site/link/to/survey"
+    },
+    "enableAlerts": {
+      "value": false
+    },
+    "ExceptionCountThreshold": {
+      "value": "0"
+    },
+    "EventGridSubscriptionModelEndpoint": {
+      "value": "foo"
+    },
+    "EventGridSubscriptionClientOptionsEndpoint": {
+      "value": "foo"
+    },
+    "EventGridAegSasKey": {
+      "value": "a key"
+    },
+    "EventGridTopicUrl": {
+      "value": "a url"
+    },
+    "EventGridPublishClientOptionsApiEndpoint": {
+      "value": "a url"
+    },
+    "EventGridSubjectPrefix": {
+      "value": "anothervalue"
+    },
+    "apimCompositeApiKey": {
+      "value": "FakeKey"
+    },
+    "apimProxyAddress": {
+      "value": "https://foo"
+    },
+    "ContentBaseAddress": {
+      "value": "https://foo"
+    },
+    "OverviewDetailsLink": {
+      "value": "https://foo"
+    },
+    "SubscriptionApiEndpointUrl": {
+      "value": "https://url"
+    },
+    "ApplicationWebhookReceiverEndpointUrl": {
+      "value": "https://url"
+    },
+    "apimContentApiKey": {
+      "value": "FakeKey"
     }
+  }
 }

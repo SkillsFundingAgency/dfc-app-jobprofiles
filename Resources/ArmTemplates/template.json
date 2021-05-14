@@ -641,27 +641,27 @@
                 "value": "/content/sharedcontent/"
               },
               {
-                "name": "CmsApiClientOptions__Timeout",
+                "name": "ContentApiConfiguration__Timeout",
                 "value": "00:00:30"
               },
               {
-                "name": "CmsApiClientOptions__ApiKey",
+                "name": "ContentApiConfiguration__ApiKey",
                 "value": "[parameters('apimContentApiKey')]"
               },
               {
-                "name": "CmsApiClientOptions__BaseAddress",
+                "name": "ContentApiConfiguration__BaseAddress",
                 "value": "[parameters('ContentBaseAddress')]"
               },
               {
-                "name": "CmsApiClientOptions__StaticContentEndpoint",
+                "name": "ContentApiConfiguration__StaticContentEndpoint",
                 "value": "api/execute/shared-content/"
               },
               {
-                "name": "CmsApiClientOptions__ContentIds",
-                "value": "a33ae1e0-f6fd-4c89-86f4-a490954af266,531ed13a-5659-4a36-a822-9f4795b7b1c8,f30a34c7-cf40-4054-bd4a-96537fc9726b"
+                "name": "ContentApiConfiguration__PageStaticContentIDs",
+                "value": "a33ae1e0-f6fd-4c89-86f4-a490954af266,531ed13a-5659-4a36-a822-9f4795b7b1c8,f30a34c7-cf40-4054-bd4a-96537fc9726b]"
               },
               {
-                "name": "CmsApiClientOptions__SummaryEndpoint",
+                "name": "ContentApiConfiguration__SummaryEndpoint",
                 "value": "api/execute/jobprofile"
               }
 

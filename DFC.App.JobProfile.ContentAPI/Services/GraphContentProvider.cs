@@ -78,17 +78,20 @@ namespace DFC.App.JobProfile.ContentAPI.Services
         {
             var contentList = new List<TApiModel>();
 
-            foreach (var id in _clientConfig.PageStaticContentIDs)
+            if(_clientConfig != null && _clientConfig.PageStaticContentIDs != null)
             {
-                var url = new Uri(
-                    $"{_clientConfig.BaseAddress}{_clientConfig.StaticContentEndpoint}{id}",
-                    UriKind.Absolute);
-
-                var content = await _dataProcessor.GetAsync<TApiModel>(_httpClient, url);
-
-                if (content != null)
+                foreach (var id in _clientConfig.PageStaticContentIDs)
                 {
-                    contentList.Add(content);
+                    var url = new Uri(
+                        $"{_clientConfig.BaseAddress}{_clientConfig.StaticContentEndpoint}{id}",
+                        UriKind.Absolute);
+
+                    var content = await _dataProcessor.GetAsync<TApiModel>(_httpClient, url);
+
+                    if (content != null)
+                    {
+                        contentList.Add(content);
+                    }
                 }
             }
 

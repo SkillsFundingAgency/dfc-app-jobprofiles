@@ -178,6 +178,6 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
             items.FirstOrDefault(x => x.CanonicalName == candidate)?.Content;
 
         internal string GetFullyFormedPathFrom(string format, params string[] parameters) =>
-            string.Format(format, parameters);
+            string.Empty;
     }
 }

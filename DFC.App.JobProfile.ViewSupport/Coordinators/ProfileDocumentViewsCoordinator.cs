@@ -90,11 +90,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
             candidate.Body = await AddOpportunitiesTo(candidate.Body, jobProfile.CanonicalName);
             candidate.HeroBanner.LabourMarketInformationLink = GetFullyFormedPathFrom(LabourLinks.URLFormat, jobProfile.SocCode, jobProfile.CanonicalName);
             candidate.HeroBanner.Breadcrumb = BuildBreadcrumb(jobProfile, address);
-            candidate.HeroBanner.OverviewSegment.SalaryExperienced = GetSalary(candidate.HeroBanner.OverviewSegment.SalaryExperienced);
-            candidate.HeroBanner.OverviewSegment.SalaryStarter = GetSalary(candidate.HeroBanner.OverviewSegment.SalaryStarter);
             return await Response.Create(HttpStatusCode.OK, candidate);
-            static string GetSalary(string salary) =>
-                string.IsNullOrWhiteSpace(salary) || salary.Equals("0") ? "Variable" : salary;
         }
 
         public async Task<HttpResponseMessage> GetHeadFor(string occupationName, string address)

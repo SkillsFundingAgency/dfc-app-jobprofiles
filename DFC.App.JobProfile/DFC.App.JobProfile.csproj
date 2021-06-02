@@ -10,6 +10,7 @@
 		https://github.com/dotnet/aspnetcore/issues/14723
 		-->
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<UserSecretsId>60d1efe1-3646-44c0-bd56-479428a27f72</UserSecretsId>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

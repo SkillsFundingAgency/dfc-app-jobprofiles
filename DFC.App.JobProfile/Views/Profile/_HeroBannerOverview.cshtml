@@ -1,4 +1,8 @@
 ﻿@model JobProfileOverview
+@{ 
+    var isVariable = string.IsNullOrWhiteSpace(Model.SalaryStarter) || Model.SalaryStarter.Equals("0")
+        || string.IsNullOrWhiteSpace(Model.SalaryExperienced) || Model.SalaryExperienced.Equals("0");
+}
 
 <div class="govuk-grid-row">
     <div id="Salary"
@@ -9,15 +13,15 @@
         </h2>
 
         <div class="job-profile-salary job-profile-heroblock-content">
-            @if (Model.SalaryStarter.ComparesWith("variable") || Model.SalaryExperienced.ComparesWith("variable"))
+            @if (isVariable)
             {
                 <h5 class="dfc-code-jpsalaryblank">Variable</h5>
             }
             else
             {
-                <p class="dfc-code-jpsstarter">@Model.SalaryStarter <span>Starter</span></p>
+                <p class="dfc-code-jpsstarter">£@Model.SalaryStarter <span>Starter</span></p>
                 <em class="sr-hidden">to</em>
-                <p class="dfc-code-jpsexperienced">@Model.SalaryExperienced <span>Experienced</span></p>
+                <p class="dfc-code-jpsexperienced">£@Model.SalaryExperienced <span>Experienced</span></p>
             }
         </div>
     </div>

@@ -24,6 +24,10 @@ namespace DFC.App.JobProfile.ViewSupport.Adapters
             Guid occupationID,
             Func<BodyViewModel, IActionResult> contentResult);
 
+        Task<IActionResult> GetBodyViewFor(
+            string occupationName,
+            Func<BodyViewModel, IActionResult> contentResult);
+
         Task<IActionResult> GetDocumentOverviewFor(
             string occupationName,
             string address,

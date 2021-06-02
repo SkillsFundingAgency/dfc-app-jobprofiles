@@ -54,6 +54,11 @@ namespace DFC.App.JobProfile.ViewSupport.Adapters
             Func<BodyViewModel, IActionResult> contentResult) =>
                 Adapter.Run(() => Coordinator.GetBodyFor(occupationID), contentResult, $"Getting the document body for '{occupationID}'");
 
+        Task<IActionResult> IAdaptProfileDocumentViews.GetBodyViewFor(
+            string occupationName,
+            Func<BodyViewModel, IActionResult> contentResult) =>
+                Adapter.Run(() => Coordinator.GetBodyFor(occupationName), contentResult, $"Getting the document body for '{occupationName}'");
+
         Task<IActionResult> IAdaptProfileDocumentViews.GetDocumentOverviewFor(
             string occupationName,
             string address,

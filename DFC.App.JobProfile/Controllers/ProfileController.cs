@@ -37,13 +37,18 @@ namespace DFC.App.JobProfile.Controllers
             _viewAdapter.GetBodyViewFor(occupationID, View);
 
         [HttpGet]
+        [Route("profile/{occupationName}/body")]
+        [Route("profile/{occupationName}/contents")]
+        public Task<IActionResult> Body(string occupationName) =>
+            _viewAdapter.GetBodyViewFor(occupationName, View);
+
+        [HttpGet]
         [Route("profile/{occupationName}/overview")]
         public Task<IActionResult> DocumentOverview(string occupationName) =>
             _viewAdapter.GetDocumentOverviewFor(occupationName, ProfilePathRoot, View);
 
         [HttpGet]
         [Route("profile/{occupationName}")]
-        [Route("profile/{occupationName}/contents")]
         public Task<IActionResult> Document(string occupationName) =>
             _viewAdapter.GetDocumentViewFor(occupationName, ProfilePathRoot, View);
 

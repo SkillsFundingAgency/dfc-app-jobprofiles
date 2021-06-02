@@ -15,5 +15,7 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
         Task<HttpResponseMessage> GetHeroBannerFor(string occupationName, string address);
 
         Task<HttpResponseMessage> GetBodyFor(Guid occupationID);
+
+        Task<HttpResponseMessage> GetBodyFor(string occupationName);
     }
 }

@@ -114,6 +114,16 @@ namespace DFC.App.JobProfile.ViewSupport.Coordindators
             return await Response.Create(HttpStatusCode.OK, candidate);
         }
 
+        public async Task<HttpResponseMessage> GetBodyFor(string occupationName)
+        {
+            var (model, jobProfile) = await GetDetailsFor<BodyViewModel>(occupationName);
+
+            model = await AddSupplementalsTo(model, jobProfile.CanonicalName);
+            model = await AddOpportunitiesTo(model, jobProfile.CanonicalName);
+
+            return await Response.Create(HttpStatusCode.OK, model);
+        }
+
         public async Task<HttpResponseMessage> GetBodyFor(Guid occupationID)
         {
             var jobProfile = await Profiles.GetItemBy(occupationID);

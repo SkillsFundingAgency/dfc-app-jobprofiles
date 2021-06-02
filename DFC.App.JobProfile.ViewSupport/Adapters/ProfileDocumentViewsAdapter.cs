@@ -35,50 +35,35 @@ namespace DFC.App.JobProfile.ViewSupport.Adapters
 
         Task<IActionResult> IAdaptProfileDocumentViews.GetSummaryView(
             Func<IndexViewModel, IActionResult> contentResult) =>
-                Adapter.Run(() => ProcessGetSummary(), contentResult, $"Getting the document summaries");
+                Adapter.Run(() => Coordinator.GetSummaryDocuments(), contentResult, $"Getting the document summaries");
 
         Task<IActionResult> IAdaptProfileDocumentViews.GetHeadViewFor(
             string occupationName,
             string address,
             Func<HeadViewModel, IActionResult> contentResult) =>
-                Adapter.Run(() => ProcessGetHead(occupationName, address), contentResult, $"Getting the head for '{occupationName}'");
+                Adapter.Run(() => Coordinator.GetHeadFor(occupationName, address), contentResult, $"Getting the head for '{occupationName}'");
 
         Task<IActionResult> IAdaptProfileDocumentViews.GetHeroBannerViewFor(
             string occupationName,
             string address,
             Func<HeroViewModel, IActionResult> contentResult) =>
-                Adapter.Run(() => ProcessGetHeroBanner(occupationName, address), contentResult, $"Getting the hero banner for '{occupationName}'");
+                Adapter.Run(() => Coordinator.GetHeroBannerFor(occupationName, address), contentResult, $"Getting the hero banner for '{occupationName}'");
 
         Task<IActionResult> IAdaptProfileDocumentViews.GetBodyViewFor(
             Guid occupationID,
             Func<BodyViewModel, IActionResult> contentResult) =>
-                Adapter.Run(() => ProcessGetBody(occupationID), contentResult, $"Getting the document body for '{occupationID}'");
+                Adapter.Run(() => Coordinator.GetBodyFor(occupationID), contentResult, $"Getting the document body for '{occupationID}'");
 
         Task<IActionResult> IAdaptProfileDocumentViews.GetDocumentOverviewFor(
             string occupationName,
             string address,
             Func<HeroViewModel, IActionResult> contentResult) =>
-                Adapter.Run(() => ProcessGetHeroBanner(occupationName, address), contentResult, $"Getting the document overview for '{occupationName}'");
+                Adapter.Run(() => Coordinator.GetHeroBannerFor(occupationName, address), contentResult, $"Getting the document overview for '{occupationName}'");
 
         Task<IActionResult> IAdaptProfileDocumentViews.GetDocumentViewFor(
             string occupationName,
             string address,
             Func<DocumentViewModel, IActionResult> contentResult) =>
-                Adapter.Run(() => ProcessGetDocument(occupationName, address), contentResult, $"Getting the document for '{occupationName}'");
-
-        internal Task<HttpResponseMessage> ProcessGetSummary() =>
-            Coordinator.GetSummaryDocuments();
-
-        internal Task<HttpResponseMessage> ProcessGetDocument(string occupationName, string address) =>
-            Coordinator.GetDocumentFor(occupationName, address);
-
-        internal Task<HttpResponseMessage> ProcessGetHead(string occupationName, string address) =>
-            Coordinator.GetHeadFor(occupationName, address);
-
-        internal Task<HttpResponseMessage> ProcessGetHeroBanner(string occupationName, string address) =>
-            Coordinator.GetHeroBannerFor(occupationName, address);
-
-        internal Task<HttpResponseMessage> ProcessGetBody(Guid occupationID) =>
-            Coordinator.GetBodyFor(occupationID);
+                Adapter.Run(() => Coordinator.GetDocumentFor(occupationName, address), contentResult, $"Getting the document for '{occupationName}'");
     }
 }

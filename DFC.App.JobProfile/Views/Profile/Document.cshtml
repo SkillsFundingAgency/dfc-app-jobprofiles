@@ -1,8 +1,8 @@
 ﻿@model DocumentViewModel
 
 @{
-    Layout = "_Layout";
-    ViewBag.Title = "Back to List...";
+    Layout = "";
+    ViewBag.Title = Model.Head?.Title ?? string.Empty;
 }
 
 <partial name="_HeroBanner" model="@Model.HeroBanner" />

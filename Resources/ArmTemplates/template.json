@@ -122,6 +122,12 @@
         },
         "LmiBaseEndPoint": {
             "type": "string"
+        },
+        "EnableLMI": {
+            "type": "bool",
+            "metadata": {
+                "description": "Enable or disable LMI"
+            }
         }
     },
     "variables": {
@@ -505,6 +511,10 @@
                             {
                                 "name": "LmiBaseEndPoint",
                                 "value": "[parameters('LmiBaseEndPoint')]"
+                            },
+                            {
+                                "name": "Configuration__EnableLMI",
+                                "value": "[parameters('EnableLMI')]"
                             }
                         ]
                     }

@@ -91,6 +91,9 @@
         },
         "LmiBaseEndPoint": {
             "value": "__LmiBaseEndPoint__"
+        },
+        "EnableLMI": {
+            "value": __EnableLMI__
         }
     }
 }

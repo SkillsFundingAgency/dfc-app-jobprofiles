@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
@@ -19,6 +20,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             FakeLogger = A.Fake<ILogService>();
             FakeJobProfileService = A.Fake<IJobProfileService>();
             FakeMapper = A.Fake<IMapper>();
+            DummyConfigValues = A.Dummy<ConfigValues>();
             FakeSegmentService = A.Fake<ISegmentService>();
             FakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
         }
@@ -45,6 +47,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected IMapper FakeMapper { get; }
 
+        protected ConfigValues DummyConfigValues { get; }
+
         protected ISegmentService FakeSegmentService { get; }
 
         protected IRedirectionSecurityService FakeRedirectionSecurityService { get; }
@@ -61,7 +65,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             httpContext.Request.Host = new HostString(host);
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService)
             {
                 ControllerContext = new ControllerContext()
                 {

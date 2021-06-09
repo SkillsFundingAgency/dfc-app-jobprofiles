@@ -7,6 +7,8 @@ namespace DFC.App.JobProfile.ViewModels
     [ExcludeFromCodeCoverage]
     public class HeroViewModel
     {
+        public bool ShowLmi { get; set; }
+
         public IList<SegmentModel> Segments { get; set; }
 
         public LmiLinkViewModel LmiLink { get; set; }

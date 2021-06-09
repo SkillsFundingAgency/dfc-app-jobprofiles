@@ -17,7 +17,10 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<JobProfileModel, JobProfileModel>();
             CreateMap<JobProfileModel, BodyViewModel>()
                 .ForMember(d => d.SmartSurveyJP, s => s.Ignore());
-            CreateMap<JobProfileModel, HeroViewModel>().ForMember(d => d.LmiLink, s => s.MapFrom(a => a));
+
+            CreateMap<JobProfileModel, HeroViewModel>()
+                .ForMember(d => d.ShowLmi, s => s.Ignore())
+                .ForMember(d => d.LmiLink, s => s.MapFrom(a => a));
 
             CreateMap<JobProfileModel, LmiLinkViewModel>()
                 .ForMember(d => d.CanonicalName, s => s.MapFrom(a => a.CanonicalName))

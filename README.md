@@ -54,6 +54,12 @@ To run the project, start the web application. Once running, browse to the main 
 
 The Job Profile app is designed to be run from within the Composite UI, therefore running the Job Profile app outside of the Composite UI will only show simple views of the data.
 
+## Feature switches
+
+| Name | Vaue | Use case |
+|------|------|----------|
+| Configuration.EnableLMI | true/false | When set, show links to the LMI information |
+
 ## Deployments
 
 This Job Profile app will be deployed as an individual deployment for consumption by the Composite UI.

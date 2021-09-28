@@ -24,5 +24,7 @@ namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
         public bool IncludeInSitemap { get; set; }
 
         public string Overview { get; set; }
+
+        public bool IsImported { get; set; }
     }
 }

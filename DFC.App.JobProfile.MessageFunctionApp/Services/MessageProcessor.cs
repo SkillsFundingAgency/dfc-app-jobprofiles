@@ -73,6 +73,11 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return Task.FromResult(HttpStatusCode.InternalServerError);
         }
 
+        private static bool ShouldTreatAsDeleted(MessageAction messageAction, JobProfileMessage jobProfileMessage)
+        {
+            return messageAction == MessageAction.Published && jobProfileMessage.IsImported;
+        }
+
         private async Task<HttpStatusCode> ProcessJobProfileMessageAsync(string message, string messageAction, string messageContentId, long sequenceNumber)
         {
             if (string.IsNullOrWhiteSpace(message))
@@ -98,6 +103,11 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             var jobProfileMessage = JsonConvert.DeserializeObject<JobProfileMessage>(message);
             var jobProfile = mapper.Map<JobProfileModel>(jobProfileMessage);
             jobProfile.SequenceNumber = sequenceNumber;
+
+            if (ShouldTreatAsDeleted(action, jobProfileMessage))
+            {
+                action = MessageAction.Deleted;
+            }
 
             switch (action)
             {

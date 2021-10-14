@@ -29,8 +29,5 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
             var jobProfilePage = new JobProfilePage(this.Context);
             jobProfilePage.NavigagteToJobProfilePage(profile);
         }
-
-
-
     }
 }

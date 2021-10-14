@@ -3,9 +3,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using DFC.App.JobProfile.Model;
 using DFC.TestAutomation.UI.Extension;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using System;
+using System.Linq;
 using TechTalk.SpecFlow;
 
 namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
@@ -24,8 +27,9 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
         [When(@"I click the (.*) link")]
         public void WhenIClickTheLink(string linkText)
         {
-
             var link = this.Context.GetWebDriver().FindElement(By.LinkText(linkText));
+            IJavaScriptExecutor js = (IJavaScriptExecutor)this.Context.GetWebDriver();
+            js.ExecuteScript("arguments[0].scrollIntoView();", link);
 
             if (!link.Displayed)
             {
@@ -33,6 +37,16 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
             }
 
             link.Click();
+        }
+
+        [When(@"I expand all accordion sections")]
+        public void WhenIClickTheButton()
+        {
+            var elementAtDown = this.Context.GetWebDriver().FindElement(By.ClassName("govuk-accordion__open-all"));
+            IJavaScriptExecutor js = (IJavaScriptExecutor)this.Context.GetWebDriver();
+            js.ExecuteScript("arguments[0].scrollIntoView();", elementAtDown);
+            System.Threading.Thread.Sleep(1000);
+            this.Context.GetWebDriver().FindElement(By.ClassName("govuk-accordion__open-all")).Click();
         }
     }
 }

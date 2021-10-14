@@ -21,5 +21,21 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
 
         private ScenarioContext Context { get; set; }
 
+        [When(@"I search for (.*) under the JP search feature")]
+        public void WhenISearchForUnderTheJPSearchFeature(string searchTerm)
+        {
+            var searchField = this.Context.GetWebDriver().FindElement(By.ClassName("search-input"));
+            this.Context.GetHelperLibrary<AppSettings>().FormHelper.EnterText(searchField, searchTerm);
+            this.Context.GetWebDriver().FindElement(By.ClassName("submit")).Click();
+        }
+
+        [When(@"I enter the feedback (.*)")]
+        public void WhenIEnterFeedback(string feedback)
+        {
+            var feedbackField = this.Context.GetWebDriver().FindElement(By.Id("t71675538"));
+            this.Context.GetHelperLibrary<AppSettings>().FormHelper.EnterText(feedbackField, feedback);
+            this.Context.GetWebDriver().FindElement(By.Id("cmdGo")).Click();
+        }
+
     }
 }

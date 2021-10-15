@@ -30,6 +30,7 @@ namespace DFC.App.JobProfile
     public class Startup
     {
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
+        public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
 
         private readonly IConfiguration configuration;
@@ -116,6 +117,9 @@ namespace DFC.App.JobProfile
             services.AddSingleton<IDocumentClient>(documentClient);
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
             services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();
+
+            var configValues = configuration.GetSection(ConfigAppSettings).Get<ConfigValues>();
+            services.AddSingleton(configValues);
 
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddScoped<ISegmentService, SegmentService>();

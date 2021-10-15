@@ -4,6 +4,7 @@
 // </copyright>
 
 using DFC.App.JobProfile.Model;
+using DFC.TestAutomation.UI;
 using DFC.TestAutomation.UI.Extension;
 using OpenQA.Selenium;
 using System;
@@ -28,10 +29,6 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
             By locator = null;
             switch (pageName.ToLower(CultureInfo.CurrentCulture))
             {
-                //case "job group: Elected officers and representatives":
-                //    locator = By.CssSelector("h1");
-                //    break;
-
                 case "feedback survey":
                     locator = By.Name("cmdGo");
                     this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForElementToBePresent(locator);
@@ -42,13 +39,35 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
                     this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForElementToContainText(locator, pageName);
                     break;
 
+                case "course details":
+                    this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForPageToLoad();
+                    if (!this.Context.GetWebDriver().Title.ToString().Contains("Results | Find a course"))
+                    {
+                        throw new OperationCanceledException($"Unable to perform the step: {this.Context.StepContext.StepInfo.Text}. The course details page is not displayed");
+                    }
+
+                    break;
+
+                case "apprenticeship service":
+                    this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForPageToLoad();
+                    if (!this.Context.GetWebDriver().Url.ToString().Contains("https://www.findapprenticeship.service.gov.uk/"))
+                    {
+                        throw new OperationCanceledException($"Unable to perform the step: {this.Context.StepContext.StepInfo.Text}. The apprenticeship details page is not displayed");
+                    }
+
+                    break;
+
+                case "job profiles":
+                    locator = By.CssSelector("h1");
+                    this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForPageToLoad();
+                    this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForElementToContainText(locator, this.Context.Get<IObjectContext>().GetObject("careerTitle"));
+                    break;
+
                 default:
                     locator = By.CssSelector("h1");
                     this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForElementToContainText(locator, pageName);
                     break;
             }
-
-           // this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForElementToContainText(locator, pageName);
         }
 
         [Then(@"The appropriate message is displayed")]
@@ -63,8 +82,7 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
         [Then(@"the additional survey message is displayed for (.*) response")]
         public void SurveyMonkeyMessageIsDisplayed(string response)
         {
-
-            switch (response.ToLower(CultureInfo.CurrentCulture))
+          switch (response.ToLower(CultureInfo.CurrentCulture))
             {
                 case "no":
                     if (!this.Context.GetHelperLibrary<AppSettings>().CommonActionHelper.ElementContainsText(By.ClassName("job-profile-feedback-end-no"), "Click here if you'd like to let us know how we can improve the service."))
@@ -81,7 +99,20 @@ namespace DFC.App.JobProfile.UI.FunctionalTests.StepDefinitions
 
                     break;
             }
-
         }
+
+        [Then(@"the related careers section should be displayed")]
+        public void ThenTheRelatedCareersSectionShouldBeDisplayed()
+        {
+            this.Context.GetHelperLibrary<AppSettings>().WebDriverWaitHelper.WaitForElementToBePresent(By.ClassName("job-profile-related"));
+        }
+
+        [Then(@"there should be no more than (.*) careers")]
+        public void ThenThereShouldBeNoMoreThanCareers(int maxNoOfRelatedCareers)
+        {
+            var relatedCareersList = By.CssSelector(".list-big li");
+            relatedCareersList.Equals(maxNoOfRelatedCareers);
+        }
+
     }
 }

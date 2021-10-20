@@ -1,4 +1,6 @@
 ﻿Feature: JobGroups
+As a citizen when i am on the Job profiles page
+I want to view Job trend data for the job profile
 
 @JobProfile
 Scenario: Navigate to Job groups page

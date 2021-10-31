@@ -1,9 +1,10 @@
 ﻿using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Logger.AppInsights.Contracts;
-using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus;
+
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Functions
 {

@@ -1,6 +1,6 @@
+using Azure.Messaging.ServiceBus;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Logger.AppInsights.Contracts;
-using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using System.Net;
 using System.Text;
@@ -29,7 +29,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         }
 
         [FunctionName("SitefinityMessageHandler")]
-        public async Task Run([ServiceBusTrigger("%cms-messages-topic%", "%cms-messages-subscription%", Connection = "service-bus-connection-string")] Message sitefinityMessage)
+        public async Task Run([ServiceBusTrigger("%cms-messages-topic%", "%cms-messages-subscription%", Connection = "service-bus-connection-string")] ServiceBusMessage sitefinityMessage)
         {
             if (sitefinityMessage is null)
             {
@@ -46,12 +46,12 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                 correlationIdProvider.CorrelationId = sitefinityMessage.CorrelationId;
             }
 
-            sitefinityMessage.UserProperties.TryGetValue(MessageAction, out var messageAction); // Parse to enum values
-            sitefinityMessage.UserProperties.TryGetValue(MessageContentType, out var messageCtype);
-            sitefinityMessage.UserProperties.TryGetValue(MessageContentId, out var messageContentId);
+            sitefinityMessage.ApplicationProperties.TryGetValue(MessageAction, out var messageAction); // Parse to enum values
+            sitefinityMessage.ApplicationProperties.TryGetValue(MessageContentType, out var messageCtype);
+            sitefinityMessage.ApplicationProperties.TryGetValue(MessageContentId, out var messageContentId);
 
             // loggger should allow setting up correlation id and should be picked up from message
-            logService.LogInformation($"{thisClassPath}: Received message sequence {sitefinityMessage.SystemProperties.SequenceNumber}, action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {sitefinityMessage.CorrelationId}");
+            logService.LogInformation($"{thisClassPath}: Received message sequence {sitefinityMessage.ApplicationProperties.Values}, action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {sitefinityMessage.CorrelationId}");
 
             var message = Encoding.UTF8.GetString(sitefinityMessage.Body);
             var result = await processor.ProcessSitefinityMessageAsync(message, messageAction.ToString(), messageCtype.ToString(), messageContentId.ToString(), sitefinityMessage.SystemProperties.SequenceNumber).ConfigureAwait(false);

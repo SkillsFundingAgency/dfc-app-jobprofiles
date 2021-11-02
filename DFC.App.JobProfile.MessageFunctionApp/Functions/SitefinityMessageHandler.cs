@@ -29,7 +29,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         }
 
         [FunctionName("SitefinityMessageHandler")]
-        public async Task Run([ServiceBusTrigger("%cms-messages-topic%", "%cms-messages-subscription%", Connection = "service-bus-connection-string")] ServiceBusMessage sitefinityMessage)
+        public async Task Run([ServiceBusTrigger("%cms-messages-topic%", "%cms-messages-subscription%", Connection = "service-bus-connection-string")] ServiceBusReceivedMessage sitefinityMessage)
         {
             if (sitefinityMessage is null)
             {
@@ -51,10 +51,10 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             sitefinityMessage.ApplicationProperties.TryGetValue(MessageContentId, out var messageContentId);
 
             // loggger should allow setting up correlation id and should be picked up from message
-            logService.LogInformation($"{thisClassPath}: Received message sequence {sitefinityMessage.ApplicationProperties.Values}, action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {sitefinityMessage.CorrelationId}");
+            logService.LogInformation($"{thisClassPath}: Received message sequence {sitefinityMessage.SequenceNumber}, action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {sitefinityMessage.CorrelationId}");
 
             var message = Encoding.UTF8.GetString(sitefinityMessage.Body);
-            var result = await processor.ProcessSitefinityMessageAsync(message, messageAction.ToString(), messageCtype.ToString(), messageContentId.ToString(), sitefinityMessage.SystemProperties.SequenceNumber).ConfigureAwait(false);
+            var result = await processor.ProcessSitefinityMessageAsync(message, messageAction.ToString(), messageCtype.ToString(), messageContentId.ToString(), sitefinityMessage.SequenceNumber).ConfigureAwait(false);
 
             if (result == HttpStatusCode.OK)
             {

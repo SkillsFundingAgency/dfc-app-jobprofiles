@@ -1,4 +1,5 @@
 ﻿using CorrelationId;
+using CorrelationId.Abstractions;
 using DFC.Logger.AppInsights.Contracts;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;

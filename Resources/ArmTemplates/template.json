@@ -122,6 +122,12 @@
         },
         "LmiBaseEndPoint": {
             "type": "string"
+        },
+        "EnableLMI": {
+            "type": "bool",
+            "metadata": {
+                "description": "Enable or disable LMI"
+            }
         }
     },
     "variables": {
@@ -245,6 +251,18 @@
                             {
                                 "name": "AzureWebJobsStorage",
                                 "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('appSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('appSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                            },
+                            {
+                                "name": "WEBSITE_RUN_FROM_PACKAGE",
+                                "value": "1"
+                            },
+                            {
+                                "name": "WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG",
+                                "value": "1"
+                            },
+                            {
+                                "name": "WEBSITE_ENABLE_SYNC_UPDATE_SITE",
+                                "value": false
                             },
                             {
                                 "name": "BrandingAssets__AppCssFilePath",
@@ -493,8 +511,11 @@
                             {
                                 "name": "LmiBaseEndPoint",
                                 "value": "[parameters('LmiBaseEndPoint')]"
+                            },
+                            {
+                                "name": "Configuration__EnableLMI",
+                                "value": "[parameters('EnableLMI')]"
                             }
-
                         ]
                     }
                 }
@@ -561,6 +582,18 @@
                             {
                                 "name": "MSDEPLOY_RENAME_LOCKED_FILES",
                                 "value": "1"
+                            },
+                            {
+                                "name": "FUNCTIONS_WORKER_RUNTIME",
+                                "value": "dotnet"
+                            },
+                            {
+                                "name": "WEBSITE_RUN_FROM_PACKAGE",
+                                "value": "1"
+                            },
+                            {
+                                "name": "WEBSITE_ENABLE_SYNC_UPDATE_SITE",
+                                "value": false
                             },
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",

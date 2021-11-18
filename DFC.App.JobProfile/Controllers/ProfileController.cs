@@ -7,6 +7,7 @@ using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,15 +24,17 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
+        private readonly ConfigValues configValues;
         private readonly FeedbackLinks feedbackLinks;
         private readonly ISegmentService segmentService;
         private readonly IRedirectionSecurityService redirectionSecurityService;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
+            this.configValues = configValues;
             this.feedbackLinks = feedbackLinks;
             this.segmentService = segmentService;
             this.redirectionSecurityService = redirectionSecurityService;
@@ -127,7 +130,7 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPatch]
         [Route("profile/{documentId}/metadata")]
-        public async Task<IActionResult> Patch([FromBody]JobProfileMetadata jobProfileMetaDataPatchModel, Guid documentId)
+        public async Task<IActionResult> Patch([FromBody] JobProfileMetadata jobProfileMetaDataPatchModel, Guid documentId)
         {
             logService.LogInformation($"{nameof(Patch)} has been called with {documentId} for {jobProfileMetaDataPatchModel?.CanonicalName} with seq number {jobProfileMetaDataPatchModel?.SequenceNumber}");
 
@@ -150,7 +153,7 @@ namespace DFC.App.JobProfile.Controllers
         [HttpPut]
         [HttpPost]
         [Route("refresh")]
-        public async Task<IActionResult> Refresh([FromBody]RefreshJobProfileSegment refreshJobProfileSegmentModel)
+        public async Task<IActionResult> Refresh([FromBody] RefreshJobProfileSegment refreshJobProfileSegmentModel)
         {
             logService.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}");
 
@@ -225,6 +228,7 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 mapper.Map(jobProfileModel, viewModel);
+                viewModel.ShowLmi = configValues.EnableLMI;
 
                 logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
 
@@ -262,7 +266,7 @@ namespace DFC.App.JobProfile.Controllers
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
-                viewModel.SmartSurveyJP = this.feedbackLinks.SmartSurveyJP;
+                viewModel.SmartSurveyJP = feedbackLinks.SmartSurveyJP;
 
                 return ValidateJobProfile(viewModel, jobProfileModel);
             }
@@ -370,7 +374,7 @@ namespace DFC.App.JobProfile.Controllers
                 throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
             }
 
-            return this.ValidateMarkup(bodyViewModel, jobProfileModel);
+            return ValidateMarkup(bodyViewModel, jobProfileModel);
         }
 
         private IActionResult ValidateMarkup(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)

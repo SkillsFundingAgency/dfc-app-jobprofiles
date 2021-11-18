@@ -9,6 +9,9 @@
                     @Html.Raw(Model.Title)
                 </span>
             </h2>
+            <div class="govuk-accordion__section-summary govuk-body" id="job-profile-accordion-with-summary-sections-summary-@Model.SequenceNo">
+                @Html.Raw(Model.Summary)
+            </div>
         </div>
         <div id="job-profile-accordion-with-summary-sections-content-@Model.SequenceNo" class="govuk-accordion__section-content" aria-labelledby="job-profile-accordion-with-summary-sections-heading-@Model.SequenceNo">
             @Html.Raw(Model.Content)

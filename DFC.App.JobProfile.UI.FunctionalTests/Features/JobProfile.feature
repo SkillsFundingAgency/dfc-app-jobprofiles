@@ -71,8 +71,8 @@ Scenario: Job Profile displays related courses for citizens
 @JobProfile
 @Smoke
 Scenario: Related apprenticeships are displayed on job profiles
-	Given I navigate to the Nurse profile
-	Then I am on the Nurse page
+	Given I navigate to the Plumber profile
+	Then I am on the Plumber page
 	When I expand all accordion sections
 	When I select apprenticeship title 2
 	Then I am on the Apprenticeship service page

@@ -61,3 +61,15 @@ stages:
           BuildConfiguration: $(BuildConfiguration)
           DotNetCoreVersion: 3.1.101
           PublishWebApp: true
+
+      # Build UI functional Tests
+    - job: Builduifunctionaltests
+      displayName: Build UI functional tests
+      steps:
+      # Build all UI Functional Tests that ends with UI.FunctionalTests
+        - template: AzureDevOpsTemplates\Build\StepTemplates\dfc-dotnetcore-build-sonar.yml@dfc-devops
+          parameters:
+            SolutionBaseName: $(SolutionBaseName).UI.FunctionalTests
+            BuildPlatform: $(BuildPlatform)
+            BuildConfiguration: $(BuildConfiguration)
+            DotNetCoreVersion: 3.1.100

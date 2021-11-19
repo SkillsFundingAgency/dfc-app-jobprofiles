@@ -114,7 +114,7 @@ namespace DFC.App.JobProfile
 
             services.AddSingleton(cosmosDbConnection);
 
-            using var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
+            var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
             services.AddSingleton<IDocumentClient>(documentClient);
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
             services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();

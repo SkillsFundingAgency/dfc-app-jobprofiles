@@ -1,6 +1,6 @@
-﻿using Azure.Messaging.ServiceBus;
-using DFC.App.JobProfile.MessageFunctionApp.Services;
+﻿using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Logger.AppInsights.Contracts;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +29,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         }
 
         [FunctionName("JobProfileSegmentRefresh")]
-        public async Task Run([ServiceBusTrigger("%job-profiles-refresh-topic%", "%job-profiles-refresh-subscription%", Connection = "service-bus-connection-string")] ServiceBusReceivedMessage segmentRefreshMessage)
+        public async Task Run([ServiceBusTrigger("%job-profiles-refresh-topic%", "%job-profiles-refresh-subscription%", Connection = "service-bus-connection-string")] Message segmentRefreshMessage)
         {
             if (segmentRefreshMessage is null)
             {
@@ -46,9 +46,9 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                 correlationIdProvider.CorrelationId = segmentRefreshMessage.CorrelationId;
             }
 
-            segmentRefreshMessage.ApplicationProperties.TryGetValue(MessageAction, out var messageAction); // Parse to enum values
-            segmentRefreshMessage.ApplicationProperties.TryGetValue(MessageContentType, out var messageCtype);
-            segmentRefreshMessage.ApplicationProperties.TryGetValue(MessageContentId, out var messageContentId);
+            segmentRefreshMessage.UserProperties.TryGetValue(MessageAction, out var messageAction); // Parse to enum values
+            segmentRefreshMessage.UserProperties.TryGetValue(MessageContentType, out var messageCtype);
+            segmentRefreshMessage.UserProperties.TryGetValue(MessageContentId, out var messageContentId);
 
             // loggger should allow setting up correlation id and should be picked up from message
             logService.LogInformation($"{thisClassPath}: Received message action {messageAction} for type {messageCtype} with Id: {messageContentId}: Correlation id {segmentRefreshMessage.CorrelationId}");
@@ -56,7 +56,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             var message = Encoding.UTF8.GetString(segmentRefreshMessage.Body);
 
             //Check whether we need to defer failed messages?
-            await processor.ProcessSegmentRefresEventAsync(message, segmentRefreshMessage.SequenceNumber).ConfigureAwait(false);
+            await processor.ProcessSegmentRefresEventAsync(message, segmentRefreshMessage.SystemProperties.SequenceNumber).ConfigureAwait(false);
         }
     }
 }

@@ -1,9 +1,7 @@
-﻿using AutoMapper.Configuration;
-using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data.Contracts;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace DFC.App.JobProfile.ProfileService

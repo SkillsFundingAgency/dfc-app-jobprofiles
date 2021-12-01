@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CorrelationId;
+using CorrelationId.DependencyInjection;
 using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
@@ -43,13 +44,6 @@ namespace DFC.App.JobProfile
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
         {
-            app.UseCorrelationId(new CorrelationIdOptions
-            {
-                Header = "DssCorrelationId",
-                UseGuidForCorrelationId = true,
-                UpdateTraceIdentifier = false,
-            });
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -93,6 +87,12 @@ namespace DFC.App.JobProfile
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDefaultCorrelationId(options =>
+            {
+                options.RequestHeader = "DssCorrelationId";
+                options.UpdateTraceIdentifier = false;
+            });
+
             services.AddApplicationInsightsTelemetry();
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddCorrelationId();
@@ -111,9 +111,11 @@ namespace DFC.App.JobProfile
         private void AddApplicationSpecificDependencyInjectionConfiguration(IServiceCollection services)
         {
             var cosmosDbConnection = configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
-            var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
 
             services.AddSingleton(cosmosDbConnection);
+
+            var retryOptions = new RetryOptions { MaxRetryAttemptsOnThrottledRequests = 20, MaxRetryWaitTimeInSeconds = 60 };
+            var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey, new ConnectionPolicy { RetryOptions = retryOptions });
             services.AddSingleton<IDocumentClient>(documentClient);
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
             services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();

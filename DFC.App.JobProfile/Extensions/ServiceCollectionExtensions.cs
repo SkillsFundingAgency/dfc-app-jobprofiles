@@ -30,14 +30,6 @@ namespace DFC.App.JobProfile.Extensions
                         policyOptions.HttpRetry.Count,
                         retryAttempt => TimeSpan.FromSeconds(Math.Pow(policyOptions.HttpRetry.BackoffPower, retryAttempt))));
 
-            policyRegistry?.Add(
-                $"{keyPrefix}_{nameof(PolicyOptions.HttpCircuitBreaker)}",
-                HttpPolicyExtensions
-                    .HandleTransientHttpError()
-                    .CircuitBreakerAsync(
-                        handledEventsAllowedBeforeBreaking: policyOptions.HttpCircuitBreaker.ExceptionsAllowedBeforeBreaking,
-                        durationOfBreak: policyOptions.HttpCircuitBreaker.DurationOfBreak));
-
             return services;
         }
 
@@ -45,8 +37,7 @@ namespace DFC.App.JobProfile.Extensions
                     this IServiceCollection services,
                     IConfiguration configuration,
                     string configurationSectionName,
-                    string retryPolicyName,
-                    string circuitBreakerPolicyName)
+                    string retryPolicyName)
                     where TClient : class
                     where TImplementation : class, TClient
                     where TClientOptions : SegmentClientOptions, new() =>
@@ -68,7 +59,6 @@ namespace DFC.App.JobProfile.Extensions
                             AllowAutoRedirect = false,
                         })
                         .AddPolicyHandlerFromRegistry($"{configurationSectionName}_{retryPolicyName}")
-                        .AddPolicyHandlerFromRegistry($"{configurationSectionName}_{circuitBreakerPolicyName}")
                         .AddHttpMessageHandler<CorrelationIdDelegatingHandler>()
                         .Services;
     }

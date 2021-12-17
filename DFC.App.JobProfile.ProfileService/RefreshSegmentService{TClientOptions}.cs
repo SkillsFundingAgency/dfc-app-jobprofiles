@@ -117,29 +117,21 @@ namespace DFC.App.JobProfile.ProfileService.SegmentServices
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(acceptHeader));
             ConfigureHttpClient();
 
-            try
-            {
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+            var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : '{responseString}', Returning empty content.");
-                    responseString = null;
-                }
-                else if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    logService.LogInformation($"Status - {response.StatusCode} with response '{responseString}' received for {jobProfileId} from {url}, Returning empty content.");
-                    responseString = null;
-                }
-
-                return responseString;
-            }
-            catch (BrokenCircuitException e)
+            if (!response.IsSuccessStatusCode)
             {
-                logService.LogInformation($"Error received refreshing segment data '{e.InnerException?.Message}'. Received for {jobProfileId} from {url}, Returning empty content.");
-                return null;
+                logService.LogError($"Failed to get {acceptHeader} data for {jobProfileId} from {url}, received error : '{responseString}', Returning empty content.");
+                responseString = null;
             }
+            else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                logService.LogInformation($"Status - {response.StatusCode} with response '{responseString}' received for {jobProfileId} from {url}, Returning empty content.");
+                responseString = null;
+            }
+
+            return responseString;
         }
 
         private void ConfigureHttpClient()

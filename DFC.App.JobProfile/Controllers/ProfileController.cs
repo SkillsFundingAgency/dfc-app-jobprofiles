@@ -371,7 +371,10 @@ namespace DFC.App.JobProfile.Controllers
 
             if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
             {
-                throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
+                var message =
+                    $"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information";
+                logService.LogWarning(message);
+                return BadRequest(message);
             }
 
             return ValidateMarkup(bodyViewModel, jobProfileModel);
@@ -395,8 +398,12 @@ namespace DFC.App.JobProfile.Controllers
                         case JobProfileSegment.Overview:
                         case JobProfileSegment.HowToBecome:
                         case JobProfileSegment.WhatItTakes:
-                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}");
-
+                            {
+                                var message =
+                                    $"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}";
+                                logService.LogWarning(message);
+                                return BadRequest(message);
+                            }
                         case JobProfileSegment.RelatedCareers:
                         case JobProfileSegment.CurrentOpportunities:
                         case JobProfileSegment.WhatYouWillDo:

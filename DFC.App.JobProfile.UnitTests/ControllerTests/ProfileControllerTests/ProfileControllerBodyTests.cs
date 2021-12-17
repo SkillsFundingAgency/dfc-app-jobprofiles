@@ -366,8 +366,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
             // Act
-            await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
-
+            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
+            result = result.As<BadRequestObjectResult>();
+            Assert.NotNull(result);
             controller.Dispose();
         }
 
@@ -389,7 +390,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
             // Act
-            await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
+            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
+            result = result.As<BadRequestObjectResult>();
+            Assert.NotNull(result);
 
             controller.Dispose();
         }

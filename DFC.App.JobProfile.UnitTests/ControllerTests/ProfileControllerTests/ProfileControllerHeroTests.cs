@@ -24,17 +24,17 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.CanonicalName = article;
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).Returns(A.Fake<HeroViewModel>());
+            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroBannerViewModel>.Ignored)).Returns(A.Fake<HeroBannerViewModel>());
 
             // Act
-            var result = await controller.Hero(article).ConfigureAwait(false);
+            var result = await controller.HeroBanner(article).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroBannerViewModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.IsAssignableFrom<HeroViewModel>(viewResult.ViewData.Model);
+            Assert.IsAssignableFrom<HeroBannerViewModel>(viewResult.ViewData.Model);
 
             controller.Dispose();
         }
@@ -52,14 +52,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.Segments = new List<SegmentModel>();
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).Returns(A.Fake<HeroViewModel>());
+            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroBannerViewModel>.Ignored)).Returns(A.Fake<HeroBannerViewModel>());
 
             // Act
-            var result = await controller.Hero(article).ConfigureAwait(false);
+            var result = await controller.HeroBanner(article).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroBannerViewModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var jsonResult = Assert.IsType<OkObjectResult>(result);
             Assert.IsAssignableFrom<List<SegmentModel>>(jsonResult.Value);
@@ -79,14 +79,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             expectedResult.CanonicalName = article;
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).Returns(A.Fake<HeroViewModel>());
+            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroBannerViewModel>.Ignored)).Returns(A.Fake<HeroBannerViewModel>());
 
             // Act
-            var result = await controller.Hero(article).ConfigureAwait(false);
+            var result = await controller.HeroBanner(article).ConfigureAwait(false);
 
             // Assert
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroViewModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroBannerViewModel>.Ignored)).MustHaveHappenedOnceExactly();
 
             var statusResult = Assert.IsType<StatusCodeResult>(result);
 

@@ -13,7 +13,7 @@ Scenario: View a Job profile
 Scenario: Selecting the Find a Course near you link takes you to the Find a Course product
 	Given I navigate to the plumber profile
 	When I expand all accordion sections
-	And I click the Find courses near you link
+	And I click the training courses near you link
 	Then I am on the Find a course page
 
 @JobProfile

@@ -162,7 +162,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.When("I expand all accordion sections", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 16
- testRunner.And("I click the Find courses near you link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I click the training courses near you link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 17
  testRunner.Then("I am on the Find a course page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

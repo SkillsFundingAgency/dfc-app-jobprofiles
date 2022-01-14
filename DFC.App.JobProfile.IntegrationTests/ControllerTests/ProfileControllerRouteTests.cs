@@ -28,16 +28,16 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             new object[] { "/profile" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}" },
-            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/htmlhead" },
-            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/hero" },
-            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/contents" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/head" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/herobanner" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/body" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleGuid}/profile" },
         };
 
         public static IEnumerable<object[]> ProfileNoContentRouteData => new List<object[]>
         {
-            new object[] { $"/profile/htmlhead" },
-            new object[] { $"/profile/hero" },
+            new object[] { $"/profile/head" },
+            new object[] { $"/profile/herobanner" },
         };
 
         public static IEnumerable<object[]> MissingProfileContentRouteData => new List<object[]>
@@ -47,7 +47,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
         public static IEnumerable<object[]> ProfileContentRedirectRouteData => new List<object[]>
         {
-            new object[] { $"/profile/contents" },
+            new object[] { $"/profile/body" },
             new object[] { $"/profile/search/action" },
         };
 

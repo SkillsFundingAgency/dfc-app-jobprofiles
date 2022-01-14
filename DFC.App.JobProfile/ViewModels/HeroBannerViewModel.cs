@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace DFC.App.JobProfile.ViewModels
 {
     [ExcludeFromCodeCoverage]
-    public class HeroViewModel
+    public class HeroBannerViewModel
     {
         public bool ShowLmi { get; set; }
 

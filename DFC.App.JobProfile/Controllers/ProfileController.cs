@@ -196,7 +196,7 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpGet]
         [Route("profile/hero")]
-        [Route("profile/htmlhead")]
+        [Route("profile/head")]
         [Route("/search-results")]
         public IActionResult NoContentResponses()
         {
@@ -204,7 +204,7 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile/{article}/htmlhead")]
+        [Route("profile/{article}/head")]
         public async Task<IActionResult> Head(string article)
         {
             logService.LogInformation($"{nameof(Head)} has been called");
@@ -217,12 +217,12 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile/{article}/hero")]
-        public async Task<IActionResult> Hero(string article)
+        [Route("profile/{article}/herobanner")]
+        public async Task<IActionResult> HeroBanner(string article)
         {
-            logService.LogInformation($"{nameof(Hero)} has been called");
+            logService.LogInformation($"{nameof(HeroBanner)} has been called");
 
-            var viewModel = new HeroViewModel();
+            var viewModel = new HeroBannerViewModel();
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
 
             if (jobProfileModel != null)
@@ -230,18 +230,18 @@ namespace DFC.App.JobProfile.Controllers
                 mapper.Map(jobProfileModel, viewModel);
                 viewModel.ShowLmi = configValues.EnableLMI;
 
-                logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
+                logService.LogInformation($"{nameof(HeroBanner)} has returned content for: {article}");
 
                 return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
             }
 
-            logService.LogWarning($"{nameof(Hero)} has not returned any content for: {article}");
+            logService.LogWarning($"{nameof(HeroBanner)} has not returned any content for: {article}");
 
             return NoContent();
         }
 
         [HttpGet]
-        [Route("profile/contents")]
+        [Route("profile/body")]
         public IActionResult Body()
         {
             logService.LogInformation($"{nameof(Body)} has been called");
@@ -250,7 +250,7 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile/{article}/contents")]
+        [Route("profile/{article}/body")]
         public async Task<IActionResult> Body(string article)
         {
             logService.LogInformation($"{nameof(Body)} has been called");
@@ -371,7 +371,10 @@ namespace DFC.App.JobProfile.Controllers
 
             if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
             {
-                throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
+                var message =
+                    $"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information";
+                logService.LogWarning(message);
+                return BadRequest(message);
             }
 
             return ValidateMarkup(bodyViewModel, jobProfileModel);
@@ -395,8 +398,12 @@ namespace DFC.App.JobProfile.Controllers
                         case JobProfileSegment.Overview:
                         case JobProfileSegment.HowToBecome:
                         case JobProfileSegment.WhatItTakes:
-                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}");
-
+                            {
+                                var message =
+                                    $"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}";
+                                logService.LogWarning(message);
+                                return BadRequest(message);
+                            }
                         case JobProfileSegment.RelatedCareers:
                         case JobProfileSegment.CurrentOpportunities:
                         case JobProfileSegment.WhatYouWillDo:

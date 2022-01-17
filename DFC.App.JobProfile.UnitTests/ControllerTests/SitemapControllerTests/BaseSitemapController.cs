@@ -27,6 +27,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.SitemapControllerTests
                 {
                     HttpContext = new DefaultHttpContext(),
                 },
+                Request = { Host = new HostString("test.com"), Path = "/test", Scheme = "HTTPS"},
             };
 
             return controller;

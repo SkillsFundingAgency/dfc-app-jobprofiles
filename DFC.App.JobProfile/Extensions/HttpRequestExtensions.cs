@@ -8,15 +8,26 @@ namespace DFC.App.JobProfile.Extensions
     {
         public static Uri GetBaseAddress(this HttpRequest request, IUrlHelper urlHelper = null)
         {
+            const string xForwardProto = "x-forwarded-proto";
+            const string xOriginalHost = "x-original-host";
+
             if (request != null)
             {
-                if (request.Headers.TryGetValue("x-forwarded-proto", out var forwardedProtocol)
-                    && request.Headers.TryGetValue("x-original-host", out var originalHost))
+                request.Headers.TryGetValue(xForwardProto, out var xForwardProtoValue);
+
+                if (string.IsNullOrWhiteSpace(xForwardProtoValue))
                 {
-                    return new Uri($"{forwardedProtocol}://{originalHost}");
+                    xForwardProtoValue = request.Scheme ?? Uri.UriSchemeHttp;
                 }
 
-                return string.IsNullOrWhiteSpace(request.Scheme) ? null : new Uri($"{request.Scheme}://{request.Host}{urlHelper?.Content("~")}");
+                request.Headers.TryGetValue(xOriginalHost, out var xOriginalHostValue);
+
+                if (string.IsNullOrWhiteSpace(xOriginalHostValue))
+                {
+                    xOriginalHostValue = request.Host.Value;
+                }
+
+                return new Uri($"{xForwardProtoValue}://{xOriginalHostValue}{urlHelper?.Content("~")}");
             }
 
             return null;

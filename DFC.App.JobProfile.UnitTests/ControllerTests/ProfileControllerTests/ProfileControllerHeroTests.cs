@@ -68,6 +68,31 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         }
 
         [Theory]
+        [MemberData(nameof(JsonMediaTypes))]
+        public async Task JobProfileControllerHeroReturnsSuccessWhenCriticalSectionNotAvailable(string mediaTypeName)
+        {
+            // Arrange
+            const string article = "an-article-name";
+            JobProfileModel expectedResult = null;
+            var controller = BuildProfileController(mediaTypeName);
+
+
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => FakeMapper.Map(A<JobProfileModel>.Ignored, A<HeroBannerViewModel>.Ignored)).Returns(A.Fake<HeroBannerViewModel>());
+
+            // Act
+            var result = await controller.HeroBanner(article).ConfigureAwait(false);
+
+            // Assert
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+
+            var jsonResult = Assert.IsType<OkObjectResult>(result);
+            Assert.IsAssignableFrom<List<SegmentModel>>(jsonResult.Value);
+
+            controller.Dispose();
+        }
+
+        [Theory]
         [MemberData(nameof(InvalidMediaTypes))]
         public async Task JobProfileControllerHeroReturnsNotAcceptable(string mediaTypeName)
         {

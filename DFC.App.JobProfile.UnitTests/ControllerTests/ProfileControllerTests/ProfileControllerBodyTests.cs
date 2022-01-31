@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.Data;
+﻿using DFC.App.JobProfile.Controllers;
+using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.ViewModels;
@@ -338,10 +339,11 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         }
 
         [Fact]
-        public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentDoesNotExist()
+        public async Task BodyReturnsInvalidMessageWhenCriticalSegmentDoesNotExist()
         {
             // Arrange
             var controller = BuildProfileController(MediaTypeNames.Application.Json);
+            var expectedOutput = "<header class='job-profile-hero'> <div class='govuk-width-container'> <div class='govuk-breadcrumbs'> <ol class='govuk-breadcrumbs__list'> <li class='govuk-breadcrumbs__list-item'> <a class='govuk-breadcrumbs__link' href='/explore-careers'>Home: Explore careers</a> </li> </ol> </div> <div class='govuk-grid-row'> <div class='govuk-grid-column-two-thirds'> <p>We are aware there is a problem with this profile and we are working hard to fix it</p> </div> </div </div> </header>";
             var bodyViewModel = new BodyViewModel
             {
                 CanonicalName = FakeArticleName,
@@ -367,72 +369,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             // Act
             var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
-            result = result.As<BadRequestObjectResult>();
-            Assert.NotNull(result);
-            controller.Dispose();
-        }
-
-        [Theory]
-        [MemberData(nameof(EmptyCriticalSegmentModelInput))]
-        public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
-        {
-            // Arrange
-            var controller = BuildProfileController(MediaTypeNames.Application.Json);
-            var bodyViewModel = new BodyViewModel
-            {
-                CanonicalName = FakeArticleName,
-                Segments = segments,
-            };
-
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
-
-            // Act
-            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
-            result = result.As<BadRequestObjectResult>();
-            Assert.NotNull(result);
-
-            controller.Dispose();
-        }
-
-        [Theory]
-        [MemberData(nameof(EmptyNonCriticalSegmentModelInput))]
-        public async Task BodyReturnsOfflineMarkupWhenNonCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
-        {
-            // Arrange
-            var controller = BuildProfileController(MediaTypeNames.Application.Json);
-            var bodyViewModel = new BodyViewModel
-            {
-                CanonicalName = FakeArticleName,
-                Segments = segments,
-            };
-
-            var offlineSegmentModel = new OfflineSegmentModel
-            {
-                OfflineMarkup = new HtmlString("<h1>Some offline markup for this non-critical segment</h1>"),
-            };
-
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-            A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).Returns(offlineSegmentModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
-
-            // Act
-            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
-
-            // Assert
-            var okObjectResult = result as OkObjectResult;
-            var resultViewModel = Assert.IsAssignableFrom<BodyViewModel>(okObjectResult?.Value);
-            var nonCriticalSegment = segments.FirstOrDefault(s => s.Segment != JobProfileSegment.Overview && s.Segment != JobProfileSegment.HowToBecome && s.Segment != JobProfileSegment.WhatItTakes);
-            var resultSegmentModel = resultViewModel.Segments.FirstOrDefault(s => s.Segment == nonCriticalSegment?.Segment);
-
-            Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
-            A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).MustHaveHappenedOnceExactly();
-            Assert.Equal(offlineSegmentModel.OfflineMarkup.Value, resultSegmentModel?.Markup.Value);
-
+            var profResult = (List<SegmentModel>)result.As<OkObjectResult>().Value;
+            Assert.Equal(expectedOutput, profResult[0].Markup.Value);
             controller.Dispose();
         }
     }

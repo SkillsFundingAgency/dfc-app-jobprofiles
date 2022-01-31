@@ -380,6 +380,16 @@ namespace DFC.App.JobProfile.Controllers
             var whatItTakesExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatItTakes);
             var whatYouWillDoExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatYouWillDo);
 
+            if (bodyViewModel.Segments == null)
+            {
+                bodyViewModel.Segments = new List<SegmentModel>();
+            }
+
+            if (jobProfileModel.Segments == null) 
+            {
+                jobProfileModel.Segments = new List<SegmentModel>();
+            }
+
             if (!overviewExists)
             {
                 var message =
@@ -420,6 +430,11 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             return ValidateMarkup(bodyViewModel, jobProfileModel);
+        }
+
+        public static explicit operator ProfileController(Type v)
+        {
+            throw new NotImplementedException();
         }
 
         private SegmentModel CreateSegmentIfError(JobProfileSegment segment)

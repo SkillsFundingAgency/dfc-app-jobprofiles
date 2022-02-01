@@ -88,22 +88,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         }
 
         [Theory]
-        [MemberData(nameof(ProfileNoContentRouteData))]
-        public async Task GetProfileHtmlContentEndpointsReturnNoContent(string url)
-        {
-            // Arrange
-            var uri = new Uri(url, UriKind.Relative);
-            var client = factory.CreateClient();
-            client.DefaultRequestHeaders.Accept.Clear();
-
-            // Act
-            var response = await client.GetAsync(uri).ConfigureAwait(false);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        }
-
-        [Theory]
         [MemberData(nameof(MissingProfileContentRouteData))]
         public async Task GetProfileHtmlContentEndpointsReturnNotFound(string url)
         {

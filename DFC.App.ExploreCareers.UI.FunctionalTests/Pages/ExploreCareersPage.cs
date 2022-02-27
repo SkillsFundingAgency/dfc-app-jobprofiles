@@ -21,7 +21,6 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
 
         IWebElement searchField => _scenarioContext.GetWebDriver().FindElement(By.Id("SearchTerm"));
         IWebElement searchButton => _scenarioContext.GetWebDriver().FindElement(By.ClassName("submit"));
-        IWebElement allJobCategories => _scenarioContext.GetWebDriver().FindElement(By.CssSelector(".govuk-list.homepage-jobcategories > li > a"));
 
         public void ClickLinkJobCategory(string jobCategory)
         {
@@ -77,7 +76,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
                 case "Creative and media":
                     secondResource = "creative-and-media";
                     break;
-                case "Delivery and storageration":
+                case "Delivery and storage":
                     secondResource = "delivery-and-storage";
                     break;
                 case "Emergency and uniform services":
@@ -86,11 +85,17 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
                 case "Engineering and maintenance":
                     secondResource = "engineering-and-maintenance";
                     break;
-                case "Environment and land Government services":
+                case "Environment and land":
+                    secondResource = "environment-and-land";
+                    break;
+                case "Government services":
                     secondResource = "government-services";
                     break;
-                case "Healthcare Home services":
+                case "Healthcare":
                     secondResource = "healthcare";
+                    break;
+                case "Home services":
+                    secondResource = "home-services";
                     break;
                 case "Hospitality and food":
                     secondResource = "hospitality-and-food";

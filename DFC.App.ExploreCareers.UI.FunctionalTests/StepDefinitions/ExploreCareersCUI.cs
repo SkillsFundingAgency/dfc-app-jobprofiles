@@ -399,17 +399,22 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             _exploreCareersPage.NavigateToPage(resourceOne, resourceTwo);
         }
 
-        [Given(@"I am at the ""(.*)"" web page for Administration")]
-        public void GivenIAmAtTheWebPageForAdministration(string resource)
+        [Given(@"I am at the ""(.*)"" Administration web page")]
+        public void GivenIAmAtTheAdministrationWebPage(string resource)
         {
             _exploreCareersPage.NavigateToPage(resource, "Administration");
         }
 
-        [Then(@"the (.*) link is not present amongst the links under the Other job categories side section")]
-        public void ThenTheLinkIsNotPresentAmongstTheLinksUnderTheOtherJobCategoriesSideSection(string jobCategoriesLink)
+        [Given(@"I am at the ""(.*)"" web page for (.*)")]
+        public void GivenIAmAtTheWebPageFor(string resource, string resourceTwo)
         {
-            Assert.False(_jobCategoriesPage.CheckLinkPresentInOtherJobCategories(jobCategoriesLink), "The link is present but should not be.");
+            _exploreCareersPage.NavigateToPage(resource, resourceTwo);
         }
 
+        [Then(@"the (.*) link is not present in amongst the links beneath the Other job categories side section")]
+        public void ThenTheLinkIsNotPresentInAmongstTheLinksBeneathTheOtherJobCategoriesSideSection(string jobCategory)
+        {
+            Assert.True(_jobCategoriesPage.GetJobCategorySideLinks(jobCategory), "The " + jobCategory + " link is present, unexpectedly.");
+        }
     }
 }

@@ -124,9 +124,24 @@ Scenario: Verification that the Job category list is complete
 	And the Travel and tourism Job category is present on the page
 
 Scenario: Links verifications for Other job categories side section
-	Given I am at the "Job categories" web page for Administration
+	Given I am at the "Job categories" Administration web page
 	When I click on the <Job category> link
 	Then I am taken to the <Job category> page
+
+Examples:
+	| Job category                |
+	| Beauty and wellbeing        |
+	| Construction and trades     |
+	| Creative and media          |
+	| Delivery and storage        |
+	| Engineering and maintenance |
+	| Environment and land        |
+	| Government services         |
+	| Healthcare                  |
+
+Scenario: Unqualified link verification for Other job categories side section
+	Given I am at the "Job categories" web page for <Job category>
+	Then the <Job category> link is not present in amongst the links beneath the Other job categories side section
 
 Examples:
 	| Job category                |

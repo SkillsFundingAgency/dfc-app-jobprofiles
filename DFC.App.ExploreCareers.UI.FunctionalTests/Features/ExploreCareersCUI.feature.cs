@@ -843,7 +843,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 127
- testRunner.Given("I am at the \"Job categories\" web page for Administration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I am at the \"Job categories\" Administration web page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 128
  testRunner.When(string.Format("I click on the {0} link", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -936,6 +936,137 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Government services", (
         {
 #line 126
 this.LinksVerificationsForOtherJobCategoriesSideSection("Healthcare", ((string[])(null)));
+#line hidden
+        }
+        
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection(string jobCategory, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Job category", jobCategory);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unqualified link verification for Other job categories side section", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 142
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 143
+ testRunner.Given(string.Format("I am at the \"Job categories\" web page for {0}", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 144
+ testRunner.Then(string.Format("the {0} link is not present in amongst the links beneath the Other job categories" +
+                            " side section", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Unqualified link verification for Other job categories side section: Beauty and w" +
+            "ellbeing")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Beauty and w" +
+            "ellbeing")]
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_BeautyAndWellbeing()
+        {
+#line 142
+this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Beauty and wellbeing", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Unqualified link verification for Other job categories side section: Construction" +
+            " and trades")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Construction" +
+            " and trades")]
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_ConstructionAndTrades()
+        {
+#line 142
+this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Construction and trades", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Unqualified link verification for Other job categories side section: Creative and" +
+            " media")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Creative and" +
+            " media")]
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_CreativeAndMedia()
+        {
+#line 142
+this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Creative and media", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Unqualified link verification for Other job categories side section: Delivery and" +
+            " storage")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Delivery and" +
+            " storage")]
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_DeliveryAndStorage()
+        {
+#line 142
+this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Delivery and storage", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Unqualified link verification for Other job categories side section: Engineering " +
+            "and maintenance")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Engineering " +
+            "and maintenance")]
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_EngineeringAndMaintenance()
+        {
+#line 142
+this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Engineering and maintenance", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Unqualified link verification for Other job categories side section: Environment " +
+            "and land")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Environment " +
+            "and land")]
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_EnvironmentAndLand()
+        {
+#line 142
+this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Environment and land", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Unqualified link verification for Other job categories side section: Government s" +
+            "ervices")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Government s" +
+            "ervices")]
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_GovernmentServices()
+        {
+#line 142
+this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Government services", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Unqualified link verification for Other job categories side section: Healthcare")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Healthcare")]
+        public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_Healthcare()
+        {
+#line 142
+this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Healthcare", ((string[])(null)));
 #line hidden
         }
         

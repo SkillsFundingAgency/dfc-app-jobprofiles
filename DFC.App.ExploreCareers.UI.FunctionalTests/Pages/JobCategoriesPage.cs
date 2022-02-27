@@ -16,27 +16,28 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
         }
 
         IWebElement heading => _scenarioContext.GetWebDriver().FindElement(By.ClassName("heading-xlarge"));
-        IWebElement searchField => _scenarioContext.GetWebDriver().FindElement(By.Id("search-main"));
 
         public string GetHeadingText()
         {
             return heading.Text;
         }
 
-        public bool CheckLinkPresentInOtherJobCategories(string link)
+        public bool GetJobCategorySideLinks(string jobCategory)
         {
-            bool isPresent = true;
-
-            try
-            {
-                _scenarioContext.GetWebDriver().FindElement(By.XPath("//ul[@class='govuk-list font-xsmall']/li/a[contains(text(), '" + link + "')]"));
-            }
-            catch (NoSuchElementException)
-            {
-                isPresent = false;
-            }
+            bool linkNotPresent = true;
             
-            return isPresent;
+            IList<IWebElement> allLinks = _scenarioContext.GetWebDriver().FindElements(By.CssSelector(".govuk-list.font-xsmall > li > a"));
+
+            for (int i = 0; i < allLinks.Count; i++)
+            {
+                if(allLinks[i].Text == jobCategory)
+                {
+                    linkNotPresent = false;
+                    break;
+                }
+            }
+
+            return linkNotPresent;
         }
     }
 }

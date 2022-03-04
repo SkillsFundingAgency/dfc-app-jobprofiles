@@ -20,6 +20,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         private readonly JobProfilesPage _jobProfilesPage;
         private readonly SearchResultsPage _searchResultsPage;
         string _page;
+        IEnumerable<JobCategories> jobCategories;
 
         public ExploreCareersCUI(ScenarioContext scenarioContext)
         {
@@ -242,157 +243,6 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             Assert.AreEqual("Search results for", _searchResultsPage.GetSearchResultsForText(), "Pressing Enter did not advance to the search results page");
         }
 
-        /* Data Table statement "var data = table.CreateSet<Poco>()", did not extract data from data table , hence all the code below */
-        [Then(@"the Administration Job category is present on the page")]
-        public void ThenTheAdministrationJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Administration", _exploreCareersPage.GetJobCategoryList()[0].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Animal care Job category is present on the page")]
-        public void ThenTheAnimalCareJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Animal care", _exploreCareersPage.GetJobCategoryList()[1].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Beauty and wellbeing Job category is present on the page")]
-        public void ThenTheBeautyAndWellbeingJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Beauty and wellbeing", _exploreCareersPage.GetJobCategoryList()[2].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Business and finance Job category is present on the page")]
-        public void ThenTheBusinessAndFinanceJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Business and finance", _exploreCareersPage.GetJobCategoryList()[3].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Computing, technology and digital Job category is present on the page")]
-        public void ThenTheComputingTechnologyAndDigitalJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Computing, technology and digital", _exploreCareersPage.GetJobCategoryList()[4].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Construction and trades Job category is present on the page")]
-        public void ThenTheConstructionAndTradesJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Construction and trades", _exploreCareersPage.GetJobCategoryList()[5].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Creative and media Job category is present on the page")]
-        public void ThenTheCreativeAndMediaJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Creative and media", _exploreCareersPage.GetJobCategoryList()[6].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Delivery and storage Job category is present on the page")]
-        public void ThenTheDeliveryAndStorageJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Delivery and storage", _exploreCareersPage.GetJobCategoryList()[7].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Emergency and uniform services Job category is present on the page")]
-        public void ThenTheEmergencyAndUniformServicesJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Emergency and uniform services", _exploreCareersPage.GetJobCategoryList()[8].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Engineering and maintenance Job category is present on the page")]
-        public void ThenTheEngineeringAndMaintenanceJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Engineering and maintenance", _exploreCareersPage.GetJobCategoryList()[9].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Environment and land Government services Job category is present on the page")]
-        public void ThenTheEnvironmentAndLandGovernmentServicesJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Environment and land", _exploreCareersPage.GetJobCategoryList()[10].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Government services Job category is present on the page")]
-        public void ThenTheGovernmentServicesJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Government services", _exploreCareersPage.GetJobCategoryList()[11].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Healthcare Job category is present on the page")]
-        public void ThenTheHealthcareJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Healthcare", _exploreCareersPage.GetJobCategoryList()[12].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Home services Job category is present on the page")]
-        public void ThenTheHomeServicesJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Home services", _exploreCareersPage.GetJobCategoryList()[13].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Hospitality and food Job category is present on the page")]
-        public void ThenTheHospitalityAndFoodJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Hospitality and food", _exploreCareersPage.GetJobCategoryList()[14].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Law and legal Job category is present on the page")]
-        public void ThenTheLawAndLegalJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Law and legal", _exploreCareersPage.GetJobCategoryList()[15].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Managerial Job category is present on the page")]
-        public void ThenTheManagerialJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Managerial", _exploreCareersPage.GetJobCategoryList()[16].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Manufacturing Job category is present on the page")]
-        public void ThenTheManufacturingJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Manufacturing", _exploreCareersPage.GetJobCategoryList()[17].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Retail and sales Job category is present on the page")]
-        public void ThenTheRetailAndSalesJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Retail and sales", _exploreCareersPage.GetJobCategoryList()[18].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Science and research Job category is present on the page")]
-        public void ThenTheScienceAndResearchJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Science and research", _exploreCareersPage.GetJobCategoryList()[19].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Social care Job category is present on the page")]
-        public void ThenTheSocialCareJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Social care", _exploreCareersPage.GetJobCategoryList()[20].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Sports and leisure Job category is present on the page")]
-        public void ThenTheSportsAndLeisureJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Sports and leisure", _exploreCareersPage.GetJobCategoryList()[21].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Teaching and education Job category is present on the page")]
-        public void ThenTheTeachingAndEducationJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Teaching and education", _exploreCareersPage.GetJobCategoryList()[22].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Transport Job category is present on the page")]
-        public void ThenTheTransportJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Transport", _exploreCareersPage.GetJobCategoryList()[23].Text, "Job category list is out of sync");
-        }
-
-        [Then(@"the Travel and tourism Job category is present on the page")]
-        public void ThenTheTravelAndTourismJobCategoryIsPresentOnThePage()
-        {
-            Assert.AreEqual("Travel and tourism", _exploreCareersPage.GetJobCategoryList()[24].Text, "Job category list is out of sync");
-        }
-
         [Given(@"I am at the ""(.*)"" page for (.*)")]
         public void GivenIAmAtThePageFor(string resourceOne, string resourceTwo)
         {
@@ -416,5 +266,22 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         {
             Assert.True(_jobCategoriesPage.GetJobCategorySideLinks(jobCategory), "The " + jobCategory + " link is present, unexpectedly.");
         }
+
+        [Given(@"I check the list displayed below against the list of Job categories displayed on the page")]
+        public void GivenICheckTheListDisplayedBelowAgainstTheListOfJobCategoriesDisplayedOnThePage(Table table)
+        {
+            jobCategories = table.CreateSet<JobCategories>().ToList();
+        }
+
+        [Then(@"both lists are the same")]
+        public void ThenBothListsAreTheSame()
+        {
+            Assert.IsTrue(_exploreCareersPage.GetJobCategoryListII(jobCategories), "Expected and actual Job categories are not the same");
+        }
+    }
+
+    public class JobCategories
+    {
+        public string jobCategory { get; set; }
     }
 }

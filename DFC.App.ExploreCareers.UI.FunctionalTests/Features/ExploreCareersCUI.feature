@@ -95,34 +95,6 @@ Examples:
 	| Job profiles    | lawyer       |
 	| Search results  | phlebotomist | 
 
-Scenario: Verification that the Job category list is complete
-	Given I am at the "Explore careers" page
-	Then the Administration Job category is present on the page
-	And the Animal care Job category is present on the page
-	And the Beauty and wellbeing Job category is present on the page
-	And the Business and finance Job category is present on the page
-	And the Computing, technology and digital Job category is present on the page
-	And the Construction and trades Job category is present on the page
-	And the Creative and media Job category is present on the page
-	And the Delivery and storage Job category is present on the page
-	And the Emergency and uniform services Job category is present on the page
-	And the Engineering and maintenance Job category is present on the page
-	And the Environment and land Government services Job category is present on the page
-	And the Government services Job category is present on the page
-	And the Healthcare Job category is present on the page
-	And the Home services Job category is present on the page
-	And the Hospitality and food Job category is present on the page
-	And the Law and legal Job category is present on the page
-	And the Managerial Job category is present on the page
-	And the Manufacturing Job category is present on the page
-	And the Retail and sales Job category is present on the page
-	And the Science and research Job category is present on the page
-	And the Social care Job category is present on the page
-	And the Sports and leisure Job category is present on the page
-	And the Teaching and education Job category is present on the page
-	And the Transport Job category is present on the page
-	And the Travel and tourism Job category is present on the page
-
 Scenario: Links verifications for Other job categories side section
 	Given I am at the "Job categories" Administration web page
 	When I click on the <Job category> link
@@ -153,3 +125,38 @@ Examples:
 	| Environment and land        |
 	| Government services         |
 	| Healthcare                  |
+
+Scenario: Verify Job category list
+Given I am at the "Explore careers" page
+And I check the list displayed below against the list of Job categories displayed on the page
+	| Job category                      |
+	| Administration                    |
+	| Animal care                       |
+	| Beauty and wellbeing              |
+	| Business and finance              |
+	| Computing, technology and digital |
+	| Construction and trades           |
+	| Creative and media                |
+	| Delivery and storage              |
+	| Emergency and uniform services    |
+	| Engineering and maintenance       |
+	| Environment and land              |
+	| Government services               |
+	| Healthcare                        |
+	| Home services                     |
+	| Hospitality and food              |
+	| Law and legal                     |
+	| Managerial                        |
+	| Manufacturing                     |
+	| Retail and sales                  |
+	| Science and research              |
+	| Social care                       |
+	| Sports and leisure                |
+	| Teaching and education            |
+	| Transport                         |
+	| Travel and tourism                |
+Then both lists are the same
+
+
+
+

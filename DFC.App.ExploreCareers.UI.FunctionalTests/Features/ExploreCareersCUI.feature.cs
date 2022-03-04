@@ -706,14 +706,12 @@ this.SearchResultsOnPressingTheEnterButton("Search results", "phlebotomist", ((s
 #line hidden
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Verification that the Job category list is complete")]
-        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
-        [Xunit.TraitAttribute("Description", "Verification that the Job category list is complete")]
-        public virtual void VerificationThatTheJobCategoryListIsComplete()
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection(string jobCategory, string[] exampleTags)
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verification that the Job category list is complete", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            argumentsOfScenario.Add("Job category", jobCategory);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Links verifications for Other job categories side section", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 98
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -735,120 +733,12 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 99
- testRunner.Given("I am at the \"Explore careers\" page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 100
- testRunner.Then("the Administration Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 101
- testRunner.And("the Animal care Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 102
- testRunner.And("the Beauty and wellbeing Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 103
- testRunner.And("the Business and finance Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 104
- testRunner.And("the Computing, technology and digital Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 105
- testRunner.And("the Construction and trades Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 106
- testRunner.And("the Creative and media Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 107
- testRunner.And("the Delivery and storage Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 108
- testRunner.And("the Emergency and uniform services Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 109
- testRunner.And("the Engineering and maintenance Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 110
- testRunner.And("the Environment and land Government services Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 111
- testRunner.And("the Government services Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 112
- testRunner.And("the Healthcare Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 113
- testRunner.And("the Home services Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 114
- testRunner.And("the Hospitality and food Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 115
- testRunner.And("the Law and legal Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 116
- testRunner.And("the Managerial Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 117
- testRunner.And("the Manufacturing Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 118
- testRunner.And("the Retail and sales Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 119
- testRunner.And("the Science and research Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 120
- testRunner.And("the Social care Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 121
- testRunner.And("the Sports and leisure Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 122
- testRunner.And("the Teaching and education Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 123
- testRunner.And("the Transport Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 124
- testRunner.And("the Travel and tourism Job category is present on the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        public virtual void LinksVerificationsForOtherJobCategoriesSideSection(string jobCategory, string[] exampleTags)
-        {
-            string[] tagsOfScenario = exampleTags;
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("Job category", jobCategory);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Links verifications for Other job categories side section", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 126
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 127
  testRunner.Given("I am at the \"Job categories\" Administration web page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 128
+#line 100
  testRunner.When(string.Format("I click on the {0} link", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 129
+#line 101
  testRunner.Then(string.Format("I am taken to the {0} page", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -860,7 +750,7 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Beauty and wellbeing")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_BeautyAndWellbeing()
         {
-#line 126
+#line 98
 this.LinksVerificationsForOtherJobCategoriesSideSection("Beauty and wellbeing", ((string[])(null)));
 #line hidden
         }
@@ -872,7 +762,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Beauty and wellbeing", 
             "s")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_ConstructionAndTrades()
         {
-#line 126
+#line 98
 this.LinksVerificationsForOtherJobCategoriesSideSection("Construction and trades", ((string[])(null)));
 #line hidden
         }
@@ -882,7 +772,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Construction and trades
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Creative and media")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_CreativeAndMedia()
         {
-#line 126
+#line 98
 this.LinksVerificationsForOtherJobCategoriesSideSection("Creative and media", ((string[])(null)));
 #line hidden
         }
@@ -892,7 +782,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Creative and media", ((
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Delivery and storage")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_DeliveryAndStorage()
         {
-#line 126
+#line 98
 this.LinksVerificationsForOtherJobCategoriesSideSection("Delivery and storage", ((string[])(null)));
 #line hidden
         }
@@ -904,7 +794,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Delivery and storage", 
             "nance")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_EngineeringAndMaintenance()
         {
-#line 126
+#line 98
 this.LinksVerificationsForOtherJobCategoriesSideSection("Engineering and maintenance", ((string[])(null)));
 #line hidden
         }
@@ -914,7 +804,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Engineering and mainten
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Environment and land")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_EnvironmentAndLand()
         {
-#line 126
+#line 98
 this.LinksVerificationsForOtherJobCategoriesSideSection("Environment and land", ((string[])(null)));
 #line hidden
         }
@@ -924,7 +814,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Environment and land", 
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Government services")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_GovernmentServices()
         {
-#line 126
+#line 98
 this.LinksVerificationsForOtherJobCategoriesSideSection("Government services", ((string[])(null)));
 #line hidden
         }
@@ -934,7 +824,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Government services", (
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Healthcare")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_Healthcare()
         {
-#line 126
+#line 98
 this.LinksVerificationsForOtherJobCategoriesSideSection("Healthcare", ((string[])(null)));
 #line hidden
         }
@@ -945,7 +835,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Healthcare", ((string[]
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("Job category", jobCategory);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unqualified link verification for Other job categories side section", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 142
+#line 114
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -965,10 +855,10 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 143
+#line 115
  testRunner.Given(string.Format("I am at the \"Job categories\" web page for {0}", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 144
+#line 116
  testRunner.Then(string.Format("the {0} link is not present in amongst the links beneath the Other job categories" +
                             " side section", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -983,7 +873,7 @@ this.ScenarioInitialize(scenarioInfo);
             "ellbeing")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_BeautyAndWellbeing()
         {
-#line 142
+#line 114
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Beauty and wellbeing", ((string[])(null)));
 #line hidden
         }
@@ -995,7 +885,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Beauty and wel
             " and trades")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_ConstructionAndTrades()
         {
-#line 142
+#line 114
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Construction and trades", ((string[])(null)));
 #line hidden
         }
@@ -1007,7 +897,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Construction a
             " media")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_CreativeAndMedia()
         {
-#line 142
+#line 114
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Creative and media", ((string[])(null)));
 #line hidden
         }
@@ -1019,7 +909,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Creative and m
             " storage")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_DeliveryAndStorage()
         {
-#line 142
+#line 114
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Delivery and storage", ((string[])(null)));
 #line hidden
         }
@@ -1031,7 +921,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Delivery and s
             "and maintenance")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_EngineeringAndMaintenance()
         {
-#line 142
+#line 114
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Engineering and maintenance", ((string[])(null)));
 #line hidden
         }
@@ -1043,7 +933,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Engineering an
             "and land")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_EnvironmentAndLand()
         {
-#line 142
+#line 114
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Environment and land", ((string[])(null)));
 #line hidden
         }
@@ -1055,7 +945,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Environment an
             "ervices")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_GovernmentServices()
         {
-#line 142
+#line 114
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Government services", ((string[])(null)));
 #line hidden
         }
@@ -1065,9 +955,103 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Government ser
         [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Healthcare")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_Healthcare()
         {
-#line 142
+#line 114
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Healthcare", ((string[])(null)));
 #line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job category list")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job category list")]
+        public virtual void VerifyJobCategoryList()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify Job category list", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 129
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 130
+testRunner.Given("I am at the \"Explore careers\" page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Job category"});
+                table1.AddRow(new string[] {
+                            "Administration"});
+                table1.AddRow(new string[] {
+                            "Animal care"});
+                table1.AddRow(new string[] {
+                            "Beauty and wellbeing"});
+                table1.AddRow(new string[] {
+                            "Business and finance"});
+                table1.AddRow(new string[] {
+                            "Computing, technology and digital"});
+                table1.AddRow(new string[] {
+                            "Construction and trades"});
+                table1.AddRow(new string[] {
+                            "Creative and media"});
+                table1.AddRow(new string[] {
+                            "Delivery and storage"});
+                table1.AddRow(new string[] {
+                            "Emergency and uniform services"});
+                table1.AddRow(new string[] {
+                            "Engineering and maintenance"});
+                table1.AddRow(new string[] {
+                            "Environment and land"});
+                table1.AddRow(new string[] {
+                            "Government services"});
+                table1.AddRow(new string[] {
+                            "Healthcare"});
+                table1.AddRow(new string[] {
+                            "Home services"});
+                table1.AddRow(new string[] {
+                            "Hospitality and food"});
+                table1.AddRow(new string[] {
+                            "Law and legal"});
+                table1.AddRow(new string[] {
+                            "Managerial"});
+                table1.AddRow(new string[] {
+                            "Manufacturing"});
+                table1.AddRow(new string[] {
+                            "Retail and sales"});
+                table1.AddRow(new string[] {
+                            "Science and research"});
+                table1.AddRow(new string[] {
+                            "Social care"});
+                table1.AddRow(new string[] {
+                            "Sports and leisure"});
+                table1.AddRow(new string[] {
+                            "Teaching and education"});
+                table1.AddRow(new string[] {
+                            "Transport"});
+                table1.AddRow(new string[] {
+                            "Travel and tourism"});
+#line 131
+testRunner.And("I check the list displayed below against the list of Job categories displayed on " +
+                        "the page", ((string)(null)), table1, "And ");
+#line hidden
+#line 158
+testRunner.Then("both lists are the same", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
         }
         
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]

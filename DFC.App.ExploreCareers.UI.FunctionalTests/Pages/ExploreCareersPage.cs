@@ -1,10 +1,13 @@
 ﻿using DFC.App.ExploreCareers.Model;
+using DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions;
 using DFC.App.ExploreCareers.UI.FunctionalTests.Support;
 using DFC.TestAutomation.UI.Extension;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using TechTalk.SpecFlow;
@@ -178,6 +181,41 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
             IList<IWebElement> allList = _scenarioContext.GetWebDriver().FindElements(By.CssSelector(".govuk-list.homepage-jobcategories > li > a"));
 
             return allList;
+        }
+
+        public bool GetJobCategoryListII(IEnumerable<JobCategories> expectedJobCategories)
+        {
+            bool a_and_b_Checks = false;
+
+            //A - Check.
+            //Convert IEnumerable expected results to string
+            string[] expected = expectedJobCategories.Select(p => p.jobCategory).ToArray();
+
+            //Get actual list from the UI
+            IList<IWebElement> actualJobCategoriesList = _scenarioContext.GetWebDriver().FindElements(By.CssSelector(".govuk-list.homepage-jobcategories > li > a"));
+
+            //translate IWebElements above into a collection of strings so they can be compared
+            IEnumerable<string> actual = actualJobCategoriesList.Select(i => i.Text);
+
+            
+            //determines, as bool, if items in 1 and 2 are present in the other
+            var OptionsVerified = expected.All(d => actual.Contains(d));
+
+            //B - Check.
+            int noOfActualElements = actualJobCategoriesList.Count;
+            bool optionsEqual = false;
+
+            if (expected.Length == noOfActualElements)
+            {
+                optionsEqual = true;
+            }
+
+            if (OptionsVerified == true && optionsEqual == true)
+            {
+                a_and_b_Checks = true;
+            }
+
+            return a_and_b_Checks;
         }
     }
 }

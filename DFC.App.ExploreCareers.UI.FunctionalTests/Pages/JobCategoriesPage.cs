@@ -15,7 +15,8 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
             _scenarioContext = context;
         }
 
-        IWebElement heading => _scenarioContext.GetWebDriver().FindElement(By.ClassName("heading-xlarge"));
+        //IWebElement heading => _scenarioContext.GetWebDriver().FindElement(By.ClassName("heading-xlarge")); //PreProd
+        IWebElement heading => _scenarioContext.GetWebDriver().FindElement(By.ClassName("govuk-heading-xl")); //SIT 
 
         public string GetHeadingText()
         {

@@ -141,6 +141,35 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             }
         }
 
+        [Given(@"I click the search button")]
+        public void GivenIClickTheSearchButton()
+        {
+            switch (_page)
+            {
+                case "Explore careers":
+                    _exploreCareersPage.ClickSearchButton();
+                    break;
+                case "Job profiles":
+                    _exploreCareersPage.ClickSearchButton();
+                    break;
+                case "Search results":
+                    _searchResultsPage.ClickSearchButton();
+                    break;
+            }
+        }
+
+        [Given(@"I retrieve the number of search results")]
+        public void GivenIRetrieveTheNumberOfSearchResults()
+        {
+            _searchResultsPage.GetNumberOfSearchResults();
+        }
+
+        [When(@"I work out the number of result pages from the number of search result returned")]
+        public void WhenIWorkOutTheNumberOfResultPagesFromTheNumberOfSearchResultReturned()
+        {
+            _searchResultsPage.NumberOfSeachResultPages();
+        }
+
         [Given(@"the search field is empty")]
         public void GivenTheSearchFieldIsEmpty()
         {
@@ -211,6 +240,13 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         public void ThenTheNumberOfSearchResultsReturnedIsCommensurateWithTheNumberOfSearchResultPages()
         {
             Assert.False(_searchResultsPage.Paginator(), "Next paginator is still unexpectedly displayed.");
+        }
+
+        [Then(@"the Next button is no longer present on the final page")]
+        public static void ThenTheNextButtonIsNoLongerPresentOnTheFinalPage()
+        {
+            /* This step is inserted for readability. The verification of the presence of the 
+            Next button on the final page was done as part of the assertion in the last step */
         }
 
         [When(@"I press the Enter button instead of clicking search")]

@@ -71,11 +71,14 @@ Examples:
 	| Explore careers | 
 	| Search results  | 
 
-Scenario Outline: Reconciling search results with pages returned
+Scenario Outline: Reconciling search results count with number of pages returned
 	Given I navigate to the <page> page
 	And I enter the search term <search term> in the search field
-	When I click the search button
+	And I click the search button
+	And I retrieve the number of search results
+	When I work out the number of result pages from the number of search result returned
 	Then the number of search results returned is commensurate with the number of search result pages
+	And the Next button is no longer present on the final page
 	
 Examples:
 	| page            | search term  | 

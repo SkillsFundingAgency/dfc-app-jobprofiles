@@ -1,4 +1,5 @@
-﻿using DFC.TestAutomation.UI.Extension;
+﻿using DFC.App.ExploreCareers.UI.FunctionalTests.Support;
+using DFC.TestAutomation.UI.Extension;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
         IWebElement textDidYouMean => _scenarioContext.GetWebDriver().FindElement(By.CssSelector(".search-dym > span"));
         IWebElement nextPaginator => _scenarioContext.GetWebDriver().FindElement(By.ClassName("dfc-code-search-nextlink"));
         IWebElement searchResultsForText => _scenarioContext.GetWebDriver().FindElement(By.CssSelector(".search-input.ui-front > h1"));
+        IWebElement footer => _scenarioContext.GetWebDriver().FindElement(By.ClassName("govuk-footer"));
 
         public void SelectFromAutosuggest(string autosuggested)
         {
@@ -59,18 +61,32 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
             return _scenarioContext.GetWebDriver().Url;
         }
 
-        public bool Paginator()
+        public int GetNumberOfSearchResults()
         {
             int searchCount = int.Parse(resultsCount.Text.Replace("results found", "").Trim(), new CultureInfo("en-au"));
-            decimal ofSearchCount = searchCount;
+            return searchCount;
+        }
+
+        public decimal NumberOfSeachResultPages()
+        {
+            decimal ofSearchCount = GetNumberOfSearchResults();
             decimal searchCountGroups = (ofSearchCount / 10);
             decimal ofSearchCountGroups = Math.Ceiling(searchCountGroups) - 1;
-            
-            while (ofSearchCountGroups > 0)
+
+            return ofSearchCountGroups;
+        }
+
+        public bool Paginator()
+        {
+            decimal numberOfSeachResultPages = NumberOfSeachResultPages();
+
+            while (numberOfSeachResultPages > 0)
             {
                 nextPaginator.Click();
-                ofSearchCountGroups--;
+                numberOfSeachResultPages--;
             }
+
+            Utilities.ScrollIntoView(_scenarioContext.GetWebDriver(), footer);
 
             bool isPresent = true;
 

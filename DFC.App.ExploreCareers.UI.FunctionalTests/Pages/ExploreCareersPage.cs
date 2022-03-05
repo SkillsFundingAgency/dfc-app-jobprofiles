@@ -52,7 +52,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
             }
         }
 
-        public string ProcessResourceTwo(string resourceTwo)
+        public static string ProcessResourceTwo(string resourceTwo)
         {
             string secondResource = "";
 

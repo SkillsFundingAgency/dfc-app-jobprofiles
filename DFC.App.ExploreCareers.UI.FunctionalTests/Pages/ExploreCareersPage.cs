@@ -183,9 +183,9 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
             return allList;
         }
 
-        public bool GetJobCategoryListII(IEnumerable<JobCategories> expectedJobCategories)
+        public bool VerifyJobCategoryList(IEnumerable<JobCategories> expectedJobCategories)
         {
-            bool a_and_b_Checks = false;
+            bool a_and_b_checks = false;
 
             //A - Check.
             //Convert IEnumerable expected results to string
@@ -212,10 +212,10 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
 
             if (OptionsVerified == true && optionsEqual == true)
             {
-                a_and_b_Checks = true;
+                a_and_b_checks = true;
             }
 
-            return a_and_b_Checks;
+            return a_and_b_checks;
         }
     }
 }

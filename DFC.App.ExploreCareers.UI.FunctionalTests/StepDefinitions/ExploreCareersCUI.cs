@@ -276,7 +276,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         [Then(@"both lists are the same")]
         public void ThenBothListsAreTheSame()
         {
-            Assert.IsTrue(_exploreCareersPage.GetJobCategoryListII(jobCategories), "Expected and actual Job categories are not the same");
+            Assert.IsTrue(_exploreCareersPage.VerifyJobCategoryList(jobCategories), "Expected and actual Job categories are not the same");
         }
     }
 

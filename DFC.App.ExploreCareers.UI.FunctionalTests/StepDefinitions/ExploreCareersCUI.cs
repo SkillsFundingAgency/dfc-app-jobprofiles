@@ -19,8 +19,9 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         private readonly JobCategoriesPage _jobCategoriesPage;
         private readonly JobProfilesPage _jobProfilesPage;
         private readonly SearchResultsPage _searchResultsPage;
-        string _page;
+        string _page, _jobCategory;
         IEnumerable<JobCategories> jobCategories;
+        IList<IWebElement> jobProfiles;
 
         public ExploreCareersCUI(ScenarioContext scenarioContext)
         {
@@ -294,6 +295,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         [Given(@"I am at the ""(.*)"" web page for (.*)")]
         public void GivenIAmAtTheWebPageFor(string resource, string resourceTwo)
         {
+            _jobCategory = resourceTwo;
             _exploreCareersPage.NavigateToPage(resource, resourceTwo);
         }
 
@@ -303,8 +305,8 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             Assert.True(_jobCategoriesPage.GetJobCategorySideLinks(jobCategory), "The " + jobCategory + " link is present, unexpectedly.");
         }
 
-        [Given(@"I check the list displayed below against the list of Job categories displayed on the page")]
-        public void GivenICheckTheListDisplayedBelowAgainstTheListOfJobCategoriesDisplayedOnThePage(Table table)
+        [Given(@"I check the list displayed below against the list of Job categories displayed on that page")]
+        public void GivenICheckTheListDisplayedBelowAgainstTheListOfJobCategoriesDisplayedOnThatPage(Table table)
         {
             jobCategories = table.CreateSet<JobCategories>().ToList();
         }
@@ -313,6 +315,18 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         public void ThenBothListsAreTheSame()
         {
             Assert.IsTrue(_exploreCareersPage.VerifyJobCategoryList(jobCategories), "Expected and actual Job categories are not the same");
+        }
+
+        [When(@"I check the job profiles list")]
+        public void WhenICheckTheJobProfilesList()
+        {
+            jobProfiles = _jobCategoriesPage.GetJobProfiles();
+        }
+
+        [Then(@"none of the job profiles occur more than once")]
+        public void ThenNoneOfTheJobProfilesOccurMoreThanOnce()
+        {
+            Assert.AreEqual(0, _jobCategoriesPage.VerifyJobProfileCount(jobProfiles), "There are multiple occurrences in the Job profiles for " + _jobCategory + ".");
         }
     }
 

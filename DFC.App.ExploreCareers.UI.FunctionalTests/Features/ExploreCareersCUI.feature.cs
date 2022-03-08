@@ -1054,13 +1054,302 @@ testRunner.Given("I am at the \"Explore careers\" page", ((string)(null)), ((Tec
                             "Travel and tourism"});
 #line 134
 testRunner.And("I check the list displayed below against the list of Job categories displayed on " +
-                        "the page", ((string)(null)), table1, "And ");
+                        "that page", ((string)(null)), table1, "And ");
 #line hidden
 #line 161
 testRunner.Then("both lists are the same", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
+        }
+        
+        public virtual void VerifyJobProfilesDistinctCount(string jobCategory, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Job category", jobCategory);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify Job profiles distinct count", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 164
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 165
+ testRunner.Given(string.Format("I am at the \"Job categories\" web page for {0}", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 166
+ testRunner.When("I check the job profiles list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 167
+ testRunner.Then("none of the job profiles occurs more than once", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Administration")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Administration")]
+        public virtual void VerifyJobProfilesDistinctCount_Administration()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Administration", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Animal care")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Animal care")]
+        public virtual void VerifyJobProfilesDistinctCount_AnimalCare()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Animal care", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Beauty and wellbeing")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Beauty and wellbeing")]
+        public virtual void VerifyJobProfilesDistinctCount_BeautyAndWellbeing()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Beauty and wellbeing", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Business and finance")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Business and finance")]
+        public virtual void VerifyJobProfilesDistinctCount_BusinessAndFinance()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Business and finance", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Computing, technology and digital")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Computing, technology and digital")]
+        public virtual void VerifyJobProfilesDistinctCount_ComputingTechnologyAndDigital()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Computing, technology and digital", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Construction and trades")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Construction and trades")]
+        public virtual void VerifyJobProfilesDistinctCount_ConstructionAndTrades()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Construction and trades", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Creative and media")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Creative and media")]
+        public virtual void VerifyJobProfilesDistinctCount_CreativeAndMedia()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Creative and media", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Delivery and storage")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Delivery and storage")]
+        public virtual void VerifyJobProfilesDistinctCount_DeliveryAndStorage()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Delivery and storage", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Emergency and uniform services")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Emergency and uniform services")]
+        public virtual void VerifyJobProfilesDistinctCount_EmergencyAndUniformServices()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Emergency and uniform services", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Engineering and maintenance")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Engineering and maintenance")]
+        public virtual void VerifyJobProfilesDistinctCount_EngineeringAndMaintenance()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Engineering and maintenance", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Environment and land")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Environment and land")]
+        public virtual void VerifyJobProfilesDistinctCount_EnvironmentAndLand()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Environment and land", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Government services")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Government services")]
+        public virtual void VerifyJobProfilesDistinctCount_GovernmentServices()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Government services", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Healthcare")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Healthcare")]
+        public virtual void VerifyJobProfilesDistinctCount_Healthcare()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Healthcare", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Home services")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Home services")]
+        public virtual void VerifyJobProfilesDistinctCount_HomeServices()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Home services", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Hospitality and food")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Hospitality and food")]
+        public virtual void VerifyJobProfilesDistinctCount_HospitalityAndFood()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Hospitality and food", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Law and legal")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Law and legal")]
+        public virtual void VerifyJobProfilesDistinctCount_LawAndLegal()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Law and legal", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Managerial")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Managerial")]
+        public virtual void VerifyJobProfilesDistinctCount_Managerial()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Managerial", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Manufacturing")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Manufacturing")]
+        public virtual void VerifyJobProfilesDistinctCount_Manufacturing()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Manufacturing", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Retail and sales")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Retail and sales")]
+        public virtual void VerifyJobProfilesDistinctCount_RetailAndSales()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Retail and sales", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Science and research")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Science and research")]
+        public virtual void VerifyJobProfilesDistinctCount_ScienceAndResearch()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Science and research", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Social care")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Social care")]
+        public virtual void VerifyJobProfilesDistinctCount_SocialCare()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Social care", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Sports and leisure")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Sports and leisure")]
+        public virtual void VerifyJobProfilesDistinctCount_SportsAndLeisure()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Sports and leisure", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Teaching and education")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Teaching and education")]
+        public virtual void VerifyJobProfilesDistinctCount_TeachingAndEducation()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Teaching and education", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Transport")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Transport")]
+        public virtual void VerifyJobProfilesDistinctCount_Transport()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Transport", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Verify Job profiles distinct count: Travel and tourism")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Travel and tourism")]
+        public virtual void VerifyJobProfilesDistinctCount_TravelAndTourism()
+        {
+#line 164
+this.VerifyJobProfilesDistinctCount("Travel and tourism", ((string[])(null)));
+#line hidden
         }
         
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]

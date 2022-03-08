@@ -131,7 +131,7 @@ Examples:
 
 Scenario: Verify Job category list
 Given I am at the "Explore careers" page
-And I check the list displayed below against the list of Job categories displayed on the page
+And I check the list displayed below against the list of Job categories displayed on that page
 	| Job category                      |
 	| Administration                    |
 	| Animal care                       |
@@ -161,5 +161,36 @@ And I check the list displayed below against the list of Job categories displaye
 Then both lists are the same
 
 
+Scenario Outline: Verify Job profiles distinct count
+	Given I am at the "Job categories" web page for <Job category>
+	When I check the job profiles list
+	Then none of the job profiles occur more than once
+Examples:
+	| Job category                      |
+	| Administration                    |
+	| Animal care                       |
+	| Beauty and wellbeing              |
+	| Business and finance              |
+	| Computing, technology and digital |
+	| Construction and trades           |
+	| Creative and media                |
+	| Delivery and storage              |
+	| Emergency and uniform services    |
+	| Engineering and maintenance       |
+	| Environment and land              |
+	| Government services               |
+	| Healthcare                        |
+	| Home services                     |
+	| Hospitality and food              |
+	| Law and legal                     |
+	| Managerial                        |
+	| Manufacturing                     |
+	| Retail and sales                  |
+	| Science and research              |
+	| Social care                       |
+	| Sports and leisure                |
+	| Teaching and education            |
+	| Transport                         |
+	| Travel and tourism                |
 
 

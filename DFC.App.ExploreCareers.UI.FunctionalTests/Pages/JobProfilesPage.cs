@@ -17,6 +17,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
         }
 
         IWebElement searchField => _scenarioContext.GetWebDriver().FindElement(By.Id("search-main"));
+        IWebElement jobProlileHeading => _scenarioContext.GetWebDriver().FindElement(By.CssSelector(".govuk-grid-column-two-thirds h1"));
 
         public void EnterSearchTerm(string searchTerm)
         {
@@ -38,6 +39,13 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
         public void ClickEnterInSearchField()
         {
             searchField.SendKeys(Keys.Enter);
+        }
+
+        public string GetJobProfileHeading()
+        {
+            var jobProfileHeadingText = jobProlileHeading.Text.Trim();
+            
+             return jobProfileHeadingText;
         }
     }
 }

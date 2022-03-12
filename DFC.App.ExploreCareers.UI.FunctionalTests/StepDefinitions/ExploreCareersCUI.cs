@@ -21,7 +21,8 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         private readonly SearchResultsPage _searchResultsPage;
         string _page, _jobCategory;
         IEnumerable<JobCategories> jobCategories;
-        IList<IWebElement> jobProfiles;
+        IList<IWebElement> jobProfiles, _jobCategoryList;
+        bool _jobCategoryPagePaginated;
 
         public ExploreCareersCUI(ScenarioContext scenarioContext)
         {
@@ -50,6 +51,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             Assert.AreEqual(page, _jobCategoriesPage.GetHeadingText(), "This is not the " + page + "page.");
         }
 
+        [Given(@"I navigate to the web page ""(.*)""")]
         [Given(@"I navigate to the (.*) page")]
         public void GivenINavigateToThePage(string page)
         {
@@ -225,6 +227,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             Assert.AreEqual(zeroResultsMsg, _searchResultsPage.GetZeroResultsMsg(), "The search unexpectedly returned results");
         }
 
+        [Given(@"I am taken to the search results page with the message Did you mean (.*) displayed")]
         [Then(@"I am taken to the search results page with the message Did you mean (.*) displayed")]
         public void ThenIAmTakenToTheSearchResultsPageWithTheMessageDidYouMeanDisplayed(string autoSuggestedSearchTerm)
         {
@@ -240,7 +243,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         [Then(@"the number of search results returned is commensurate with the number of search result pages")]
         public void ThenTheNumberOfSearchResultsReturnedIsCommensurateWithTheNumberOfSearchResultPages()
         {
-            Assert.False(_searchResultsPage.Paginator(), "Next paginator is still unexpectedly displayed.");
+            Assert.False(_searchResultsPage.NextVerifier(), "Next paginator is still unexpectedly displayed.");
         }
 
         [Then(@"the Next button is no longer present on the final page")]
@@ -299,6 +302,13 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             _exploreCareersPage.NavigateToPage(resource, resourceTwo);
         }
 
+        [Given(@"I navigate to the (.*) page for (.*)")]
+        public void GivenINavigateToThePageFor(string resource, string resourceTwo)
+        {
+            _jobCategory = resourceTwo;
+            _exploreCareersPage.NavigateToPage(resource, resourceTwo);
+        }
+
         [Then(@"the (.*) link is not present in amongst the links beneath the Other job categories side section")]
         public void ThenTheLinkIsNotPresentInAmongstTheLinksBeneathTheOtherJobCategoriesSideSection(string jobCategory)
         {
@@ -327,6 +337,97 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
         public void ThenNoneOfTheJobProfilesOccurMoreThanOnce()
         {
             Assert.AreEqual(0, _jobCategoriesPage.VerifyJobProfileCount(jobProfiles), "There are multiple occurrences in the Job profiles for " + _jobCategory + ".");
+        }
+
+        [When(@"I click the link for the (.*) Job profile under that Job category")]
+        public void WhenIClickTheLinkForTheJobProfileUnderThatJobCategory(string linkPosition)
+        {
+            _jobCategoriesPage.ClickLinkInPosition(linkPosition); 
+        }
+
+        [Then(@"I am taken profile details page for that Job profile")]
+        public void ThenIAmTakenProfileDetailsPageForThatJobProfile()
+        {
+            Assert.AreEqual(_jobCategoriesPage.jobProfileHeading, _jobProfilesPage.GetJobProfileHeading(), "Clicking the " + _jobCategoriesPage.jobProfileHeading + " link failed");
+        }
+
+        [When(@"I examine the ""(.*)"" list")]
+        public void WhenIExamineTheList(string listToExamine)
+        {
+            _jobCategoryList = _exploreCareersPage.GetList(listToExamine);
+        }
+
+        [When(@"I examine the (.*) list")]
+        public void WhenIExamineTheJobCategoriesList(string listToExamine)
+        {
+            switch(listToExamine)
+            {
+                case "Job categories":
+                    _jobCategoryList = _exploreCareersPage.GetList(listToExamine);
+                    break;
+                case "Job profiles":
+                    _jobCategoryList = _exploreCareersPage.GetList(listToExamine);
+                    break;
+                case "Other job categories":
+                    _jobCategoryList = _exploreCareersPage.GetList(listToExamine);
+                    break;
+            }
+        }
+
+        [Then(@"the list is in alphabetical order")]
+        public void ThenTheListIsInAlphabeticalOrder()
+        {
+            Assert.True(_exploreCareersPage.VerifyOrdering(), _jobCategoryList + " is not in alphabetical order");
+        }
+
+        [When(@"I examine the page")]
+        public void WhenIExamineThePage()
+        {
+            _jobCategoryPagePaginated = _jobCategoriesPage.IsPagePaginated();
+        }
+
+        [Then(@"the page contains no pagination")]
+        public void ThenThePageContainsNoPagination()
+        {
+            Assert.IsFalse(_jobCategoryPagePaginated, "The job categories > Administration page is, unexpectedly, paginated");
+        }
+
+        [Then(@"the search results field placeholder text is ""(.*)""")]
+        public void ThenTheSearchResultsFieldPlaceholderTextIsEnterAJobTitle(string placeholderText)
+        {
+            Assert.AreEqual(placeholderText, _searchResultsPage.GetPlaceholderText(), "Placeholder text incorrect.");
+        }
+
+        [Then(@"the number of results stated as found is the equal to the actual number of Job profiles listed thereunder")]
+        public void ThenTheNumberOfResultsStatedAsFoundIsTheEqualToTheActualNumberOfJobProfilesListedThereunder()
+        {
+            _searchResultsPage.ProfilesCounter();
+
+            Assert.AreEqual(_searchResultsPage.GetNumberOfSearchResults(), _searchResultsPage.profilesCount, "Search result figure not equal to number of job profiles found");
+        }
+
+        [When(@"I click the link in the message")]
+        public void WhenIClickTheLinkInTheMessage()
+        {
+            _searchResultsPage.ClickDidYouMeanLink();
+        }
+
+        [Then(@"the url bears the suggested search term (.*) as its parameter")]
+        public void ThenTheUrlBearsTheSuggestedSearchTermNurseAsItsParameter(string suggestedProfession)
+        {
+            _searchResultsPage.UrlContainsSuggestion(suggestedProfession);
+        }
+
+        [When(@"I click the Explore careers breadcrumb")]
+        public void WhenIClickTheExploreCareersBreadcrumb()
+        {
+            _jobCategoriesPage.ClickExploreCareersBreadcrumb();
+        }
+
+        [Then(@"I am on the ""(.*)"" page")]
+        public void ThenIAmOnThePage(string page)
+        {
+            Assert.AreEqual(page, _exploreCareersPage.GetPageHeading(), "Breacrumb did not land on the " + page + " page.");
         }
     }
 

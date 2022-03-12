@@ -24,6 +24,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
 
         IWebElement searchField => _scenarioContext.GetWebDriver().FindElement(By.Id("SearchTerm"));
         IWebElement searchButton => _scenarioContext.GetWebDriver().FindElement(By.ClassName("submit"));
+        IWebElement pageHeading => _scenarioContext.GetWebDriver().FindElement(By.Id("site-header"));
 
         public void ClickLinkJobCategory(string jobCategory)
         {
@@ -133,6 +134,9 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
                 case "Travel and tourism":
                     secondResource = "travel-and-tourism";
                     break;
+                default:
+                    secondResource = "";
+                    break;
             }
 
             return secondResource;
@@ -216,6 +220,40 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
             }
 
             return a_and_b_checks;
+        }
+
+        public IList<IWebElement> GetList(string listToExamine)
+        {
+            IList<IWebElement> theList = null;
+
+            switch(listToExamine)
+            {
+                case "Job categories":
+                    theList = _scenarioContext.GetWebDriver().FindElements(By.CssSelector(".govuk-list.homepage-jobcategories li a"));
+                    break;
+                case "Job profiles":
+                    theList = _scenarioContext.GetWebDriver().FindElements(By.CssSelector(".govuk-list.job-categories_items li h2 a"));
+                    break;
+                case "Other job categories":
+                    theList = _scenarioContext.GetWebDriver().FindElements(By.CssSelector(".govuk-list.font-xsmall > li > a"));
+                    break;
+            }
+
+            return theList;
+        }
+
+        public bool VerifyOrdering()
+        {
+            var x = GetJobCategoryList().Select(item => item.Text.Replace(System.Environment.NewLine, ""));
+            var sorted = new List<string>();
+            sorted.AddRange(x.OrderBy(o => o));
+            
+            return x.SequenceEqual(sorted);
+        }
+
+        public string GetPageHeading()
+        {
+            return pageHeading.Text;
         }
     }
 }

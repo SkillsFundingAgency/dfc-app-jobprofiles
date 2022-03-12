@@ -1,7 +1,9 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ExpectedConditions = SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace DFC.App.ExploreCareers.UI.FunctionalTests.Support
 {
@@ -18,6 +20,5 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Support
             IJavaScriptExecutor JS = (IJavaScriptExecutor)driver;
             JS.ExecuteScript("arguments[0].click();", locator);
         }
-
     }
 }

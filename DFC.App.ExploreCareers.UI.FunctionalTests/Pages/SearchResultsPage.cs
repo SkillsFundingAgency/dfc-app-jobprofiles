@@ -24,6 +24,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
         IWebElement nextPaginator => _scenarioContext.GetWebDriver().FindElement(By.ClassName("dfc-code-search-nextlink"));
         IWebElement searchResultsForText => _scenarioContext.GetWebDriver().FindElement(By.CssSelector(".search-input.ui-front > h1"));
         IWebElement footer => _scenarioContext.GetWebDriver().FindElement(By.ClassName("govuk-footer"));
+        public int profilesCount { get; set; }
 
         public void SelectFromAutosuggest(string autosuggested)
         {
@@ -63,8 +64,14 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
 
         public int GetNumberOfSearchResults()
         {
-            int searchCount = int.Parse(resultsCount.Text.Replace("results found", "").Trim(), new CultureInfo("en-au"));
-            return searchCount;
+            if (resultsCount.Text.Trim() == "1 result found")
+            {
+                return int.Parse(resultsCount.Text.Replace("result found", "").Trim(), new CultureInfo("en-au"));
+            }
+            else
+            {
+                return int.Parse(resultsCount.Text.Replace("results found", "").Trim(), new CultureInfo("en-au"));
+            }
         }
 
         public decimal NumberOfSeachResultPages()
@@ -76,7 +83,7 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
             return ofSearchCountGroups;
         }
 
-        public bool Paginator()
+        public void Paginator()
         {
             decimal numberOfSeachResultPages = NumberOfSeachResultPages();
 
@@ -85,26 +92,77 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.Pages
                 nextPaginator.Click();
                 numberOfSeachResultPages--;
             }
+        }
+
+        public bool NextVerifier()
+        {
+            Paginator();
 
             Utilities.ScrollIntoView(_scenarioContext.GetWebDriver(), footer);
-
-            bool isPresent = true;
 
             try
             {
                 _scenarioContext.GetWebDriver().FindElement(By.ClassName("dfc-code-search-nextlink"));
+                return true;
             }
             catch (NoSuchElementException)
             {
-                isPresent = false;
+                return false;
             }
-
-            return isPresent;
         }
 
         public string GetSearchResultsForText()
         {
             return searchResultsForText.Text.Trim();
+        }
+
+        public string GetPlaceholderText()
+        {
+            return searchField.GetAttribute("placeholder");
+        }
+
+        public string GetNumberOfProfilesListed()
+        {
+            return searchField.GetAttribute("placeholder");
+        }
+
+        public void ProfilesCounter()
+        {
+            if (GetNumberOfSearchResults() <= 10)
+            {
+                profilesCount = GetProfilesList();
+            }
+            else
+            {
+                decimal numberOfSeachResultPages = NumberOfSeachResultPages();
+
+                while (numberOfSeachResultPages > 0)
+                {
+                    profilesCount = profilesCount + GetProfilesList();
+                    nextPaginator.Click();
+                    numberOfSeachResultPages--;
+                }
+
+                profilesCount = profilesCount + GetProfilesList();
+            }
+        }
+
+        public int GetProfilesList()
+        {
+            return _scenarioContext.GetWebDriver().FindElements(By.ClassName("dfc-code-search-jpTitle")).Count;
+        }
+
+        public void ClickDidYouMeanLink()
+        {
+            _scenarioContext.GetWebDriver().FindElement(By.CssSelector(".search-dym > span a")).Click();
+        }
+
+        public bool UrlContainsSuggestion(string suggestedProfession)
+        {
+            string url = _scenarioContext.GetWebDriver().Url;
+            var result = url.Substring(url.LastIndexOf('=') + 1);
+
+            return result == suggestedProfession;
         }
     }
 }

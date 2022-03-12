@@ -426,7 +426,7 @@ this.SearchTermNotFound("Search results", "zzz", ((string[])(null)));
             argumentsOfScenario.Add("search term", searchTerm);
             argumentsOfScenario.Add("suggested search term", suggestedSearchTerm);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Auto suggesting search terms on search term misspelling", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 50
+#line 49
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -446,20 +446,20 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 51
+#line 50
  testRunner.Given(string.Format("I navigate to the {0} page", page), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 52
+#line 51
  testRunner.When(string.Format("I enter the search term {0} in the search field", searchTerm), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 53
+#line 52
  testRunner.And("I click the search button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 54
+#line 53
  testRunner.Then(string.Format("I am taken to the search results page with the message Did you mean {0} displayed" +
                             "", suggestedSearchTerm), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 55
+#line 54
  testRunner.And("the message \"0 results found - try again using a different job title\" displayed b" +
                         "elow it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -472,7 +472,7 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.TraitAttribute("Description", "Auto suggesting search terms on search term misspelling: Explore careers")]
         public virtual void AutoSuggestingSearchTermsOnSearchTermMisspelling_ExploreCareers()
         {
-#line 50
+#line 49
 this.AutoSuggestingSearchTermsOnSearchTermMisspelling("Explore careers", "nuurse", "nurse", ((string[])(null)));
 #line hidden
         }
@@ -482,7 +482,7 @@ this.AutoSuggestingSearchTermsOnSearchTermMisspelling("Explore careers", "nuurse
         [Xunit.TraitAttribute("Description", "Auto suggesting search terms on search term misspelling: Job profiles")]
         public virtual void AutoSuggestingSearchTermsOnSearchTermMisspelling_JobProfiles()
         {
-#line 50
+#line 49
 this.AutoSuggestingSearchTermsOnSearchTermMisspelling("Job profiles", "lawwwyer", "lawyer", ((string[])(null)));
 #line hidden
         }
@@ -492,18 +492,20 @@ this.AutoSuggestingSearchTermsOnSearchTermMisspelling("Job profiles", "lawwwyer"
         [Xunit.TraitAttribute("Description", "Auto suggesting search terms on search term misspelling: Search results")]
         public virtual void AutoSuggestingSearchTermsOnSearchTermMisspelling_SearchResults()
         {
-#line 50
+#line 49
 this.AutoSuggestingSearchTermsOnSearchTermMisspelling("Search results", "phlebotomizzzt", "phlebotomist", ((string[])(null)));
 #line hidden
         }
         
-        public virtual void EmptySearchFields(string page, string[] exampleTags)
+        public virtual void MisspeltSearchTermsAutoSuggestionLinkVerification(string page, string searchTerm, string suggestedSearchTerm, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("page", page);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Empty search fields", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 63
+            argumentsOfScenario.Add("search term", searchTerm);
+            argumentsOfScenario.Add("suggested search term", suggestedSearchTerm);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Misspelt search terms auto suggestion link verification", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 61
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -523,16 +525,105 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 64
+#line 62
  testRunner.Given(string.Format("I navigate to the {0} page", page), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
+#line 63
+ testRunner.And(string.Format("I enter the search term {0} in the search field", searchTerm), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 64
+ testRunner.And("I click the search button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
 #line 65
- testRunner.And("the search field is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And(string.Format("I am taken to the search results page with the message Did you mean {0} displayed" +
+                            "", suggestedSearchTerm), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 66
- testRunner.When("I click the search button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I click the link in the message", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 67
+ testRunner.Then(string.Format("the url bears the suggested search term {0} as its parameter", suggestedSearchTerm), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Misspelt search terms auto suggestion link verification: Variant 0")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Misspelt search terms auto suggestion link verification: Variant 0")]
+        public virtual void MisspeltSearchTermsAutoSuggestionLinkVerification_Variant0()
+        {
+#line 61
+this.MisspeltSearchTermsAutoSuggestionLinkVerification("Explore careers", "nuurse", "nurse", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Misspelt search terms auto suggestion link verification: Variant 1")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Misspelt search terms auto suggestion link verification: Variant 1")]
+        public virtual void MisspeltSearchTermsAutoSuggestionLinkVerification_Variant1()
+        {
+#line 61
+this.MisspeltSearchTermsAutoSuggestionLinkVerification("Explore careers", "lawwwyer", "lawyer", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Misspelt search terms auto suggestion link verification: Variant 2")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Misspelt search terms auto suggestion link verification: Variant 2")]
+        public virtual void MisspeltSearchTermsAutoSuggestionLinkVerification_Variant2()
+        {
+#line 61
+this.MisspeltSearchTermsAutoSuggestionLinkVerification("Search results", "mechannic", "mechanic", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Misspelt search terms auto suggestion link verification: Variant 3")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Misspelt search terms auto suggestion link verification: Variant 3")]
+        public virtual void MisspeltSearchTermsAutoSuggestionLinkVerification_Variant3()
+        {
+#line 61
+this.MisspeltSearchTermsAutoSuggestionLinkVerification("Search results", "astronautt", "astronaut", ((string[])(null)));
+#line hidden
+        }
+        
+        public virtual void EmptySearchFields(string page, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("page", page);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Empty search fields", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 75
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 76
+ testRunner.Given(string.Format("I navigate to the {0} page", page), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 77
+ testRunner.And("the search field is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 78
+ testRunner.When("I click the search button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 79
  testRunner.Then("the page does not advance", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -544,7 +635,7 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.TraitAttribute("Description", "Empty search fields: Explore careers")]
         public virtual void EmptySearchFields_ExploreCareers()
         {
-#line 63
+#line 75
 this.EmptySearchFields("Explore careers", ((string[])(null)));
 #line hidden
         }
@@ -554,7 +645,7 @@ this.EmptySearchFields("Explore careers", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Empty search fields: Search results")]
         public virtual void EmptySearchFields_SearchResults()
         {
-#line 63
+#line 75
 this.EmptySearchFields("Search results", ((string[])(null)));
 #line hidden
         }
@@ -566,7 +657,7 @@ this.EmptySearchFields("Search results", ((string[])(null)));
             argumentsOfScenario.Add("page", page);
             argumentsOfScenario.Add("search term", searchTerm);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Reconciling search results count with number of pages returned", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 74
+#line 85
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -586,26 +677,26 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 75
+#line 86
  testRunner.Given(string.Format("I navigate to the {0} page", page), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 76
+#line 87
  testRunner.And(string.Format("I enter the search term {0} in the search field", searchTerm), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 77
+#line 88
  testRunner.And("I click the search button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 78
+#line 89
  testRunner.And("I retrieve the number of search results", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 79
+#line 90
  testRunner.When("I work out the number of result pages from the number of search result returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 80
+#line 91
  testRunner.Then("the number of search results returned is commensurate with the number of search r" +
                         "esult pages", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 81
+#line 92
  testRunner.And("the Next button is no longer present on the final page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -617,7 +708,7 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.TraitAttribute("Description", "Reconciling search results count with number of pages returned: Explore careers")]
         public virtual void ReconcilingSearchResultsCountWithNumberOfPagesReturned_ExploreCareers()
         {
-#line 74
+#line 85
 this.ReconcilingSearchResultsCountWithNumberOfPagesReturned("Explore careers", "nurse", ((string[])(null)));
 #line hidden
         }
@@ -627,7 +718,7 @@ this.ReconcilingSearchResultsCountWithNumberOfPagesReturned("Explore careers", "
         [Xunit.TraitAttribute("Description", "Reconciling search results count with number of pages returned: Job profiles")]
         public virtual void ReconcilingSearchResultsCountWithNumberOfPagesReturned_JobProfiles()
         {
-#line 74
+#line 85
 this.ReconcilingSearchResultsCountWithNumberOfPagesReturned("Job profiles", "lawyer", ((string[])(null)));
 #line hidden
         }
@@ -637,7 +728,7 @@ this.ReconcilingSearchResultsCountWithNumberOfPagesReturned("Job profiles", "law
         [Xunit.TraitAttribute("Description", "Reconciling search results count with number of pages returned: Search results")]
         public virtual void ReconcilingSearchResultsCountWithNumberOfPagesReturned_SearchResults()
         {
-#line 74
+#line 85
 this.ReconcilingSearchResultsCountWithNumberOfPagesReturned("Search results", "phlebotomist", ((string[])(null)));
 #line hidden
         }
@@ -649,7 +740,7 @@ this.ReconcilingSearchResultsCountWithNumberOfPagesReturned("Search results", "p
             argumentsOfScenario.Add("page", page);
             argumentsOfScenario.Add("search term", searchTerm);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Search results on pressing the enter button", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 89
+#line 99
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -669,16 +760,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 90
+#line 100
  testRunner.Given(string.Format("I navigate to the {0} page", page), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 91
+#line 101
  testRunner.And(string.Format("I enter the search term {0} in the search field", searchTerm), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 92
+#line 102
  testRunner.When("I press the Enter button instead of clicking search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 93
+#line 103
  testRunner.Then("the search results screen is displayed.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -690,7 +781,7 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.TraitAttribute("Description", "Search results on pressing the enter button: Explore careers")]
         public virtual void SearchResultsOnPressingTheEnterButton_ExploreCareers()
         {
-#line 89
+#line 99
 this.SearchResultsOnPressingTheEnterButton("Explore careers", "nurse", ((string[])(null)));
 #line hidden
         }
@@ -700,7 +791,7 @@ this.SearchResultsOnPressingTheEnterButton("Explore careers", "nurse", ((string[
         [Xunit.TraitAttribute("Description", "Search results on pressing the enter button: Job profiles")]
         public virtual void SearchResultsOnPressingTheEnterButton_JobProfiles()
         {
-#line 89
+#line 99
 this.SearchResultsOnPressingTheEnterButton("Job profiles", "lawyer", ((string[])(null)));
 #line hidden
         }
@@ -710,18 +801,19 @@ this.SearchResultsOnPressingTheEnterButton("Job profiles", "lawyer", ((string[])
         [Xunit.TraitAttribute("Description", "Search results on pressing the enter button: Search results")]
         public virtual void SearchResultsOnPressingTheEnterButton_SearchResults()
         {
-#line 89
+#line 99
 this.SearchResultsOnPressingTheEnterButton("Search results", "phlebotomist", ((string[])(null)));
 #line hidden
         }
         
-        public virtual void LinksVerificationsForOtherJobCategoriesSideSection(string jobCategory, string[] exampleTags)
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection(string jobCategory, string linkToTest, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("Job category", jobCategory);
+            argumentsOfScenario.Add("Link to test", linkToTest);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Links verifications for Other job categories side section", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 101
+#line 110
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -741,17 +833,37 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 102
- testRunner.Given("I am at the \"Job categories\" Administration web page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 111
+ testRunner.Given(string.Format("I am at the \"Job categories\" web page for {0}", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 103
- testRunner.When(string.Format("I click on the {0} link", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 112
+ testRunner.When(string.Format("I click on the {0} link", linkToTest), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 104
- testRunner.Then(string.Format("I am taken to the {0} page", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 113
+ testRunner.Then(string.Format("I am taken to the {0} page", linkToTest), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Administration")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Administration")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_Administration()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Administration", "Travel and tourism", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Animal care")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Animal care")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_AnimalCare()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Animal care", "Transport", ((string[])(null)));
+#line hidden
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Beauty and wellbeing")]
@@ -759,8 +871,30 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Beauty and wellbeing")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_BeautyAndWellbeing()
         {
-#line 101
-this.LinksVerificationsForOtherJobCategoriesSideSection("Beauty and wellbeing", ((string[])(null)));
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Beauty and wellbeing", "Teaching and education", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Business and finance")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Business and finance")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_BusinessAndFinance()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Business and finance", "Sports and leisure", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Computing, technology " +
+            "and digital")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Computing, technology " +
+            "and digital")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_ComputingTechnologyAndDigital()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Computing, technology and digital", "Social care", ((string[])(null)));
 #line hidden
         }
         
@@ -771,8 +905,8 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Beauty and wellbeing", 
             "s")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_ConstructionAndTrades()
         {
-#line 101
-this.LinksVerificationsForOtherJobCategoriesSideSection("Construction and trades", ((string[])(null)));
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Construction and trades", "Science and research", ((string[])(null)));
 #line hidden
         }
         
@@ -781,8 +915,8 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Construction and trades
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Creative and media")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_CreativeAndMedia()
         {
-#line 101
-this.LinksVerificationsForOtherJobCategoriesSideSection("Creative and media", ((string[])(null)));
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Creative and media", "Retail and sales", ((string[])(null)));
 #line hidden
         }
         
@@ -791,8 +925,20 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Creative and media", ((
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Delivery and storage")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_DeliveryAndStorage()
         {
-#line 101
-this.LinksVerificationsForOtherJobCategoriesSideSection("Delivery and storage", ((string[])(null)));
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Delivery and storage", "Manufacturing", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Emergency and uniform " +
+            "services")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Emergency and uniform " +
+            "services")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_EmergencyAndUniformServices()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Emergency and uniform services", "Managerial", ((string[])(null)));
 #line hidden
         }
         
@@ -803,8 +949,8 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Delivery and storage", 
             "nance")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_EngineeringAndMaintenance()
         {
-#line 101
-this.LinksVerificationsForOtherJobCategoriesSideSection("Engineering and maintenance", ((string[])(null)));
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Engineering and maintenance", "Law and legal", ((string[])(null)));
 #line hidden
         }
         
@@ -813,8 +959,8 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Engineering and mainten
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Environment and land")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_EnvironmentAndLand()
         {
-#line 101
-this.LinksVerificationsForOtherJobCategoriesSideSection("Environment and land", ((string[])(null)));
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Environment and land", "Hospitality and food", ((string[])(null)));
 #line hidden
         }
         
@@ -823,8 +969,8 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Environment and land", 
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Government services")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_GovernmentServices()
         {
-#line 101
-this.LinksVerificationsForOtherJobCategoriesSideSection("Government services", ((string[])(null)));
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Government services", "Home services", ((string[])(null)));
 #line hidden
         }
         
@@ -833,8 +979,130 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Government services", (
         [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Healthcare")]
         public virtual void LinksVerificationsForOtherJobCategoriesSideSection_Healthcare()
         {
-#line 101
-this.LinksVerificationsForOtherJobCategoriesSideSection("Healthcare", ((string[])(null)));
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Healthcare", "Government services", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Home services")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Home services")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_HomeServices()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Home services", "Healthcare", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Hospitality and food")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Hospitality and food")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_HospitalityAndFood()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Hospitality and food", "Environment and land", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Law and legal")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Law and legal")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_LawAndLegal()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Law and legal", "Engineering and maintenance", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Managerial")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Managerial")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_Managerial()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Managerial", "Emergency and uniform services", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Manufacturing")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Manufacturing")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_Manufacturing()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Manufacturing", "Delivery and storage", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Retail and sales")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Retail and sales")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_RetailAndSales()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Retail and sales", "Creative and media", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Science and research")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Science and research")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_ScienceAndResearch()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Science and research", "Construction and trades", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Social care")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Social care")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_SocialCare()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Social care", "Computing, technology and digital", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Sports and leisure")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Sports and leisure")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_SportsAndLeisure()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Sports and leisure", "Business and finance", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Teaching and education" +
+            "")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Teaching and education" +
+            "")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_TeachingAndEducation()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Teaching and education", "Beauty and wellbeing", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Transport")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Transport")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_Transport()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Transport", "Animal care", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Links verifications for Other job categories side section: Travel and tourism")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Links verifications for Other job categories side section: Travel and tourism")]
+        public virtual void LinksVerificationsForOtherJobCategoriesSideSection_TravelAndTourism()
+        {
+#line 110
+this.LinksVerificationsForOtherJobCategoriesSideSection("Travel and tourism", "Administration", ((string[])(null)));
 #line hidden
         }
         
@@ -844,7 +1112,7 @@ this.LinksVerificationsForOtherJobCategoriesSideSection("Healthcare", ((string[]
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("Job category", jobCategory);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unqualified link verification for Other job categories side section", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 117
+#line 142
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -864,10 +1132,10 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 118
+#line 143
  testRunner.Given(string.Format("I am at the \"Job categories\" web page for {0}", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 119
+#line 144
  testRunner.Then(string.Format("the {0} link is not present in amongst the links beneath the Other job categories" +
                             " side section", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -882,7 +1150,7 @@ this.ScenarioInitialize(scenarioInfo);
             "ellbeing")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_BeautyAndWellbeing()
         {
-#line 117
+#line 142
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Beauty and wellbeing", ((string[])(null)));
 #line hidden
         }
@@ -894,7 +1162,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Beauty and wel
             " and trades")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_ConstructionAndTrades()
         {
-#line 117
+#line 142
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Construction and trades", ((string[])(null)));
 #line hidden
         }
@@ -906,7 +1174,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Construction a
             " media")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_CreativeAndMedia()
         {
-#line 117
+#line 142
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Creative and media", ((string[])(null)));
 #line hidden
         }
@@ -918,7 +1186,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Creative and m
             " storage")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_DeliveryAndStorage()
         {
-#line 117
+#line 142
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Delivery and storage", ((string[])(null)));
 #line hidden
         }
@@ -930,7 +1198,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Delivery and s
             "and maintenance")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_EngineeringAndMaintenance()
         {
-#line 117
+#line 142
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Engineering and maintenance", ((string[])(null)));
 #line hidden
         }
@@ -942,7 +1210,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Engineering an
             "and land")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_EnvironmentAndLand()
         {
-#line 117
+#line 142
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Environment and land", ((string[])(null)));
 #line hidden
         }
@@ -954,7 +1222,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Environment an
             "ervices")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_GovernmentServices()
         {
-#line 117
+#line 142
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Government services", ((string[])(null)));
 #line hidden
         }
@@ -964,7 +1232,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Government ser
         [Xunit.TraitAttribute("Description", "Unqualified link verification for Other job categories side section: Healthcare")]
         public virtual void UnqualifiedLinkVerificationForOtherJobCategoriesSideSection_Healthcare()
         {
-#line 117
+#line 142
 this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Healthcare", ((string[])(null)));
 #line hidden
         }
@@ -977,7 +1245,7 @@ this.UnqualifiedLinkVerificationForOtherJobCategoriesSideSection("Healthcare", (
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify Job category list", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 132
+#line 156
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -997,7 +1265,7 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 133
+#line 157
 testRunner.Given("I am at the \"Explore careers\" page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -1052,11 +1320,11 @@ testRunner.Given("I am at the \"Explore careers\" page", ((string)(null)), ((Tec
                             "Transport"});
                 table1.AddRow(new string[] {
                             "Travel and tourism"});
-#line 134
+#line 158
 testRunner.And("I check the list displayed below against the list of Job categories displayed on " +
                         "that page", ((string)(null)), table1, "And ");
 #line hidden
-#line 161
+#line 185
 testRunner.Then("both lists are the same", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -1069,7 +1337,7 @@ testRunner.Then("both lists are the same", ((string)(null)), ((TechTalk.SpecFlow
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("Job category", jobCategory);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify Job profiles distinct count", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 164
+#line 187
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -1089,14 +1357,14 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 165
+#line 188
  testRunner.Given(string.Format("I am at the \"Job categories\" web page for {0}", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 166
+#line 189
  testRunner.When("I check the job profiles list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 167
- testRunner.Then("none of the job profiles occurs more than once", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 190
+ testRunner.Then("none of the job profiles occur more than once", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1107,7 +1375,7 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Administration")]
         public virtual void VerifyJobProfilesDistinctCount_Administration()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Administration", ((string[])(null)));
 #line hidden
         }
@@ -1117,7 +1385,7 @@ this.VerifyJobProfilesDistinctCount("Administration", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Animal care")]
         public virtual void VerifyJobProfilesDistinctCount_AnimalCare()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Animal care", ((string[])(null)));
 #line hidden
         }
@@ -1127,7 +1395,7 @@ this.VerifyJobProfilesDistinctCount("Animal care", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Beauty and wellbeing")]
         public virtual void VerifyJobProfilesDistinctCount_BeautyAndWellbeing()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Beauty and wellbeing", ((string[])(null)));
 #line hidden
         }
@@ -1137,7 +1405,7 @@ this.VerifyJobProfilesDistinctCount("Beauty and wellbeing", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Business and finance")]
         public virtual void VerifyJobProfilesDistinctCount_BusinessAndFinance()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Business and finance", ((string[])(null)));
 #line hidden
         }
@@ -1147,7 +1415,7 @@ this.VerifyJobProfilesDistinctCount("Business and finance", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Computing, technology and digital")]
         public virtual void VerifyJobProfilesDistinctCount_ComputingTechnologyAndDigital()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Computing, technology and digital", ((string[])(null)));
 #line hidden
         }
@@ -1157,7 +1425,7 @@ this.VerifyJobProfilesDistinctCount("Computing, technology and digital", ((strin
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Construction and trades")]
         public virtual void VerifyJobProfilesDistinctCount_ConstructionAndTrades()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Construction and trades", ((string[])(null)));
 #line hidden
         }
@@ -1167,7 +1435,7 @@ this.VerifyJobProfilesDistinctCount("Construction and trades", ((string[])(null)
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Creative and media")]
         public virtual void VerifyJobProfilesDistinctCount_CreativeAndMedia()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Creative and media", ((string[])(null)));
 #line hidden
         }
@@ -1177,7 +1445,7 @@ this.VerifyJobProfilesDistinctCount("Creative and media", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Delivery and storage")]
         public virtual void VerifyJobProfilesDistinctCount_DeliveryAndStorage()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Delivery and storage", ((string[])(null)));
 #line hidden
         }
@@ -1187,7 +1455,7 @@ this.VerifyJobProfilesDistinctCount("Delivery and storage", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Emergency and uniform services")]
         public virtual void VerifyJobProfilesDistinctCount_EmergencyAndUniformServices()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Emergency and uniform services", ((string[])(null)));
 #line hidden
         }
@@ -1197,7 +1465,7 @@ this.VerifyJobProfilesDistinctCount("Emergency and uniform services", ((string[]
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Engineering and maintenance")]
         public virtual void VerifyJobProfilesDistinctCount_EngineeringAndMaintenance()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Engineering and maintenance", ((string[])(null)));
 #line hidden
         }
@@ -1207,7 +1475,7 @@ this.VerifyJobProfilesDistinctCount("Engineering and maintenance", ((string[])(n
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Environment and land")]
         public virtual void VerifyJobProfilesDistinctCount_EnvironmentAndLand()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Environment and land", ((string[])(null)));
 #line hidden
         }
@@ -1217,7 +1485,7 @@ this.VerifyJobProfilesDistinctCount("Environment and land", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Government services")]
         public virtual void VerifyJobProfilesDistinctCount_GovernmentServices()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Government services", ((string[])(null)));
 #line hidden
         }
@@ -1227,7 +1495,7 @@ this.VerifyJobProfilesDistinctCount("Government services", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Healthcare")]
         public virtual void VerifyJobProfilesDistinctCount_Healthcare()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Healthcare", ((string[])(null)));
 #line hidden
         }
@@ -1237,7 +1505,7 @@ this.VerifyJobProfilesDistinctCount("Healthcare", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Home services")]
         public virtual void VerifyJobProfilesDistinctCount_HomeServices()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Home services", ((string[])(null)));
 #line hidden
         }
@@ -1247,7 +1515,7 @@ this.VerifyJobProfilesDistinctCount("Home services", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Hospitality and food")]
         public virtual void VerifyJobProfilesDistinctCount_HospitalityAndFood()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Hospitality and food", ((string[])(null)));
 #line hidden
         }
@@ -1257,7 +1525,7 @@ this.VerifyJobProfilesDistinctCount("Hospitality and food", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Law and legal")]
         public virtual void VerifyJobProfilesDistinctCount_LawAndLegal()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Law and legal", ((string[])(null)));
 #line hidden
         }
@@ -1267,7 +1535,7 @@ this.VerifyJobProfilesDistinctCount("Law and legal", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Managerial")]
         public virtual void VerifyJobProfilesDistinctCount_Managerial()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Managerial", ((string[])(null)));
 #line hidden
         }
@@ -1277,7 +1545,7 @@ this.VerifyJobProfilesDistinctCount("Managerial", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Manufacturing")]
         public virtual void VerifyJobProfilesDistinctCount_Manufacturing()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Manufacturing", ((string[])(null)));
 #line hidden
         }
@@ -1287,7 +1555,7 @@ this.VerifyJobProfilesDistinctCount("Manufacturing", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Retail and sales")]
         public virtual void VerifyJobProfilesDistinctCount_RetailAndSales()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Retail and sales", ((string[])(null)));
 #line hidden
         }
@@ -1297,7 +1565,7 @@ this.VerifyJobProfilesDistinctCount("Retail and sales", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Science and research")]
         public virtual void VerifyJobProfilesDistinctCount_ScienceAndResearch()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Science and research", ((string[])(null)));
 #line hidden
         }
@@ -1307,7 +1575,7 @@ this.VerifyJobProfilesDistinctCount("Science and research", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Social care")]
         public virtual void VerifyJobProfilesDistinctCount_SocialCare()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Social care", ((string[])(null)));
 #line hidden
         }
@@ -1317,7 +1585,7 @@ this.VerifyJobProfilesDistinctCount("Social care", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Sports and leisure")]
         public virtual void VerifyJobProfilesDistinctCount_SportsAndLeisure()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Sports and leisure", ((string[])(null)));
 #line hidden
         }
@@ -1327,7 +1595,7 @@ this.VerifyJobProfilesDistinctCount("Sports and leisure", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Teaching and education")]
         public virtual void VerifyJobProfilesDistinctCount_TeachingAndEducation()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Teaching and education", ((string[])(null)));
 #line hidden
         }
@@ -1337,7 +1605,7 @@ this.VerifyJobProfilesDistinctCount("Teaching and education", ((string[])(null))
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Transport")]
         public virtual void VerifyJobProfilesDistinctCount_Transport()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Transport", ((string[])(null)));
 #line hidden
         }
@@ -1347,8 +1615,403 @@ this.VerifyJobProfilesDistinctCount("Transport", ((string[])(null)));
         [Xunit.TraitAttribute("Description", "Verify Job profiles distinct count: Travel and tourism")]
         public virtual void VerifyJobProfilesDistinctCount_TravelAndTourism()
         {
-#line 164
+#line 187
 this.VerifyJobProfilesDistinctCount("Travel and tourism", ((string[])(null)));
+#line hidden
+        }
+        
+        public virtual void JobProfilesLinksVerification(string jobCategory, string linkPosition, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Job category", jobCategory);
+            argumentsOfScenario.Add("Link position", linkPosition);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Job profiles links verification", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 219
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 220
+ testRunner.Given(string.Format("I am at the \"Job categories\" web page for {0}", jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 221
+ testRunner.When(string.Format("I click the link for the {0} Job profile under that Job category", linkPosition), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 222
+ testRunner.Then("I am taken profile details page for that Job profile", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Job profiles links verification: Administration")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Job profiles links verification: Administration")]
+        public virtual void JobProfilesLinksVerification_Administration()
+        {
+#line 219
+this.JobProfilesLinksVerification("Administration", "first", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Job profiles links verification: Animal care")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Job profiles links verification: Animal care")]
+        public virtual void JobProfilesLinksVerification_AnimalCare()
+        {
+#line 219
+this.JobProfilesLinksVerification("Animal care", "second", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Job profiles links verification: Beauty and wellbeing")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Job profiles links verification: Beauty and wellbeing")]
+        public virtual void JobProfilesLinksVerification_BeautyAndWellbeing()
+        {
+#line 219
+this.JobProfilesLinksVerification("Beauty and wellbeing", "third", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Job profiles links verification: Business and finance")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Job profiles links verification: Business and finance")]
+        public virtual void JobProfilesLinksVerification_BusinessAndFinance()
+        {
+#line 219
+this.JobProfilesLinksVerification("Business and finance", "fourth", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Job profiles links verification: Computing, technology and digital")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Job profiles links verification: Computing, technology and digital")]
+        public virtual void JobProfilesLinksVerification_ComputingTechnologyAndDigital()
+        {
+#line 219
+this.JobProfilesLinksVerification("Computing, technology and digital", "fifth", ((string[])(null)));
+#line hidden
+        }
+        
+        public virtual void AlphabeticalOrdering(string page, string jobCategory, string listToExamine, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Page", page);
+            argumentsOfScenario.Add("Job category", jobCategory);
+            argumentsOfScenario.Add("List to examine", listToExamine);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Alphabetical ordering", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 231
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 232
+ testRunner.Given(string.Format("I navigate to the {0} page for {1}", page, jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 233
+ testRunner.When(string.Format("I examine the {0} list", listToExamine), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 234
+ testRunner.Then("the list is in alphabetical order", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Alphabetical ordering: Variant 0")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Alphabetical ordering: Variant 0")]
+        public virtual void AlphabeticalOrdering_Variant0()
+        {
+#line 231
+this.AlphabeticalOrdering("Explore careers", "", "Job categories", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Alphabetical ordering: Variant 1")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Alphabetical ordering: Variant 1")]
+        public virtual void AlphabeticalOrdering_Variant1()
+        {
+#line 231
+this.AlphabeticalOrdering("Job categories", "Administration", "Other job categories", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Alphabetical ordering: Variant 2")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Alphabetical ordering: Variant 2")]
+        public virtual void AlphabeticalOrdering_Variant2()
+        {
+#line 231
+this.AlphabeticalOrdering("Job categories", "Administration", "Job profiles", ((string[])(null)));
+#line hidden
+        }
+        
+        public virtual void NonPaginationVerificationForJobCategoriesAdministrationPage(string page, string jobCategory, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Page", page);
+            argumentsOfScenario.Add("Job category", jobCategory);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non pagination verification for Job categories Administration page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 241
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 242
+ testRunner.Given(string.Format("I navigate to the {0} page for {1}", page, jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 243
+ testRunner.When("I examine the page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 244
+ testRunner.Then("the page contains no pagination", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Non pagination verification for Job categories Administration page: Job categorie" +
+            "s")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Non pagination verification for Job categories Administration page: Job categorie" +
+            "s")]
+        public virtual void NonPaginationVerificationForJobCategoriesAdministrationPage_JobCategories()
+        {
+#line 241
+this.NonPaginationVerificationForJobCategoriesAdministrationPage("Job categories", "Administration", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Placeholder text verification for search field")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Placeholder text verification for search field")]
+        public virtual void PlaceholderTextVerificationForSearchField()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Placeholder text verification for search field", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 249
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 250
+ testRunner.Given("I navigate to the web page \"Search results\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 251
+ testRunner.Then("the search results field placeholder text is \"Enter a job title\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        public virtual void NumberOfResultsFoundVerification(string page, string searchTerm, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("page", page);
+            argumentsOfScenario.Add("search term", searchTerm);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Number of results found verification", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 253
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 254
+ testRunner.Given(string.Format("I navigate to the {0} page", page), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 255
+ testRunner.And(string.Format("I enter the search term {0} in the search field", searchTerm), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 256
+ testRunner.When("I click the search button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 257
+ testRunner.Then("the number of results stated as found is the equal to the actual number of Job pr" +
+                        "ofiles listed thereunder", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Number of results found verification: Variant 0")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Number of results found verification: Variant 0")]
+        public virtual void NumberOfResultsFoundVerification_Variant0()
+        {
+#line 253
+this.NumberOfResultsFoundVerification("Explore careers", "Aircraft pilot", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Number of results found verification: Variant 1")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Number of results found verification: Variant 1")]
+        public virtual void NumberOfResultsFoundVerification_Variant1()
+        {
+#line 253
+this.NumberOfResultsFoundVerification("Search results", "Nurse", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Number of results found verification: Variant 2")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Number of results found verification: Variant 2")]
+        public virtual void NumberOfResultsFoundVerification_Variant2()
+        {
+#line 253
+this.NumberOfResultsFoundVerification("Explore careers", "Carpenter", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Number of results found verification: Variant 3")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Number of results found verification: Variant 3")]
+        public virtual void NumberOfResultsFoundVerification_Variant3()
+        {
+#line 253
+this.NumberOfResultsFoundVerification("Search results", "Cartographer", ((string[])(null)));
+#line hidden
+        }
+        
+        public virtual void BreadcrumbLinkingVerification(string page, string jobCategory, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Page", page);
+            argumentsOfScenario.Add("Job category", jobCategory);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Breadcrumb linking verification", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 265
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 266
+ testRunner.Given(string.Format("I navigate to the {0} page for {1}", page, jobCategory), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 267
+ testRunner.When("I click the Explore careers breadcrumb", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 268
+ testRunner.Then("I am on the \"Explore careers\" page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Breadcrumb linking verification: Job categories")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Breadcrumb linking verification: Job categories")]
+        public virtual void BreadcrumbLinkingVerification_JobCategories()
+        {
+#line 265
+this.BreadcrumbLinkingVerification("Job categories", "Administration", ((string[])(null)));
+#line hidden
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Breadcrumb linking verification: Search results")]
+        [Xunit.TraitAttribute("FeatureTitle", "ExploreCareersCUI")]
+        [Xunit.TraitAttribute("Description", "Breadcrumb linking verification: Search results")]
+        public virtual void BreadcrumbLinkingVerification_SearchResults()
+        {
+#line 265
+this.BreadcrumbLinkingVerification("Search results", "", ((string[])(null)));
 #line hidden
         }
         

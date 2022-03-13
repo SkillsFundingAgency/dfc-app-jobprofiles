@@ -167,8 +167,8 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             _searchResultsPage.GetNumberOfSearchResults();
         }
 
-        [When(@"I work out the number of result pages from the number of search result returned")]
-        public void WhenIWorkOutTheNumberOfResultPagesFromTheNumberOfSearchResultReturned()
+        [When(@"I work out the number of result pages from the number of search results returned")]
+        public void WhenIWorkOutTheNumberOfResultPagesFromTheNumberOfSearchResultsReturned()
         {
             _searchResultsPage.NumberOfSeachResultPages();
         }
@@ -309,8 +309,8 @@ namespace DFC.App.ExploreCareers.UI.FunctionalTests.StepDefinitions
             _exploreCareersPage.NavigateToPage(resource, resourceTwo);
         }
 
-        [Then(@"the (.*) link is not present in amongst the links beneath the Other job categories side section")]
-        public void ThenTheLinkIsNotPresentInAmongstTheLinksBeneathTheOtherJobCategoriesSideSection(string jobCategory)
+        [Then(@"the (.*) link is not present amongst the links beneath the Other job categories side section")]
+        public void ThenTheLinkIsNotPresentAmongstTheLinksBeneathTheOtherJobCategoriesSideSection(string jobCategory)
         {
             Assert.True(_jobCategoriesPage.GetJobCategorySideLinks(jobCategory), "The " + jobCategory + " link is present, unexpectedly.");
         }

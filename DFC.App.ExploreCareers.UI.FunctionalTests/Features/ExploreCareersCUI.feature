@@ -87,7 +87,7 @@ Scenario Outline: Reconciling search results count with number of pages returned
 	And I enter the search term <search term> in the search field
 	And I click the search button
 	And I retrieve the number of search results
-	When I work out the number of result pages from the number of search result returned
+	When I work out the number of result pages from the number of search results returned
 	Then the number of search results returned is commensurate with the number of search result pages
 	And the Next button is no longer present on the final page	
 Examples:
@@ -141,7 +141,7 @@ Examples:
 
 Scenario: Unqualified link verification for Other job categories side section
 	Given I am at the "Job categories" web page for <Job category>
-	Then the <Job category> link is not present in amongst the links beneath the Other job categories side section
+	Then the <Job category> link is not present amongst the links beneath the Other job categories side section
 Examples:
 	| Job category                |
 	| Beauty and wellbeing        |

@@ -20,10 +20,10 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
         private readonly ILogService logService;
         private readonly ICorrelationIdProvider correlationIdProvider;
 
-        public HttpClientService(JobProfileClientOptions jobProfileClientOptions, HttpClient httpClient, ILogService logService, ICorrelationIdProvider correlationIdProvider)
+        public HttpClientService(JobProfileClientOptions jobProfileClientOptions, IHttpClientFactory httpClientFactory, ILogService logService, ICorrelationIdProvider correlationIdProvider)
         {
             this.jobProfileClientOptions = jobProfileClientOptions;
-            this.httpClient = httpClient;
+            this.httpClient = CreateHttpClient(httpClientFactory);
             this.logService = logService;
             this.correlationIdProvider = correlationIdProvider;
         }
@@ -31,9 +31,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
         public async Task<T> GetByIdAsync(Guid id)
         {
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{id}");
-            ConfigureHttpClient();
 
-            var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+            var response = await this.httpClient.GetAsync(url).ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -60,11 +59,10 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{patchModel?.JobProfileId}/{patchTypeEndpoint}");
-            ConfigureHttpClient();
 
             using (var content = new ObjectContent<TInput>(patchModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
             {
-                var response = await httpClient.PatchAsync(url, content).ConfigureAwait(false);
+                var response = await this.httpClient.PatchAsync(url, content).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -85,9 +83,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
         public async Task<HttpStatusCode> DeleteAsync(Guid id)
         {
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{id}");
-            ConfigureHttpClient();
 
-            var response = await httpClient.DeleteAsync(url).ConfigureAwait(false);
+            var response = await this.httpClient.DeleteAsync(url).ConfigureAwait(false);
 
             //if for any reason we do not find a record to delete, log a warning and continue so thst the message is removed from the subscription.
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -116,7 +113,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}{postEndpoint}");
-            ConfigureHttpClient();
 
             using (var content = new ObjectContent<TInput>(postModel, new JsonMediaTypeFormatter(), MediaTypeNames.Application.Json))
             {
@@ -138,12 +134,15 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
         }
 
-        private void ConfigureHttpClient()
+        private HttpClient CreateHttpClient(IHttpClientFactory httpClientFactory)
         {
+            var httpClient = httpClientFactory.CreateClient();
             if (!httpClient.DefaultRequestHeaders.Contains(HeaderName.CorrelationId))
             {
                 httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
             }
+
+            return httpClient;
         }
     }
 }

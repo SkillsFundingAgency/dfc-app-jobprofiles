@@ -229,20 +229,28 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
                 viewModel.ShowLmi = configValues.EnableLMI;
-
                 logService.LogInformation($"{nameof(HeroBanner)} has returned content for: {article}");
-                var overviewExists = viewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
-
-                if (!overviewExists)
+                if (viewModel.Segments != null)
                 {
-                    var message =
-                        $"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information";
-                    logService.LogWarning(message);
-                    jobProfileModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
-                    viewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
-                }
+                    var overviewExists = viewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
 
-                return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
+                    if (!overviewExists)
+                    {
+                        var message =
+                            $"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information";
+                        logService.LogWarning(message);
+                        jobProfileModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
+                        viewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
+                    }
+                }
+            }
+            else
+            {
+                viewModel.Segments = new List<SegmentModel>();
+                viewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
+                jobProfileModel = new JobProfileModel();
+                jobProfileModel.Segments = new List<SegmentModel>();
+                jobProfileModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
             }
 
             logService.LogWarning($"{nameof(Hero)} has not returned any content for: {article}");

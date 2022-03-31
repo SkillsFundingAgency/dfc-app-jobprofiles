@@ -16,7 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DFC.App.JobProfile.Controllers
+namespace DFC.App.JobProfile.Controllersf
 {
     public class ProfileController : Controller
     {
@@ -463,7 +463,7 @@ namespace DFC.App.JobProfile.Controllers
                 case JobProfileSegment.CareerPathsAndProgression:
                 case JobProfileSegment.CurrentOpportunities:
                 case JobProfileSegment.RelatedCareers:
-                    markup = "Unable to display this information and are working hard to fix it";
+                    markup = "Unable to display this information and we are working hard to fix it";
                     break;
                 default:
                     markup = "We are aware there is a problem with this profile and we are working hard to fix it";

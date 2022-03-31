@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DFC.App.JobProfile.Controllers
+namespace DFC.App.JobProfile.Controllersf
 {
     public class ProfileController : Controller
     {
@@ -393,6 +393,41 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             return ValidateMarkup(bodyViewModel, jobProfileModel);
+        }
+
+        public static explicit operator ProfileController(Type v)
+        {
+            throw new NotImplementedException();
+        }
+
+        private SegmentModel CreateSegmentIfError(JobProfileSegment segment)
+        {
+            string markup;
+
+            switch (segment)
+            {
+                case JobProfileSegment.Overview:
+                    markup = "<header class='job-profile-hero'> <div class='govuk-width-container'> <div class='govuk-breadcrumbs'> <ol class='govuk-breadcrumbs__list'> <li class='govuk-breadcrumbs__list-item'> <a class='govuk-breadcrumbs__link' href='/explore-careers'>Home: Explore careers</a> </li> </ol> </div> <div class='govuk-grid-row'> <div class='govuk-grid-column-two-thirds'> <p>We are aware there is a problem with this profile and we are working hard to fix it</p> </div> </div </div> </header>";
+                    break;
+                case JobProfileSegment.HowToBecome:
+                case JobProfileSegment.WhatItTakes:
+                case JobProfileSegment.WhatYouWillDo:
+                case JobProfileSegment.CareerPathsAndProgression:
+                case JobProfileSegment.CurrentOpportunities:
+                case JobProfileSegment.RelatedCareers:
+                    markup = "Unable to display this information and we are working hard to fix it";
+                    break;
+                default:
+                    markup = "We are aware there is a problem with this profile and we are working hard to fix it";
+                    break;
+            }
+
+            return new SegmentModel
+            {
+                Segment = segment,
+                RefreshStatus = Data.Enums.RefreshStatus.Success,
+                Markup = new HtmlString(markup),
+            };
         }
 
         private IActionResult ValidateMarkup(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)

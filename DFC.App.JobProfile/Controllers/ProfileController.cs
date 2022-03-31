@@ -16,7 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DFC.App.JobProfile.Controllersf
+namespace DFC.App.JobProfile.Controllers
 {
     public class ProfileController : Controller
     {

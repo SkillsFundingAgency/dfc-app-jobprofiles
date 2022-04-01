@@ -230,9 +230,20 @@ namespace DFC.App.JobProfile.Controllers
             {
                 mapper.Map(jobProfileModel, viewModel);
                 viewModel.ShowLmi = configValues.EnableLMI;
-
                 logService.LogInformation($"{nameof(HeroBanner)} has returned content for: {article}");
+                if (viewModel.Segments != null)
+                {
+                    var overviewExists = viewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
 
+                    if (!overviewExists)
+                    {
+                        var message =
+                            $"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information";
+                        logService.LogWarning(message);
+                        jobProfileModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
+                        viewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
+                    }
+                }
             }
             else
             {
@@ -452,7 +463,7 @@ namespace DFC.App.JobProfile.Controllers
                 case JobProfileSegment.CareerPathsAndProgression:
                 case JobProfileSegment.CurrentOpportunities:
                 case JobProfileSegment.RelatedCareers:
-                    markup = "Unable to display this information and are working hard to fix it";
+                    markup = "Unable to display this information and we are working hard to fix it";
                     break;
                 default:
                     markup = "We are aware there is a problem with this profile and we are working hard to fix it";

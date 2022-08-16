@@ -30,14 +30,17 @@ namespace DFC.App.JobProfile
     public class Startup
     {
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
+        //private const string CosmosDbSharedContentConfigAppSettings = "Configuration:CosmosDbConnections:SharedContent";
         public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
+        private readonly IWebHostEnvironment environment;
 
         private readonly IConfiguration configuration;
 
         public Startup(IConfiguration configuration)
         {
             this.configuration = configuration;
+          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +52,7 @@ namespace DFC.App.JobProfile
                 UseGuidForCorrelationId = true,
                 UpdateTraceIdentifier = false,
             });
+           
 
             if (env.IsDevelopment())
             {
@@ -97,7 +101,7 @@ namespace DFC.App.JobProfile
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddCorrelationId();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
+         
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -115,6 +119,15 @@ namespace DFC.App.JobProfile
 
             services.AddSingleton(cosmosDbConnection);
             services.AddSingleton<IDocumentClient>(documentClient);
+
+
+            //var cosmosDbConnectionsharedcontent = configuration.GetSection(CosmosDbSharedContentConfigAppSettings).Get<CosmosDbConnection>();
+            //var documentClientsharedcontent = new DocumentClient(new Uri(cosmosDbConnectionsharedcontent.EndpointUrl), cosmosDbConnectionsharedcontent.AccessKey);
+
+            //services.AddSingleton(cosmosDbConnectionsharedcontent);
+            //services.AddSingleton<IDocumentClient>(documentClientsharedcontent);
+
+
             services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
             services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();
 
@@ -134,6 +147,7 @@ namespace DFC.App.JobProfile
             services.AddSingleton(configuration.GetSection(nameof(RelatedCareersSegmentClientOptions)).Get<RelatedCareersSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(WhatItTakesSegmentClientOptions)).Get<WhatItTakesSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(WhatYouWillDoSegmentClientOptions)).Get<WhatYouWillDoSegmentClientOptions>());
+           // services.AddSingleton(configuration.GetSection(nameof(SharedContentSegmentClientOptions)).Get<SharedContentSegmentClientOptions>());
 
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
@@ -166,6 +180,11 @@ namespace DFC.App.JobProfile
             services
                 .AddPolicies(policyRegistry, nameof(WhatYouWillDoSegmentClientOptions), policyOptions)
                 .AddHttpClient<ISegmentRefreshService<WhatYouWillDoSegmentClientOptions>, RefreshSegmentService<WhatYouWillDoSegmentClientOptions>, WhatYouWillDoSegmentClientOptions>(configuration, nameof(WhatYouWillDoSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
+            services
+                  .AddPolicies(policyRegistry, nameof(SharedContentSegmentClientOptions), policyOptions)
+                  .AddHttpClient<ISegmentRefreshService<SharedContentSegmentClientOptions>, RefreshSegmentService<SharedContentSegmentClientOptions>, SharedContentSegmentClientOptions>(configuration, nameof(SharedContentSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+
         }
     }
 }

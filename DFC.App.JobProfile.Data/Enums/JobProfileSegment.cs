@@ -9,5 +9,6 @@
         CareerPathsAndProgression,
         CurrentOpportunities,
         RelatedCareers,
+        SharedContent,
     }
 }

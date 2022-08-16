@@ -265,6 +265,7 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
+               
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
                 viewModel.SmartSurveyJP = feedbackLinks.SmartSurveyJP;
 

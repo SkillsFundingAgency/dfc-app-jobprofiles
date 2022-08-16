@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="AutoMapperProfiles\SharedContentItemModelProfile.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings-template.json" />
   </ItemGroup>
 
@@ -33,7 +37,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.7" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.96" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">

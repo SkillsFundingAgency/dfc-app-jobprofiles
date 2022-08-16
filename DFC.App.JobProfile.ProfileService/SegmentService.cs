@@ -20,6 +20,8 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ISegmentRefreshService<CareerPathSegmentClientOptions> careerPathSegmentService;
         private readonly ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions> currentOpportunitiesSegmentService;
         private readonly ISegmentRefreshService<RelatedCareersSegmentClientOptions> relatedCareersSegmentService;
+       // private readonly ISegmentRefreshService<SharedContentSegmentClientOptions> sharedContentSegmentService;
+
 
         public SegmentService(
             ILogService logService,
@@ -30,6 +32,7 @@ namespace DFC.App.JobProfile.ProfileService
             ISegmentRefreshService<CareerPathSegmentClientOptions> careerPathSegmentService,
             ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions> currentOpportunitiesSegmentService,
             ISegmentRefreshService<RelatedCareersSegmentClientOptions> relatedCareersSegmentService)
+            // ISegmentRefreshService<SharedContentSegmentClientOptions> sharedContentSegmentService)
         {
             this.logService = logService;
             this.overviewBannerSegmentService = overviewBannerSegmentService;
@@ -39,6 +42,7 @@ namespace DFC.App.JobProfile.ProfileService
             this.careerPathSegmentService = careerPathSegmentService;
             this.currentOpportunitiesSegmentService = currentOpportunitiesSegmentService;
             this.relatedCareersSegmentService = relatedCareersSegmentService;
+            //this.sharedContentSegmentService = sharedContentSegmentService;
         }
 
         public async Task<SegmentModel> RefreshSegmentAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel)

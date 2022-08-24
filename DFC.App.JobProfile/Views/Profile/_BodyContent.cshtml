@@ -17,7 +17,7 @@
         <partial name="_Search" model=@Model.CanonicalName />
         <partial name="_RelatedCareersSegment" model=@Model.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.RelatedCareers)?.Markup />
         <partial name="_SkillsAssessmentSnippet" />
-        <partial name="_ContactUsSnippet" />
+        <partial name="_ContactUsSnippet" model="@Model.SharedContent" />
     </div>
 </div>
 <partial name="_FeedbackYesOrNo"/>

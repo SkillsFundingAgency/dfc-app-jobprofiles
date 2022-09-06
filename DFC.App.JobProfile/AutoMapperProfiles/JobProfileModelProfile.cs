@@ -16,7 +16,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
         {
             CreateMap<JobProfileModel, JobProfileModel>();
             CreateMap<JobProfileModel, BodyViewModel>()
-                .ForMember(d => d.SmartSurveyJP, s => s.Ignore());
+                .ForMember(d => d.SmartSurveyJP, s => s.Ignore())
+                .ForMember(d => d.SharedContent, s => s.Ignore());
 
             CreateMap<JobProfileModel, HeroBannerViewModel>()
                 .ForMember(d => d.ShowLmi, s => s.Ignore())

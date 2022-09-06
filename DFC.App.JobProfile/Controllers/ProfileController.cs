@@ -5,6 +5,7 @@ using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Compui.Cosmos.Contracts;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
@@ -29,8 +30,9 @@ namespace DFC.App.JobProfile.Controllers
         private readonly FeedbackLinks feedbackLinks;
         private readonly ISegmentService segmentService;
         private readonly IRedirectionSecurityService redirectionSecurityService;
+        private readonly IDocumentService<SharedContentItemModel> sharedContentItemDocumentService;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService, IDocumentService<SharedContentItemModel> sharedContentItemDocumentService)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
@@ -39,9 +41,11 @@ namespace DFC.App.JobProfile.Controllers
             this.feedbackLinks = feedbackLinks;
             this.segmentService = segmentService;
             this.redirectionSecurityService = redirectionSecurityService;
+            this.sharedContentItemDocumentService = sharedContentItemDocumentService;
         }
 
         [HttpGet]
+        [Route("profile")]
         public async Task<IActionResult> Index()
         {
             //AOP: These should be coded as an Aspect
@@ -284,6 +288,18 @@ namespace DFC.App.JobProfile.Controllers
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
                 viewModel.SmartSurveyJP = feedbackLinks.SmartSurveyJP;
+
+                SharedContentItemModel? sharedContentItemModel = null;
+                var contentId = "2c9da1b3-3529-4834-afc9-9cd741e59788";
+                if (!string.IsNullOrWhiteSpace(contentId))
+                {
+                    sharedContentItemModel = await sharedContentItemDocumentService.GetByIdAsync(new Guid(contentId)).ConfigureAwait(false);
+                }
+
+                if (sharedContentItemModel != null)
+                {
+                    viewModel.SharedContent = sharedContentItemModel;
+                }
 
                 return ValidateJobProfile(viewModel, jobProfileModel);
             }

@@ -7,12 +7,20 @@ using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
+using DFC.App.JobProfile.HostedServices;
 using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ProfileService.SegmentServices;
 using DFC.App.JobProfile.Repository.CosmosDb;
+using DFC.App.JobProfile.Services;
 using DFC.Compui.Cosmos;
+using DFC.Compui.Telemetry;
+using DFC.Content.Pkg.Netcore.Data.Contracts;
+using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
+using DFC.Content.Pkg.Netcore.Services;
+using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
+using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
 using DFC.Logger.AppInsights.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -140,6 +148,17 @@ namespace DFC.App.JobProfile
             services.AddScoped<ISegmentService, SegmentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
+
+            services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
+            services.AddTransient<ISharedContentReloadService, SharedContentReloadService>();
+            services.AddTransient<ICmsApiService, CmsApiService>();
+            services.AddTransient<IApiService, ApiService>();
+            services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
+            services.AddTransient<IApiCacheService, ApiCacheService>();
+            services.AddTransient<IContentTypeMappingService, ContentTypeMappingService>();
+
+            services.AddHostedServiceTelemetryWrapper();
+            services.AddHostedService<SharedContentReloadBackgroundService>();
 
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());

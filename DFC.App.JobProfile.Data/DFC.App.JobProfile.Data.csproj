@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="DFC.Compui.Cosmos" Version="1.0.67" />
+    <PackageReference Include="DFC.Content.Pkg.Netcore" Version="1.0.109" />
     <PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.2">
       <PrivateAssets>all</PrivateAssets>

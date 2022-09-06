@@ -1,4 +1,5 @@
-﻿using DFC.Compui.Cosmos.Contracts;
+﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.Compui.Cosmos.Contracts;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -6,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace DFC.App.JobProfile.Data.Models
 {
     [ExcludeFromCodeCoverage]
-    public class SharedContentItemModel : DocumentModel
+    public class SharedContentItemModel : DocumentModel, ICachedModel
     {
         public const string DefaultPartitionKey = "shared-content";
 

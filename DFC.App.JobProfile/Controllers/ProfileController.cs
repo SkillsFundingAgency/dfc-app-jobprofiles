@@ -7,7 +7,6 @@ using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +40,7 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
+        [Route("profile/index")]
         public async Task<IActionResult> Index()
         {
             //AOP: These should be coded as an Aspect

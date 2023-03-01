@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <ProjectGuid>{6926461B-0774-4F94-AB0F-9100DD738DA3}</ProjectGuid>
     <IsPackable>false</IsPackable>
     <OutputType>Library</OutputType>

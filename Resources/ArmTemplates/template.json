@@ -151,6 +151,9 @@
         "urlJobprofileSkillsApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofskills-as.', parameters('appServiceDomain')))]",
         "urlJobprofileTasksApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobproftasks-as.', parameters('appServiceDomain')))]",
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
+         "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
+         "cmsSubscriptionName": "job-profile-metadata",
+         "refreshSubscriptionName": "job-profile-segment-refresh",
         "webAppInsightsInstrumentationKey": "[parameters('appInsightsInstrumentationKey')]",
         "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-app-sharedresources-actgrp')]"
     },

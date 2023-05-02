@@ -229,7 +229,7 @@
                             },
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                "value": "[reference(variables('webAppInsightsInstrumentationKey')]"
+                                "value": "[reference(variables('webAppInsightsInstrumentationKey'))]"
                             },
                             {
                                 "name": "AzureWebJobsStorage",
@@ -557,7 +557,7 @@
                             },
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                "value": "[variables('webAppInsightsInstrumentationKey)]"
+                                "value": "[variables('webAppInsightsInstrumentationKey')]"
                             },
                             {
                                 "name": "AzureWebJobsStorage",

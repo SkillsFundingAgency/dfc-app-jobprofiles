@@ -151,14 +151,13 @@
         "urlJobprofileSkillsApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofskills-as.', parameters('appServiceDomain')))]",
         "urlJobprofileTasksApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobproftasks-as.', parameters('appServiceDomain')))]",
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
-         "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
-         "cmsSubscriptionName": "job-profile-metadata",
-         "refreshSubscriptionName": "job-profile-segment-refresh",
+        "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
+        "cmsSubscriptionName": "job-profile-metadata",
+        "refreshSubscriptionName": "job-profile-segment-refresh",
         "webAppInsightsInstrumentationKey": "[parameters('appInsightsInstrumentationKey')]",
         "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-app-sharedresources-actgrp')]"
     },
     "resources": [
-      
         {
             "apiVersion": "2017-05-10",
             "name": "[variables('appServicePlanName')]",
@@ -229,7 +228,7 @@
                             },
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                "value": "[reference(variables('webAppInsightsInstrumentationKey'))]"
+                                "value": "[variables('webAppInsightsInstrumentationKey')]"
                             },
                             {
                                 "name": "AzureWebJobsStorage",

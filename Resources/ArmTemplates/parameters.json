@@ -94,6 +94,9 @@
         },
         "EnableLMI": {
             "value": __EnableLMI__
+        },
+        "appInsightsInstrumentationKey": {
+            "value": "__appInsightsInstrumentationKey__"
         }
     }
 }

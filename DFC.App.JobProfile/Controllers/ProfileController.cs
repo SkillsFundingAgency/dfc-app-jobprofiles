@@ -6,9 +6,7 @@ using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +40,7 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
+        [Route("profile/index")]
         public async Task<IActionResult> Index()
         {
             //AOP: These should be coded as an Aspect
@@ -197,7 +196,7 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpGet]
         [Route("profile/hero")]
-        [Route("profile/head")]
+        [Route("profile/htmlhead")]
         [Route("/search-results")]
         public IActionResult NoContentResponses()
         {
@@ -205,7 +204,7 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile/{article}/head")]
+        [Route("profile/{article}/htmlhead")]
         public async Task<IActionResult> Head(string article)
         {
             logService.LogInformation($"{nameof(Head)} has been called");
@@ -218,47 +217,31 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile/{article}/herobanner")]
-        public async Task<IActionResult> HeroBanner(string article)
+        [Route("profile/{article}/hero")]
+        public async Task<IActionResult> Hero(string article)
         {
-            logService.LogInformation($"{nameof(HeroBanner)} has been called");
+            logService.LogInformation($"{nameof(Hero)} has been called");
 
-            var viewModel = new HeroBannerViewModel();
+            var viewModel = new HeroViewModel();
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
 
             if (jobProfileModel != null)
             {
                 mapper.Map(jobProfileModel, viewModel);
                 viewModel.ShowLmi = configValues.EnableLMI;
-                logService.LogInformation($"{nameof(HeroBanner)} has returned content for: {article}");
-                if (viewModel.Segments != null)
-                {
-                    var overviewExists = viewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
 
-                    if (!overviewExists)
-                    {
-                        var message =
-                            $"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information";
-                        logService.LogWarning(message);
-                        jobProfileModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
-                        viewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
-                    }
-                }
-            }
-            else
-            {
-                viewModel.Segments = new List<SegmentModel>();
-                viewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
-                jobProfileModel = new JobProfileModel();
-                jobProfileModel.Segments = new List<SegmentModel>();
-                jobProfileModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
+                logService.LogInformation($"{nameof(Hero)} has returned content for: {article}");
+
+                return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
             }
 
-            return this.NegotiateContentResult(viewModel, jobProfileModel.Segments);
+            logService.LogWarning($"{nameof(Hero)} has not returned any content for: {article}");
+
+            return NoContent();
         }
 
         [HttpGet]
-        [Route("profile/body")]
+        [Route("profile/contents")]
         public IActionResult Body()
         {
             logService.LogInformation($"{nameof(Body)} has been called");
@@ -267,7 +250,7 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpGet]
-        [Route("profile/{article}/body")]
+        [Route("profile/{article}/contents")]
         public async Task<IActionResult> Body(string article)
         {
             logService.LogInformation($"{nameof(Body)} has been called");
@@ -383,99 +366,15 @@ namespace DFC.App.JobProfile.Controllers
         private IActionResult ValidateJobProfile(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
         {
             var overviewExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
-
-            var careerPathsExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.CareerPathsAndProgression);
-            var currentOpsExist = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.CurrentOpportunities);
             var howToBecomeExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.HowToBecome);
-            var relatedCareersExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.RelatedCareers);
             var whatItTakesExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatItTakes);
-            var whatYouWillDoExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatYouWillDo);
 
-            if (bodyViewModel.Segments == null)
+            if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
             {
-                bodyViewModel.Segments = new List<SegmentModel>();
-            }
-
-            if (jobProfileModel.Segments == null) 
-            {
-                jobProfileModel.Segments = new List<SegmentModel>();
-            }
-
-            if (!overviewExists)
-            {
-                var message =
-                    $"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information";
-                logService.LogWarning(message);
-                jobProfileModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
-                bodyViewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.Overview));
-            }
-
-            if (!careerPathsExists)
-            {
-                bodyViewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.CareerPathsAndProgression));
-            }
-
-            if (!currentOpsExist)
-            {
-                bodyViewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.CurrentOpportunities));
-            }
-
-            if (!howToBecomeExists)
-            {
-                bodyViewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.HowToBecome));
-            }
-
-            if (!relatedCareersExists)
-            {
-                bodyViewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.RelatedCareers));
-            }
-
-            if (!whatItTakesExists)
-            {
-                bodyViewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.WhatItTakes));
-            }
-
-            if (!whatYouWillDoExists)
-            {
-                bodyViewModel.Segments.Add(CreateSegmentIfError(JobProfileSegment.WhatYouWillDo));
+                throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
             }
 
             return ValidateMarkup(bodyViewModel, jobProfileModel);
-        }
-
-        public static explicit operator ProfileController(Type v)
-        {
-            throw new NotImplementedException();
-        }
-
-        private SegmentModel CreateSegmentIfError(JobProfileSegment segment)
-        {
-            string markup;
-
-            switch (segment)
-            {
-                case JobProfileSegment.Overview:
-                    markup = "<header class='job-profile-hero'> <div class='govuk-width-container'> <div class='govuk-breadcrumbs'> <ol class='govuk-breadcrumbs__list'> <li class='govuk-breadcrumbs__list-item'> <a class='govuk-breadcrumbs__link' href='/explore-careers'>Home: Explore careers</a> </li> </ol> </div> <div class='govuk-grid-row'> <div class='govuk-grid-column-two-thirds'> <p>We are aware there is a problem with this profile and we are working hard to fix it</p> </div> </div </div> </header>";
-                    break;
-                case JobProfileSegment.HowToBecome:
-                case JobProfileSegment.WhatItTakes:
-                case JobProfileSegment.WhatYouWillDo:
-                case JobProfileSegment.CareerPathsAndProgression:
-                case JobProfileSegment.CurrentOpportunities:
-                case JobProfileSegment.RelatedCareers:
-                    markup = "Unable to display this information and we are working hard to fix it";
-                    break;
-                default:
-                    markup = "We are aware there is a problem with this profile and we are working hard to fix it";
-                    break;
-            }
-
-            return new SegmentModel
-            {
-                Segment = segment,
-                RefreshStatus = Data.Enums.RefreshStatus.Success,
-                Markup = new HtmlString(markup),
-            };
         }
 
         private IActionResult ValidateMarkup(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
@@ -494,15 +393,10 @@ namespace DFC.App.JobProfile.Controllers
                     switch (segmentModel.Segment)
                     {
                         case JobProfileSegment.Overview:
-                            {
-                                var message =
-                                    $"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}";
-                                logService.LogWarning(message);
-                                segmentModel.Markup = segmentService.GetOfflineSegment(segmentModel.Segment).OfflineMarkup;
-                                break;
-                            }
                         case JobProfileSegment.HowToBecome:
                         case JobProfileSegment.WhatItTakes:
+                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}");
+
                         case JobProfileSegment.RelatedCareers:
                         case JobProfileSegment.CurrentOpportunities:
                         case JobProfileSegment.WhatYouWillDo:

@@ -49,7 +49,6 @@ stages:
           SolutionBaseName: $(SolutionBaseName)
           BuildPlatform: $(BuildPlatform)
           BuildConfiguration: $(BuildConfiguration)
-          DotNetCoreVersion: 3.1.101
           PublishWebApp: true
           TestSuffix: UnitTests
 
@@ -59,7 +58,6 @@ stages:
           SolutionBaseName: $(SolutionBaseName).MessageFunctionApp
           BuildPlatform: $(BuildPlatform)
           BuildConfiguration: $(BuildConfiguration)
-          DotNetCoreVersion: 3.1.101
           PublishWebApp: true
 
       # Build UI functional Tests
@@ -72,4 +70,3 @@ stages:
             SolutionBaseName: $(SolutionBaseName).UI.FunctionalTests
             BuildPlatform: $(BuildPlatform)
             BuildConfiguration: $(BuildConfiguration)
-            DotNetCoreVersion: 3.1.100

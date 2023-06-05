@@ -7,6 +7,7 @@ using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -200,6 +201,7 @@ namespace DFC.App.JobProfile.Controllers
         [Route("/search-results")]
         public IActionResult NoContentResponses()
         {
+            logService.LogInformation($"{nameof(NoContentResponses)} has been called");
             return NoContent();
         }
 

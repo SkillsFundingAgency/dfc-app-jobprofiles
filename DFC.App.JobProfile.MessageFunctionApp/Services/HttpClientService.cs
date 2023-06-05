@@ -30,8 +30,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            logService.LogInformation($"{nameof(GetByIdAsync)} has been called with id {nameof(id)}");
-
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{id}");
             ConfigureHttpClient();
 
@@ -51,8 +49,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
         public async Task<HttpStatusCode> PatchAsync<TInput>(TInput patchModel, string patchTypeEndpoint = "metadata", int retryCount = 0)
             where TInput : BaseJobProfile
         {
-            logService.LogInformation($"{nameof(PatchAsync)} has been called");
-
             if (patchModel is null)
             {
                 throw new ArgumentNullException(nameof(patchModel));
@@ -76,8 +72,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
                     if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
                     {
-                        logService.LogWarning($"Retrying {nameof(PatchAsync)}. Retry count: {retryCount}");
-
                         return await PatchAsync(patchModel, patchTypeEndpoint, retryCount++).ConfigureAwait(false);
                     }
 
@@ -90,8 +84,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         public async Task<HttpStatusCode> DeleteAsync(Guid id)
         {
-            logService.LogInformation($"{nameof(DeleteAsync)} has been called");
-
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}profile/{id}");
             ConfigureHttpClient();
 
@@ -118,8 +110,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
         public async Task<HttpStatusCode> PostAsync<TInput>(TInput postModel, string postEndpoint = "profile", int retryCount = 0)
             where TInput : BaseJobProfile
         {
-            logService.LogInformation($"{nameof(PostAsync)} has been called");
-
             if (postModel is null)
             {
                 throw new ArgumentNullException(nameof(postModel));
@@ -150,12 +140,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         private void ConfigureHttpClient()
         {
-            logService.LogInformation($"{nameof(ConfigureHttpClient)} has been called");
-
             if (!httpClient.DefaultRequestHeaders.Contains(HeaderName.CorrelationId))
             {
-                logService.LogInformation($"{nameof(ConfigureHttpClient)} does not contain {nameof(HeaderName.CorrelationId)}");
-
                 httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
             }
         }

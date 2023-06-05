@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,6 +32,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         [FunctionName("JobProfileSegmentRefresh")]
         public async Task Run([ServiceBusTrigger("%job-profiles-refresh-topic%", "%job-profiles-refresh-subscription%", Connection = "service-bus-connection-string")] ServiceBusReceivedMessage segmentRefreshMessage)
         {
+            logService.LogInformation($"{nameof(this.Run)} has been called for function name {nameof(JobProfileSegmentRefresh)}");
+
             if (segmentRefreshMessage is null)
             {
                 throw new System.ArgumentNullException(nameof(segmentRefreshMessage));

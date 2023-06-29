@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.Logger.AppInsights.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
         private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
+        private readonly ILogService logService;
 
         public JobProfileService(
             ICosmosRepository<Data.Models.JobProfileModel> repository,
@@ -67,6 +69,7 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<HttpStatusCode> Create(Data.Models.JobProfileModel jobProfileModel)
         {
+
             if (jobProfileModel == null)
             {
                 throw new ArgumentNullException(nameof(jobProfileModel));

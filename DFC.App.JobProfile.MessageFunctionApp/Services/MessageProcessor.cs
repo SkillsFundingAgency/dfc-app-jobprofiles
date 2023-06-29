@@ -28,6 +28,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         public async Task<HttpStatusCode> ProcessSegmentRefresEventAsync(string eventData, long sequenceNumber)
         {
+            logService.LogInformation($"{nameof(ProcessSegmentRefresEventAsync)} has been called");
+
             if (string.IsNullOrWhiteSpace(eventData))
             {
                 throw new ArgumentException("Event data cannot be null or empty.", nameof(eventData));
@@ -51,6 +53,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         public Task<HttpStatusCode> ProcessSitefinityMessageAsync(string message, string messageAction, string messageCtype, string messageContentId, long sequenceNumber)
         {
+            logService.LogInformation($"{nameof(ProcessSitefinityMessageAsync)} has been called");
+
             if (string.IsNullOrWhiteSpace(messageCtype))
             {
                 throw new ArgumentException("Message content type cannot be null or empty.", nameof(messageCtype));
@@ -75,6 +79,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         private async Task<HttpStatusCode> ProcessJobProfileMessageAsync(string message, string messageAction, string messageContentId, long sequenceNumber)
         {
+            logService.LogInformation($"{nameof(ProcessJobProfileMessageAsync)} has been called");
+
             if (string.IsNullOrWhiteSpace(message))
             {
                 throw new ArgumentException("Message cannot be null or empty.", nameof(message));
@@ -106,6 +112,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                     var result = await httpClientService.PatchAsync(jobProfile).ConfigureAwait(false);
                     if (result == HttpStatusCode.NotFound)
                     {
+                        logService.LogInformation($"{nameof(ProcessJobProfileMessageAsync)} has returned {nameof(HttpStatusCode.NotFound)} " +
+                            $"and is now trying to {nameof(httpClientService.PostAsync)} with jobprofilemodel {nameof(jobProfile)}");
                         return await httpClientService.PostAsync(jobProfile).ConfigureAwait(false);
                     }
 

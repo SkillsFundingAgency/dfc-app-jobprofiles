@@ -31,6 +31,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         [FunctionName("SitefinityMessageHandler")]
         public async Task Run([ServiceBusTrigger("%cms-messages-topic%", "%cms-messages-subscription%", Connection = "service-bus-connection-string")] ServiceBusReceivedMessage sitefinityMessage)
         {
+            logService.LogInformation($"{nameof(this.Run)} has been called for function name {nameof(SitefinityMessageHandler)}");
+
             if (sitefinityMessage is null)
             {
                 throw new System.ArgumentNullException(nameof(sitefinityMessage));

@@ -1,20 +1,23 @@
-﻿
-@model string
+﻿@model string
 
-    <div class="job-profile-sidebar">
-        <h3 id="job-profile-search" class="govuk-heading-m">Not what you're looking for?</h3>
-        <div class="job-profile-search">
+<div class="job-profile-sidebar">
+    <h3 id="job-profile-search" class="govuk-heading-m">Not what you're looking for?</h3>
+
+    <form action="/search-results" class="ncs-search ncs-search__box js-live-search-form site-search ui-front" id="job-profile-search-box" method="get">
+        <div class="search-wrapper">
             <h4>Search further careers</h4>
-            <form action="/search-results" class="js-live-search-form site-search ui-front" id="job-profile-search-box" method="get">
-                <div class="job-profile-search-content">
-                    <label class="input-label" for="search-main"> Enter a job title</label>
-                    <div class="search-input-wrapper">
-                        <input class="govuk-input search-input js-search-focus js-autocomplete ui-autocomplete-input" data-autocomplete-fuzzysearch="True" data-autocomplete-maxlength="7" data-autocomplete-maxnumberdisplyed="5" data-autocomplete-minlength="2" data-autocomplete-source="/searchautocomplete" id="search-main" name="SearchTerm" type="search" value="" autocomplete="off">
+            <div class="govuk-form-group">
+                <label class="ncs-label govuk-label js-search-label" for="search-main" style="display:none">Enter a job title</label>
+                <div class="input-wrapper">
+
+                    <input class="govuk-input search-input js-search-focus js-autocomplete ui-autocomplete-input" data-autocomplete-fuzzysearch="True" data-autocomplete-maxlength="7" data-autocomplete-maxnumberdisplyed="5" data-autocomplete-minlength="2" data-autocomplete-source="/searchautocomplete" id="search-main" name="SearchTerm" type="search" value="" autocomplete="off" aria-label="Enter a job title" placeholder="Enter a job title">
+
+                    <div class="input-search-item input-submit-wrapper">
+                        <button id="search-button" class="submit input-search-submit" type="submit" value="Search" data-module="govuk-button">Search</button>
                     </div>
-                    <button class="submit" type="submit" value="Search">Search</button>
                 </div>
-                <input id="JobProfileUrl" name="JobProfileUrl" type="hidden" value="@Model">
-            </form>
-            
+            </div>
         </div>
-    </div>
+        <input id="JobProfileUrl" name="JobProfileUrl" type="hidden" value="" />
+    </form>
+</div>

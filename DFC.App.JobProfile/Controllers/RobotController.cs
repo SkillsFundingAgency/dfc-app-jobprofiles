@@ -42,6 +42,8 @@ namespace DFC.App.JobProfile.Controllers
 
         private Robot GenerateThisSiteRobot()
         {
+            logService.LogInformation($"{nameof(this.GenerateThisSiteRobot)} has been called");
+
             var robot = new Robot();
             string robotsFilePath = System.IO.Path.Combine(hostingEnvironment.WebRootPath, "StaticRobots.txt");
 
@@ -54,8 +56,17 @@ namespace DFC.App.JobProfile.Controllers
                 {
                     robot.Add(staticRobotsText);
                 }
+                else
+                {
+                    logService.LogInformation($"{nameof(staticRobotsText)} is null or whitespace");
+                }
+            }
+            else
+            {
+                logService.LogWarning($"{nameof(robotsFilePath)} does not exist");
             }
 
+            logService.LogInformation("Generated Robots.txt");
             return robot;
         }
     }

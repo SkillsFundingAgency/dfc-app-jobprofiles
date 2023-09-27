@@ -1,0 +1,39 @@
+﻿@using DFC.App.JobProfile.Data.Models;
+@using DFC.App.JobProfile.Helpers;
+
+@model SocialProofVideo
+
+<section class="job-profile-social-proof-video">
+    <h2>@Model.Title</h2>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Summary))
+    {
+        <p class="govuk-body">@Model.Summary</p>
+    }
+
+    @{
+        string youtubeVideoId = VideoHelpers.ExtractVideoIdFromYoutubeUrl(Model.Url);
+        @if (youtubeVideoId != null)
+        {
+            string youtubeUrl = $"https://www.youtube-nocookie.com/embed/{youtubeVideoId}?rel=0&amp;modestbranding=1&amp;autoplay=0&amp;origin=https://nationalcareers.service.gov.uk&amp;enablejsapi=1";
+            <iframe id="widget2" width="560" height="315" title="@Model.Title" src="@youtubeUrl" allowfullscreen="allowfullscreen"></iframe>
+        }
+        else
+        {
+            <p>Error: Was unable to display video.</p>
+        }
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Transcript))
+    {
+        <details class="govuk-details govuk-!-margin-top-3" data-module="govuk-details">
+            <summary class="govuk-details__summary"> <span class="govuk-details__summary-text"> View transcript </span> </summary>
+            <div class="govuk-details__text">
+                @foreach (var transcriptLine in TextHelpers.SplitTextIntoLines(Model.Transcript))
+                {
+                    <p class="govuk-body">@transcriptLine</p>
+                }
+            </div>
+        </details>
+    }
+</section>

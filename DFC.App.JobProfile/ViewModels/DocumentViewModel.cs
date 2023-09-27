@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DFC.App.JobProfile.Data.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.ViewModels
@@ -36,5 +37,13 @@ namespace DFC.App.JobProfile.ViewModels
 
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }
+
+        /// <summary>
+        /// Gets or sets the social proof video when one is enabled for the job profile.
+        /// </summary>
+        /// <value>
+        /// A <see cref="SocialProofVideo"/> when present; otherwise, a value of <c>null</c>.
+        /// </value>
+        public SocialProofVideo SocialProofVideo { get; set; }
     }
 }

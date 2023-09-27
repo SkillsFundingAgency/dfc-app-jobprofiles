@@ -15,7 +15,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.SocLevelTwo, s => s.Ignore())
                 .ForMember(d => d.LastReviewed, s => s.Ignore())
                 .ForMember(d => d.Segments, s => s.Ignore())
-                .ForMember(d => d.SocialProofVideo, s => s.Ignore())
                 ;
         }
     }

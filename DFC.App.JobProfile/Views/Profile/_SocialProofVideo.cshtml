@@ -24,6 +24,11 @@
         }
     }
 
+    @if (!string.IsNullOrWhiteSpace(Model.Duration))
+    {
+        <p class="govuk-body-l">@Model.Duration</p>
+    }
+
     @if (!string.IsNullOrWhiteSpace(Model.Transcript))
     {
         <details class="govuk-details govuk-!-margin-top-3" data-module="govuk-details">

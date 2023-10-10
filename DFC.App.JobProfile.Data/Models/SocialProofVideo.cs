@@ -25,6 +25,14 @@
         public string Url { get; set; }
 
         /// <summary>
+        /// Gets or sets the duration of the social proof video.
+        /// </summary>
+        /// <remarks>
+        /// <para>This is text that is provided by the content editor; eg "One minute watch".</para>
+        /// </remarks>
+        public string Duration { get; set; }
+
+        /// <summary>
         /// Gets or sets the transcript text for the social proof video.
         /// </summary>
         /// <value>

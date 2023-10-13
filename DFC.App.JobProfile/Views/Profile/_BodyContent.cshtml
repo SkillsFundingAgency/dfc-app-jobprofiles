@@ -3,9 +3,9 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="job-profile-sections">
-            @if (Model.SocialProofVideo != null)
+            @if (Model.Video != null)
             {
-                <partial name="_SocialProofVideo" model=@Model.SocialProofVideo />
+                <partial name="_Video" model=@Model.Video />
             }
 
             <div class="govuk-accordion" data-module="govuk-accordion" id="job-profile-accordion-with-summary-sections">

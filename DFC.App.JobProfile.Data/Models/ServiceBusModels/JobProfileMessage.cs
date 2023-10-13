@@ -31,6 +31,6 @@ namespace DFC.App.JobProfile.Data.Models.ServiceBusModels
         /// <value>
         /// A <see cref="SocialProofVideo"/> when present; otherwise, a value of <c>null</c>.
         /// </value>
-        public SocialProofVideo SocialProofVideo { get; set; }
+        public SocialProofVideo Video { get; set; }
     }
 }

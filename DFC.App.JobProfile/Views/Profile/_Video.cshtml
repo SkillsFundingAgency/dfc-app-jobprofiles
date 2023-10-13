@@ -4,7 +4,7 @@
 @model SocialProofVideo
 
 <section class="job-profile-video">
-    <h2>@Model.Title</h2>
+    <h2 class="govuk-heading-m">@Model.Title</h2>
 
     @if (!string.IsNullOrWhiteSpace(Model.Summary))
     {
@@ -16,7 +16,7 @@
         @if (youtubeVideoId != null)
         {
             string youtubeUrl = $"https://www.youtube-nocookie.com/embed/{youtubeVideoId}?rel=0&amp;modestbranding=1&amp;autoplay=0&amp;origin=https://nationalcareers.service.gov.uk&amp;enablejsapi=1";
-            <iframe id="widget2" width="560" height="315" title="@Model.Title" src="@youtubeUrl" allowfullscreen="allowfullscreen"></iframe>
+            <iframe id="widget2" width="100%" height="315" title="@Model.Title" src="@youtubeUrl" allowfullscreen="allowfullscreen"></iframe>
         }
         else
         {
@@ -26,7 +26,7 @@
 
     @if (!string.IsNullOrWhiteSpace(Model.Duration))
     {
-        <p class="govuk-body-l">@Model.Duration</p>
+        <p class="govuk-body-l govuk-!-margin-top-3">@Model.Duration</p>
     }
 
     @if (!string.IsNullOrWhiteSpace(Model.Transcript))

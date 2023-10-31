@@ -1,7 +1,14 @@
-﻿namespace DFC.App.JobProfile.Data.Models
+﻿using DFC.App.JobProfile.Data.Enums;
+
+namespace DFC.App.JobProfile.Data.Models
 {
     public sealed class SocialProofVideo
     {
+        /// <summary>
+        /// Gets or sets the type of the social proof video.
+        /// </summary>
+        public SocialProofVideoType Type { get; set; }
+
         /// <summary>
         /// Gets or sets the title of the social proof video. This is used to render the
         /// <c>title</c> attribute of a video embed.
@@ -9,20 +16,41 @@
         public string Title { get; set; }
 
         /// <summary>
-        /// Gets or sets the summary text for of the social proof video.
+        /// Gets or sets the summary HTML content for of the social proof video.
+        /// </summary>
+        /// <remarks>
+        /// <para>This is raw HTML text that is input into a WYSIWYG field in the CMS.</para>
+        /// </remarks>
+        public string SummaryHtml { get; set; }
+
+        /// <summary>
+        /// Gets or sets the thumbnail of the video.
         /// </summary>
         /// <value>
-        /// Plain text.
+        /// A reference to the thumbnail image; otherwise, a value of <c>null</c>.
         /// </value>
-        public string Summary { get; set; }
+        public Thumbnail Thumbnail { get; set; }
+
+        /// <summary>
+        /// Gets or sets the further information HTML content that is shown below the thumbnail.
+        /// </summary>
+        /// <remarks>
+        /// <para>This is raw HTML text that is input into a WYSIWYG field in the CMS.</para>
+        /// </remarks>
+        public string FurtherInformationHtml { get; set; }
 
         /// <summary>
         /// Gets or sets the URL of the social proof video.
         /// </summary>
-        /// <remarks>
-        /// <para>At the time of writing this would be the URL of a video on YouTube.</para>
-        /// </remarks>
         public string Url { get; set; }
+
+        /// <summary>
+        /// Gets or sets the link text for showing a call to action button.
+        /// </summary>
+        /// <value>
+        /// Plain text when call to action button is present; otherwise, a value of <c>null</c>.
+        /// </value>
+        public string LinkText { get; set; }
 
         /// <summary>
         /// Gets or sets the duration of the social proof video.

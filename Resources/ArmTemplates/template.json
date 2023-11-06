@@ -236,7 +236,7 @@
                         "value": true
                     },
                     "clientAffinity": {
-                        "value": true
+                        "value": false
                     },
                     "appServiceAppSettings": {
                         "value": [
@@ -571,7 +571,7 @@
                         "value": true
                     },
                     "clientAffinity": {
-                        "value": true
+                        "value": false
                     },
                     "appServiceAppSettings": {
                         "value": [

@@ -31,6 +31,8 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using DFC.Compui.Cosmos;
+using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
+using DFC.Compui.Telemetry;
 //using DFC.Compui.Cosmos.Contracts;
 
 namespace DFC.App.JobProfile
@@ -131,7 +133,7 @@ namespace DFC.App.JobProfile
             services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();
 
             services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
-            var staticContentDbConnection = configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<CosmosDbConnection>();
+            var staticContentDbConnection = configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<DFC.Compui.Cosmos.Contracts.CosmosDbConnection>();
             var cosmosRetryOptions = new RetryOptions { MaxRetryAttemptsOnThrottledRequests = 20, MaxRetryWaitTimeInSeconds = 60 };
             services.AddDocumentServices<StaticContentItemModel>(staticContentDbConnection, env.IsDevelopment(), cosmosRetryOptions);
             services.AddTransient<ICmsApiService, CmsApiService>();
@@ -155,9 +157,14 @@ namespace DFC.App.JobProfile
             services.AddSingleton(configuration.GetSection(nameof(WhatItTakesSegmentClientOptions)).Get<WhatItTakesSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(WhatYouWillDoSegmentClientOptions)).Get<WhatYouWillDoSegmentClientOptions>());
 
-            services.AddHostedService<StaticContentReloadBackgroundService>();
+            services.AddHostedServiceTelemetryWrapper();
+            services.AddTransient<IApiService, ApiService>();
+            services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
+            services.AddTransient<IApiCacheService, ApiCacheService>();
+
+            //services.AddHostedService<StaticContentReloadBackgroundService>();
             services.AddTransient<IWebhooksService, WebhooksService>();
-            services.AddSubscriptionBackgroundService(configuration);
+            //services.AddSubscriptionBackgroundService(configuration);
 
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();

@@ -15,33 +15,33 @@ namespace DFC.App.JobProfile.IntegrationTests.AutoMapperTests
             this.factory = factory;
         }
 
-        [Fact]
-        public void AutoMapperProfileConfigurationForJobProfileModelProfileReturnSuccess()
-        {
-            // Arrange
-            _ = factory.CreateClient();
-            var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
+        //[Fact]
+        //public void AutoMapperProfileConfigurationForJobProfileModelProfileReturnSuccess()
+        //{
+        //    // Arrange
+        //    _ = factory.CreateClient();
+        //    var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
 
-            // Act
-            mapper.ConfigurationProvider.AssertConfigurationIsValid<JobProfileModelProfile>();
+        //    // Act
+        //    mapper.ConfigurationProvider.AssertConfigurationIsValid<JobProfileModelProfile>();
 
-            // Assert
-            Assert.True(true);
-        }
+        //    // Assert
+        //    Assert.True(true);
+        //}
 
-        [Fact]
-        public void AutoMapperProfileConfigurationForHealthCheckItemProfileReturnSuccess()
-        {
-            // Arrange
-            _ = factory.CreateClient();
-            var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
+        //[Fact]
+        //public void AutoMapperProfileConfigurationForHealthCheckItemProfileReturnSuccess()
+        //{
+        //    // Arrange
+        //    _ = factory.CreateClient();
+        //    var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
 
-            // Act
-            mapper.ConfigurationProvider.AssertConfigurationIsValid<HealthCheckItemProfile>();
+        //    // Act
+        //    mapper.ConfigurationProvider.AssertConfigurationIsValid<HealthCheckItemProfile>();
 
-            // Assert
-            Assert.True(true);
-        }
+        //    // Assert
+        //    Assert.True(true);
+        //}
 
         [Fact]
         public void AutoMapperProfileConfigurationForAllProfilesReturnSuccess()

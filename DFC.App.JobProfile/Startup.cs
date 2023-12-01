@@ -162,9 +162,9 @@ namespace DFC.App.JobProfile
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
             services.AddTransient<IApiCacheService, ApiCacheService>();
 
-            //services.AddHostedService<StaticContentReloadBackgroundService>();
+            services.AddHostedService<StaticContentReloadBackgroundService>();
             services.AddTransient<IWebhooksService, WebhooksService>();
-            //services.AddSubscriptionBackgroundService(configuration);
+            services.AddSubscriptionBackgroundService(configuration);
 
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();

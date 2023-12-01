@@ -3,6 +3,9 @@ using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
+using DFC.Compui.Cosmos;
+using DFC.Compui.Cosmos.Contracts;
+using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +26,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             DummyConfigValues = A.Dummy<ConfigValues>();
             FakeSegmentService = A.Fake<ISegmentService>();
             FakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
+            FakeStaticContentDocumentService = A.Fake<IDocumentService<StaticContentItemModel>>();
+            FakeCmsApiClientOptions = A.Fake<CmsApiClientOptions>();
         }
 
         public static IEnumerable<object[]> HtmlMediaTypes => new List<string[]>
@@ -53,6 +58,10 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected IRedirectionSecurityService FakeRedirectionSecurityService { get; }
 
+        protected IDocumentService<StaticContentItemModel> FakeStaticContentDocumentService { get; }
+
+        protected CmsApiClientOptions FakeCmsApiClientOptions { get; }
+
         protected ProfileController BuildProfileController(
             string mediaTypeName = MediaTypeNames.Application.Json,
             IMapper mapper = null,
@@ -65,7 +74,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             httpContext.Request.Host = new HostString(host);
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService, FakeStaticContentDocumentService, FakeCmsApiClientOptions)
             {
                 ControllerContext = new ControllerContext()
                 {

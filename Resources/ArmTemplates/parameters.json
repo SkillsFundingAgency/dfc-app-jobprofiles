@@ -65,9 +65,6 @@
     "cosmosDbCollectionName": {
       "value": "__cosmosDbCollectionName__"
     },
-    "CosmosDbResourceGroup": {
-      "value": "__appSharedResourceGroup__"
-    },
     "cmsTopicName": {
       "value": "__cmsTopicName__"
     },
@@ -87,16 +84,16 @@
       "value": "__surveyFeedbackUrl__"
     },
     "enableAlerts": {
-      "value": __EnableAzureMonitorAlerting__
+      "value": "__EnableAzureMonitorAlerting__"
     },
     "ExceptionCountThreshold": {
       "value": "__ExceptionCountThreshold__"
     },
-    "MemoryPercentageThreshold": {
-      "value": "__MemoryPercentageThreshold__"
-    },
     "CPUPercentageThreshold": {
       "value": "__CPUPercentageThreshold__"
+    },
+    "MemoryPercentageThreshold": {
+      "value": "__MemoryPercentageThreshold__"
     },
     "EventGridSubscriptionModelEndpoint": {
       "value": "__EventGridSubscriptionModelEndpoint__"
@@ -117,7 +114,7 @@
       "value": "__LmiBaseEndPoint__"
     },
     "EnableLMI": {
-      "value": __EnableLMI__
+      "value": "__EnableLMI__"
     }
   }
 }

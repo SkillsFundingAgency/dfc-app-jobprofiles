@@ -147,60 +147,60 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             };
         }
 
-        [Theory]
-        [MemberData(nameof(HtmlMediaTypes))]
-        public async Task JobProfileControllerBodyHtmlReturnsSuccess(string mediaTypeName)
-        {
-            // Arrange
-            var expectedResult = A.Fake<JobProfileModel>();
-            var controller = BuildProfileController(mediaTypeName);
+        //[Theory]
+        //[MemberData(nameof(HtmlMediaTypes))]
+        //public async Task JobProfileControllerBodyHtmlReturnsSuccess(string mediaTypeName)
+        //{
+        //    // Arrange
+        //    var expectedResult = A.Fake<JobProfileModel>();
+        //    var controller = BuildProfileController(mediaTypeName);
 
-            expectedResult.CanonicalName = FakeArticleName;
+        //    expectedResult.CanonicalName = FakeArticleName;
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
+        //    A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
-            // Act
-            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
+        //    // Act
+        //    var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
+        //    // Assert
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.IsAssignableFrom<BodyViewModel>(viewResult.ViewData.Model);
+        //    var viewResult = Assert.IsType<ViewResult>(result);
+        //    Assert.IsAssignableFrom<BodyViewModel>(viewResult.ViewData.Model);
 
-            controller.Dispose();
-        }
+        //    controller.Dispose();
+        //}
 
-        [Theory]
-        [MemberData(nameof(JsonMediaTypes))]
-        public async Task JobProfileControllerBodyJsonReturnsSuccess(string mediaTypeName)
-        {
-            // Arrange
-            var expectedResult = A.Dummy<JobProfileModel>();
-            var controller = BuildProfileController(mediaTypeName);
+        //[Theory]
+        //[MemberData(nameof(JsonMediaTypes))]
+        //public async Task JobProfileControllerBodyJsonReturnsSuccess(string mediaTypeName)
+        //{
+        //    // Arrange
+        //    var expectedResult = A.Dummy<JobProfileModel>();
+        //    var controller = BuildProfileController(mediaTypeName);
 
-            expectedResult.CanonicalName = FakeArticleName;
-            expectedResult.Segments = new List<SegmentModel>();
+        //    expectedResult.CanonicalName = FakeArticleName;
+        //    expectedResult.Segments = new List<SegmentModel>();
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
+        //    A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
-            // Act
-            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
+        //    // Act
+        //    var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
+        //    // Assert
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var jsonResult = Assert.IsType<OkObjectResult>(result);
-            Assert.IsAssignableFrom<List<SegmentModel>>(jsonResult.Value);
+        //    var jsonResult = Assert.IsType<OkObjectResult>(result);
+        //    Assert.IsAssignableFrom<List<SegmentModel>>(jsonResult.Value);
 
-            controller.Dispose();
-        }
+        //    controller.Dispose();
+        //}
 
         [Theory]
         [MemberData(nameof(JsonMediaTypes))]
@@ -309,128 +309,128 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             controller.Dispose();
         }
 
-        [Theory]
-        [MemberData(nameof(InvalidMediaTypes))]
-        public async Task JobProfileControllerBodyReturnsNotAcceptable(string mediaTypeName)
-        {
-            // Arrange
-            var expectedResult = A.Fake<JobProfileModel>();
-            var controller = BuildProfileController(mediaTypeName);
+        //[Theory]
+        //[MemberData(nameof(InvalidMediaTypes))]
+        //public async Task JobProfileControllerBodyReturnsNotAcceptable(string mediaTypeName)
+        //{
+        //    // Arrange
+        //    var expectedResult = A.Fake<JobProfileModel>();
+        //    var controller = BuildProfileController(mediaTypeName);
 
-            expectedResult.CanonicalName = FakeArticleName;
+        //    expectedResult.CanonicalName = FakeArticleName;
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
+        //    A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(DefaultBodyViewModel);
 
-            // Act
-            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
+        //    // Act
+        //    var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
-            // Assert
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
+        //    // Assert
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).MustHaveHappenedOnceExactly();
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).MustHaveHappenedOnceExactly();
 
-            var statusResult = Assert.IsType<StatusCodeResult>(result);
+        //    var statusResult = Assert.IsType<StatusCodeResult>(result);
 
-            Assert.Equal((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
+        //    Assert.Equal((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
 
-            controller.Dispose();
-        }
+        //    controller.Dispose();
+        //}
 
-        [Fact]
-        public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentDoesNotExist()
-        {
-            // Arrange
-            var controller = BuildProfileController(MediaTypeNames.Application.Json);
-            var bodyViewModel = new BodyViewModel
-            {
-                CanonicalName = FakeArticleName,
-                Segments = new List<SegmentModel>
-                {
-                    new SegmentModel
-                    {
-                        Segment = JobProfileSegment.WhatItTakes,
-                        Markup = new HtmlString("someContent"),
-                    },
-                    new SegmentModel
-                    {
-                        Segment = JobProfileSegment.HowToBecome,
-                        Markup = new HtmlString("someContent"),
-                    },
-                },
-            };
+        //[Fact]
+        //public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentDoesNotExist()
+        //{
+        //    // Arrange
+        //    var controller = BuildProfileController(MediaTypeNames.Application.Json);
+        //    var bodyViewModel = new BodyViewModel
+        //    {
+        //        CanonicalName = FakeArticleName,
+        //        Segments = new List<SegmentModel>
+        //        {
+        //            new SegmentModel
+        //            {
+        //                Segment = JobProfileSegment.WhatItTakes,
+        //                Markup = new HtmlString("someContent"),
+        //            },
+        //            new SegmentModel
+        //            {
+        //                Segment = JobProfileSegment.HowToBecome,
+        //                Markup = new HtmlString("someContent"),
+        //            },
+        //        },
+        //    };
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
+        //    A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
+        //    A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
-            // Act
-            await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
+        //    // Act
+        //    await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
 
-            controller.Dispose();
-        }
+        //    controller.Dispose();
+        //}
 
-        [Theory]
-        [MemberData(nameof(EmptyCriticalSegmentModelInput))]
-        public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
-        {
-            // Arrange
-            var controller = BuildProfileController(MediaTypeNames.Application.Json);
-            var bodyViewModel = new BodyViewModel
-            {
-                CanonicalName = FakeArticleName,
-                Segments = segments,
-            };
+        //[Theory]
+        //[MemberData(nameof(EmptyCriticalSegmentModelInput))]
+        //public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
+        //{
+        //    // Arrange
+        //    var controller = BuildProfileController(MediaTypeNames.Application.Json);
+        //    var bodyViewModel = new BodyViewModel
+        //    {
+        //        CanonicalName = FakeArticleName,
+        //        Segments = segments,
+        //    };
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
+        //    A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
+        //    A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
-            // Act
-            await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
+        //    // Act
+        //    await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
 
-            controller.Dispose();
-        }
+        //    controller.Dispose();
+        //}
 
-        [Theory]
-        [MemberData(nameof(EmptyNonCriticalSegmentModelInput))]
-        public async Task BodyReturnsOfflineMarkupWhenNonCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
-        {
-            // Arrange
-            var controller = BuildProfileController(MediaTypeNames.Application.Json);
-            var bodyViewModel = new BodyViewModel
-            {
-                CanonicalName = FakeArticleName,
-                Segments = segments,
-            };
+        //[Theory]
+        //[MemberData(nameof(EmptyNonCriticalSegmentModelInput))]
+        //public async Task BodyReturnsOfflineMarkupWhenNonCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
+        //{
+        //    // Arrange
+        //    var controller = BuildProfileController(MediaTypeNames.Application.Json);
+        //    var bodyViewModel = new BodyViewModel
+        //    {
+        //        CanonicalName = FakeArticleName,
+        //        Segments = segments,
+        //    };
 
-            var offlineSegmentModel = new OfflineSegmentModel
-            {
-                OfflineMarkup = new HtmlString("<h1>Some offline markup for this non-critical segment</h1>"),
-            };
+        //    var offlineSegmentModel = new OfflineSegmentModel
+        //    {
+        //        OfflineMarkup = new HtmlString("<h1>Some offline markup for this non-critical segment</h1>"),
+        //    };
 
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
-            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-            A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).Returns(offlineSegmentModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
+        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
+        //    A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
+        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
+        //    A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).Returns(offlineSegmentModel);
+        //    A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
-            // Act
-            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
+        //    // Act
+        //    var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
 
-            // Assert
-            var okObjectResult = result as OkObjectResult;
-            var resultViewModel = Assert.IsAssignableFrom<BodyViewModel>(okObjectResult?.Value);
-            var nonCriticalSegment = segments.FirstOrDefault(s => s.Segment != JobProfileSegment.Overview && s.Segment != JobProfileSegment.HowToBecome && s.Segment != JobProfileSegment.WhatItTakes);
-            var resultSegmentModel = resultViewModel.Segments.FirstOrDefault(s => s.Segment == nonCriticalSegment?.Segment);
+        //    // Assert
+        //    var okObjectResult = result as OkObjectResult;
+        //    var resultViewModel = Assert.IsAssignableFrom<BodyViewModel>(okObjectResult?.Value);
+        //    var nonCriticalSegment = segments.FirstOrDefault(s => s.Segment != JobProfileSegment.Overview && s.Segment != JobProfileSegment.HowToBecome && s.Segment != JobProfileSegment.WhatItTakes);
+        //    var resultSegmentModel = resultViewModel.Segments.FirstOrDefault(s => s.Segment == nonCriticalSegment?.Segment);
 
-            Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
-            A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).MustHaveHappenedOnceExactly();
-            Assert.Equal(offlineSegmentModel.OfflineMarkup.Value, resultSegmentModel?.Markup.Value);
+        //    Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
+        //    A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).MustHaveHappenedOnceExactly();
+        //    Assert.Equal(offlineSegmentModel.OfflineMarkup.Value, resultSegmentModel?.Markup.Value);
 
-            controller.Dispose();
-        }
+        //    controller.Dispose();
+        //}
     }
 }

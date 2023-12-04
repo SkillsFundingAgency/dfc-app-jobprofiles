@@ -50,6 +50,9 @@
     "cosmosDbCollectionName": {
       "value": "a-collection"
     },
+    "cosmosDbSharedCollectionName": {
+      "value": "b-collection"
+    },
     "surveyUrl": {
       "value": "https://some.survey.site/link/to/survey"
     },

@@ -1,6 +1,6 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
   "parameters": {
     "appServiceDomain": {
       "value": "__appServiceDomain__"
@@ -65,8 +65,8 @@
     "cosmosDbCollectionName": {
       "value": "__cosmosDbCollectionName__"
     },
-    "CosmosDbResourceGroup": {
-      "value": "__appSharedResourceGroup__"
+    "cosmosDbSharedCollectionName": {
+      "value": "__cosmosDbSharedCollectionName__"
     },
     "cmsTopicName": {
       "value": "__cmsTopicName__"

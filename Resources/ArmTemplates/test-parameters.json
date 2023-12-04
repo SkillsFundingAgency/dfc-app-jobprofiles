@@ -32,62 +32,68 @@
     "cmsContentIds": {
       "value": "12345"
     },
-      "cosmosDBName": {
-        "value": "dfc-dev-app-sharedresources-cdb"
-      },
-      "cosmosDbKey": {
-        "value": "not-a-real-key"
-      },
-      "Environment": {
-        "value": "FOO"
-      },
-      "sharedAppServicePlanName": {
-        "value": "dfc-dev-app-shared-asp"
-      },
-      "sharedAppServicePlanResourceGroup": {
-        "value": "dfc-dev-app-sharedresources-rg"
-      },
-      "cosmosDbCollectionName": {
-        "value": "a-collection"
-      },
-      "surveyUrl": {
-        "value": "https://some.survey.site/link/to/survey"
-      },
-      "enableAlerts": {
-        "value": false
-      },
-      "ExceptionCountThreshold": {
-        "value": "0"
-      },
-      "MemoryPercentageThreshold": {
-        "value": "0"
-      },
-      "CPUPercentageThreshold": {
-        "value": "0"
-      },
-      "EventGridSubscriptionModelEndpoint": {
-        "value": "foo"
-      },
-      "EventGridSubscriptionClientOptionsEndpoint": {
-        "value": "foo"
-      },
-      "apimCompositeApiKey": {
-        "value": "FakeKey"
-      },
-      "apimProxyAddress": {
-        "value": "https://foo"
-      },
-      "AllowedRedirects": {
-        "value": "nationalcareers"
-      },
-      "apimContentApiKey": {
-        "value": "FakeKey"
-      },
-      "LmiBaseEndPoint": {
-        "value": "https://foo"
-      },
-      "EnableLMI": {
-        "value": false
-      }
+    "cosmosDBName": {
+      "value": "dfc-dev-app-sharedresources-cdb"
+    },
+    "cosmosDbKey": {
+      "value": "not-a-real-key"
+    },
+    "Environment": {
+      "value": "FOO"
+    },
+    "sharedAppServicePlanName": {
+      "value": "dfc-dev-app-shared-asp"
+    },
+    "sharedAppServicePlanResourceGroup": {
+      "value": "dfc-dev-app-sharedresources-rg"
+    },
+    "cosmosDbCollectionName": {
+      "value": "a-collection"
+    },
+    "surveyUrl": {
+      "value": "https://some.survey.site/link/to/survey"
+    },
+    "enableAlerts": {
+      "value": false
+    },
+    "ExceptionCountThreshold": {
+      "value": "0"
+    },
+    "MemoryPercentageThreshold": {
+      "value": "0"
+    },
+    "CPUPercentageThreshold": {
+      "value": "0"
+    },
+    "EventGridSubscriptionModelEndpoint": {
+      "value": "foo"
+    },
+    "EventGridSubscriptionClientOptionsEndpoint": {
+      "value": "foo"
+    },
+    "subscriptionUrl": {
+      "value": "foo"
+    },
+    "SubscriptionSettingsEndpoint": {
+      "value": "foo"
+    },
+    "apimCompositeApiKey": {
+      "value": "FakeKey"
+    },
+    "apimProxyAddress": {
+      "value": "https://foo"
+    },
+    "AllowedRedirects": {
+      "value": "nationalcareers"
+    },
+    "apimContentApiKey": {
+      "value": "FakeKey"
+    },
+    "LmiBaseEndPoint": {
+      "value": "https://foo"
+    },
+    "EnableLMI": {
+      "value": false
     }
+  }
   }

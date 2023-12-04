@@ -65,6 +65,9 @@
     "cosmosDbCollectionName": {
       "value": "__cosmosDbCollectionName__"
     },
+    "CosmosDbResourceGroup": {
+      "value": "__appSharedResourceGroup__"
+    },
     "cmsTopicName": {
       "value": "__cmsTopicName__"
     },

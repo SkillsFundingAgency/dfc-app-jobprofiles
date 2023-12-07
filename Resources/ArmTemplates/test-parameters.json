@@ -73,6 +73,9 @@
         },
         "EnableLMI": {
             "value": false
+        },
+        "appInsightsInstrumentationKey": {
+            "value": "deadbeef-a0a0-a0a0-a0a0-a0a0a0a0a0a0"
         }
     }
 }

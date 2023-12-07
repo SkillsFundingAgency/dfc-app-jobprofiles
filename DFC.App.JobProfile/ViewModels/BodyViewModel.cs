@@ -12,5 +12,12 @@ namespace DFC.App.JobProfile.ViewModels
         public string SmartSurveyJP { get; set; }
 
         public StaticContentItemModel SpeakToAnAdviser { get; set; }
+        /// <summary>
+        /// Gets or sets the social proof video when one is enabled for the job profile.
+        /// </summary>
+        /// <value>
+        /// A <see cref="SocialProofVideo"/> when present; otherwise, a value of <c>null</c>.
+        /// </value>
+        public SocialProofVideo Video { get; set; }
     }
 }

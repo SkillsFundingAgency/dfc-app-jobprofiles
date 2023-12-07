@@ -1,0 +1,76 @@
+﻿@using DFC.App.JobProfile.Data.Enums;
+@using DFC.App.JobProfile.Data.Models;
+@using DFC.App.JobProfile.Helpers;
+
+@model SocialProofVideo
+
+<section class="job-profile-video">
+    <h2 class="govuk-heading-m">@Model.Title</h2>
+
+    @if (!string.IsNullOrWhiteSpace(Model.SummaryHtml))
+    {
+        <div class="govuk-body">
+            @Html.Raw(Model.SummaryHtml)
+        </div>
+    }
+
+    @if (Model.Type == SocialProofVideoType.YouTube)
+    {
+        string youtubeVideoId = VideoHelpers.ExtractVideoIdFromYoutubeUrl(Model.Url);
+        @if (youtubeVideoId != null)
+        {
+            string youtubeUrl = $"https://www.youtube-nocookie.com/embed/{youtubeVideoId}?rel=0&amp;modestbranding=1&amp;autoplay=0&amp;origin=https://nationalcareers.service.gov.uk&amp;enablejsapi=1";
+            <iframe id="widget2" width="100%" height="315" title="@Model.Title" src="@youtubeUrl" allowfullscreen="allowfullscreen"></iframe>
+        }
+        else
+        {
+            <p>Error: Was unable to display video.</p>
+        }
+    }
+    else if (Model.Type == SocialProofVideoType.Bitesize)
+    {
+        @if (Model.Thumbnail != null)
+        {
+            <div class="job-profile-video__thumbnail">
+                <img class="job-profile-video__thumbnail-image" src="@Model.Thumbnail.Url" alt="@Model.Thumbnail.Text" />
+                <div class="job-profile-video__bitesize-badge">
+                    <span class="govuk-visually-hidden">BBC Bitesize logo</span>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Error: Unexpected video type.</p>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.FurtherInformationHtml))
+    {
+        <div class="govuk-body govuk-!-margin-top-3">
+            @Html.Raw(Model.FurtherInformationHtml)
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Duration))
+    {
+        <p class="govuk-body-l govuk-!-margin-top-3">@Model.Duration</p>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.LinkText))
+    {
+        <a class="govuk-link govuk-button ncs-button__primary" href="@Model.Url">@Model.LinkText</a>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Transcript))
+    {
+        <details class="govuk-details govuk-!-margin-top-3" data-module="govuk-details">
+            <summary class="govuk-details__summary"> <span class="govuk-details__summary-text"> View transcript </span> </summary>
+            <div class="govuk-details__text">
+                @foreach (var transcriptLine in TextHelpers.SplitTextIntoLines(Model.Transcript))
+                {
+                    <p class="govuk-body">@transcriptLine</p>
+                }
+            </div>
+        </details>
+    }
+</section>

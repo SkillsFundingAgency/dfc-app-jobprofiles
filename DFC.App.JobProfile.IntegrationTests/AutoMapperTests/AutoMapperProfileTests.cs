@@ -16,34 +16,6 @@ namespace DFC.App.JobProfile.IntegrationTests.AutoMapperTests
         }
 
         [Fact]
-        public void AutoMapperProfileConfigurationForJobProfileModelProfileReturnSuccess()
-        {
-            // Arrange
-            _ = factory.CreateClient();
-            var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
-
-            // Act
-            mapper.ConfigurationProvider.AssertConfigurationIsValid<JobProfileModelProfile>();
-
-            // Assert
-            Assert.True(true);
-        }
-
-        [Fact]
-        public void AutoMapperProfileConfigurationForHealthCheckItemProfileReturnSuccess()
-        {
-            // Arrange
-            _ = factory.CreateClient();
-            var mapper = factory.Server.Host.Services.GetRequiredService<IMapper>();
-
-            // Act
-            mapper.ConfigurationProvider.AssertConfigurationIsValid<HealthCheckItemProfile>();
-
-            // Assert
-            Assert.True(true);
-        }
-
-        [Fact]
         public void AutoMapperProfileConfigurationForAllProfilesReturnSuccess()
         {
             // Arrange

@@ -1,10 +1,6 @@
-﻿<div class="app-related-items">
-    <h2 class="govuk-heading-m">Speak to an adviser</h2>
-    <p class="govuk-body">You can call <a class="govuk-link" href="tel:0800100900" rel="external">0800 100 900</a> or <a href="/webchat/chat" class="govuk-link govuk-link--no-visited-state">use webchat</a> to speak to an adviser.</p>
-    <p class="govuk-body"> We're open:</p>
-    <ul class="govuk-list">
-        <li> <span class="govuk-body govuk-!-font-weight-bold">8am to 8pm</span> Monday to Friday</li>
-        <li> <span class="govuk-body govuk-!-font-weight-bold">10am to 5pm</span> Saturday and <a class="govuk-link" href="https://www.gov.uk/bank-holidays">bank holidays</a></li>
-    </ul>
-    <p class="govuk-body"> We're closed Sunday, Christmas Day and New Year's Day.</p>
- </div>
+﻿@if (Model.SpeakToAnAdviser != null)
+{
+    <div class="app-related-items">
+        @Html.Raw(Model.SpeakToAnAdviser.Content)
+    </div>
+}

@@ -57,6 +57,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{F1874F51-A7C6-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.JobProfile.UI.FunctionalTests", "DFC.App.JobProfile.UI.FunctionalTests\DFC.App.JobProfile.UI.FunctionalTests.csproj", "{6926461B-0774-4F94-AB0F-9100DD738DA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.App.ExploreCareers.UI.FunctionalTests", "DFC.App.ExploreCareers.UI.FunctionalTests\DFC.App.ExploreCareers.UI.FunctionalTests.csproj", "{1C083A92-80DB-43C6-91FE-39074E932F7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{6926461B-0774-4F94-AB0F-9100DD738DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6926461B-0774-4F94-AB0F-9100DD738DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6926461B-0774-4F94-AB0F-9100DD738DA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C083A92-80DB-43C6-91FE-39074E932F7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C083A92-80DB-43C6-91FE-39074E932F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C083A92-80DB-43C6-91FE-39074E932F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C083A92-80DB-43C6-91FE-39074E932F7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +125,7 @@ Global
 		{8737BB70-DC20-4564-9D60-81082F5A88CE} = {89AE2C55-7A1D-46EA-8C08-36C3D225B562}
 		{F1874F51-A7C6-4137-BB29-DCFD0883AE0C} = {8737BB70-DC20-4564-9D60-81082F5A88CE}
 		{6926461B-0774-4F94-AB0F-9100DD738DA3} = {F1874F51-A7C6-4137-BB29-DCFD0883AE0C}
+		{1C083A92-80DB-43C6-91FE-39074E932F7E} = {F1874F51-A7C6-4137-BB29-DCFD0883AE0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED3C7131-FE57-4FB5-ADDB-18D199004BEE}

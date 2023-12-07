@@ -2,17 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <ProjectGuid>{6926461B-0774-4F94-AB0F-9100DD738DA3}</ProjectGuid>
-    <IsPackable>false</IsPackable>
-    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\JobProfile - Copy.feature.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,17 +20,17 @@
 
   <ItemGroup>
     <PackageReference Include="DFC.TestAutomation.UI" Version="1.0.143" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="DotNetSeleniumExtras.PageObjects" Version="3.11.0" />
+    <PackageReference Include="DotNetSeleniumExtras.PageObjects.Core" Version="4.0.1" />
+    <PackageReference Include="ExtentReports.Core" Version="1.0.3" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="98.0.4758.10200" />
-    <PackageReference Include="SpecFlow.xUnit" Version="3.9.22" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="SpecFlow.xUnit" Version="3.9.52" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -45,26 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Features\JobGroups.feature.cs">
-      <DependentUpon>JobGroups.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appsettings-template.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <SpecFlowFeatureFiles Update="Features\JobGroups.feature">
-      <Visible>$(UsingMicrosoftNETSdk)</Visible>
-      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>JobGroups.feature.cs</LastGenOutput>
-    </SpecFlowFeatureFiles>
   </ItemGroup>
 
 </Project>

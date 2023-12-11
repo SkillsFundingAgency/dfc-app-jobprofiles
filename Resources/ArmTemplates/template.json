@@ -509,7 +509,7 @@
               },
               {
                 "name": "EventGridSubscriptionClientOptions__ApiKey",
-                "value": "[parameters('apimCompositeApiKey')]"
+                "value": "[parameters('apimCompositeKey')]"
               },
               {
                 "name": "EventGridSubscriptionClientOptions__BaseAddress",

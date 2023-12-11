@@ -138,7 +138,7 @@
     "EventGridSubscriptionClientOptionsEndpoint": {
       "type": "string"
     },
-    "apimCompositeApiKey": {
+    "apimCompositeKey": {
       "type": "securestring"
     },
     "apimProxyAddress": {
@@ -553,7 +553,7 @@
               },
               {
                 "name": "SubscriptionSettings__Endpoint",
-                "value": "[concat(parameters('SubscriptionSettingsEndpoint'),'/api/webhook/ReceiveEvents?subscription-key=',parameters('apimCompositeApiKey'))]"
+                "value": "[concat(parameters('SubscriptionSettingsEndpoint'),'/api/webhook/ReceiveEvents?subscription-key=',parameters('apimCompositeKey'))]"
               },
               {
                 "name": "SubscriptionSettings__SubscriptionServiceEndpoint",

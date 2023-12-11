@@ -80,7 +80,7 @@
     "SubscriptionSettingsEndpoint": {
       "value": "foo"
     },
-    "apimCompositeApiKey": {
+    "apimCompositeKey": {
       "value": "FakeKey"
     },
     "apimProxyAddress": {

@@ -73,6 +73,13 @@
         },
         "EnableLMI": {
             "value": false
+        },
+        "workspaceName": {
+            "value": "aTestLogAnalyticsAccount"
+        },
+        "workspaceResourceGroup": {
+            "value": "aResourceGroup"
         }
+
     }
 }

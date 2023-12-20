@@ -128,6 +128,12 @@
             "metadata": {
                 "description": "Enable or disable LMI"
             }
+        },
+        "workspaceName": {
+            "type": "string"
+        },
+        "workspaceResourceGroup": {
+            "type": "string"
         }
     },
     "variables": {
@@ -172,6 +178,12 @@
                     },
                     "attachedService": {
                         "value": ""
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "workspaceResourceGroup": {
+                        "value": "[parameters('workspaceResourceGroup')]"
                     }
                 }
             }
@@ -540,6 +552,12 @@
                     },
                     "attachedService": {
                         "value": ""
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "workspaceResourceGroup": {
+                        "value": "[parameters('workspaceResourceGroup')]"
                     }
                 }
             }

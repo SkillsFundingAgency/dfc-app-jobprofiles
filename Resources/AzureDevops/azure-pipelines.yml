@@ -10,7 +10,7 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/tags/v1.14.0
+    ref: refs/tags/v1.15.0
     endpoint: 'GitHub (ESFA)'
 
 pool:
@@ -70,3 +70,11 @@ stages:
             SolutionBaseName: $(SolutionBaseName).UI.FunctionalTests
             BuildPlatform: $(BuildPlatform)
             BuildConfiguration: $(BuildConfiguration)
+
+    - job: PublishOpenApiDefinition
+      displayName: Publish Open Api Definition
+      steps:
+        - template: AzureDevOpsTemplates\Build\StepTemplates\dfc-build-openapi-definition.yml@dfc-devops
+          parameters:
+            OpenApiDefinitionDirectory: $(Build.SourcesDirectory)\Resources\OpenApiDocs
+            SolutionBaseName: $(SolutionBaseName)

@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: __apiName__
+  title: __ApimProductInstanceName__-__apiName__
   description: 'Webhook receiver for Event Grid Events' 
   version: 1.0.0
 servers:

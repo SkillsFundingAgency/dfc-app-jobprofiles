@@ -2,6 +2,21 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
   "parameters": {
+    "ApimLoggerName": {
+      "type": "string"
+    },
+    "ApimProductInstanceName": {
+      "type": "string"
+    },
+    "ApimResourceGroup": {
+      "type": "string"
+    },
+    "ApimServiceName": {
+      "type": "string"
+    },
+    "ApiName": {
+      "type": "string"
+    },
     "appServiceDomain": {
       "type": "string"
     },
@@ -158,6 +173,7 @@
     }
   },
     "variables": {
+        "ApiName": "[concat(parameters('ApimProductInstanceName'), '-', parameters('ApiName'))]",
         "productionEnvironment": "[or(equals(parameters('environment'), 'PP'), equals(parameters('Environment'), 'PRD'))]",
         "appServicePlanName": "[if(greater(length(parameters('sharedAppServicePlanName')), 0), parameters('sharedAppServicePlanName'), concat(variables('resourcePrefix'), '-asp'))]",
         "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
@@ -183,6 +199,35 @@
         "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-app-sharedresources-actgrp')]"
     },
   "resources": [
+    {
+      "name": "[variables('ApiName')]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('ApimResourceGroup')]",
+      "apiVersion": "2017-05-10",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'APIM/apim-api.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "apimLoggerName": {
+            "value": "[parameters('ApimLoggerName')]"
+          },
+          "apimProductInstanceName": {
+            "value": "[parameters('ApimProductInstanceName')]"
+          },
+          "apimServiceName": {
+            "value": "[parameters('ApimServiceName')]"
+          },
+          "apiName": {
+            "value": "[variables('ApiName')]"
+          }
+        }
+      },
+      "dependsOn": [
+      ]
+    },
     {
       "apiVersion": "2017-05-10",
       "name": "[variables('webAppInsightsName')]",

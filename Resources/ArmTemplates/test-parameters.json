@@ -80,7 +80,7 @@
     "SubscriptionSettingsEndpoint": {
       "value": "foo"
     },
-    "apimCompositeApiKey": {
+    "apimCompositeKey": {
       "value": "FakeKey"
     },
     "apimProxyAddress": {
@@ -98,11 +98,26 @@
     "EnableLMI": {
       "value": false
     },
+    "ApimResourceGroup": {
+      "value": "dfc-dev-shared-rg"
+    },
+    "ApimLoggerName": {
+      "value": "composite-ui-logger"
+    },
+    "ApimProductInstanceName": {
+      "value": "composite-ui"
+    },
+    "ApimServiceName": {
+      "value": "dfc-dev-shared-apim"
+    },
+    "ApiName": {
+      "value": "contactus"
+    },
     "workspaceName": {
-      "value": "aTestLogAnalyticsAccount"
+        "value": "aTestLogAnalyticsAccount"
     },
     "workspaceResourceGroup": {
-      "value": "aResourceGroup"
+        "value": "aResourceGroup"
     }
   }
 }

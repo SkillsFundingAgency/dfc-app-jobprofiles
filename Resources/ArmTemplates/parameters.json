@@ -104,8 +104,8 @@
     "EventGridSubscriptionClientOptionsEndpoint": {
       "value": "__EventGridSubscriptionClientOptionsEndpoint__"
     },
-    "apimCompositeApiKey": {
-      "value": "__apimCompositeApiKey__"
+    "apimCompositeKey": {
+      "value": "__apimCompositeKey__"
     },
     "apimProxyAddress": {
       "value": "__apimProxyAddress__"
@@ -117,13 +117,28 @@
       "value": "__LmiBaseEndPoint__"
     },
     "EnableLMI": {
-      "value": "__EnableLMI__"
+      "value": __EnableLMI__
+    },
+    "ApimResourceGroup": {
+      "value": "__SharedResourceGroupName__"
+    },
+    "ApimLoggerName": {
+      "value": "__ApimLoggerName__"
+    },
+    "ApimProductInstanceName": {
+      "value": "__ApimProductInstanceName__"
+    },
+    "ApimServiceName": {
+      "value": "__ApimServiceName__"
+    },
+    "ApiName": {
+      "value": "__ApiName__"
     },
     "workspaceName": {
-      "value": "__sharedLogAnalyticsWorkspace__"
+        "value": "__sharedLogAnalyticsWorkspace__"
     },
     "workspaceResourceGroup": {
-      "value": "__sharedLogAnalyticsResourceGroup__"
+        "value": "__sharedLogAnalyticsResourceGroup__"
     }
   }
 }

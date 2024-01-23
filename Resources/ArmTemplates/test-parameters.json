@@ -112,6 +112,12 @@
     },
     "ApiName": {
       "value": "contactus"
+    },
+    "workspaceName": {
+        "value": "aTestLogAnalyticsAccount"
+    },
+    "workspaceResourceGroup": {
+        "value": "aResourceGroup"
     }
   }
   }

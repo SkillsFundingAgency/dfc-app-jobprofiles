@@ -133,6 +133,12 @@
     },
     "ApiName": {
       "value": "__ApiName__"
+    },
+    "workspaceName": {
+        "value": "__sharedLogAnalyticsWorkspace__"
+    },
+    "workspaceResourceGroup": {
+        "value": "__sharedLogAnalyticsResourceGroup__"
     }
   }
 }

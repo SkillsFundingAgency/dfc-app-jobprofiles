@@ -32,9 +32,10 @@ namespace DFC.App.JobProfile.Services
             this.mapper = mapper;
             this.staticContentDocumentService = staticContentDocumentService;
             this.cmsApiService = cmsApiService;
+
             if (cmsApiClientOptions?.ContentIds == null)
             {
-                throw new ArgumentNullException(nameof(cmsApiClientOptions.ContentIds));
+                throw new ArgumentNullException(nameof(cmsApiClientOptions));
             }
 
             sharedContentItemGuids = cmsApiClientOptions.ContentIds.Split(",", StringSplitOptions.RemoveEmptyEntries)

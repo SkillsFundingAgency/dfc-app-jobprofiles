@@ -44,12 +44,7 @@ namespace DFC.App.JobProfile.Controllers
             this.segmentService = segmentService;
             this.redirectionSecurityService = redirectionSecurityService;
             this.staticContentDocumentService = staticContentDocumentService;
-            if (cmsApiClientOptions?.ContentIds == null)
-            {
-                throw new ArgumentNullException(nameof(cmsApiClientOptions.ContentIds));
-            }
-
-            this.sharedContentItemGuid = new Guid(cmsApiClientOptions.ContentIds);
+            sharedContentItemGuid = new Guid(cmsApiClientOptions?.ContentIds ?? throw new ArgumentNullException(nameof(cmsApiClientOptions), "ContentIds cannot be null"));
         }
 
         [HttpGet]

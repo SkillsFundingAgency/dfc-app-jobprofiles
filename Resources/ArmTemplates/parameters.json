@@ -87,7 +87,7 @@
       "value": "__surveyFeedbackUrl__"
     },
     "enableAlerts": {
-      "value": "__EnableAzureMonitorAlerting__"
+      "value": __EnableAzureMonitorAlerting__
     },
     "ExceptionCountThreshold": {
       "value": "__ExceptionCountThreshold__"

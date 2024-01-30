@@ -19,7 +19,7 @@ namespace DFC.App.JobProfile.Services
         private readonly AutoMapper.IMapper mapper;
         private readonly IDocumentService<StaticContentItemModel> staticContentDocumentService;
         private readonly ICmsApiService cmsApiService;
-        private readonly CmsApiClientOptions cmsApiClientOptions;
+        private readonly List<Guid> sharedContentItemGuids;
 
         public StaticContentReloadService(
             ILogger<StaticContentReloadService> logger,
@@ -32,7 +32,14 @@ namespace DFC.App.JobProfile.Services
             this.mapper = mapper;
             this.staticContentDocumentService = staticContentDocumentService;
             this.cmsApiService = cmsApiService;
-            this.cmsApiClientOptions = cmsApiClientOptions;
+
+            if (cmsApiClientOptions?.ContentIds == null)
+            {
+                throw new ArgumentNullException(nameof(cmsApiClientOptions));
+            }
+
+            sharedContentItemGuids = cmsApiClientOptions.ContentIds.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .Select(Guid.Parse).ToList();
         }
 
         public async Task Reload(CancellationToken stoppingToken)
@@ -63,9 +70,8 @@ namespace DFC.App.JobProfile.Services
         {
             await staticContentDocumentService.PurgeAsync().ConfigureAwait(false);
 
-            var contentIds = cmsApiClientOptions.ContentIds.Split(",", StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (var contentId in contentIds)
+            foreach (var contentId in sharedContentItemGuids)
             {
                 if (stoppingToken.IsCancellationRequested)
                 {
@@ -74,7 +80,7 @@ namespace DFC.App.JobProfile.Services
                     return;
                 }
 
-                var apiDataModel = await cmsApiService.GetItemAsync<StaticContentItemApiDataModel>("sharedcontent", new Guid(contentId)).ConfigureAwait(false);
+                var apiDataModel = await cmsApiService.GetItemAsync<StaticContentItemApiDataModel>("sharedcontent", contentId).ConfigureAwait(false);
 
                 if (apiDataModel == null)
                 {

@@ -32,7 +32,7 @@ namespace DFC.App.JobProfile.Controllers
         private readonly ISegmentService segmentService;
         private readonly IRedirectionSecurityService redirectionSecurityService;
         private readonly IDocumentService<StaticContentItemModel> staticContentDocumentService;
-        private readonly CmsApiClientOptions cmsApiClientOptions;
+        private readonly Guid sharedContentItemGuid;
 
         public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService, IDocumentService<StaticContentItemModel> staticContentDocumentService, CmsApiClientOptions cmsApiClientOptions)
         {
@@ -44,7 +44,7 @@ namespace DFC.App.JobProfile.Controllers
             this.segmentService = segmentService;
             this.redirectionSecurityService = redirectionSecurityService;
             this.staticContentDocumentService = staticContentDocumentService;
-            this.cmsApiClientOptions = cmsApiClientOptions;
+            sharedContentItemGuid = new Guid(cmsApiClientOptions?.ContentIds ?? throw new ArgumentNullException(nameof(cmsApiClientOptions), "ContentIds cannot be null"));
         }
 
         [HttpGet]
@@ -274,7 +274,7 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                viewModel.SpeakToAnAdviser = await staticContentDocumentService.GetByIdAsync(new Guid(cmsApiClientOptions.ContentIds)).ConfigureAwait(false);
+                viewModel.SpeakToAnAdviser = await staticContentDocumentService.GetByIdAsync(sharedContentItemGuid, StaticContentItemModel.DefaultPartitionKey).ConfigureAwait(false);
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
                 viewModel.SmartSurveyJP = feedbackLinks.SmartSurveyJP;
 

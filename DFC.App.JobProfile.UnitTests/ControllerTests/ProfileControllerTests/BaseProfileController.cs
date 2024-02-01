@@ -3,6 +3,9 @@ using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
+using DFC.Compui.Cosmos;
+using DFC.Compui.Cosmos.Contracts;
+using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +26,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             DummyConfigValues = A.Dummy<ConfigValues>();
             FakeSegmentService = A.Fake<ISegmentService>();
             FakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
+            FakeStaticContentDocumentService = A.Fake<IDocumentService<StaticContentItemModel>>();
         }
 
         public static IEnumerable<object[]> HtmlMediaTypes => new List<string[]>
@@ -53,11 +57,15 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected IRedirectionSecurityService FakeRedirectionSecurityService { get; }
 
+        protected IDocumentService<StaticContentItemModel> FakeStaticContentDocumentService { get; }
+
+
         protected ProfileController BuildProfileController(
             string mediaTypeName = MediaTypeNames.Application.Json,
             IMapper mapper = null,
             string host = "localhost",
-            string[] whitelist = null)
+            string[] whitelist = null,
+            string sharedContentItemId = "2c9da1b3-3529-4834-afc9-9cd741e59788")
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
@@ -65,7 +73,12 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             httpContext.Request.Host = new HostString(host);
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService)
+            var cmsApiClientOptions = new CmsApiClientOptions
+            {
+                ContentIds = sharedContentItemId,
+            };
+
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService, FakeStaticContentDocumentService, cmsApiClientOptions)
             {
                 ControllerContext = new ControllerContext()
                 {

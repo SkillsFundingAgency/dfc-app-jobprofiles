@@ -17,7 +17,7 @@
 
         /// <summary>
         /// Gets or sets  - Cosmos DB - Database Id.
-        /// </summary>
+// </summary>
         public string DatabaseId { get; set; }
 
         /// <summary>

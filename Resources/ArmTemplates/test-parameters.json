@@ -1,85 +1,123 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "appServiceDomain": {
-            "value": "azurewebsites.net"
-        },
-        "appSharedResourceGroup": {
-            "value": "dfc-dev-app-sharedresources-rg"
-        },
-        "appSharedServiceBusName": {
-            "value": "dfc-dev-app-sharedresources-ns"
-        },
-        "appSharedStorageAccountName": {
-            "value": "dfcdevappsharedstr"
-        },
-        "brandingAssetsAppCssFilePath": {
-            "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
-        },
-        "cosmosDBName": {
-            "value": "dfc-dev-app-sharedresources-cdb"
-        },
-        "cosmosDbKey": {
-            "value": "not-a-real-key"
-        },
-        "Environment": {
-            "value": "FOO"
-        },
-        "sharedAppServicePlanName": {
-            "value": "dfc-dev-app-shared-asp"
-        },
-        "sharedAppServicePlanResourceGroup": {
-            "value": "dfc-dev-app-sharedresources-rg"
-        },
-        "cosmosDbCollectionName": {
-            "value": "a-collection"
-        },
-        "surveyUrl": {
-            "value": "https://some.survey.site/link/to/survey"
-        },
-        "enableAlerts": {
-            "value": false
-        },
-        "ExceptionCountThreshold":{
-            "value": "0"
-        },
-        "MemoryPercentageThreshold": {
-            "value": "0"
-        },
-        "CPUPercentageThreshold": {
-            "value": "0"
-        },
-        "EventGridSubscriptionModelEndpoint": {
-            "value": "foo"
-        },
-        "EventGridSubscriptionClientOptionsEndpoint": {
-            "value": "foo"
-        },
-        "apimCompositeApiKey": {
-            "value": "FakeKey"
-        },
-        "apimProxyAddress": {
-            "value": "https://foo"
-        },
-        "AllowedRedirects": {
-            "value": "nationalcareers"
-        },
-        "apimContentApiKey": {
-            "value": "FakeKey"
-        },
-        "LmiBaseEndPoint": {
-            "value": "https://foo"
-        },
-        "EnableLMI": {
-            "value": false
-        },
-        "workspaceName": {
-            "value": "aTestLogAnalyticsAccount"
-        },
-        "workspaceResourceGroup": {
-            "value": "aResourceGroup"
-        }
-
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appServiceDomain": {
+      "value": "azurewebsites.net"
+    },
+    "appSharedResourceGroup": {
+      "value": "dfc-dev-app-sharedresources-rg"
+    },
+    "appSharedServiceBusName": {
+      "value": "dfc-dev-app-sharedresources-ns"
+    },
+    "appSharedStorageAccountName": {
+      "value": "dfcdevappsharedstr"
+    },
+    "brandingAssetsAppCssFilePath": {
+      "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
+    },
+    "cmsTimeout": {
+      "value": "00:00:30"
+    },
+    "cmsApiKey": {
+      "value": "testkey"
+    },
+    "cmsBaseAddress": {
+      "value": "https://url"
+    },
+    "cmsStaticContentEndpoint": {
+      "value": "/shared-content/"
+    },
+    "cmsContentIds": {
+      "value": "12345"
+    },
+    "cosmosDBName": {
+      "value": "dfc-dev-app-sharedresources-cdb"
+    },
+    "cosmosDbKey": {
+      "value": "not-a-real-key"
+    },
+    "Environment": {
+      "value": "FOO"
+    },
+    "sharedAppServicePlanName": {
+      "value": "dfc-dev-app-shared-asp"
+    },
+    "sharedAppServicePlanResourceGroup": {
+      "value": "dfc-dev-app-sharedresources-rg"
+    },
+    "cosmosDbCollectionName": {
+      "value": "a-collection"
+    },
+    "cosmosDbSharedCollectionName": {
+      "value": "b-collection"
+    },
+    "surveyUrl": {
+      "value": "https://some.survey.site/link/to/survey"
+    },
+    "enableAlerts": {
+      "value": false
+    },
+    "ExceptionCountThreshold": {
+      "value": "0"
+    },
+    "MemoryPercentageThreshold": {
+      "value": "0"
+    },
+    "CPUPercentageThreshold": {
+      "value": "0"
+    },
+    "EventGridSubscriptionModelEndpoint": {
+      "value": "foo"
+    },
+    "EventGridSubscriptionClientOptionsEndpoint": {
+      "value": "foo"
+    },
+    "subscriptionUrl": {
+      "value": "foo"
+    },
+    "SubscriptionSettingsEndpoint": {
+      "value": "foo"
+    },
+    "apimCompositeKey": {
+      "value": "FakeKey"
+    },
+    "apimProxyAddress": {
+      "value": "https://foo"
+    },
+    "AllowedRedirects": {
+      "value": "nationalcareers"
+    },
+    "apimContentApiKey": {
+      "value": "FakeKey"
+    },
+    "LmiBaseEndPoint": {
+      "value": "https://foo"
+    },
+    "EnableLMI": {
+      "value": false
+    },
+    "ApimResourceGroup": {
+      "value": "dfc-dev-shared-rg"
+    },
+    "ApimLoggerName": {
+      "value": "composite-ui-logger"
+    },
+    "ApimProductInstanceName": {
+      "value": "composite-ui"
+    },
+    "ApimServiceName": {
+      "value": "dfc-dev-shared-apim"
+    },
+    "ApiName": {
+      "value": "contactus"
+    },
+    "workspaceName": {
+        "value": "aTestLogAnalyticsAccount"
+    },
+    "workspaceResourceGroup": {
+        "value": "aResourceGroup"
     }
+  }
 }

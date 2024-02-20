@@ -10,7 +10,7 @@ namespace DFC.App.JobProfile.ViewModels
 
         public string Title { get; set; }
 
-        public string AccordionID2 { get; set; }
+        public string AccordionClass2 { get; set; }
 
         public string Summary { get; set; }
 

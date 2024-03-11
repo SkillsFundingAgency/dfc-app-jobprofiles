@@ -30,6 +30,9 @@
 				"HealthCheckRequired": true,
 				"IsHealthy": true
 			}
-		]
+		],
+		"JavaScriptNames": {
+			"/js/dfc-app-jobprofiles.min.js": null
+		}
 	}
 ]

@@ -6,9 +6,9 @@ namespace DFC.App.JobProfile.ViewModels
     [ExcludeFromCodeCoverage]
     public class AccordionSectionViewModel
     {
-        public int SequenceNo { get; set; }
-
         public string Title { get; set; }
+
+        public string HtmlId { get; set; }
 
         public string Summary { get; set; }
 

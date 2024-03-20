@@ -5,15 +5,15 @@
     <div class="govuk-accordion__section ">
         <div class="govuk-accordion__section-header">
             <h2 class="govuk-accordion__section-heading">
-                <span class="govuk-accordion__section-button" id="job-profile-accordion-with-summary-sections-heading-@Model.SequenceNo">
+                <span class="govuk-accordion__section-button" id="jp-accordion-@Model.HtmlId">
                     @Html.Raw(Model.Title)
                 </span>
             </h2>
-            <div class="govuk-accordion__section-summary govuk-body" id="job-profile-accordion-with-summary-sections-summary-@Model.SequenceNo">
+            <div class="govuk-accordion__section-summary govuk-body" id="jp-accordion__section-summary-@Model.HtmlId">
                 @Html.Raw(Model.Summary)
             </div>
         </div>
-        <div id="job-profile-accordion-with-summary-sections-content-@Model.SequenceNo" class="govuk-accordion__section-content" aria-labelledby="job-profile-accordion-with-summary-sections-heading-@Model.SequenceNo">
+        <div id="job-profile-accordion-with-summary-sections-content-@Model.HtmlId" class="govuk-accordion__section-content" aria-labelledby="jp-accordion-with-summary-sections-heading-@Model.HtmlId">
             @Html.Raw(Model.Content)
         </div>
     </div>

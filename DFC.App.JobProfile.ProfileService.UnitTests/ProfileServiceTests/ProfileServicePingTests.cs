@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Xunit;
 
@@ -18,10 +20,12 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var expectedResult = true;
             mapper = A.Fake<IMapper>();
+            var logService = A.Fake<ILogService>();
+            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface);
 
             // act
             var result = jobProfileService.PingAsync().Result;
@@ -37,10 +41,12 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             // arrange
             var repository = A.Dummy<ICosmosRepository<JobProfileModel>>();
             var expectedResult = false;
+            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            var logService = A.Fake<ILogService>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface);
 
             // act
             var result = jobProfileService.PingAsync().Result;

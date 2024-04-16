@@ -13,11 +13,19 @@ using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ProfileService.SegmentServices;
 using DFC.App.JobProfile.Repository.CosmosDb;
 using DFC.App.JobProfile.Services;
+using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure.Strategy;
+using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using DFC.Common.SharedContent.Pkg.Netcore;
+using DFC.Compui.Cosmos;
 using DFC.Compui.Subscriptions.Pkg.Netstandard.Extensions;
+using DFC.Compui.Telemetry;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
-using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
 using DFC.Content.Pkg.Netcore.Services;
+using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
+using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
 using DFC.Logger.AppInsights.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,10 +38,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using DFC.Compui.Cosmos;
-using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
-using DFC.Compui.Telemetry;
-//using DFC.Compui.Cosmos.Contracts;
+using DFC.Common.SharedContent.Pkg.Netcore.RequestHandler;
+using GraphQL.Client.Abstractions;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.Newtonsoft;
+using System.Net.Http;
 
 namespace DFC.App.JobProfile
 {
@@ -44,6 +53,7 @@ namespace DFC.App.JobProfile
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
         public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
+        private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
 
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment env;
@@ -147,6 +157,24 @@ namespace DFC.App.JobProfile
             services.AddScoped<ISegmentService, SegmentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
+
+            services.AddSingleton<IGraphQLClient>(s =>
+            {
+                var option = new GraphQLHttpClientOptions()
+                {
+                    EndPoint = new Uri(configuration.GetSection(StaxGraphApiUrlAppSettings).Get<string>() ?? throw new ArgumentNullException()),
+
+                    HttpMessageHandler = new CmsRequestHandler(s.GetService<IHttpClientFactory>(), s.GetService<IConfiguration>(), s.GetService<IHttpContextAccessor>() ?? throw new ArgumentNullException()),
+                };
+                var client = new GraphQLHttpClient(option, new NewtonsoftJsonSerializer());
+                return client;
+            });
+
+            services.AddSingleton<ISharedContentRedisInterfaceStrategy<JobProfilesOverviewResponse>, JobProfileOverviewProfileSpecificQueryStrategy>();
+
+            services.AddSingleton<ISharedContentRedisInterfaceStrategyFactory, SharedContentRedisStrategyFactory>();
+
+            services.AddScoped<ISharedContentRedisInterface, SharedContentRedis>();
 
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());

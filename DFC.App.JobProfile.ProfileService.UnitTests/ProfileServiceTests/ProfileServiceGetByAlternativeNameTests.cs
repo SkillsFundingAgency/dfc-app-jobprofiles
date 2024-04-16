@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using System;
 using System.Linq.Expressions;
@@ -16,6 +18,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
         private readonly IJobProfileService jobProfileService;
+        private readonly ILogService logService;
+        private readonly ISharedContentRedisInterface fakeSharedContentRedisInterface;
 
         public ProfileServiceGetByAlternativeNameTests()
         {
@@ -23,7 +27,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             segmentService = A.Fake<ISegmentService>();
             mapper = A.Fake<IMapper>();
-            jobProfileService = new JobProfileService(repository, segmentService, mapper);
+            logService = A.Fake<ILogService>();
+            fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface);
         }
 
         [Fact]

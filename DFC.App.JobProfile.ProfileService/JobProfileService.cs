@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.Common.SharedContent.Pkg.Netcore.Constant;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using System;
 using System.Collections.Generic;
@@ -12,19 +15,24 @@ namespace DFC.App.JobProfile.ProfileService
 {
     public class JobProfileService : IJobProfileService
     {
-        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
+        private readonly ICosmosRepository<JobProfileModel> repository;
         private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
         private readonly ILogService logService;
+        private readonly ISharedContentRedisInterface sharedContentRedisInterface;
 
         public JobProfileService(
-            ICosmosRepository<Data.Models.JobProfileModel> repository,
+            ICosmosRepository<JobProfileModel> repository,
             ISegmentService segmentService,
-            IMapper mapper)
+            IMapper mapper,
+            ILogService logService,
+            ISharedContentRedisInterface sharedContentRedisInterface)
         {
             this.repository = repository;
             this.segmentService = segmentService;
             this.mapper = mapper;
+            this.logService = logService;
+            this.sharedContentRedisInterface = sharedContentRedisInterface;
         }
 
         public async Task<bool> PingAsync()
@@ -37,27 +45,42 @@ namespace DFC.App.JobProfile.ProfileService
             return await segmentService.SegmentsHealthCheckAsync().ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<Data.Models.JobProfileModel>> GetAllAsync()
+        public async Task<IEnumerable<JobProfileModel>> GetAllAsync()
         {
             return await repository.GetAllAsync().ConfigureAwait(false);
         }
 
-        public async Task<Data.Models.JobProfileModel> GetByIdAsync(Guid documentId)
+        public async Task<JobProfileModel> GetByIdAsync(Guid documentId)
         {
             return await repository.GetAsync(d => d.DocumentId == documentId).ConfigureAwait(false);
         }
 
-        public async Task<Data.Models.JobProfileModel> GetByNameAsync(string canonicalName)
+        public async Task<JobProfileModel> GetByNameAsync(string canonicalName)
         {
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
+            try
+            {
+                //Get the various job profile segments here.  Probably will need to use the URL as opposed to canonicalName.  We may need to update this call
+                //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
+                //databasae vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
+                //JobProfile calls going forward.
+                var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+
+                //etc...
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+            }
+
             return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
         }
 
-        public async Task<Data.Models.JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
+        public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {
             if (string.IsNullOrWhiteSpace(alternativeName))
             {
@@ -67,7 +90,7 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.GetAsync(d => d.AlternativeNames.Contains(alternativeName.ToLowerInvariant())).ConfigureAwait(false);
         }
 
-        public async Task<HttpStatusCode> Create(Data.Models.JobProfileModel jobProfileModel)
+        public async Task<HttpStatusCode> Create(JobProfileModel jobProfileModel)
         {
 
             if (jobProfileModel == null)
@@ -87,7 +110,7 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.UpsertAsync(jobProfileModel).ConfigureAwait(false);
         }
 
-        public async Task<HttpStatusCode> Update(Data.Models.JobProfileMetadata jobProfileMetadata)
+        public async Task<HttpStatusCode> Update(JobProfileMetadata jobProfileMetadata)
         {
             if (jobProfileMetadata is null)
             {
@@ -109,7 +132,7 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.UpsertAsync(mappedRecord).ConfigureAwait(false);
         }
 
-        public async Task<HttpStatusCode> Update(Data.Models.JobProfileModel jobProfileModel)
+        public async Task<HttpStatusCode> Update(JobProfileModel jobProfileModel)
         {
             if (jobProfileModel == null)
             {

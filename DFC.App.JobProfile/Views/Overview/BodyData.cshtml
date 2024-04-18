@@ -1,0 +1,66 @@
+﻿<header class="job-profile-hero">
+    <div class="govuk-width-container">
+        @if (Model.Breadcrumb != null)
+        {
+            <partial name="_Breadcrumb" model="Model.Breadcrumb" />
+        }
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1> @Model.Title</h1>
+                <h2 class="govuk-!-margin-top-5 govuk-!-margin-bottom-3"><span class="sr-hidden">Alternative titles for this job include </span>@Model.AlternativeTitle</h2>
+
+                <p>@Model.Overview</p>
+            </div>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div id="Salary" class="column-40 job-profile-heroblock">
+                <h2>
+                    Average salary
+                    <span>(a year)</span>
+                </h2>
+
+                <div class="job-profile-salary job-profile-heroblock-content">
+                    @if (Model.SalaryStarter > 0 && Model.SalaryExperienced > 0)
+                    {
+                        <p class="dfc-code-jpsstarter">@Model.SalaryStarter.ToString("C0") <span>Starter</span></p>
+                        <i class="sr-hidden dfc-code-jpshidden">to</i>
+                        <p class="dfc-code-jpsexperienced">@Model.SalaryExperienced.ToString("C0") <span>Experienced</span></p>
+                    }
+                    else
+                    {
+                        <p class="dfc-code-jpsalaryblank">Variable</p>
+                    }
+                </div>
+            </div>
+            <div id="WorkingHours" class="column-30 job-profile-heroblock">
+                <h2>Typical hours <span>(a week)</span></h2>
+                <div class="job-profile-hours job-profile-heroblock-content">
+                    <p class="dfc-code-jphours">
+                        @if (Model.MinimumHours > 0 && Model.MaximumHours > 0)
+                        {
+                            @Model.MinimumHours @(" to ") @Model.MaximumHours
+                        }
+                        else
+                        {
+                            @("Variable")
+                        }
+                        <span class="dfc-code-jpwhoursdetail">@Model.WorkingHoursDetailTitle</span>
+                    </p>
+                </div>
+            </div>
+            <div id="WorkingHoursPatterns" class="column-30 job-profile-heroblock">
+                <h2>
+                    You could work
+                </h2>
+                <div class="job-profile-pattern job-profile-heroblock-content">
+                    <p class="dfc-code-jpwpattern">
+                        @Model.WorkingPatternTitle
+                        <span class="dfc-code-jpwpatterndetail">@Model.WorkingPatternDetailTitle</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

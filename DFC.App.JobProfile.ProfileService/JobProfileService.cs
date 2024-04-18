@@ -1,10 +1,17 @@
 ﻿using AutoMapper;
+using Azure;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Razor.Templating.Core;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +27,22 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly IMapper mapper;
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
+        private readonly IRazorTemplateEngine razorTemplateEngine;
 
         public JobProfileService(
             ICosmosRepository<JobProfileModel> repository,
             ISegmentService segmentService,
             IMapper mapper,
             ILogService logService,
-            ISharedContentRedisInterface sharedContentRedisInterface)
+            ISharedContentRedisInterface sharedContentRedisInterface,
+            IRazorTemplateEngine razorTemplateEngine)
         {
             this.repository = repository;
             this.segmentService = segmentService;
             this.mapper = mapper;
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
+            this.razorTemplateEngine = razorTemplateEngine;
         }
 
         public async Task<bool> PingAsync()
@@ -62,13 +72,15 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
+            JobProfileOverviewSegmentDataModel jobProfileOverviewSegmentDataModel;
+            SegmentModel overview;
+
             try
             {
-                //Get the various job profile segments here.  Probably will need to use the URL as opposed to canonicalName.  We may need to update this call
-                //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
-                //databasae vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
-                //JobProfile calls going forward.
-                var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+                overview = await GetOverviewSegment(canonicalName);
+                //var hotobecome = await GetHowToBecomeSegment(canonicalName);
+
+                //WaitUntil.Completed
 
                 //etc...
             }
@@ -77,8 +89,53 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(exception.ToString());
             }
 
-            return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+
+            return data;
         }
+
+        private async Task<SegmentModel> GetOverviewSegment(string canonicalName)
+        {
+
+            JobProfileOverviewSegmentDataModel jobProfileOverviewSegmentDataModel;
+            SegmentModel overview = new SegmentModel();
+
+            try
+            {
+
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+
+                var mappedOverview = mapper.Map<OverviewApiModel>(response);
+                mappedOverview.Breadcrumb = "Test value";
+
+                var overviewObject = JsonConvert.SerializeObject(
+                    mappedOverview,
+                    new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+
+                var html = await razorTemplateEngine.RenderAsync("~/Views/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
+
+                overview = new SegmentModel
+                {
+                    Segment = Data.JobProfileSegment.Overview,
+                    JsonV1 = overviewObject,
+                    RefreshStatus = Data.Enums.RefreshStatus.Success,
+                    //Markup = html,
+                };
+
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+            }
+
+            return overview;
+
+        }
+
+        //private async SegmentModel GetHowToBecomeSegment(string canonicalName)
+        //{
+        //    return new SegmentModel();
+        //}
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {

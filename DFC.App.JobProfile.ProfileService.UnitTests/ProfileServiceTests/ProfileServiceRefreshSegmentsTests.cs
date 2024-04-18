@@ -6,6 +6,7 @@ using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Html;
+using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -25,6 +26,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         private readonly IJobProfileService jobProfileService;
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface fakeSharedContentRedisInterface;
+        private readonly IRazorTemplateEngine razorTemplateEngine;
 
         public ProfileServiceRefreshSegmentsTests()
         {
@@ -34,7 +36,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             mapper = A.Fake<IMapper>();
             logService = A.Fake<ILogService>();
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
-            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface);
+            razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine);
         }
 
         [Fact]

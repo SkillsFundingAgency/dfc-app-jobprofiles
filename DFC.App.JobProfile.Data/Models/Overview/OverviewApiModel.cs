@@ -26,9 +26,9 @@ namespace DFC.App.JobProfile.Data.Models.Overview
 
         public decimal? SalaryExperienced { get; set; }
 
-        public decimal MinimumHours { get; set; }
+        public decimal? MinimumHours { get; set; }
 
-        public decimal MaximumHours { get; set; }
+        public decimal? MaximumHours { get; set; }
 
         public string WorkingHoursDetailTitle { get; set; }
 
@@ -36,6 +36,6 @@ namespace DFC.App.JobProfile.Data.Models.Overview
 
         public string WorkingPatternDetailTitle { get; set; }
 
-        public string Breadcrumb { get; set; }
+        public BreadcrumbViewModel Breadcrumb { get; set; }
     }
 }

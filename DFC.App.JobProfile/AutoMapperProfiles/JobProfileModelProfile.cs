@@ -5,7 +5,6 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.ViewModels;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
@@ -52,8 +51,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfilesOverviewResponse, OverviewApiModel>()
             .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().DisplayText))
-            .ForMember(d => d.Breadcrumb, option => option.Ignore())  //Need to get ths 
-            .ForMember(d => d.LastUpdatedDate, option => option.Ignore())  //Need to get ths 
+            .ForMember(d => d.Breadcrumb, option => option.Ignore())
+            .ForMember(d => d.LastUpdatedDate, option => option.Ignore())
             .ForMember(d => d.Url, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().PageLocation.UrlName))
             .ForMember(d => d.Soc, option => option.ConvertUsing(new SocCodeFormatter(), a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().DisplayText))
             .ForMember(d => d.Soc2020, option => option.ConvertUsing(new SocCodeFormatter(), a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().SOC2020))
@@ -63,6 +62,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             .ForMember(d => d.Overview, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Overview))
             .ForMember(d => d.SalaryStarter, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().SalaryStarter))
             .ForMember(d => d.SalaryExperienced, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().SalaryExperienced))
+            //.ForMember(d => d.SalaryStarter, option => option.ConvertUsing(new SalaryToStringFormatter()))
+            //.ForMember(d => d.SalaryExperienced, option => option.ConvertUsing(new SalaryToStringFormatter()))
             .ForMember(d => d.MinimumHours, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Minimumhours))
             .ForMember(d => d.MaximumHours, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Maximumhours))
             .ForMember(d => d.WorkingHoursDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingHoursDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))

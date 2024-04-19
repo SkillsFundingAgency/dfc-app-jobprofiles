@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
-using Azure;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
+using Microsoft.AspNetCore.Html;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
-using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,8 +70,7 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
-            JobProfileOverviewSegmentDataModel jobProfileOverviewSegmentDataModel;
-            SegmentModel overview;
+            var overview = new SegmentModel();
 
             try
             {
@@ -89,28 +86,35 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(exception.ToString());
             }
 
+            //Instead of returning the data object below, we'll reconstruct it with the data that is required from the various segment calls.
             var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+
+            data.Segments.RemoveAt(6);
+            data.Segments.Add(overview);
 
             return data;
         }
 
         private async Task<SegmentModel> GetOverviewSegment(string canonicalName)
         {
-
-            JobProfileOverviewSegmentDataModel jobProfileOverviewSegmentDataModel;
             SegmentModel overview = new SegmentModel();
 
             try
             {
-
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
 
                 var mappedOverview = mapper.Map<OverviewApiModel>(response);
-                mappedOverview.Breadcrumb = "Test value";
+                mappedOverview.Breadcrumb = BuildBreadcrumb(canonicalName, string.Empty, mappedOverview.Title);
 
                 var overviewObject = JsonConvert.SerializeObject(
                     mappedOverview,
-                    new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new DefaultContractResolver
+                        {
+                            NamingStrategy = new CamelCaseNamingStrategy(),
+                        },
+                    });
 
                 var html = await razorTemplateEngine.RenderAsync("~/Views/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
 
@@ -119,9 +123,8 @@ namespace DFC.App.JobProfile.ProfileService
                     Segment = Data.JobProfileSegment.Overview,
                     JsonV1 = overviewObject,
                     RefreshStatus = Data.Enums.RefreshStatus.Success,
-                    //Markup = html,
+                    Markup = new HtmlString(html),
                 };
-
             }
             catch (Exception exception)
             {
@@ -129,7 +132,6 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return overview;
-
         }
 
         //private async SegmentModel GetHowToBecomeSegment(string canonicalName)
@@ -258,6 +260,37 @@ namespace DFC.App.JobProfile.ProfileService
             var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
 
             return result == HttpStatusCode.NoContent;
+        }
+
+        //private static BreadcrumbViewModel BuildBreadcrumb(JobProfileOverviewSegmentModel model, string routePrefix)
+        private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
+        {
+            var viewModel = new BreadcrumbViewModel
+            {
+                Paths = new List<BreadcrumbPathViewModel>()
+                {
+                    new BreadcrumbPathViewModel()
+                    {
+                        Route = $"/explore-careers",
+                        Title = "Home: Explore careers",
+                    },
+                },
+            };
+
+            //if (model != null)
+            //{
+            var breadcrumbPathViewModel = new BreadcrumbPathViewModel
+            {
+                Route = $"/{routePrefix}/{canonicalName}",
+                Title = title,
+            };
+
+            viewModel.Paths.Add(breadcrumbPathViewModel);
+            //}
+
+            viewModel.Paths.Last().AddHyperlink = false;
+
+            return viewModel;
         }
     }
 }

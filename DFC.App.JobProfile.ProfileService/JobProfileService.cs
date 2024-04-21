@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
@@ -66,7 +68,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 //Get the various job profile segments here.  Probably will need to use the URL as opposed to canonicalName.  We may need to update this call
                 //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
-                //databasae vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
+                //database vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
                 //JobProfile calls going forward.
                 var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
 
@@ -78,6 +80,42 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+        }
+
+        private async Task<HowToBecomeSegmentDataModel> GetHowToBecomeSegment(string canonicalName)
+        {
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, "PUBLISHED");
+
+                var mappedResponse = mapper.Map<HowToBecomeSegmentDataModel>(response);
+
+                // Map CommonRoutes for College
+                var collegeCommonRoutes = mapper.Map<CommonRoutes>(response, opt => opt.Items["RouteName"] = RouteName.College);
+
+                // Map CommonRoutes for University
+                var universityCommonRoutes = mapper.Map<CommonRoutes>(response, opt => opt.Items["RouteName"] = RouteName.University);
+
+                // Map CommonRoutes for Apprenticeship
+                var apprenticeshipCommonRoutes = mapper.Map<CommonRoutes>(response, opt => opt.Items["RouteName"] = RouteName.Apprenticeship);
+
+                // Combine CommonRoutes into a list
+                var allCommonRoutes = new List<CommonRoutes>
+                {
+                    collegeCommonRoutes,
+                    universityCommonRoutes,
+                    apprenticeshipCommonRoutes,
+                };
+
+                mappedResponse.EntryRoutes.CommonRoutes = allCommonRoutes;
+
+                return mappedResponse;
+            }
+            catch (Exception e)
+            {
+                logService.LogError(e.ToString());
+                throw;
+            }
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

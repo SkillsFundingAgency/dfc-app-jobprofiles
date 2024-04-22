@@ -3,7 +3,7 @@ using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.HowToBecome;
+using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using Newtonsoft.Json;
@@ -50,26 +50,25 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().DisplayText))
                 .ForMember(d => d.LastReviewed, s => s.Ignore())
-                .ForMember(d => d.EntryRouteSummary, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().Entryroutes.Html))
+                .ForMember(d => d.EntryRouteSummary, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().EntryRoutes.Html))
                 .ForPath(d => d.EntryRoutes.CommonRoutes, s => s.Ignore())
                 .ForPath(d => d.EntryRoutes.Work, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().Work.Html))
                 .ForPath(d => d.EntryRoutes.Volunteering, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().Volunteering.Html))
-                .ForPath(d => d.EntryRoutes.DirectApplication, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().Directapplication.Html))
-                .ForPath(d => d.EntryRoutes.OtherRoutes, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().Otherroutes.Html))
-                .ForPath(d => d.MoreInformation.FurtherInformation, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().Furtherinformation.Html))
-                .ForPath(d => d.MoreInformation.CareerTips, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().Careertips.Html))
-                .ForPath(d => d.MoreInformation.ProfessionalAndIndustryBodies, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().Professionalandindustrybodies.Html))
-                .ForMember(d => d.LastReviewed, s => s.Ignore())
-                .ForMember(d => d.Registrations, s => s.Ignore())
+                .ForPath(d => d.EntryRoutes.DirectApplication, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().DirectApplication.Html))
+                .ForPath(d => d.EntryRoutes.OtherRoutes, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().OtherRoutes.Html))
+                .ForPath(d => d.MoreInformation.FurtherInformation, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().FurtherInformation.Html))
+                .ForPath(d => d.MoreInformation.CareerTips, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().CareerTips.Html))
+                .ForPath(d => d.MoreInformation.ProfessionalAndIndustryBodies, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().ProfessionalAndIndustryBodies.Html))
+                .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>())
                 .ForMember(d => d.RealStory, s => s.Ignore());
 
             CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
                 .ForMember(d => d.RouteName, s => s.MapFrom((src, dest, routeName, context) => context.Items["RouteName"]))
-                .ForMember(d => d.Subject, opt => opt.MapFrom<RelevantSubjectsResolver>())
-                .ForMember(d => d.FurtherInformation, opt => opt.MapFrom<FurtherRouteInfoResolver>())
-                .ForMember(d => d.EntryRequirementPreface, opt => opt.MapFrom<EntryRequirementsPrefaceResolver>())
-                .ForMember(d => d.AdditionalInformation, opt => opt.MapFrom<AdditionalInfoResolver>())
-                .ForMember(d => d.EntryRequirements, opt => opt.MapFrom<EntryRequirementsResolver>());
+                .ForMember(d => d.Subject, s => s.MapFrom<RelevantSubjectsResolver>())
+                .ForMember(d => d.FurtherInformation, s => s.MapFrom<FurtherRouteInfoResolver>())
+                .ForMember(d => d.EntryRequirementPreface, s => s.MapFrom<EntryRequirementsPrefaceResolver>())
+                .ForMember(d => d.AdditionalInformation, s => s.MapFrom<AdditionalInfoResolver>())
+                .ForMember(d => d.EntryRequirements, s => s.MapFrom<EntryRequirementsResolver>());
         }
     }
 }

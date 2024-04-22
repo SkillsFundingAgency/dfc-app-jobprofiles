@@ -2,13 +2,19 @@
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.HowToBecome;
+using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
+using Microsoft.AspNetCore.Html;
+using Microsoft.Extensions.Hosting.Internal;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -22,19 +28,22 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly IMapper mapper;
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
+        private readonly IRazorTemplateEngine razorTemplateEngine;
 
         public JobProfileService(
             ICosmosRepository<JobProfileModel> repository,
             ISegmentService segmentService,
             IMapper mapper,
             ILogService logService,
-            ISharedContentRedisInterface sharedContentRedisInterface)
+            ISharedContentRedisInterface sharedContentRedisInterface,
+            IRazorTemplateEngine razorTemplateEngine)
         {
             this.repository = repository;
             this.segmentService = segmentService;
             this.mapper = mapper;
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
+            this.razorTemplateEngine = razorTemplateEngine;
         }
 
         public async Task<bool> PingAsync()
@@ -70,7 +79,9 @@ namespace DFC.App.JobProfile.ProfileService
                 //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
                 //database vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
                 //JobProfile calls going forward.
-                var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+                //var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+
+                var HowToBecomeSegment = await GetHowToBecomeSegmentAsync(canonicalName);
 
                 //etc...
             }
@@ -82,7 +93,7 @@ namespace DFC.App.JobProfile.ProfileService
             return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
         }
 
-        private async Task<HowToBecomeSegmentDataModel> GetHowToBecomeSegment(string canonicalName)
+        private async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName)
         {
             try
             {
@@ -109,7 +120,25 @@ namespace DFC.App.JobProfile.ProfileService
 
                 mappedResponse.EntryRoutes.CommonRoutes = allCommonRoutes;
 
-                return mappedResponse;
+                var howToBecomeObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy(),
+                    },
+                });
+
+                var markup = await razorTemplateEngine.RenderAsync("~/../DFC.App.JobProfile/Views/Profile/Segment/HowToBecome/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+
+                var howToBecomeSegment = new SegmentModel
+                {
+                    Segment = Data.JobProfileSegment.HowToBecome,
+                    Markup = new HtmlString(markup),
+                    JsonV1 = howToBecomeObject,
+                    RefreshStatus = RefreshStatus.Success,
+                };
+
+                return howToBecomeSegment;
             }
             catch (Exception e)
             {

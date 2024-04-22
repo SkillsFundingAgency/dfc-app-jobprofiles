@@ -177,6 +177,8 @@ namespace DFC.App.JobProfile
 
             services.AddScoped<ISharedContentRedisInterface, SharedContentRedis>();
 
+            services.AddRazorTemplating();
+
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());

@@ -20,7 +20,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             switch (routeName)
             {
                 case RouteName.Apprenticeship:
-                    furtherRouteInfo = source.JobProfileHowToBecome.FirstOrDefault()?.Apprenticeshipfurtherroutesinfo.Html;
+                    furtherRouteInfo = source.JobProfileHowToBecome.FirstOrDefault()?.ApprenticeshipFurtherRoutesInfo.Html;
                     break;
                 case RouteName.College:
                     furtherRouteInfo = source.JobProfileHowToBecome.FirstOrDefault()?.CollegeFurtherRouteInfo.Html;

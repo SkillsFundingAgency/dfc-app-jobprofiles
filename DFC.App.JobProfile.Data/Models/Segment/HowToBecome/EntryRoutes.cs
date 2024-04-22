@@ -4,7 +4,7 @@ namespace DFC.App.JobProfile.Data.Models.Segment.HowToBecome
 {
     public class EntryRoutes
     {
-        public IList<CommonRoutes> CommonRoutes { get; set; }
+        public List<CommonRoutes> CommonRoutes { get; set; }
 
         public string Work { get; set; }
 

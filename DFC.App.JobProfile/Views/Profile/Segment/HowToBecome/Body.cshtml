@@ -1,0 +1,27 @@
+﻿@using DFC.App.JobProfile.Data.Enums
+@using DFC.App.JobProfile.Data.Models.Segment.HowToBecome
+
+<section id="HowToBecome">
+    <h2 class="job-profile-heading">How to become @Model.Data.Title</h2>
+
+    @Html.Raw(Model.Data.EntryRouteSummary)
+
+    @{
+        var entryRoutes = Model.Data.EntryRoutes as EntryRoutes;
+        var universityRoute = entryRoutes.CommonRoutes.FirstOrDefault(route => route.RouteName.Equals(RouteName.University));
+        var collegeRoute = entryRoutes.CommonRoutes.FirstOrDefault(route => route.RouteName.Equals(RouteName.College));
+        var apprenticeshipRoute = entryRoutes.CommonRoutes.FirstOrDefault(route => route.RouteName.Equals(RouteName.Apprenticeship));
+
+        <partial name="RouteEntry" , model="@universityRoute" />
+        <partial name="RouteEntry" , model="@collegeRoute" />
+        <partial name="RouteEntry" , model="@apprenticeshipRoute" />
+    }
+    <partial name="FurtherRoutes" , model="@Model.Data.EntryRoutes" />
+
+    @if (@Model.Data.RealStory != null)
+    {
+        <partial name="RealStory" , model="@Model.Data.RealStory" />
+    }
+
+    <partial name="MoreInformation" , model="Model.Data" />
+</section>

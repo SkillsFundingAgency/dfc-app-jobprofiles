@@ -1,0 +1,48 @@
+﻿@model DFC.App.JobProfile.ViewModels.Segment.HowToBecome.DocumentViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    @if (!string.IsNullOrWhiteSpace(Model.CanonicalName))
+    {
+        ViewData["Title"] = Model.CanonicalName;
+
+        <title>@ViewData["Title"]</title>
+    }
+</head>
+<body>
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DocumentId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DocumentId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CanonicalName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CanonicalName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Data.LastReviewed)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Data.LastReviewed)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SequenceNumber)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SequenceNumber)
+            </dd>
+        </dl>
+        <partial name="Body" model=@Model />
+    </div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</body>
+</html>

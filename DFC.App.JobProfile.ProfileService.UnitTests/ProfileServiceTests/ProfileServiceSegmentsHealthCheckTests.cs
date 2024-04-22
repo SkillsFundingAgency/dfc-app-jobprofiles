@@ -4,6 +4,7 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
+using Razor.Templating.Core;
 using System.Collections.Generic;
 using Xunit;
 
@@ -19,8 +20,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var segmentService = A.Fake<ISegmentService>();
             var mapper = A.Fake<IMapper>();
-            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var logService = A.Fake<ILogService>();
+            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
 
             IList<HealthCheckItem> expectedResult = new List<HealthCheckItem>
             {
@@ -33,7 +35,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             A.CallTo(() => segmentService.SegmentsHealthCheckAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine);
 
             // act
             var result = jobProfileService.SegmentsHealthCheckAsync().Result;

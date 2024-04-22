@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DFC.App.JobProfile.Data.Models.HowToBecome
+namespace DFC.App.JobProfile.Data.Models.Segment.HowToBecome
 {
     public class AdditionalInformation
     {

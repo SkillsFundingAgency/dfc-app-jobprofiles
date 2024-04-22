@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models.HowToBecome
+namespace DFC.App.JobProfile.Data.Models.Segment.HowToBecome
 {
     public class CommonRoutes
     {

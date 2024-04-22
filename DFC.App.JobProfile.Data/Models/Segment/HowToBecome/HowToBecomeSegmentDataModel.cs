@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models.HowToBecome
+namespace DFC.App.JobProfile.Data.Models.Segment.HowToBecome
 {
     public class HowToBecomeSegmentDataModel
     {
@@ -15,7 +15,7 @@ namespace DFC.App.JobProfile.Data.Models.HowToBecome
 
         public MoreInformation MoreInformation { get; set; }
 
-        public IList<Registration> Registrations { get; set; }
+        public List<Registration> Registrations { get; set; }
 
         public RealStory RealStory { get; set; }
     }

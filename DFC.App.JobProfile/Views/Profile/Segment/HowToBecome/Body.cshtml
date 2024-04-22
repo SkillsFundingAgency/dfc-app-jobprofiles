@@ -2,26 +2,26 @@
 @using DFC.App.JobProfile.Data.Models.Segment.HowToBecome
 
 <section id="HowToBecome">
-    <h2 class="job-profile-heading">How to become @Model.Data.Title</h2>
+    <h2 class="job-profile-heading">How to become @Model.Title</h2>
 
-    @Html.Raw(Model.Data.EntryRouteSummary)
+    @Html.Raw(Model.EntryRouteSummary)
 
     @{
-        var entryRoutes = Model.Data.EntryRoutes as EntryRoutes;
+        var entryRoutes = Model.EntryRoutes as EntryRoutes;
         var universityRoute = entryRoutes.CommonRoutes.FirstOrDefault(route => route.RouteName.Equals(RouteName.University));
         var collegeRoute = entryRoutes.CommonRoutes.FirstOrDefault(route => route.RouteName.Equals(RouteName.College));
         var apprenticeshipRoute = entryRoutes.CommonRoutes.FirstOrDefault(route => route.RouteName.Equals(RouteName.Apprenticeship));
 
-        <partial name="RouteEntry" , model="@universityRoute" />
-        <partial name="RouteEntry" , model="@collegeRoute" />
-        <partial name="RouteEntry" , model="@apprenticeshipRoute" />
+        <partial name="~/Views/Profile/Segment/HowToBecome/RouteEntry.cshtml" , model="@universityRoute" />
+        <partial name="~/Views/Profile/Segment/HowToBecome/RouteEntry.cshtml" , model="@collegeRoute" />
+        <partial name="~/Views/Profile/Segment/HowToBecome/RouteEntry.cshtml" , model="@apprenticeshipRoute" />
     }
-    <partial name="FurtherRoutes" , model="@Model.Data.EntryRoutes" />
+    <partial name="~/Views/Profile/Segment/HowToBecome/FurtherRoutes.cshtml" , model="@Model.EntryRoutes" />
 
-    @if (@Model.Data.RealStory != null)
+    @if (@Model.RealStory != null)
     {
-        <partial name="RealStory" , model="@Model.Data.RealStory" />
+        <partial name="~/Views/Profile/Segment/HowToBecome/RealStory.cshtml" , model="@Model.RealStory" />
     }
 
-    <partial name="MoreInformation" , model="Model.Data" />
+    <partial name="~/Views/Profile/Segment/HowToBecome/MoreInformation.cshtml" , model="@Model" />
 </section>

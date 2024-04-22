@@ -89,8 +89,12 @@ namespace DFC.App.JobProfile.ProfileService
             //Instead of returning the data object below, we'll reconstruct it with the data that is required from the various segment calls.
             var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-            data.Segments.RemoveAt(6);
-            data.Segments.Add(overview);
+            //TODO - will need to update this section and adjust the unit tests accordingly once the other segments have been added in.  
+            if (data != null)
+            {
+                data.Segments.RemoveAt(6);
+                data.Segments.Add(overview);
+            }
 
             return data;
         }
@@ -103,28 +107,31 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
 
-                var mappedOverview = mapper.Map<OverviewApiModel>(response);
-                mappedOverview.Breadcrumb = BuildBreadcrumb(canonicalName, string.Empty, mappedOverview.Title);
-
-                var overviewObject = JsonConvert.SerializeObject(
-                    mappedOverview,
-                    new JsonSerializerSettings
-                    {
-                        ContractResolver = new DefaultContractResolver
-                        {
-                            NamingStrategy = new CamelCaseNamingStrategy(),
-                        },
-                    });
-
-                var html = await razorTemplateEngine.RenderAsync("~/Views/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
-
-                overview = new SegmentModel
+                if (response.JobProfileOverview != null && response.JobProfileOverview.Count > 0)
                 {
-                    Segment = Data.JobProfileSegment.Overview,
-                    JsonV1 = overviewObject,
-                    RefreshStatus = Data.Enums.RefreshStatus.Success,
-                    Markup = new HtmlString(html),
-                };
+                    var mappedOverview = mapper.Map<OverviewApiModel>(response);
+                    mappedOverview.Breadcrumb = BuildBreadcrumb(canonicalName, string.Empty, mappedOverview.Title);
+
+                    var overviewObject = JsonConvert.SerializeObject(
+                        mappedOverview,
+                        new JsonSerializerSettings
+                        {
+                            ContractResolver = new DefaultContractResolver
+                            {
+                                NamingStrategy = new CamelCaseNamingStrategy(),
+                            },
+                        });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
+
+                    overview = new SegmentModel
+                    {
+                        Segment = Data.JobProfileSegment.Overview,
+                        JsonV1 = overviewObject,
+                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };
+                }
             }
             catch (Exception exception)
             {
@@ -262,7 +269,6 @@ namespace DFC.App.JobProfile.ProfileService
             return result == HttpStatusCode.NoContent;
         }
 
-        //private static BreadcrumbViewModel BuildBreadcrumb(JobProfileOverviewSegmentModel model, string routePrefix)
         private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
         {
             var viewModel = new BreadcrumbViewModel
@@ -277,8 +283,6 @@ namespace DFC.App.JobProfile.ProfileService
                 },
             };
 
-            //if (model != null)
-            //{
             var breadcrumbPathViewModel = new BreadcrumbPathViewModel
             {
                 Route = $"/{routePrefix}/{canonicalName}",
@@ -286,8 +290,6 @@ namespace DFC.App.JobProfile.ProfileService
             };
 
             viewModel.Paths.Add(breadcrumbPathViewModel);
-            //}
-
             viewModel.Paths.Last().AddHyperlink = false;
 
             return viewModel;

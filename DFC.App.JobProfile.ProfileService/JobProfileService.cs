@@ -97,8 +97,10 @@ namespace DFC.App.JobProfile.ProfileService
         {
             try
             {
+                // Get the response from GraphQl
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, "PUBLISHED");
 
+                // Map the response to a HowToBecomeSegmentDataModel
                 var mappedResponse = mapper.Map<HowToBecomeSegmentDataModel>(response);
 
                 // Map CommonRoutes for College
@@ -118,8 +120,10 @@ namespace DFC.App.JobProfile.ProfileService
                     apprenticeshipCommonRoutes,
                 };
 
+                // Combine the CommonRoutes with the mapped response
                 mappedResponse.EntryRoutes.CommonRoutes = allCommonRoutes;
 
+                // Serialize the mapped response into an object
                 var howToBecomeObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
                 {
                     ContractResolver = new DefaultContractResolver
@@ -128,8 +132,10 @@ namespace DFC.App.JobProfile.ProfileService
                     },
                 });
 
-                var markup = await razorTemplateEngine.RenderAsync("~/../DFC.App.JobProfile/Views/Profile/Segment/HowToBecome/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+                // Render the CSHTML to string
+                var markup = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/HowToBecome/Body.cshtml", mappedResponse).ConfigureAwait(false);
 
+                // Build new SegmentModel
                 var howToBecomeSegment = new SegmentModel
                 {
                     Segment = Data.JobProfileSegment.HowToBecome,

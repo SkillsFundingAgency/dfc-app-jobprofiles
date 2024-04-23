@@ -17,17 +17,22 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             RouteName routeName = (RouteName)context.Items["RouteName"];
             string furtherRouteInfo = null;
 
-            switch (routeName)
+            if (source.JobProfileHowToBecome != null)
             {
-                case RouteName.Apprenticeship:
-                    furtherRouteInfo = source.JobProfileHowToBecome.FirstOrDefault()?.ApprenticeshipFurtherRoutesInfo.Html;
-                    break;
-                case RouteName.College:
-                    furtherRouteInfo = source.JobProfileHowToBecome.FirstOrDefault()?.CollegeFurtherRouteInfo.Html;
-                    break;
-                case RouteName.University:
-                    furtherRouteInfo = source.JobProfileHowToBecome.FirstOrDefault()?.UniversityFurtherRouteInfo.Html;
-                    break;
+                var responseData = source.JobProfileHowToBecome.FirstOrDefault();
+
+                switch (routeName)
+                {
+                    case RouteName.Apprenticeship:
+                        furtherRouteInfo = responseData.ApprenticeshipFurtherRoutesInfo.Html;
+                        break;
+                    case RouteName.College:
+                        furtherRouteInfo = responseData.CollegeFurtherRouteInfo.Html;
+                        break;
+                    case RouteName.University:
+                        furtherRouteInfo = responseData.UniversityFurtherRouteInfo.Html;
+                        break;
+                }
             }
 
             return furtherRouteInfo;

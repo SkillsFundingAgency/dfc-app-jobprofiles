@@ -16,53 +16,57 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             ResolutionContext context)
         {
             RouteName routeName = (RouteName)context.Items["RouteName"];
-            var responseData = source.JobProfileHowToBecome.FirstOrDefault();
             var entryRequirements = new List<EntryRequirement>();
 
-            switch (routeName)
+            if (source.JobProfileHowToBecome != null)
             {
-                case RouteName.Apprenticeship:
-                    if (responseData.RelatedApprenticeshipRequirements.ContentItems.Any() &&
-                        responseData.RelatedApprenticeshipRequirements.ContentItems.FirstOrDefault().Info != null)
-                    {
-                        foreach (var item in responseData.RelatedApprenticeshipRequirements.ContentItems)
-                        {
-                            entryRequirements.Add(new EntryRequirement
-                            {
-                                Description = item.Info.Html,
-                            });
-                        }
-                    }
+                var responseData = source.JobProfileHowToBecome.FirstOrDefault();
 
-                    break;
-                case RouteName.College:
-                    if (responseData.RelatedCollegeRequirements.ContentItems.Any() &&
-                        responseData.RelatedCollegeRequirements.ContentItems.FirstOrDefault().Info != null)
-                    {
-                        foreach (var item in responseData.RelatedCollegeRequirements.ContentItems)
+                switch (routeName)
+                {
+                    case RouteName.Apprenticeship:
+                        if (responseData.RelatedApprenticeshipRequirements.ContentItems.Any() &&
+                            responseData.RelatedApprenticeshipRequirements.ContentItems.FirstOrDefault().Info != null)
                         {
-                            entryRequirements.Add(new EntryRequirement
+                            foreach (var item in responseData.RelatedApprenticeshipRequirements.ContentItems)
                             {
-                                Description = item.Info.Html,
-                            });
+                                entryRequirements.Add(new EntryRequirement
+                                {
+                                    Description = item.Info.Html,
+                                });
+                            }
                         }
-                    }
 
-                    break;
-                case RouteName.University:
-                    if (responseData.RelatedUniversityRequirements.ContentItems.Any() &&
-                        responseData.RelatedUniversityRequirements.ContentItems.FirstOrDefault().Info != null)
-                    {
-                        foreach (var item in responseData.RelatedUniversityRequirements.ContentItems)
+                        break;
+                    case RouteName.College:
+                        if (responseData.RelatedCollegeRequirements.ContentItems.Any() &&
+                            responseData.RelatedCollegeRequirements.ContentItems.FirstOrDefault().Info != null)
                         {
-                            entryRequirements.Add(new EntryRequirement
+                            foreach (var item in responseData.RelatedCollegeRequirements.ContentItems)
                             {
-                                Description = item.Info.Html,
-                            });
+                                entryRequirements.Add(new EntryRequirement
+                                {
+                                    Description = item.Info.Html,
+                                });
+                            }
                         }
-                    }
 
-                    break;
+                        break;
+                    case RouteName.University:
+                        if (responseData.RelatedUniversityRequirements.ContentItems.Any() &&
+                            responseData.RelatedUniversityRequirements.ContentItems.FirstOrDefault().Info != null)
+                        {
+                            foreach (var item in responseData.RelatedUniversityRequirements.ContentItems)
+                            {
+                                entryRequirements.Add(new EntryRequirement
+                                {
+                                    Description = item.Info.Html,
+                                });
+                            }
+                        }
+
+                        break;
+                }
             }
 
             return entryRequirements;

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using System.Linq;
@@ -13,25 +14,29 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             RealStory destMember,
             ResolutionContext context)
         {
-            var responseData = source.JobProfileHowToBecome.FirstOrDefault();
             RealStory realStory = null;
 
-            if (responseData.RealStory.ContentItems.Any())
+            if (source.JobProfileHowToBecome != null)
             {
-                var realStoryData = responseData.RealStory.ContentItems.FirstOrDefault();
+                var responseData = source.JobProfileHowToBecome.FirstOrDefault();
 
-                realStory = new RealStory
+                if (responseData.RealStory.ContentItems.Any())
                 {
-                    Title = realStoryData.DisplayText,
-                    Summary = realStoryData.Text,
-                    BodyHtml = realStoryData.Body.Html,
-                    FurtherInformationHtml = realStoryData.FurtherInformation.Html,
-                    Thumbnail = new Thumbnail
+                    var realStoryData = responseData.RealStory.ContentItems.FirstOrDefault();
+
+                    realStory = new RealStory
                     {
-                        Text = realStoryData.Thumbnail.Paths,
-                        Url = realStoryData.Thumbnail.Urls,
-                    },
-                };
+                        Title = realStoryData.DisplayText,
+                        Summary = realStoryData.Text,
+                        BodyHtml = realStoryData.Body.Html,
+                        FurtherInformationHtml = realStoryData.FurtherInformation.Html,
+                        Thumbnail = new Thumbnail
+                        {
+                            Text = realStoryData.Thumbnail.Paths,
+                            Url = realStoryData.Thumbnail.Urls,
+                        },
+                    };
+                }
             }
 
             return realStory;

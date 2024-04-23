@@ -16,56 +16,60 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             ResolutionContext context)
         {
             RouteName routeName = (RouteName)context.Items["RouteName"];
-            var responseData = source.JobProfileHowToBecome.FirstOrDefault();
             var additionalInfo = new List<AdditionalInformation>();
 
-            switch (routeName)
+            if (source.JobProfileHowToBecome != null)
             {
-                case RouteName.Apprenticeship:
-                    if (responseData.RelatedApprenticeshipLinks.ContentItems != null &&
-                        responseData.RelatedApprenticeshipRequirements.ContentItems != null)
-                    {
-                        foreach (var item in responseData.RelatedApprenticeshipLinks.ContentItems)
-                        {
-                            additionalInfo.Add(new AdditionalInformation
-                            {
-                                Link = item.URL,
-                                Text = item.Text,
-                            });
-                        }
-                    }
+                var responseData = source.JobProfileHowToBecome.FirstOrDefault();
 
-                    break;
-                case RouteName.College:
-                    if (responseData.RelatedCollegeLinks.ContentItems != null &&
-                        responseData.RelatedCollegeRequirements.ContentItems != null)
-                    {
-                        foreach (var item in responseData.RelatedCollegeLinks.ContentItems)
+                switch (routeName)
+                {
+                    case RouteName.Apprenticeship:
+                        if (responseData.RelatedApprenticeshipLinks.ContentItems != null &&
+                            responseData.RelatedApprenticeshipRequirements.ContentItems != null)
                         {
-                            additionalInfo.Add(new AdditionalInformation
+                            foreach (var item in responseData.RelatedApprenticeshipLinks.ContentItems)
                             {
-                                Link = item.URL,
-                                Text = item.Text,
-                            });
+                                additionalInfo.Add(new AdditionalInformation
+                                {
+                                    Link = item.URL,
+                                    Text = item.Text,
+                                });
+                            }
                         }
-                    }
 
-                    break;
-                case RouteName.University:
-                    if (responseData.RelatedUniversityLinks.ContentItems != null &&
-                        responseData.RelatedApprenticeshipRequirements.ContentItems != null)
-                    {
-                        foreach (var item in responseData.RelatedUniversityLinks.ContentItems)
+                        break;
+                    case RouteName.College:
+                        if (responseData.RelatedCollegeLinks.ContentItems != null &&
+                            responseData.RelatedCollegeRequirements.ContentItems != null)
                         {
-                            additionalInfo.Add(new AdditionalInformation
+                            foreach (var item in responseData.RelatedCollegeLinks.ContentItems)
                             {
-                                Link = item.URL,
-                                Text = item.Text,
-                            });
+                                additionalInfo.Add(new AdditionalInformation
+                                {
+                                    Link = item.URL,
+                                    Text = item.Text,
+                                });
+                            }
                         }
-                    }
 
-                    break;
+                        break;
+                    case RouteName.University:
+                        if (responseData.RelatedUniversityLinks.ContentItems != null &&
+                            responseData.RelatedApprenticeshipRequirements.ContentItems != null)
+                        {
+                            foreach (var item in responseData.RelatedUniversityLinks.ContentItems)
+                            {
+                                additionalInfo.Add(new AdditionalInformation
+                                {
+                                    Link = item.URL,
+                                    Text = item.Text,
+                                });
+                            }
+                        }
+
+                        break;
+                }
             }
 
             return additionalInfo;

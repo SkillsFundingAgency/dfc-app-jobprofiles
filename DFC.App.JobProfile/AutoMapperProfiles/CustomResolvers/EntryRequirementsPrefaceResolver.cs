@@ -15,20 +15,24 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             ResolutionContext context)
         {
             RouteName routeName = (RouteName)context.Items["RouteName"];
-            var responseData = source.JobProfileHowToBecome.FirstOrDefault();
             string entryRequirements = null;
 
-            switch (routeName)
+            if (source.JobProfileHowToBecome != null)
             {
-                case RouteName.Apprenticeship:
-                    entryRequirements = responseData.ApprenticeshipEntryRequirements.ContentItems.FirstOrDefault()?.DisplayText;
-                    break;
-                case RouteName.College:
-                    entryRequirements = responseData.CollegeEntryRequirements.ContentItems.FirstOrDefault()?.DisplayText;
-                    break;
-                case RouteName.University:
-                    entryRequirements = responseData.UniversityEntryRequirements.ContentItems.FirstOrDefault()?.DisplayText;
-                    break;
+                var responseData = source.JobProfileHowToBecome.FirstOrDefault();
+
+                switch (routeName)
+                {
+                    case RouteName.Apprenticeship:
+                        entryRequirements = responseData.ApprenticeshipEntryRequirements.ContentItems.FirstOrDefault()?.DisplayText;
+                        break;
+                    case RouteName.College:
+                        entryRequirements = responseData.CollegeEntryRequirements.ContentItems.FirstOrDefault()?.DisplayText;
+                        break;
+                    case RouteName.University:
+                        entryRequirements = responseData.UniversityEntryRequirements.ContentItems.FirstOrDefault()?.DisplayText;
+                        break;
+                }
             }
 
             return entryRequirements;

@@ -14,18 +14,22 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             List<Registration> destMember,
             ResolutionContext context)
         {
-            var responseData = source.JobProfileHowToBecome.FirstOrDefault();
             var registrations = new List<Registration>();
 
-            if (responseData.RelatedRegistrations.ContentItems != null)
+            if (source.JobProfileHowToBecome != null)
             {
-                foreach (var item in responseData.RelatedRegistrations.ContentItems)
+                var responseData = source.JobProfileHowToBecome.FirstOrDefault();
+
+                if (responseData.RelatedRegistrations.ContentItems.Any())
                 {
-                    registrations.Add(new Registration
+                    foreach (var item in responseData.RelatedRegistrations.ContentItems)
                     {
-                        Title = item.DisplayText,
-                        Description = item.Info.Html,
-                    });
+                        registrations.Add(new Registration
+                        {
+                            Title = item.DisplayText,
+                            Description = item.Info.Html,
+                        });
+                    }
                 }
             }
 

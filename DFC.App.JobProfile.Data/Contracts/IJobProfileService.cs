@@ -29,5 +29,7 @@ namespace DFC.App.JobProfile.Data.Contracts
         Task<HttpStatusCode> RefreshSegmentsAsync(RefreshJobProfileSegment refreshJobProfileSegmentModel);
 
         Task<bool> DeleteAsync(Guid documentId);
+		
+        Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName, string filter);
     }
 }

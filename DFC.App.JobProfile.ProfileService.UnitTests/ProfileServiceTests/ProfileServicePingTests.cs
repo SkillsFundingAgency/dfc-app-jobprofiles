@@ -4,6 +4,7 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
+using Microsoft.Extensions.Configuration;
 using Razor.Templating.Core;
 using Xunit;
 
@@ -26,8 +27,11 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
+            var fakeConfiguration = A.Fake<IConfiguration>();
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine);
+            A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
+
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
 
             // act
             var result = jobProfileService.PingAsync().Result;
@@ -48,9 +52,11 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
+            var fakeConfiguration = A.Fake<IConfiguration>();
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine);
+            A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
             // act
             var result = jobProfileService.PingAsync().Result;
 

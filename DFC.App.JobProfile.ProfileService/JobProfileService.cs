@@ -10,6 +10,7 @@ using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
@@ -30,6 +31,8 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
+        private readonly IConfiguration configuration;
+        private string status;
 
         public JobProfileService(
             ICosmosRepository<JobProfileModel> repository,
@@ -37,7 +40,8 @@ namespace DFC.App.JobProfile.ProfileService
             IMapper mapper,
             ILogService logService,
             ISharedContentRedisInterface sharedContentRedisInterface,
-            IRazorTemplateEngine razorTemplateEngine)
+            IRazorTemplateEngine razorTemplateEngine,
+            IConfiguration configuration)
         {
             this.repository = repository;
             this.segmentService = segmentService;
@@ -45,6 +49,7 @@ namespace DFC.App.JobProfile.ProfileService
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             this.razorTemplateEngine = razorTemplateEngine;
+            status = configuration.GetSection("contentMode:contentMode").Get<string>();
         }
 
         public async Task<bool> PingAsync()
@@ -69,6 +74,11 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<JobProfileModel> GetByNameAsync(string canonicalName)
         {
+            if (string.IsNullOrEmpty(status))
+            {
+                status = "PUBLISHED";
+            }
+
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
                 throw new ArgumentNullException(nameof(canonicalName));
@@ -78,11 +88,9 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfilesOverview, "/", canonicalName), filter);
 
-                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
-
-                if (data != null)
+                if (response.JobProfileOverview != null && response.JobProfileOverview.Count > 0)
                 {
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
                     data.Segments[index] = howToBecome;
@@ -95,6 +103,8 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(exception.ToString());
                 throw;
             }
+
+            return data;
         }
 
         public async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName)
@@ -104,7 +114,7 @@ namespace DFC.App.JobProfile.ProfileService
             try
             {
                 // Get the response from GraphQl
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, "PUBLISHED");
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, FILTER);
 
                 // Map the response to a HowToBecomeSegmentDataModel
                 var mappedResponse = mapper.Map<HowToBecomeSegmentDataModel>(response);

@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -42,7 +45,14 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.MetaTags.Description))
                 .ForMember(d => d.Keywords, s => s.MapFrom(a => a.MetaTags.Keywords));
 
+            CreateMap<RelatedCareersResponse, RelatedCareerSegmentDataModel>()
+                .ForMember(d => d.RelatedCareers, s => s.MapFrom<RelatedCareerResolver>())
+                .ForMember(d => d.LastReviewed, s => s.Ignore());
+
+            CreateMap<RelatedCareerDataModel, RelatedCareerDataViewModel>();
+
             CreateMap<JobProfileModel, IndexDocumentViewModel>();
+
         }
     }
 }

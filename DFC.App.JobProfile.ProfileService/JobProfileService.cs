@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +25,22 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly IMapper mapper;
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
+        private readonly IRazorTemplateEngine razorTemplateEngine;
 
         public JobProfileService(
             ICosmosRepository<JobProfileModel> repository,
             ISegmentService segmentService,
             IMapper mapper,
             ILogService logService,
-            ISharedContentRedisInterface sharedContentRedisInterface)
+            ISharedContentRedisInterface sharedContentRedisInterface,
+            IRazorTemplateEngine razorTemplateEngine)
         {
             this.repository = repository;
             this.segmentService = segmentService;
             this.mapper = mapper;
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
+            this.razorTemplateEngine = razorTemplateEngine;
         }
 
         public async Task<bool> PingAsync()
@@ -57,6 +65,9 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<JobProfileModel> GetByNameAsync(string canonicalName)
         {
+            RelatedCareerSegmentDataModel relatedCareerSegmentDataModel;
+            SegmentModel segments = new SegmentModel();
+
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
                 throw new ArgumentNullException(nameof(canonicalName));
@@ -68,16 +79,56 @@ namespace DFC.App.JobProfile.ProfileService
                 //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
                 //databasae vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
                 //JobProfile calls going forward.
-                var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+                //var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+                //var response2 = await sharedContentRedisInterface.GetDataAsync<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, "PUBLISHED");
+                
+                segments = await GetRelatedCareersSegmentAsync("/" + canonicalName);
 
-                //etc...
+                //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+            }
+            var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            //data.Segments.RemoveAt(3);
+            data.Segments.Add(segments);
+            return data;
+            //return Data;
+            //return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+        }
+
+        public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName)
+        {
+            SegmentModel relatedCareers = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsync<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, "PUBLISHED");
+
+                if (response.JobProfileRelatedCareers != null)
+                {
+                    var mappedOverview = mapper.Map<RelatedCareerSegmentDataModel>(response);
+
+                    var relatedCareersObject = JsonConvert.SerializeObject(mappedOverview, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/RelatedCareers/RelatedCareersBody.cshtml", mappedOverview).ConfigureAwait(false);
+
+                    relatedCareers = new SegmentModel
+                    {
+                        Segment = Data.JobProfileSegment.RelatedCareers,
+                        JsonV1 = relatedCareersObject,
+                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        Markup = new Microsoft.AspNetCore.Html.HtmlString(html),
+                    };
+                }
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
             }
 
-            return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            return relatedCareers;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

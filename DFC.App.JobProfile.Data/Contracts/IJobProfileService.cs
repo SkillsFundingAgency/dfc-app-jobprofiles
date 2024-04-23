@@ -30,6 +30,6 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<bool> DeleteAsync(Guid documentId);
 
-        Task<SegmentModel> GetOverviewSegment(string canonicalName);
+        Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter);
     }
 }

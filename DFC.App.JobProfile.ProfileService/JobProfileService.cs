@@ -73,28 +73,32 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
+            var howToBecome = new SegmentModel();
+
             try
             {
-                //Get the various job profile segments here.  Probably will need to use the URL as opposed to canonicalName.  We may need to update this call
-                //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
-                //database vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
-                //JobProfile calls going forward.
-                //var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName);
 
-                var HowToBecomeSegment = await GetHowToBecomeSegmentAsync(canonicalName);
+                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                //etc...
+                if (data != null)
+                {
+                    data.Segments[2] = howToBecome;
+                }
+
+                return data;
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
+                throw;
             }
-
-            return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
         }
 
         private async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName)
         {
+            var howToBecome = new SegmentModel();
+
             try
             {
                 // Get the response from GraphQl
@@ -133,24 +137,24 @@ namespace DFC.App.JobProfile.ProfileService
                 });
 
                 // Render the CSHTML to string
-                var markup = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/HowToBecome/Body.cshtml", mappedResponse).ConfigureAwait(false);
+                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/HowToBecome/Body.cshtml", mappedResponse).ConfigureAwait(false);
 
-                // Build new SegmentModel
-                var howToBecomeSegment = new SegmentModel
+                // Build the SegmentModel
+                howToBecome = new SegmentModel
                 {
                     Segment = Data.JobProfileSegment.HowToBecome,
-                    Markup = new HtmlString(markup),
+                    Markup = new HtmlString(html),
                     JsonV1 = howToBecomeObject,
                     RefreshStatus = RefreshStatus.Success,
                 };
-
-                return howToBecomeSegment;
             }
             catch (Exception e)
             {
                 logService.LogError(e.ToString());
                 throw;
             }
+
+            return howToBecome;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

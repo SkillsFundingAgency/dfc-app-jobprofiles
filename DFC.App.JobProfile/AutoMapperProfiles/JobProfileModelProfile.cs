@@ -60,7 +60,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForPath(d => d.MoreInformation.CareerTips, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().CareerTips.Html))
                 .ForPath(d => d.MoreInformation.ProfessionalAndIndustryBodies, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().ProfessionalAndIndustryBodies.Html))
                 .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>())
-                .ForMember(d => d.RealStory, s => s.Ignore());
+                .ForMember(d => d.RealStory, s => s.MapFrom<RealStoryResolver>());
 
             CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
                 .ForMember(d => d.RouteName, s => s.MapFrom((src, dest, routeName, context) => context.Items["RouteName"]))

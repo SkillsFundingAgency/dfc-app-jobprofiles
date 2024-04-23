@@ -127,7 +127,10 @@ namespace DFC.App.JobProfile.ProfileService
                 };
 
                 // Combine the CommonRoutes with the mapped response
-                mappedResponse.EntryRoutes.CommonRoutes = allCommonRoutes;
+                if (mappedResponse.EntryRoutes != null)
+                {
+                    mappedResponse.EntryRoutes.CommonRoutes = allCommonRoutes;
+                }
 
                 // Serialize the mapped response into an object
                 var howToBecomeObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings

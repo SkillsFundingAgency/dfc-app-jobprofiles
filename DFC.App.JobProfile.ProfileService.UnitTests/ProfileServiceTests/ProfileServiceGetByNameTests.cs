@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
@@ -6,6 +7,7 @@ using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Razor.Templating.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
@@ -44,6 +46,17 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             Guid documentId = Guid.NewGuid();
             var expectedResult = A.Fake<JobProfileModel>();
 
+            expectedResult.Segments = new List<SegmentModel>
+            {
+                new SegmentModel { Segment = JobProfileSegment.Overview },
+                new SegmentModel { Segment = JobProfileSegment.CurrentOpportunities },
+                new SegmentModel { Segment = JobProfileSegment.RelatedCareers },
+                new SegmentModel { Segment = JobProfileSegment.HowToBecome },
+                new SegmentModel { Segment = JobProfileSegment.CareerPathsAndProgression },
+                new SegmentModel { Segment = JobProfileSegment.WhatItTakes },
+                new SegmentModel { Segment = JobProfileSegment.WhatYouWillDo },
+            };
+
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
 
             // act
@@ -70,7 +83,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async Task JobProfileServiceGetByNameReturnsNullWhenMissingInRepository()
         {
             // arrange
-            Data.Models.JobProfileModel expectedResult = null;
+            JobProfileModel expectedResult = null;
 
             A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
 

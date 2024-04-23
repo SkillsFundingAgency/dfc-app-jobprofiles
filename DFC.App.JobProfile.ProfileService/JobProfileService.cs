@@ -85,25 +85,25 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             var howToBecome = new SegmentModel();
-            var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfilesOverview, "/", canonicalName), status);
+                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
+                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                if (response.JobProfileOverview != null && response.JobProfileOverview.Count > 0)
+                if (data != null && howToBecome != null)
                 {
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
                     data.Segments[index] = howToBecome;
                 }
+
+                return data;
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
                 throw;
             }
-
-            return data;
         }
 
         public async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName, string filter)

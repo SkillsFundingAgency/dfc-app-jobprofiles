@@ -36,7 +36,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             logService = A.Fake<ILogService>(); 
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
-            razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeConfiguration = A.Fake<IConfiguration>();
             jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
         }

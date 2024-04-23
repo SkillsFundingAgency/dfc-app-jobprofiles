@@ -10,6 +10,7 @@ using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Razor.Templating.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,16 +31,18 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var logService = A.Fake<ILogService>();
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var configuration = A.Fake<IConfiguration>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "bookmaker";
+            var filter = "PUBLISHED";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             //Act
-            var response = await jobProfileService.GetHowToBecomeSegmentAsync(canonicalName);
+            var response = await jobProfileService.GetHowToBecomeSegmentAsync(canonicalName, filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
@@ -57,15 +60,17 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var logService = A.Fake<ILogService>();
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var configuration = A.Fake<IConfiguration>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration);
             var expectedResult = GetExpectedData();
             var canonicalName = "bookmaker";
+            var filter = "PUBLISHED";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileHowToBecomeResponse());
 
             //Act
-            var response = await jobProfileService.GetHowToBecomeSegmentAsync(canonicalName);
+            var response = await jobProfileService.GetHowToBecomeSegmentAsync(canonicalName, filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();

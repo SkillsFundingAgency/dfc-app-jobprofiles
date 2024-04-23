@@ -4,6 +4,7 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
+using Microsoft.Extensions.Configuration;
 using Razor.Templating.Core;
 using Xunit;
 
@@ -24,10 +25,11 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var configuration = A.Fake<IConfiguration>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, configuration);
 
             // act
             var result = jobProfileService.PingAsync().Result;
@@ -46,10 +48,11 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var logService = A.Fake<ILogService>();
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var configuration = A.Fake<IConfiguration>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, configuration);
 
             // act
             var result = jobProfileService.PingAsync().Result;

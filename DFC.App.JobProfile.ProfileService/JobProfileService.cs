@@ -9,6 +9,7 @@ using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
@@ -28,6 +29,8 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
+        private readonly IConfiguration configuration;
+        private string status = string.Empty;
 
         public JobProfileService(
             ICosmosRepository<JobProfileModel> repository,
@@ -35,7 +38,8 @@ namespace DFC.App.JobProfile.ProfileService
             IMapper mapper,
             ILogService logService,
             ISharedContentRedisInterface sharedContentRedisInterface,
-            IRazorTemplateEngine razorTemplateEngine)
+            IRazorTemplateEngine razorTemplateEngine,
+            IConfiguration configuration)
         {
             this.repository = repository;
             this.segmentService = segmentService;
@@ -43,6 +47,8 @@ namespace DFC.App.JobProfile.ProfileService
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             this.razorTemplateEngine = razorTemplateEngine;
+            this.configuration = configuration;
+            status = configuration.GetSection("contentMode:contentMode").Get<string>() ?? "PUBLISHED";
         }
 
         public async Task<bool> PingAsync()
@@ -103,7 +109,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, "PUBLISHED");
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, status);
 
                 if (response.JobProfileRelatedCareers != null)
                 {

@@ -177,6 +177,9 @@
     "workspaceResourceGroup": {
       "type": "string"
     },
+    "CmsTokenEndpointUrl": {
+      "type": "string"
+    },
     "CmsGraphApiUrl": {
       "type": "string"
     },
@@ -648,6 +651,10 @@
               {
                 "name": "Configuration__EnableLMI",
                 "value": "[parameters('EnableLMI')]"
+              },
+              {
+                "name": "Cms__TokenEndPointUrl",
+                "value": "[parameters('CmsTokenEndpointUrl')]"
               },
               {
                 "name": "Cms__GraphApiUrl",

@@ -97,7 +97,7 @@ namespace DFC.App.JobProfile.ProfileService
             }
         }
 
-        private async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName)
+        public async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName)
         {
             var howToBecome = new SegmentModel();
 

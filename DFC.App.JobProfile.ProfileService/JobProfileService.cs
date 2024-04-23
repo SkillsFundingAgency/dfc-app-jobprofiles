@@ -99,7 +99,7 @@ namespace DFC.App.JobProfile.ProfileService
             return data;
         }
 
-        private async Task<SegmentModel> GetOverviewSegment(string canonicalName)
+        public async Task<SegmentModel> GetOverviewSegment(string canonicalName)
         {
             SegmentModel overview = new SegmentModel();
 
@@ -122,7 +122,7 @@ namespace DFC.App.JobProfile.ProfileService
                             },
                         });
 
-                    var html = await razorTemplateEngine.RenderAsync("~/Views/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
 
                     overview = new SegmentModel
                     {

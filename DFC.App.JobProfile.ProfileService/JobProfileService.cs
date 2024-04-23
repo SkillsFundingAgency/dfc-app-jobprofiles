@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
@@ -83,7 +84,8 @@ namespace DFC.App.JobProfile.ProfileService
 
                 if (data != null)
                 {
-                    data.Segments[2] = howToBecome;
+                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                    data.Segments[index] = howToBecome;
                 }
 
                 return data;

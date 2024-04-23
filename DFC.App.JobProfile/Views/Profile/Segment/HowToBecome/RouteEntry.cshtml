@@ -1,6 +1,6 @@
 ﻿@if (Model != null)
 {
-    if (!string.IsNullOrWhiteSpace(Model.Subject) || !string.IsNullOrWhiteSpace(Model.FurtherInformation) || !string.IsNullOrWhiteSpace(Model.EntryRequirementPreface) || Model.EntryRequirements != null || Model.AdditionalInformation != null)
+    if (!string.IsNullOrWhiteSpace(Model.Subject) || !string.IsNullOrWhiteSpace(Model.FurtherInformation) || !string.IsNullOrWhiteSpace(Model.EntryRequirementPreface) || Model.EntryRequirements.Count > 0 || Model.AdditionalInformation.Count > 0)
     {
         <section class="job-profile-subsection" id="@Model.RouteName.ToString()">
             <h3>@Model.RouteName.ToString()</h3>
@@ -10,7 +10,7 @@
 
                 @Html.Raw(Model?.FurtherInformation)
 
-                @if (Model.EntryRequirements != null || !string.IsNullOrWhiteSpace(Model.EntryRequirementPreface))
+                @if (Model.EntryRequirements.Count > 0 || !string.IsNullOrWhiteSpace(Model.EntryRequirementPreface))
                 {
                     <h4>Entry requirements</h4>
                     <p>@Model.EntryRequirementPreface</p>

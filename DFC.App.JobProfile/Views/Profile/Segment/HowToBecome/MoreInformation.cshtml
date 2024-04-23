@@ -1,9 +1,9 @@
-﻿@if (Model.Registrations != null || !string.IsNullOrWhiteSpace(Model.MoreInformation.ProfessionalAndIndustryBodies) || !string.IsNullOrWhiteSpace(Model.MoreInformation.CareerTips) || !string.IsNullOrWhiteSpace(Model.MoreInformation.FurtherInformation))
+﻿@if (Model.Registrations.Count > 0 || !string.IsNullOrWhiteSpace(Model.MoreInformation.ProfessionalAndIndustryBodies) || !string.IsNullOrWhiteSpace(Model.MoreInformation.CareerTips) || !string.IsNullOrWhiteSpace(Model.MoreInformation.FurtherInformation))
 {
     <section class="job-profile-subsection" id="moreinfo">
         <h3>More Information</h3>
         <div class="job-profile-subsection-content">
-            @if (Model.Registrations != null)
+            @if (Model.Registrations.Count > 0)
             {
 
                 <h4>Registration</h4>

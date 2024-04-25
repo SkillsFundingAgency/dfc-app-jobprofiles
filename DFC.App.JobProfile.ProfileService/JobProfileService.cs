@@ -165,10 +165,13 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
 
-                if (response.JobProfileVideo != null && response.JobProfileVideo.Count > 0)
+                if (response.JobProfileVideo != null && response.JobProfileVideo.Count > 0 && response.JobProfileVideo.FirstOrDefault().VideoType != null)
                 {
                     //MAPPING
                     mappedVideo = mapper.Map<SocialProofVideo>(response);
+                } else
+                {
+                    mappedVideo = null;
                 }
             }
             catch (Exception exception)

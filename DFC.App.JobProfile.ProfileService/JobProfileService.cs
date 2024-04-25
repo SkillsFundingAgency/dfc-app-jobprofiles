@@ -153,6 +153,51 @@ namespace DFC.App.JobProfile.ProfileService
             return overview;
         }
 
+        public async Task<SegmentModel> GetSocialProofVideoSegment(string canonicalName, string filter)
+        {
+            SegmentModel overview = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
+
+                if (response.JobProfileVideo != null && response.JobProfileVideo.Count > 0)
+                {
+                    //MAPPING
+                    var mappedVideo = mapper.Map<SocialProofVideo>(response);
+
+                    //SERIALISE MAPPED OBJECT - if necessary
+                    var videoObject = JsonConvert.SerializeObject(
+                        mappedVideo,
+                        new JsonSerializerSettings
+                        {
+                            ContractResolver = new DefaultContractResolver
+                            {
+                                NamingStrategy = new CamelCaseNamingStrategy(),
+                            },
+                        });
+
+                    //RENDER HTML
+                    //var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
+
+                    /*//RETURN MODEL
+                    overview = new SegmentModel
+                    {
+                        Segment = Data.JobProfileSegment.Overview,
+                        JsonV1 = videoObject,
+                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };*/
+                }
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+            }
+
+            return overview;
+        }
+
         //private async SegmentModel GetHowToBecomeSegment(string canonicalName)
         //{
         //    return new SegmentModel();

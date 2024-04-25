@@ -69,6 +69,20 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             .ForMember(d => d.WorkingHoursDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingHoursDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
             .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
             .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
+
+            CreateMap<JobProfileVideoResponse, SocialProofVideo>()
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().DisplayText))
+                .ForMember(d => d.Type, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoType))
+                .ForMember(d => d.SummaryHtml, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoSummary.Html ?? string.Empty))
+                //might cause error - test this
+                .ForMember(d => d.Thumbnail.Url, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoThumbnail.Urls.FirstOrDefault()))
+                //find text and map here
+                //.ForMember(d => d.Thumbnail.Text, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoThumbnail.Urls.FirstOrDefault()))
+                .ForMember(d => d.FurtherInformationHtml, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoFurtherInformation.Html ?? string.Empty))
+                .ForMember(d => d.Url, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoUrl))
+                .ForMember(d => d.LinkText, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoLinkText))
+                .ForMember(d => d.Duration, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoDuration))
+                .ForMember(d => d.Transcript, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoTranscript));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +19,15 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             RouteName routeName = (RouteName)context.Items["RouteName"];
             var additionalInfo = new List<AdditionalInformation>();
 
-            if (source.JobProfileHowToBecome != null)
+            if (source.JobProfileHowToBecome.IsAny())
             {
                 var responseData = source.JobProfileHowToBecome.FirstOrDefault();
 
                 switch (routeName)
                 {
                     case RouteName.Apprenticeship:
-                        if (responseData.RelatedApprenticeshipLinks.ContentItems != null &&
-                            responseData.RelatedApprenticeshipRequirements.ContentItems != null)
+                        if (responseData.RelatedApprenticeshipLinks.ContentItems.IsAny() &&
+                            responseData.RelatedApprenticeshipRequirements.ContentItems.IsAny())
                         {
                             foreach (var item in responseData.RelatedApprenticeshipLinks.ContentItems)
                             {
@@ -40,8 +41,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 
                         break;
                     case RouteName.College:
-                        if (responseData.RelatedCollegeLinks.ContentItems != null &&
-                            responseData.RelatedCollegeRequirements.ContentItems != null)
+                        if (responseData.RelatedCollegeLinks.ContentItems.IsAny() &&
+                            responseData.RelatedCollegeRequirements.ContentItems.IsAny())
                         {
                             foreach (var item in responseData.RelatedCollegeLinks.ContentItems)
                             {
@@ -55,8 +56,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 
                         break;
                     case RouteName.University:
-                        if (responseData.RelatedUniversityLinks.ContentItems != null &&
-                            responseData.RelatedApprenticeshipRequirements.ContentItems != null)
+                        if (responseData.RelatedUniversityLinks.ContentItems.IsAny() &&
+                            responseData.RelatedApprenticeshipRequirements.ContentItems.IsAny())
                         {
                             foreach (var item in responseData.RelatedUniversityLinks.ContentItems)
                             {

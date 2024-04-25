@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,11 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
         {
             var registrations = new List<Registration>();
 
-            if (source.JobProfileHowToBecome != null)
+            if (source.JobProfileHowToBecome.IsAny())
             {
                 var responseData = source.JobProfileHowToBecome.FirstOrDefault();
 
-                if (responseData.RelatedRegistrations.ContentItems.Any())
+                if (responseData.RelatedRegistrations.ContentItems.IsAny())
                 {
                     foreach (var item in responseData.RelatedRegistrations.ContentItems)
                     {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using System.Linq;
 
@@ -17,7 +18,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             RouteName routeName = (RouteName)context.Items["RouteName"];
             string furtherRouteInfo = null;
 
-            if (source.JobProfileHowToBecome != null)
+            if (source.JobProfileHowToBecome.IsAny())
             {
                 var responseData = source.JobProfileHowToBecome.FirstOrDefault();
 

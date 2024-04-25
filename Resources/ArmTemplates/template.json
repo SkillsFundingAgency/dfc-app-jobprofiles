@@ -176,6 +176,27 @@
     },
     "workspaceResourceGroup": {
       "type": "string"
+    },
+    "CmsTokenEndpointUrl": {
+      "type": "string"
+    },
+    "CmsGraphApiUrl": {
+      "type": "string"
+    },
+    "CmsClientId": {
+      "type": "string"
+    },
+    "CmsClientSecret": {
+      "type": "securestring"
+    },
+    "CmsRedisCacheConnectionString": {
+      "type": "securestring"
+    },
+    "CmsSqlApiUrl": {
+      "type": "string"
+    },    
+    "ContentMode": {
+      "type": "string"
     }
   },
     "variables": {
@@ -630,6 +651,26 @@
               {
                 "name": "Configuration__EnableLMI",
                 "value": "[parameters('EnableLMI')]"
+              },
+              {
+                "name": "Cms__TokenEndPointUrl",
+                "value": "[parameters('CmsTokenEndpointUrl')]"
+              },
+              {
+                "name": "Cms__GraphApiUrl",
+                "value": "[parameters('CmsGraphApiUrl')]"
+              },
+              {
+                "name": "Cms__ClientId",
+                "value": "[parameters('CmsClientId')]"
+              },
+              {
+                "name": "Cms__ClientSecret",
+                "value": "[parameters('CmsClientSecret')]"
+              },
+              {
+                "name": "Cms__RedisCacheConnectionString",
+                "value": "[parameters('CmsRedisCacheConnectionString')]"
               }
             ]
           }

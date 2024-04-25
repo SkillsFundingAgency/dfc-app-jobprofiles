@@ -4,6 +4,8 @@ using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
+using Microsoft.Extensions.Configuration;
+using Razor.Templating.Core;
 using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
@@ -22,10 +24,12 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             mapper = A.Fake<IMapper>();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeConfiguration = A.Fake<IConfiguration>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
 
             // act
             var result = jobProfileService.PingAsync().Result;
@@ -43,10 +47,12 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var expectedResult = false;
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var logService = A.Fake<ILogService>();
+            var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeConfiguration = A.Fake<IConfiguration>();
 
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
 
             // act
             var result = jobProfileService.PingAsync().Result;

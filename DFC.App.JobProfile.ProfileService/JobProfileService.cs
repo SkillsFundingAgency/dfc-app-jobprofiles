@@ -1,10 +1,16 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
+using Microsoft.AspNetCore.Html;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +26,26 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly IMapper mapper;
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
+        private readonly IRazorTemplateEngine razorTemplateEngine;
+        private readonly IConfiguration configuration;
+        private string status;
 
         public JobProfileService(
             ICosmosRepository<JobProfileModel> repository,
             ISegmentService segmentService,
             IMapper mapper,
             ILogService logService,
-            ISharedContentRedisInterface sharedContentRedisInterface)
+            ISharedContentRedisInterface sharedContentRedisInterface,
+            IRazorTemplateEngine razorTemplateEngine,
+            IConfiguration configuration)
         {
             this.repository = repository;
             this.segmentService = segmentService;
             this.mapper = mapper;
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
+            this.razorTemplateEngine = razorTemplateEngine;
+            status = configuration.GetSection("contentMode:contentMode").Get<string>();
         }
 
         public async Task<bool> PingAsync()
@@ -57,18 +70,24 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<JobProfileModel> GetByNameAsync(string canonicalName)
         {
+            if (string.IsNullOrEmpty(status))
+            {
+                status = "PUBLISHED";
+            }
+
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
+            var overview = new SegmentModel();
+
             try
             {
-                //Get the various job profile segments here.  Probably will need to use the URL as opposed to canonicalName.  We may need to update this call
-                //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
-                //databasae vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
-                //JobProfile calls going forward.
-                var response = await sharedContentRedisInterface.GetDataAsync<JobProfilesOverviewResponse>(canonicalName, ApplicationKeys.JobProfilesOverview);
+                overview = await GetOverviewSegment(canonicalName, status);
+                //var hotobecome = await GetHowToBecomeSegment(canonicalName);
+
+                //WaitUntil.Completed
 
                 //etc...
             }
@@ -77,8 +96,67 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(exception.ToString());
             }
 
-            return await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            //Instead of returning the data object below, we'll reconstruct it with the data that is required from the various segment calls.
+            //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            var data = new JobProfileModel();
+
+            //TODO - will need to update this section and adjust the unit tests accordingly once the other segments have been added in.  
+            if (data != null)
+            {
+                data.Segments = new List<SegmentModel>();
+                //data.Segments.RemoveAt(6);
+                data.Segments.Add(overview);
+            }
+
+            return data;
         }
+
+        public async Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter)
+        {
+            SegmentModel overview = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfilesOverview, "/", canonicalName), filter);
+
+                if (response.JobProfileOverview != null && response.JobProfileOverview.Count > 0)
+                {
+                    var mappedOverview = mapper.Map<OverviewApiModel>(response);
+                    mappedOverview.Breadcrumb = BuildBreadcrumb(canonicalName, string.Empty, mappedOverview.Title);
+
+                    var overviewObject = JsonConvert.SerializeObject(
+                        mappedOverview,
+                        new JsonSerializerSettings
+                        {
+                            ContractResolver = new DefaultContractResolver
+                            {
+                                NamingStrategy = new CamelCaseNamingStrategy(),
+                            },
+                        });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
+
+                    overview = new SegmentModel
+                    {
+                        Segment = Data.JobProfileSegment.Overview,
+                        JsonV1 = overviewObject,
+                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };
+                }
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+            }
+
+            return overview;
+        }
+
+        //private async SegmentModel GetHowToBecomeSegment(string canonicalName)
+        //{
+        //    return new SegmentModel();
+        //}
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {
@@ -201,6 +279,32 @@ namespace DFC.App.JobProfile.ProfileService
             var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
 
             return result == HttpStatusCode.NoContent;
+        }
+
+        private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
+        {
+            var viewModel = new BreadcrumbViewModel
+            {
+                Paths = new List<BreadcrumbPathViewModel>()
+                {
+                    new BreadcrumbPathViewModel()
+                    {
+                        Route = $"/explore-careers",
+                        Title = "Home: Explore careers",
+                    },
+                },
+            };
+
+            var breadcrumbPathViewModel = new BreadcrumbPathViewModel
+            {
+                Route = $"/{routePrefix}/{canonicalName}",
+                Title = title,
+            };
+
+            viewModel.Paths.Add(breadcrumbPathViewModel);
+            viewModel.Paths.Last().AddHyperlink = false;
+
+            return viewModel;
         }
     }
 }

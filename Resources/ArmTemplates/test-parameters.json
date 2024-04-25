@@ -98,6 +98,27 @@
     "EnableLMI": {
       "value": false
     },
+    "TokenEndPointURL": {
+      "value": "test"
+    },
+    "GraphApiUrl": {
+      "value": "test"
+    },
+    "SqlApiUrl": {
+      "value": "test"
+    },
+    "ClientId": {
+      "value": "test"
+    },
+    "ClientSecret": {
+      "value": "test"
+    },
+    "RedisCacheConnectionString": {
+      "value": "string"
+    },
+    "contentMode":{
+      "value": "PUBLISHED"
+    },
     "ApimResourceGroup": {
       "value": "dfc-dev-shared-rg"
     },

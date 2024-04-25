@@ -76,6 +76,27 @@
     "cosmosDbKey": {
       "type": "securestring"
     },
+    "TokenEndPointURL": {
+      "type": "string"
+    },
+    "GraphApiUrl": {
+      "type": "string"
+    },
+    "SqlApiUrl": {
+      "type": "string"
+    },
+    "ClientId": {
+      "type": "string"
+    },
+    "ClientSecret": {
+      "type": "securestring"
+    },
+    "RedisCacheConnectionString": {
+      "type": "securestring"
+    },
+    "contentMode": {
+      "type": "string"
+    },
     "environment": {
       "type": "string"
     },
@@ -338,6 +359,34 @@
               {
                 "name": "Configuration__CosmosDbConnections__JobProfile__PartitionKey",
                 "value": "[variables('cosmosDbCollectionPartitionKey')]"
+              },
+              {
+                "name": "Cms__TokenEndPointURL",
+                "value": "[parameters('TokenEndPointURL')]"
+              },
+              {
+                "name": "Cms__GraphApiUrl",
+                "value": "[parameters('GraphApiUrl')]"
+              },
+              {
+                "name": "Cms__SqlApiUrl",
+                "value": "[parameters('SqlApiUrl')]"
+              },
+              {
+                "name": "contentMode__contentMode",
+                "value": "[parameters('contentMode')]"
+              },
+              {
+                "name": "Cms__ClientId",
+                "value": "[parameters('ClientId')]"
+              },
+              {
+                "name": "Cms__ClientSecret",
+                "value": "[parameters('ClientSecret')]"
+              },
+              {
+                "name": "Cms__RedisCacheConnectionString",
+                "value": "[parameters('RedisCacheConnectionString')]"
               },
               {
                 "name": "Policies__HttpCircuitBreaker__DurationOfBreak",

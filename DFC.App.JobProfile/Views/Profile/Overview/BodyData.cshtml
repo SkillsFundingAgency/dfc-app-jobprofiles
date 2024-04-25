@@ -1,4 +1,5 @@
-﻿<header class="job-profile-hero">
+﻿@using System.Globalization
+<header class="job-profile-hero">
     <div class="govuk-width-container">
         @if (Model.Breadcrumb != null)
         {
@@ -40,9 +41,9 @@
                 <div class="job-profile-salary job-profile-heroblock-content">
                     @if (Model.SalaryStarter > 0 && Model.SalaryExperienced > 0)
                     {
-                        <p class="dfc-code-jpsstarter">@Model.SalaryStarter.ToString("C0") <span>Starter</span></p>
+                        <p class="dfc-code-jpsstarter">@Model.SalaryStarter.ToString("C0", new CultureInfo("en-GB")) <span>Starter</span></p>
                         <i class="sr-hidden dfc-code-jpshidden">to</i>
-                        <p class="dfc-code-jpsexperienced">@Model.SalaryExperienced.ToString("C0") <span>Experienced</span></p>
+                        <p class="dfc-code-jpsexperienced">@Model.SalaryExperienced.ToString("C0", new CultureInfo("en-GB")) <span>Experienced</span></p>
                     }
                     else
                     {

@@ -337,39 +337,39 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             controller.Dispose();
         }
 
-        //[Fact]
-        //public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentDoesNotExist()
-        //{
-        //    // Arrange
-        //    var controller = BuildProfileController(MediaTypeNames.Application.Json);
-        //    var bodyViewModel = new BodyViewModel
-        //    {
-        //        CanonicalName = FakeArticleName,
-        //        Segments = new List<SegmentModel>
-        //        {
-        //            new SegmentModel
-        //            {
-        //                Segment = JobProfileSegment.WhatItTakes,
-        //                Markup = new HtmlString("someContent"),
-        //            },
-        //            new SegmentModel
-        //            {
-        //                Segment = JobProfileSegment.HowToBecome,
-        //                Markup = new HtmlString("someContent"),
-        //            },
-        //        },
-        //    };
+        [Fact]
+        public async Task BodyThrowsInvalidProfileExceptionWhenCriticalSegmentDoesNotExist()
+        {
+            // Arrange
+            var controller = BuildProfileController(MediaTypeNames.Application.Json);
+            var bodyViewModel = new BodyViewModel
+            {
+                CanonicalName = FakeArticleName,
+                Segments = new List<SegmentModel>
+                {
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.WhatItTakes,
+                        Markup = new HtmlString("someContent"),
+                    },
+                    new SegmentModel
+                    {
+                        Segment = JobProfileSegment.HowToBecome,
+                        Markup = new HtmlString("someContent"),
+                    },
+                },
+            };
 
-        //    A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
-        //    A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
-        //    A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-        //    A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
+            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
+            A.CallTo(() => FakeJobProfileService.GetByAlternativeNameAsync(A<string>.Ignored)).Returns((JobProfileModel)null);
+            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
+            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
 
-        //    // Act
-        //    await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
+            // Act
+            await Assert.ThrowsAsync<InvalidProfileException>(async () => await controller.Body(FakeArticleName).ConfigureAwait(false)).ConfigureAwait(false);
 
-        //    controller.Dispose();
-        //}
+            controller.Dispose();
+        }
 
         [Theory]
         [MemberData(nameof(EmptyCriticalSegmentModelInput))]

@@ -97,14 +97,14 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             //Instead of returning the data object below, we'll reconstruct it with the data that is required from the various segment calls.
-            var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
-            //var data = new JobProfileModel();
+            //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+            var data = new JobProfileModel();
 
             //TODO - will need to update this section and adjust the unit tests accordingly once the other segments have been added in.  
             if (data != null)
             {
-                //data.Segments = new List<SegmentModel>();
-                data.Segments.RemoveAt(6);
+                data.Segments = new List<SegmentModel>();
+                //data.Segments.RemoveAt(6);
                 data.Segments.Add(overview);
             }
 

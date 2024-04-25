@@ -81,11 +81,14 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             var overview = new SegmentModel();
+            var video = new SocialProofVideo();
 
             try
             {
                 overview = await GetOverviewSegment(canonicalName, status);
                 //var hotobecome = await GetHowToBecomeSegment(canonicalName);
+
+                video = await GetSocialProofVideoSegment(canonicalName, status);
 
                 //WaitUntil.Completed
 
@@ -106,6 +109,7 @@ namespace DFC.App.JobProfile.ProfileService
                 data.Segments = new List<SegmentModel>();
                 //data.Segments.RemoveAt(6);
                 data.Segments.Add(overview);
+                data.Video = video;
             }
 
             return data;
@@ -153,9 +157,9 @@ namespace DFC.App.JobProfile.ProfileService
             return overview;
         }
 
-        public async Task<SegmentModel> GetSocialProofVideoSegment(string canonicalName, string filter)
+        public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
         {
-            SegmentModel overview = new SegmentModel();
+            SocialProofVideo mappedVideo = new SocialProofVideo();
 
             try
             {
@@ -164,30 +168,7 @@ namespace DFC.App.JobProfile.ProfileService
                 if (response.JobProfileVideo != null && response.JobProfileVideo.Count > 0)
                 {
                     //MAPPING
-                    var mappedVideo = mapper.Map<SocialProofVideo>(response);
-
-                    //SERIALISE MAPPED OBJECT - if necessary
-                    var videoObject = JsonConvert.SerializeObject(
-                        mappedVideo,
-                        new JsonSerializerSettings
-                        {
-                            ContractResolver = new DefaultContractResolver
-                            {
-                                NamingStrategy = new CamelCaseNamingStrategy(),
-                            },
-                        });
-
-                    //RENDER HTML
-                    //var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
-
-                    /*//RETURN MODEL
-                    overview = new SegmentModel
-                    {
-                        Segment = Data.JobProfileSegment.Overview,
-                        JsonV1 = videoObject,
-                        RefreshStatus = Data.Enums.RefreshStatus.Success,
-                        Markup = new HtmlString(html),
-                    };*/
+                    mappedVideo = mapper.Map<SocialProofVideo>(response);
                 }
             }
             catch (Exception exception)
@@ -195,7 +176,7 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(exception.ToString());
             }
 
-            return overview;
+            return mappedVideo;
         }
 
         //private async SegmentModel GetHowToBecomeSegment(string canonicalName)

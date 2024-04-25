@@ -5,12 +5,17 @@ using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Common.SharedContent.Pkg.Netcore.Constant;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Compui.Cosmos.Contracts;
 using DFC.Compui.Sessionstate;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
+using NHibernate.Engine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +38,10 @@ namespace DFC.App.JobProfile.Controllers
         private readonly IRedirectionSecurityService redirectionSecurityService;
         private readonly IDocumentService<StaticContentItemModel> staticContentDocumentService;
         private readonly Guid sharedContentItemGuid;
+        private readonly ISharedContentRedisInterface sharedContentRedisInterface;
+        private string status;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService, IDocumentService<StaticContentItemModel> staticContentDocumentService, CmsApiClientOptions cmsApiClientOptions)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService, IDocumentService<StaticContentItemModel> staticContentDocumentService, CmsApiClientOptions cmsApiClientOptions, ISharedContentRedisInterface sharedContentRedisInterface, IConfiguration configuration)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
@@ -44,7 +51,9 @@ namespace DFC.App.JobProfile.Controllers
             this.segmentService = segmentService;
             this.redirectionSecurityService = redirectionSecurityService;
             this.staticContentDocumentService = staticContentDocumentService;
+            this.sharedContentRedisInterface = sharedContentRedisInterface;
             sharedContentItemGuid = new Guid(cmsApiClientOptions?.ContentIds ?? throw new ArgumentNullException(nameof(cmsApiClientOptions), "ContentIds cannot be null"));
+            status = configuration.GetSection("contentMode:contentMode").Get<string>();
         }
 
         [HttpGet]
@@ -274,7 +283,12 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                viewModel.SpeakToAnAdviser = await staticContentDocumentService.GetByIdAsync(sharedContentItemGuid, StaticContentItemModel.DefaultPartitionKey).ConfigureAwait(false);
+                var speakToAnAdviser = await sharedContentRedisInterface.GetDataAsync<SharedHtml>(ApplicationKeys.SpeakToAnAdviserSharedContent, status);
+                viewModel.SpeakToAnAdviser = new StaticContentItemModel()
+                {
+                    Content = speakToAnAdviser.Html,
+                };
+
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
                 viewModel.SmartSurveyJP = feedbackLinks.SmartSurveyJP;
 

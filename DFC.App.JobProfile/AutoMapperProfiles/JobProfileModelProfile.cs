@@ -2,9 +2,11 @@
 using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
@@ -72,17 +74,30 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileVideoResponse, SocialProofVideo>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().DisplayText))
-                .ForMember(d => d.Type, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoType))
+                .ForMember(d => d.Type, s => s.MapFrom(a => MapType(a.JobProfileVideo.FirstOrDefault().VideoType)))
                 .ForMember(d => d.SummaryHtml, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoSummary.Html ?? string.Empty))
-                //might cause error - test this
-                .ForMember(d => d.Thumbnail.Url, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoThumbnail.Urls.FirstOrDefault()))
-                //find text and map here
-                //.ForMember(d => d.Thumbnail.Text, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoThumbnail.Urls.FirstOrDefault()))
+                .ForMember(d => d.Thumbnail, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoThumbnail))
                 .ForMember(d => d.FurtherInformationHtml, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoFurtherInformation.Html ?? string.Empty))
                 .ForMember(d => d.Url, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoUrl))
                 .ForMember(d => d.LinkText, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoLinkText))
                 .ForMember(d => d.Duration, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoDuration))
                 .ForMember(d => d.Transcript, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoTranscript));
+
+            CreateMap<VideoThumbnail, Data.Models.Thumbnail>()
+                 //find thumbnail text and replace this below - temp solution
+                 .ForMember(d => d.Text, s => s.MapFrom(a => a.Paths.FirstOrDefault() ?? string.Empty))
+                 .ForMember(d => d.Url, s => s.MapFrom(a => a.Urls.FirstOrDefault() ?? string.Empty));
+        }
+
+        public SocialProofVideoType MapType(string type)
+        {
+            if (type.ToLower() == "youtube")
+            {
+                return SocialProofVideoType.YouTube;
+            } else
+            {
+                return SocialProofVideoType.Bitesize;
+            }
         }
     }
 }

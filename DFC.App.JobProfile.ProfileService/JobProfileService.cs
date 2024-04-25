@@ -1,18 +1,23 @@
 ﻿using AutoMapper;
+using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Overview;
+using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -80,35 +85,96 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
+            var howToBecome = new SegmentModel();
             var overview = new SegmentModel();
 
             try
             {
+                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
-                //var hotobecome = await GetHowToBecomeSegment(canonicalName);
 
-                //WaitUntil.Completed
+                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                //etc...
+                if (data != null && howToBecome != null && overview != null)
+                {
+                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                    data.Segments[index] = howToBecome;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
+                    data.Segments[index] = overview;
+                }
+
+                return data;
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
+                throw;
             }
+        }
 
-            //Instead of returning the data object below, we'll reconstruct it with the data that is required from the various segment calls.
-            //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
-            var data = new JobProfileModel();
+        public async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName, string filter)
+        {
+            var howToBecome = new SegmentModel();
 
-            //TODO - will need to update this section and adjust the unit tests accordingly once the other segments have been added in.  
-            if (data != null)
+            try
             {
-                data.Segments = new List<SegmentModel>();
-                //data.Segments.RemoveAt(6);
-                data.Segments.Add(overview);
-            }
+                // Get the response from GraphQl
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, filter);
 
-            return data;
+                // Map the response to a HowToBecomeSegmentDataModel
+                var mappedResponse = mapper.Map<HowToBecomeSegmentDataModel>(response);
+
+                // Map CommonRoutes for College
+                var collegeCommonRoutes = mapper.Map<CommonRoutes>(response, opt => opt.Items["RouteName"] = RouteName.College);
+
+                // Map CommonRoutes for University
+                var universityCommonRoutes = mapper.Map<CommonRoutes>(response, opt => opt.Items["RouteName"] = RouteName.University);
+
+                // Map CommonRoutes for Apprenticeship
+                var apprenticeshipCommonRoutes = mapper.Map<CommonRoutes>(response, opt => opt.Items["RouteName"] = RouteName.Apprenticeship);
+
+                // Combine CommonRoutes into a list
+                var allCommonRoutes = new List<CommonRoutes>
+                {
+                    collegeCommonRoutes,
+                    universityCommonRoutes,
+                    apprenticeshipCommonRoutes,
+                };
+
+                // Combine the CommonRoutes with the mapped response
+                if (mappedResponse.EntryRoutes != null)
+                {
+                    mappedResponse.EntryRoutes.CommonRoutes = allCommonRoutes;
+                }
+
+                // Serialize the mapped response into an object
+                var howToBecomeObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy(),
+                    },
+                });
+
+                // Render the CSHTML to string
+                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/HowToBecome/Body.cshtml", mappedResponse).ConfigureAwait(false);
+
+                // Build the SegmentModel
+                howToBecome = new SegmentModel
+                {
+                    Segment = Data.JobProfileSegment.HowToBecome,
+                    Markup = new HtmlString(html),
+                    JsonV1 = howToBecomeObject,
+                    RefreshStatus = RefreshStatus.Success,
+                };
+
+                return howToBecome;
+            }
+            catch (Exception e)
+            {
+                logService.LogError(e.ToString());
+                throw;
+            }
         }
 
         public async Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter)
@@ -152,11 +218,6 @@ namespace DFC.App.JobProfile.ProfileService
 
             return overview;
         }
-
-        //private async SegmentModel GetHowToBecomeSegment(string canonicalName)
-        //{
-        //    return new SegmentModel();
-        //}
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {

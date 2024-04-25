@@ -21,7 +21,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Azure.ResourceManager.EventGrid" Version="1.0.1" />
     <PackageReference Include="CorrelationId" Version="2.1.0" />
     <PackageReference Include="DFC.Common.SharedContent.Pkg.Netcore" Version="0.1.93" />

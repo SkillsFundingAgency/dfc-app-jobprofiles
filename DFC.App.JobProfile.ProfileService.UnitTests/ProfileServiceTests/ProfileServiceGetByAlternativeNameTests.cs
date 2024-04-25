@@ -23,7 +23,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         private readonly IJobProfileService jobProfileService;
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface fakeSharedContentRedisInterface;
-        private readonly IRazorTemplateEngine razorTemplateEngine;
+        private readonly IRazorTemplateEngine fakeRazorTemplateEngine;
         private readonly IConfiguration fakeConfiguration;
 
         public ProfileServiceGetByAlternativeNameTests()
@@ -34,9 +34,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             mapper = A.Fake<IMapper>();
             logService = A.Fake<ILogService>();
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
-            razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeConfiguration = A.Fake<IConfiguration>();
-            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
+            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
         }
 
         [Fact]

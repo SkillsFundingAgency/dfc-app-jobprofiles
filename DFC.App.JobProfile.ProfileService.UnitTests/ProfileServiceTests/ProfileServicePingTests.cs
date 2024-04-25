@@ -25,10 +25,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
-
-            A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
             var fakeConfiguration = A.Fake<IConfiguration>();
-
+          
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
             var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
@@ -50,10 +48,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
-
-            A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
             var fakeConfiguration = A.Fake<IConfiguration>();
-
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
             var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);

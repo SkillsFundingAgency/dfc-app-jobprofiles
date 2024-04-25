@@ -33,7 +33,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             segmentService = A.Fake<ISegmentService>();
             mapper = A.Fake<IMapper>();
             mapper = A.Fake<IMapper>();
-            logService = A.Fake<ILogService>(); 
+            logService = A.Fake<ILogService>();
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();

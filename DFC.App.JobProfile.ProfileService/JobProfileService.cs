@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
@@ -85,16 +86,19 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             var howToBecome = new SegmentModel();
+            var overview = new SegmentModel();
 
             try
             {
                 howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
-                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
-
-                if (data != null && howToBecome != null)
+                overview = await GetOverviewSegment(canonicalName, status);
+                
+                if (data != null && howToBecome != null && overview != null)
                 {
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
                     data.Segments[index] = howToBecome;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
+                    data.Segments[index] = overview;
                 }
 
                 return data;
@@ -167,8 +171,48 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(e.ToString());
                 throw;
             }
+        }
 
-            return howToBecome;
+        public async Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter)
+        {
+            SegmentModel overview = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfilesOverview, "/", canonicalName), filter);
+
+                if (response.JobProfileOverview != null && response.JobProfileOverview.Count > 0)
+                {
+                    var mappedOverview = mapper.Map<OverviewApiModel>(response);
+                    mappedOverview.Breadcrumb = BuildBreadcrumb(canonicalName, string.Empty, mappedOverview.Title);
+
+                    var overviewObject = JsonConvert.SerializeObject(
+                        mappedOverview,
+                        new JsonSerializerSettings
+                        {
+                            ContractResolver = new DefaultContractResolver
+                            {
+                                NamingStrategy = new CamelCaseNamingStrategy(),
+                            },
+                        });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
+
+                    overview = new SegmentModel
+                    {
+                        Segment = Data.JobProfileSegment.Overview,
+                        JsonV1 = overviewObject,
+                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };
+                }
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+            }
+
+            return overview;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
@@ -292,6 +336,32 @@ namespace DFC.App.JobProfile.ProfileService
             var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
 
             return result == HttpStatusCode.NoContent;
+        }
+
+        private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
+        {
+            var viewModel = new BreadcrumbViewModel
+            {
+                Paths = new List<BreadcrumbPathViewModel>()
+                {
+                    new BreadcrumbPathViewModel()
+                    {
+                        Route = $"/explore-careers",
+                        Title = "Home: Explore careers",
+                    },
+                },
+            };
+
+            var breadcrumbPathViewModel = new BreadcrumbPathViewModel
+            {
+                Route = $"/{routePrefix}/{canonicalName}",
+                Title = title,
+            };
+
+            viewModel.Paths.Add(breadcrumbPathViewModel);
+            viewModel.Paths.Last().AddHyperlink = false;
+
+            return viewModel;
         }
     }
 }

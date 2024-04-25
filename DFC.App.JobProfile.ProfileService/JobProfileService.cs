@@ -92,7 +92,9 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
-                
+
+                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+
                 if (data != null && howToBecome != null && overview != null)
                 {
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
@@ -165,6 +167,8 @@ namespace DFC.App.JobProfile.ProfileService
                     JsonV1 = howToBecomeObject,
                     RefreshStatus = RefreshStatus.Success,
                 };
+
+                return howToBecome;
             }
             catch (Exception e)
             {

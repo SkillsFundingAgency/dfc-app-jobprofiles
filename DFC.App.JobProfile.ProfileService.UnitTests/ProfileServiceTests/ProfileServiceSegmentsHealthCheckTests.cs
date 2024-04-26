@@ -21,10 +21,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var segmentService = A.Fake<ISegmentService>();
             var mapper = A.Fake<IMapper>();
-            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var logService = A.Fake<ILogService>();
+            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
-            var configuration = A.Fake<IConfiguration>();
+            var fakeConfiguration = A.Fake<IConfiguration>();
 
             IList<HealthCheckItem> expectedResult = new List<HealthCheckItem>
             {
@@ -36,8 +36,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             };
 
             A.CallTo(() => segmentService.SegmentsHealthCheckAsync()).Returns(expectedResult);
-
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, configuration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
 
             // act
             var result = jobProfileService.SegmentsHealthCheckAsync().Result;

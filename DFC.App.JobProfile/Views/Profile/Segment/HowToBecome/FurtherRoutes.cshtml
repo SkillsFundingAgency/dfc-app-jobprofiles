@@ -1,0 +1,39 @@
+﻿@if (!string.IsNullOrWhiteSpace(Model?.Work))
+{
+    <section class="job-profile-subsection" id="work">
+        <h3>Work</h3>
+        <div class="job-profile-subsection-content">
+            @Html.Raw(Model.Work)
+        </div>
+    </section>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model?.Volunteering))
+{
+    <section class="job-profile-subsection" id="volunteering">
+        <h3>Volunteering</h3>
+        <div class="job-profile-subsection-content">
+            @Html.Raw(Model.Volunteering)
+        </div>
+    </section>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model?.DirectApplication))
+{
+    <section class="job-profile-subsection" id="directapplication">
+        <h3>Direct Application</h3>
+        <div class="job-profile-subsection-content">
+            @Html.Raw(Model.DirectApplication)
+        </div>
+    </section>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model?.OtherRoutes))
+{
+    <section class="job-profile-subsection" id="otherroutes">
+        <h3>Other Routes</h3>
+        <div class="job-profile-subsection-content">
+            @Html.Raw(Model.OtherRoutes)
+        </div>
+    </section>
+}

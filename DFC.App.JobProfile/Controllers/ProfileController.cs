@@ -376,13 +376,13 @@ namespace DFC.App.JobProfile.Controllers
         private IActionResult ValidateJobProfile(BodyViewModel bodyViewModel, JobProfileModel jobProfileModel)
         {
             var overviewExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.Overview);
-            var howToBecomeExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.HowToBecome);
-            var whatItTakesExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatItTakes);
+            //var howToBecomeExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.HowToBecome);
+            //var whatItTakesExists = bodyViewModel.Segments.Any(s => s.Segment == JobProfileSegment.WhatItTakes);
 
-            if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
-            {
-                throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
-            }
+            //if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
+            //{
+            //    throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
+            //}
 
             return ValidateMarkup(bodyViewModel, jobProfileModel);
         }

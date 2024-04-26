@@ -50,7 +50,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             new object[] { $"/profile/contents" },
         };
 
-        [Theory(Skip = "Calls the create endpoint - confirm that this functionality is no longer required.")]
+        [Theory(Skip ="Calls the create endpoint - confirm that this functionality is no longer required.")]
         [MemberData(nameof(ProfileContentRouteData))]
         public async Task GetProfileHtmlContentEndpointsReturnSuccessAndCorrectContentType(string url)
         {
@@ -118,7 +118,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Theory(Skip = "No longer required as this is calls CosmosRepository.UpsertAsync to add a document. Remove this once confirmed this is no longer required.")]
+        [Theory(Skip = "No longer required as this is calls CosmosRepository.UpsertAsync to add a document.  Remove this once confirmed this is no longer required.")]
         [MemberData(nameof(ProfileContentRedirectRouteData))]
         public async Task GetProfileHtmlContentEndpointsReturnRedirection(string url)
         {

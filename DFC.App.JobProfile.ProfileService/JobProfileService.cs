@@ -46,7 +46,6 @@ namespace DFC.App.JobProfile.ProfileService
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             this.razorTemplateEngine = razorTemplateEngine;
-            this.configuration = configuration;
             status = configuration.GetSection("contentMode:contentMode").Get<string>() ?? "PUBLISHED";
         }
 
@@ -72,12 +71,14 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<JobProfileModel> GetByNameAsync(string canonicalName)
         {
-            SegmentModel relatedCareers = new SegmentModel();
+            //SegmentModel segmentModel = new SegmentModel();
 
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
                 throw new ArgumentNullException(nameof(canonicalName));
             }
+
+            var relatedCareers = new SegmentModel();
 
             try
             {
@@ -85,26 +86,34 @@ namespace DFC.App.JobProfile.ProfileService
                 //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
                 //databasae vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
                 //JobProfile calls going forward.
-                relatedCareers = await GetRelatedCareersSegmentAsync("/" + canonicalName);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfilesOverview, "/", canonicalName), status);
+
+                relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName);
+
+                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+                if (data != null)
+                {
+                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
+                    data.Segments[index] = relatedCareers;
+                }
+
+                return data;
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
+                throw;
             }
-
-            var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
-            if (data != null)
-            {
-                int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
-                data.Segments[index] = relatedCareers;
-            }
-
-            return data;
         }
 
         public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName)
         {
-            SegmentModel relatedCareers = new SegmentModel();
+            var relatedCareers = new SegmentModel();
+
+            if (string.IsNullOrEmpty(status))
+            {
+                status = "PUBLISHED";
+            }
 
             try
             {
@@ -112,11 +121,11 @@ namespace DFC.App.JobProfile.ProfileService
 
                 if (response.JobProfileRelatedCareers != null)
                 {
-                    var mappedOverview = mapper.Map<RelatedCareerSegmentDataModel>(response);
+                    var mappedResponse = mapper.Map<RelatedCareerSegmentDataModel>(response);
 
-                    var relatedCareersObject = JsonConvert.SerializeObject(mappedOverview, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+                    var relatedCareersObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
 
-                    var html = await razorTemplateEngine.RenderAsync("~/Views/RelatedCareers/RelatedCareersBody.cshtml", mappedOverview).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/RelatedCareers/RelatedCareersBody.cshtml", mappedResponse).ConfigureAwait(false);
 
                     relatedCareers = new SegmentModel
                     {
@@ -126,13 +135,13 @@ namespace DFC.App.JobProfile.ProfileService
                         Markup = new HtmlString(html),
                     };
                 }
+                return relatedCareers;
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
+                throw;
             }
-
-            return relatedCareers;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

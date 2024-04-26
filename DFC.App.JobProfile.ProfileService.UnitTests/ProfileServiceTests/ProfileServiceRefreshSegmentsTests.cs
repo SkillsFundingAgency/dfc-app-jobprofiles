@@ -33,7 +33,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public ProfileServiceRefreshSegmentsTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            configuration = A.Fake<IConfiguration>();
             segmentService = A.Fake<ISegmentService>();
             mapper = A.Fake<IMapper>();
             logService = A.Fake<ILogService>();

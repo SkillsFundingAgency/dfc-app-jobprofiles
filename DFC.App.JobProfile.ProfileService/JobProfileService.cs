@@ -253,7 +253,6 @@ namespace DFC.App.JobProfile.ProfileService
                         Markup = new HtmlString(html),
                     };
                 }
-                return relatedCareers;
             }
             catch (Exception exception)
             {

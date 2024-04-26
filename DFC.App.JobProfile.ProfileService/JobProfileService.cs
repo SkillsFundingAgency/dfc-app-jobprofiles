@@ -84,8 +84,6 @@ namespace DFC.App.JobProfile.ProfileService
                 //higher up to pass in the correct strategy etc. For the moment I have left the database call in here so that we can compare data coming from the
                 //databasae vs the NuGet package.  At the moment, I'm using a GetData call, however we must use the GetDataAsyncWithExpiry method for all
                 //JobProfile calls going forward.
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfilesOverview, "/", canonicalName), status);
-
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName);
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);

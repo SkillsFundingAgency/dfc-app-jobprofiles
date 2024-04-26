@@ -134,32 +134,32 @@
     "ApiName": {
       "value": "__ApiName__"
     },
-    "TokenEndPointURL": {
-      "value": "__StaxGraphqlTokenEndPointURL__"
-    },
-    "GraphApiUrl": {
-      "value": "__StaxGraphqlApiUrl__"
-    },
-    "SqlApiUrl": {
-      "value": "__StaxGraphqlSqlApiUrl__"
-    },
-    "ClientId": {
-      "value": "__StaxGraphqlClientId__"
-    },
-    "ClientSecret": {
-      "value": "__StaxGraphqlClientSecret__"
-    },
-    "contentMode":{
-      "value": "__contentMode__"
-    },
-    "RedisCacheConnectionString": {
-      "value": "__RedisConnectionString__"
-    },
     "workspaceName": {
         "value": "__sharedLogAnalyticsWorkspace__"
     },
     "workspaceResourceGroup": {
         "value": "__sharedLogAnalyticsResourceGroup__"
+    },
+    "CmsTokenEndpointUrl": {
+        "value": "__StaxGraphqlTokenEndpointUrl__"
+    },
+    "CmsGraphApiUrl": {
+        "value": "__StaxGraphqlApiUrl__"
+    },
+    "CmsClientId": {
+        "value": "__StaxGraphqlClientId__"
+    },
+    "CmsClientSecret": {
+        "value": "__StaxGraphqlClientSecret__"
+    },
+    "CmsRedisCacheConnectionString": {
+        "value": "__RedisConnectionString__"
+    },
+    "CmsSqlApiUrl": {
+        "value": "__StaxGraphqlSqlApiUrl__"
+    },
+    "ContentMode": {
+        "value": "__ContentMode__"
     }
   }
 }

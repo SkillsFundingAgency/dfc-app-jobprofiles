@@ -94,11 +94,11 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
-                relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName);
+                relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                if (data != null && howToBecome != null && overview != null)
+                if (data != null && howToBecome != null && overview != null && relatedCareers != null)
                 {
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
                     data.Segments[index] = howToBecome;
@@ -107,7 +107,7 @@ namespace DFC.App.JobProfile.ProfileService
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     data.Segments[index] = overview;
                 }
-                
+
                 return data;
             }
             catch (Exception exception)
@@ -116,15 +116,10 @@ namespace DFC.App.JobProfile.ProfileService
                 throw;
             }
         }
-        
-        public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName)
+
+        public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName, string status)
         {
             var relatedCareers = new SegmentModel();
-
-            if (string.IsNullOrEmpty(status))
-            {
-                status = "PUBLISHED";
-            }
 
             try
             {
@@ -140,12 +135,13 @@ namespace DFC.App.JobProfile.ProfileService
 
                     relatedCareers = new SegmentModel
                     {
-                        Segment = Data.JobProfileSegment.RelatedCareers,
+                        Segment = JobProfileSegment.RelatedCareers,
                         JsonV1 = relatedCareersObject,
-                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        RefreshStatus = RefreshStatus.Success,
                         Markup = new HtmlString(html),
                     };
                 }
+
                 return relatedCareers;
             }
             catch (Exception exception)

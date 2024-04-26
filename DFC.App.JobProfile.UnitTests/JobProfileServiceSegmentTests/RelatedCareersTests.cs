@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ProfileService;
@@ -24,7 +25,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             //Arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var segmentService = A.Fake<ISegmentService>();
-            var mapper = A.Fake<IMapper>();
+            var mapper = GetMapperInstance();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var configuration = A.Fake<IConfiguration>();
@@ -52,7 +53,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             //Arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var segmentService = A.Fake<ISegmentService>();
-            var mapper = A.Fake<IMapper>();
+            var mapper = GetMapperInstance();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var configuration = A.Fake<IConfiguration>();
@@ -63,7 +64,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration);
             var expectedResult = GetExpectedData();
 
-            A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new RelatedCareersResponse());
 
             //Act
             var response = await jobProfileService.GetRelatedCareersSegmentAsync(canonicalName);
@@ -113,6 +114,17 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
            };
             expectedResult.JobProfileRelatedCareers = list;
             return expectedResult;
+        }
+
+        private IMapper GetMapperInstance()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new JobProfileModelProfile());
+            });
+            var mapper = config.CreateMapper();
+
+            return mapper;
         }
     }
 }

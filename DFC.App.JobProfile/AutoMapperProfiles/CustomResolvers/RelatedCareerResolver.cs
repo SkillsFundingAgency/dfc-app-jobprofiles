@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
+using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,20 +16,25 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             List<RelatedCareerDataModel> destMember,
             ResolutionContext context)
         {
-            var responseData = source.JobProfileRelatedCareers.FirstOrDefault();
             var segmentData = new List<RelatedCareerDataModel>();
 
-            if (responseData.RelatedCareerProfiles.ContentItems != null)
+            if (source.JobProfileRelatedCareers.IsAny())
             {
-                foreach (var career in responseData.RelatedCareerProfiles.ContentItems)
+                var responseData = source.JobProfileRelatedCareers.FirstOrDefault();
+
+                if (responseData.RelatedCareerProfiles.ContentItems.IsAny())
                 {
-                    segmentData.Add(new RelatedCareerDataModel
+                    foreach (var career in responseData.RelatedCareerProfiles.ContentItems)
                     {
-                        ProfileLink = career.PageLocation.FullUrl,
-                        Title = career.DisplayText,
-                    });
+                        segmentData.Add(new RelatedCareerDataModel
+                        {
+                            ProfileLink = career.PageLocation.FullUrl,
+                            Title = career.DisplayText,
+                        });
+                    }
                 }
             }
+
             return segmentData;
         }
     }

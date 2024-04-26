@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
@@ -33,7 +34,7 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
         private readonly IConfiguration configuration;
-        private string status;
+        private string status = string.Empty;
 
         public JobProfileService(
             ICosmosRepository<JobProfileModel> repository,
@@ -50,7 +51,7 @@ namespace DFC.App.JobProfile.ProfileService
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             this.razorTemplateEngine = razorTemplateEngine;
-            status = configuration.GetSection("contentMode:contentMode").Get<string>();
+            status = configuration.GetSection("contentMode:contentMode").Get<string>() ?? "PUBLISHED";
         }
 
         public async Task<bool> PingAsync()
@@ -86,12 +87,14 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             var howToBecome = new SegmentModel();
+            var relatedCareers = new SegmentModel();
             var overview = new SegmentModel();
 
             try
             {
                 howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
+                relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName);
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
@@ -99,11 +102,51 @@ namespace DFC.App.JobProfile.ProfileService
                 {
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
                     data.Segments[index] = howToBecome;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
+                    data.Segments[index] = relatedCareers;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     data.Segments[index] = overview;
                 }
-
+                
                 return data;
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+                throw;
+            }
+        }
+        
+        public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName)
+        {
+            var relatedCareers = new SegmentModel();
+
+            if (string.IsNullOrEmpty(status))
+            {
+                status = "PUBLISHED";
+            }
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, status);
+
+                if (response.JobProfileRelatedCareers != null)
+                {
+                    var mappedResponse = mapper.Map<RelatedCareerSegmentDataModel>(response);
+
+                    var relatedCareersObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/RelatedCareers/RelatedCareersBody.cshtml", mappedResponse).ConfigureAwait(false);
+
+                    relatedCareers = new SegmentModel
+                    {
+                        Segment = Data.JobProfileSegment.RelatedCareers,
+                        JsonV1 = relatedCareersObject,
+                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };
+                }
+                return relatedCareers;
             }
             catch (Exception exception)
             {

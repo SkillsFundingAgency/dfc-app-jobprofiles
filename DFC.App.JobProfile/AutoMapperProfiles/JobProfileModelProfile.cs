@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
@@ -48,6 +49,12 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.MetaTags.Title + " | Explore careers | National Careers Service"))
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.MetaTags.Description))
                 .ForMember(d => d.Keywords, s => s.MapFrom(a => a.MetaTags.Keywords));
+
+            CreateMap<RelatedCareersResponse, RelatedCareerSegmentDataModel>()
+                .ForMember(d => d.RelatedCareers, s => s.MapFrom<RelatedCareerResolver>())
+                .ForMember(d => d.LastReviewed, s => s.Ignore());
+
+            CreateMap<RelatedCareerDataModel, RelatedCareerDataViewModel>();
 
             CreateMap<JobProfileModel, IndexDocumentViewModel>();
 

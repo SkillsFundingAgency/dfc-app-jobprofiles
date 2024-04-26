@@ -32,6 +32,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
 
             var canonicalName = "biochemist";
+            var filter = "PUBLISHED";
 
             var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration);
             var expectedResult = GetExpectedData();
@@ -39,7 +40,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             //Act
-            var response = await jobProfileService.GetRelatedCareersSegmentAsync(canonicalName);
+            var response = await jobProfileService.GetRelatedCareersSegmentAsync(canonicalName, filter);
 
             //Assert
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
@@ -60,6 +61,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
 
             var canonicalName = "biochemist";
+            var filter = "PUBLISHED";
 
             var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration);
             var expectedResult = GetExpectedData();
@@ -67,7 +69,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new RelatedCareersResponse());
 
             //Act
-            var response = await jobProfileService.GetRelatedCareersSegmentAsync(canonicalName);
+            var response = await jobProfileService.GetRelatedCareersSegmentAsync(canonicalName, filter);
 
             //Assert
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();

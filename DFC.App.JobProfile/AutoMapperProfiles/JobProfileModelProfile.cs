@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CareerPath;
 using DFC.App.JobProfile.Data.Models.Overview;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
@@ -99,6 +100,10 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.WorkingHoursDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingHoursDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
+
+            CreateMap<JobProfileCareerPathAndProgressionResponse, CareerPathSegmentDataModel>()
+                .ForMember(d => d.Markup, s => s.MapFrom(a => a.JobProileCareerPath.FirstOrDefault().Content.Html))
+                .ForMember(d => d.LastReviewed, d => d.Ignore());
         }
     }
 }

@@ -3,22 +3,21 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
+using DFC.App.JobProfile.Data.Models.CareerPath;
 using DFC.App.JobProfile.Data.Models.Overview;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -89,12 +88,14 @@ namespace DFC.App.JobProfile.ProfileService
             var howToBecome = new SegmentModel();
             var relatedCareers = new SegmentModel();
             var overview = new SegmentModel();
+            var careersPath = new SegmentModel();
 
             try
             {
                 howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
+                careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
@@ -106,6 +107,8 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments[index] = relatedCareers;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     data.Segments[index] = overview;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CareerPathsAndProgression));
+                    data.Segments[index] = careersPath;
                 }
 
                 return data;
@@ -256,6 +259,40 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return overview;
+        }
+
+        public async Task<SegmentModel> GetCareerPathSegmentAsync(string canonicalName, string status)
+        {
+            SegmentModel careerPath = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfilesCarreerPath + "/" + canonicalName, status);
+
+                if (response.JobProileCareerPath != null)
+                {
+                    var mappedResponse = mapper.Map<CareerPathSegmentDataModel>(response);
+
+                    var careerPathObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/CareerPath/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+
+                    careerPath = new SegmentModel
+                    {
+                        Segment = JobProfileSegment.CareerPathsAndProgression,
+                        JsonV1 = careerPathObject,
+                        RefreshStatus = RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };
+                }
+
+                return careerPath;
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+                throw;
+            }
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

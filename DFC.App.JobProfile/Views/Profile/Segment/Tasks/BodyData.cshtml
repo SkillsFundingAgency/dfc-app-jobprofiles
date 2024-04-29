@@ -1,0 +1,35 @@
+﻿<section id="WhatYouWillDo">
+    <h2 class="job-profile-heading">What you'll do</h2>
+    <section class="job-profile-subsection">
+        <h3>Day-to-day tasks</h3>
+        <div class="job-profile-subsection-content">
+            @Html.Raw(Model.Tasks)
+        </div>
+    </section>
+    <section class="job-profile-subsection" id="workingenvironment">
+        <h3>Working environment</h3>
+        <div class="job-profile-subsection-content">
+
+            @if (!string.IsNullOrWhiteSpace(Model.Location))
+            {
+                <p>
+                    @Html.Raw(Model.Location)
+                </p>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Environment))
+            {
+                <p>
+                    @Html.Raw(Model.Environment)
+                </p>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Uniform))
+            {
+                <p>
+                    @Html.Raw(Model.Uniform)
+                </p>
+            }
+        </div>
+    </section>
+</section>

@@ -1,9 +1,11 @@
-﻿namespace DFC.App.JobProfile.Data.Models
+﻿using System.Collections.Generic;
+
+namespace DFC.App.JobProfile.Data.Models
 {
     public sealed class Thumbnail
     {
-        public string Url { get; set; }
+        public List<string> Url { get; set; }
 
-        public string Text { get; set; }
+        public List<string> Text { get; set; }
     }
 }

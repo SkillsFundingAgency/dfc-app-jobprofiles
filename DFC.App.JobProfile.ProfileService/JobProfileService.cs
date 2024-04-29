@@ -3,22 +3,21 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Overview;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.Segment.Tasks;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -89,16 +88,18 @@ namespace DFC.App.JobProfile.ProfileService
             var howToBecome = new SegmentModel();
             var relatedCareers = new SegmentModel();
             var overview = new SegmentModel();
+            var tasks = new SegmentModel();
 
             try
             {
                 howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
+                tasks = await GetTasksSegmentAsync(canonicalName, status);
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                if (data != null && howToBecome != null && overview != null && relatedCareers != null)
+                if (data != null && howToBecome != null && overview != null && relatedCareers != null && tasks != null)
                 {
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
                     data.Segments[index] = howToBecome;
@@ -106,6 +107,8 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments[index] = relatedCareers;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     data.Segments[index] = overview;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatYouWillDo));
+                    data.Segments[index] = tasks;
                 }
 
                 return data;
@@ -243,9 +246,9 @@ namespace DFC.App.JobProfile.ProfileService
 
                     overview = new SegmentModel
                     {
-                        Segment = Data.JobProfileSegment.Overview,
+                        Segment = JobProfileSegment.Overview,
                         JsonV1 = overviewObject,
-                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        RefreshStatus = RefreshStatus.Success,
                         Markup = new HtmlString(html),
                     };
                 }
@@ -256,6 +259,42 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return overview;
+        }
+
+        public async Task<SegmentModel> GetTasksSegmentAsync(string canonicalName, string filter)
+        {
+            var tasks = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(ApplicationKeys.JobProfileWhatYoullDo + "/" + canonicalName, filter);
+
+                var mappedResponse = mapper.Map<TasksSegmentDataModel>(response);
+
+                var tasksObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy(),
+                    },
+                });
+
+                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Tasks/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+
+                tasks = new SegmentModel
+                {
+                    Segment = JobProfileSegment.WhatYouWillDo,
+                    Markup = new HtmlString(html),
+                    JsonV1 = tasksObject,
+                    RefreshStatus = RefreshStatus.Success,
+                };
+            }
+            catch (Exception e)
+            {
+                logService.LogError(e.ToString());
+            }
+
+            return tasks;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

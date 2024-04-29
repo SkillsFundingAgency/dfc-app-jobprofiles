@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Overview;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.Segment.Tasks;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using Newtonsoft.Json;
@@ -99,6 +100,14 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.WorkingHoursDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingHoursDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
+
+            CreateMap<JobProfileWhatYoullDoResponse, TasksSegmentDataModel>()
+                .ForMember(d => d.Tasks, s => s.MapFrom(a => a.JobProfileWhatYoullDo.FirstOrDefault().Daytodaytasks.Html))
+                .ForMember(d => d.Location, s => s.MapFrom<LocationResolver>())
+                .ForMember(d => d.Environment, s => s.MapFrom<EnvironmentResolver>())
+                .ForMember(d => d.Uniform, s => s.MapFrom<UniformResolver>())
+                .ForMember(d => d.Introduction, s => s.Ignore())
+                .ForMember(d => d.LastReviewed, s => s.Ignore());
         }
     }
 }

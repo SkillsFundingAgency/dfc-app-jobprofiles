@@ -22,7 +22,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             {
                 var responseData = source.JobProfileWhatYoullDo.FirstOrDefault();
 
-                if (responseData.RelatedEnvironments.ContentItems.IsAny())
+                if (responseData != null && responseData.RelatedEnvironments.ContentItems.IsAny())
                 {
                     foreach (var contentItem in responseData.RelatedEnvironments.ContentItems)
                     {

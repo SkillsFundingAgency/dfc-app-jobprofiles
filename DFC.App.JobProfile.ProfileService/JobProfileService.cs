@@ -11,7 +11,6 @@ using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
-using FluentNHibernate.Conventions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;

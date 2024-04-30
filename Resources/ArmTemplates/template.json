@@ -195,7 +195,7 @@
     "CmsSqlApiUrl": {
       "type": "string"
     },    
-    "ContentMode": {
+    "contentMode": {
       "type": "string"
     }
   },
@@ -671,6 +671,10 @@
               {
                 "name": "Cms__RedisCacheConnectionString",
                 "value": "[parameters('CmsRedisCacheConnectionString')]"
+              },
+              {
+                "name": "contentMode__contentMode",
+                "value": "[parameters('contentMode')]"
               }
             ]
           }

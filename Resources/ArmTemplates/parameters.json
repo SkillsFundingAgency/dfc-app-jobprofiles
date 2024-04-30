@@ -158,8 +158,8 @@
     "CmsSqlApiUrl": {
         "value": "__StaxGraphqlSqlApiUrl__"
     },
-    "contentMode": {
-        "value": "__contentMode__"
+    "ContentMode": {
+        "value": "__ContentMode__"
     }
   }
 }

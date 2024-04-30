@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.Helpers;
@@ -44,3 +44,4 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
         }
     }
 }
+*/

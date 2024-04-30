@@ -59,7 +59,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileModel, IndexDocumentViewModel>();
 
-            CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
+            /*CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().DisplayText))
                 .ForMember(d => d.LastReviewed, s => s.Ignore())
                 .ForMember(d => d.EntryRouteSummary, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().EntryRoutes.Html))
@@ -71,8 +71,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForPath(d => d.MoreInformation.FurtherInformation, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().FurtherInformation.Html))
                 .ForPath(d => d.MoreInformation.CareerTips, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().CareerTips.Html))
                 .ForPath(d => d.MoreInformation.ProfessionalAndIndustryBodies, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().ProfessionalAndIndustryBodies.Html))
-                .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>())
-                .ForMember(d => d.RealStory, s => s.MapFrom<RealStoryResolver>());
+                .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>());
+                //.ForMember(d => d.RealStory, s => s.MapFrom<RealStoryResolver>());*/
 
             CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
                 .ForMember(d => d.RouteName, s => s.MapFrom((src, dest, routeName, context) => context.Items["RouteName"]))

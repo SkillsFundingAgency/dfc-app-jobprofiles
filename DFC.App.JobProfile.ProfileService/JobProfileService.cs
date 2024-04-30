@@ -34,6 +34,7 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
         private string status = string.Empty;
+        private readonly IConfiguration configuration;
 
         public JobProfileService(
             ICosmosRepository<JobProfileModel> repository,
@@ -50,6 +51,7 @@ namespace DFC.App.JobProfile.ProfileService
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             this.razorTemplateEngine = razorTemplateEngine;
+            this.configuration = configuration;
             status = configuration.GetSection("contentMode:contentMode").Get<string>() ?? "PUBLISHED";
         }
 
@@ -106,7 +108,6 @@ namespace DFC.App.JobProfile.ProfileService
                     //index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     //data.Segments[index] = overview;
                 }
-                
                 return data;
             }
             catch (Exception exception)

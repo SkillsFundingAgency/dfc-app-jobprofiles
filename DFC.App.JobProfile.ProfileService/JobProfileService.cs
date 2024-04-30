@@ -92,13 +92,13 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
-                overview = await GetOverviewSegment(canonicalName, status);
-                relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName);
+                //howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
+                //overview = await GetOverviewSegment(canonicalName, status);
+                relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                if (data != null && howToBecome != null && overview != null)
+                if (data != null && howToBecome != null && overview != null && relatedCareers != null)
                 {
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
                     data.Segments[index] = howToBecome;
@@ -117,7 +117,7 @@ namespace DFC.App.JobProfile.ProfileService
             }
         }
         
-        public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName)
+        public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName, string status)
         {
             var relatedCareers = new SegmentModel();
 
@@ -247,9 +247,9 @@ namespace DFC.App.JobProfile.ProfileService
 
                     overview = new SegmentModel
                     {
-                        Segment = Data.JobProfileSegment.Overview,
+                        Segment = JobProfileSegment.Overview,
                         JsonV1 = overviewObject,
-                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        RefreshStatus = RefreshStatus.Success,
                         Markup = new HtmlString(html),
                     };
                 }

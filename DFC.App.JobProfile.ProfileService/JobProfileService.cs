@@ -33,7 +33,6 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
-        private readonly IConfiguration configuration;
         private string status = string.Empty;
 
         public JobProfileService(
@@ -98,14 +97,14 @@ namespace DFC.App.JobProfile.ProfileService
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                if (data != null && howToBecome != null && overview != null && relatedCareers != null)
+                if (data != null && relatedCareers != null)
                 {
-                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
-                    data.Segments[index] = howToBecome;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
+                    //int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                    //data.Segments[index] = howToBecome;
+                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
                     data.Segments[index] = relatedCareers;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
-                    data.Segments[index] = overview;
+                    //index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
+                    //data.Segments[index] = overview;
                 }
                 
                 return data;

@@ -33,8 +33,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
                         FurtherInformationHtml = realStoryData.FurtherInformation.Html,
                         Thumbnail = new Thumbnail
                         {
-                            Text = realStoryData.Thumbnail.Paths,
-                            Url = realStoryData.Thumbnail.Urls,
+                            Url = realStoryData.Thumbnail.Urls.FirstOrDefault(),
+                            Text = realStoryData.Thumbnail.MediaText.FirstOrDefault(),
                         },
                     };
                 }

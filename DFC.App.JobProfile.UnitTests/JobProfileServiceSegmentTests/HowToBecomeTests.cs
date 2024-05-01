@@ -90,7 +90,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
                 Info = new Info { Html = string.Empty },
                 Text = string.Empty,
                 URL = string.Empty,
-                Thumbnail = new Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Thumbnail { Paths = new List<string>(), Urls = new List<string>() },
+                Thumbnail = new Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Thumbnail { MediaText = new List<string>(), Urls = new List<string>() },
             };
 
             var contentItemHTBList = new List<ContentItemHTB> { contentItemHTB };

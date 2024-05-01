@@ -59,7 +59,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileModel, IndexDocumentViewModel>();
 
-            CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
+            /*CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().DisplayText))
                 .ForMember(d => d.LastReviewed, s => s.Ignore())
                 .ForMember(d => d.EntryRouteSummary, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().EntryRoutes.Html))
@@ -80,7 +80,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.FurtherInformation, s => s.MapFrom<FurtherRouteInfoResolver>())
                 .ForMember(d => d.EntryRequirementPreface, s => s.MapFrom<EntryRequirementsPrefaceResolver>())
                 .ForMember(d => d.AdditionalInformation, s => s.MapFrom<AdditionalInfoResolver>())
-                .ForMember(d => d.EntryRequirements, s => s.MapFrom<EntryRequirementsResolver>());
+                .ForMember(d => d.EntryRequirements, s => s.MapFrom<EntryRequirementsResolver>());*/
 
             CreateMap<JobProfilesOverviewResponse, OverviewApiModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().DisplayText))

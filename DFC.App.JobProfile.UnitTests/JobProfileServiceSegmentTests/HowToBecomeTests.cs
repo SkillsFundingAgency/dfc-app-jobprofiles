@@ -20,7 +20,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 {
     public class HowToBecomeTests
     {
-        [Fact]
+        /*[Fact]
         public async Task GetHowToBecomeValidInputAsync()
         {
             //Arrange
@@ -76,7 +76,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             response.Should().BeOfType(typeof(SegmentModel));
-        }
+        }*/
 
         private static JobProfileHowToBecomeResponse GetExpectedData()
         {

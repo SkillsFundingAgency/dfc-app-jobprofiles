@@ -92,7 +92,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
+                //howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
                 tasks = await GetTasksSegmentAsync(canonicalName, status);
@@ -101,9 +101,9 @@ namespace DFC.App.JobProfile.ProfileService
 
                 if (data != null && howToBecome != null && overview != null && relatedCareers != null && tasks != null)
                 {
-                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
-                    data.Segments[index] = howToBecome;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
+                    //int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                    //data.Segments[index] = howToBecome;
+                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
                     data.Segments[index] = relatedCareers;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     data.Segments[index] = overview;

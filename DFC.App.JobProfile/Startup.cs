@@ -54,6 +54,7 @@ namespace DFC.App.JobProfile
         public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
         private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
+        private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
 
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment env;
@@ -160,6 +161,7 @@ namespace DFC.App.JobProfile
             services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
 
+            services.AddStackExchangeRedisCache(options => { options.Configuration = configuration.GetSection(RedisCacheConnectionStringAppSettings).Get<string>(); });
             services.AddSingleton<IGraphQLClient>(s =>
             {
                 var option = new GraphQLHttpClientOptions()

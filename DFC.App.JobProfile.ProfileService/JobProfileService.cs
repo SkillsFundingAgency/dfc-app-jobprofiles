@@ -169,9 +169,6 @@ namespace DFC.App.JobProfile.ProfileService
                 {
                     //MAPPING
                     mappedVideo = mapper.Map<SocialProofVideo>(response);
-                } else
-                {
-                    mappedVideo = null;
                 }
             }
             catch (Exception exception)

@@ -1,7 +1,11 @@
 ﻿using DFC.App.JobProfile.Data;
+using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Exceptions;
+using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Html;
@@ -425,6 +429,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             var resultViewModel = Assert.IsAssignableFrom<BodyViewModel>(okObjectResult?.Value);
             var nonCriticalSegment = segments.FirstOrDefault(s => s.Segment != JobProfileSegment.Overview && s.Segment != JobProfileSegment.HowToBecome && s.Segment != JobProfileSegment.WhatItTakes);
             var resultSegmentModel = resultViewModel.Segments.FirstOrDefault(s => s.Segment == nonCriticalSegment?.Segment);
+            
+            A.CallTo(() => FakeSharedContentRedisInterface.GetDataAsync<SharedHtmlResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new SharedHtmlResponse());
+            resultViewModel.SpeakToAnAdviser.Should().BeOfType(typeof(StaticContentItemModel));
 
             Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
             A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).MustHaveHappenedOnceExactly();

@@ -22,9 +22,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var segmentService = A.Fake<ISegmentService>();
             var mapper = A.Fake<IMapper>();
-            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var logService = A.Fake<ILogService>();
-            var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
             var fakeclient = A.Fake<ICourseSearchApiService>();
 

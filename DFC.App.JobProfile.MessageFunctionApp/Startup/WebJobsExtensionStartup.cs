@@ -32,7 +32,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Startup
             builder?.AddDependencyInjection();
             builder?.Services.AddSingleton(configuration.GetSection("jobProfileClientOptions").Get<JobProfileClientOptions>());
             builder?.Services.AddScoped(sp => new HttpClient());
-            builder?.Services.AddAutoMapper(typeof(WebJobsExtensionStartup).Assembly);
             builder?.Services.AddScoped<IMessageProcessor, MessageProcessor>();
             builder?.Services.AddScoped<IHttpClientService<JobProfileModel>, HttpClientService<JobProfileModel>>();
             builder?.Services.AddDFCLogging(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

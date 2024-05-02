@@ -55,7 +55,6 @@ namespace DFC.App.JobProfile
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
         private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
         private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
-        private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
 
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment env;

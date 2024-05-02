@@ -37,7 +37,6 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly IRazorTemplateEngine razorTemplateEngine;
         private readonly IConfiguration configuration;
         private readonly ICourseSearchApiService client;
-        private readonly ISharedContentRedisInterface redis;
         private string status;
 
         public JobProfileService(
@@ -48,8 +47,7 @@ namespace DFC.App.JobProfile.ProfileService
             ISharedContentRedisInterface sharedContentRedisInterface,
             IRazorTemplateEngine razorTemplateEngine,
             IConfiguration configuration,
-            ICourseSearchApiService client,
-            ISharedContentRedisInterface redis)
+            ICourseSearchApiService client)
         {
             this.repository = repository;
             this.segmentService = segmentService;
@@ -59,7 +57,6 @@ namespace DFC.App.JobProfile.ProfileService
             this.razorTemplateEngine = razorTemplateEngine;
             status = configuration.GetSection("contentMode:contentMode").Get<string>();
             this.client = client;
-            this.redis = redis;
         }
 
         public async Task<bool> PingAsync()
@@ -175,22 +172,15 @@ namespace DFC.App.JobProfile.ProfileService
 
             var currentOpportunitiesObject = JsonConvert.SerializeObject(currentOpportunitiesSegmentModel.Data, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
 
-            try
-            {
-                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/CurrentOpportunities/BodyData.cshtml", currentOpportunitiesSegmentModel.Data).ConfigureAwait(false);
+            var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/CurrentOpportunities/BodyData.cshtml", currentOpportunitiesSegmentModel.Data).ConfigureAwait(false);
 
-                currentOpportunities = new SegmentModel
-                {
-                    Segment = JobProfileSegment.CurrentOpportunities,
-                    JsonV1 = currentOpportunitiesObject,
-                    RefreshStatus = RefreshStatus.Success,
-                    Markup = new HtmlString(html),
-                };
-            }
-            catch (Exception ex)
+            currentOpportunities = new SegmentModel
             {
-                throw ex;
-            }
+                Segment = JobProfileSegment.CurrentOpportunities,
+                JsonV1 = currentOpportunitiesObject,
+                RefreshStatus = RefreshStatus.Success,
+                Markup = new HtmlString(html),
+            };
 
             return currentOpportunities;
         }
@@ -272,7 +262,7 @@ namespace DFC.App.JobProfile.ProfileService
         public async Task<CoursesReponse> GetCourses(string courseKeywords)
         {
             string cachekey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
-            var redisdata = await redis.GetCurrentOpportunitiesData<CoursesReponse>(cachekey);
+            var redisdata = await sharedContentRedisInterface.GetCurrentOpportunitiesData<CoursesReponse>(cachekey);
             if (redisdata == null)
             {
                 redisdata = new CoursesReponse();
@@ -282,7 +272,7 @@ namespace DFC.App.JobProfile.ProfileService
 
                     redisdata.Courses = result.ToList();
 
-                    var save = await redis.SetCurrentOpportunitiesData<CoursesReponse>(redisdata, cachekey, 48);
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisdata, cachekey, 48);
                     if (!save)
                         throw new InvalidOperationException("Redis save process failed.");
 

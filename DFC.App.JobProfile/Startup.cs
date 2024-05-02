@@ -55,6 +55,7 @@ namespace DFC.App.JobProfile
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
         private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
         private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
+        private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
 
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment env;
@@ -122,7 +123,6 @@ namespace DFC.App.JobProfile
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddCorrelationId();
             services.AddRazorTemplating();
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -176,6 +176,7 @@ namespace DFC.App.JobProfile
             });
 
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfilesOverviewResponse>, JobProfileOverviewProfileSpecificQueryStrategy>();
+            services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<RelatedCareersResponse>, JobProfileRelatedCareersQueryStrategy>();
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfileHowToBecomeResponse>, JobProfileHowToBecomeQueryStrategy>();
 
             services.AddSingleton<ISharedContentRedisInterfaceStrategyFactory, SharedContentRedisStrategyFactory>();

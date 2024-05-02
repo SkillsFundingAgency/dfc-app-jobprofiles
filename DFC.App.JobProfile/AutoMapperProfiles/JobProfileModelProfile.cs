@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
@@ -49,6 +50,12 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.MetaTags.Description))
                 .ForMember(d => d.Keywords, s => s.MapFrom(a => a.MetaTags.Keywords));
 
+            CreateMap<RelatedCareersResponse, RelatedCareerSegmentDataModel>()
+                .ForMember(d => d.RelatedCareers, s => s.MapFrom<RelatedCareerResolver>())
+                .ForMember(d => d.LastReviewed, s => s.Ignore());
+
+            CreateMap<RelatedCareerDataModel, RelatedCareerDataViewModel>();
+
             CreateMap<JobProfileModel, IndexDocumentViewModel>();
 
             CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
@@ -73,27 +80,25 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.EntryRequirementPreface, s => s.MapFrom<EntryRequirementsPrefaceResolver>())
                 .ForMember(d => d.AdditionalInformation, s => s.MapFrom<AdditionalInfoResolver>())
                 .ForMember(d => d.EntryRequirements, s => s.MapFrom<EntryRequirementsResolver>());
-                
+
             CreateMap<JobProfilesOverviewResponse, OverviewApiModel>()
-            .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().DisplayText))
-            .ForMember(d => d.Breadcrumb, option => option.Ignore())
-            .ForMember(d => d.LastUpdatedDate, option => option.Ignore())
-            .ForMember(d => d.Url, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().PageLocation.UrlName))
-            .ForMember(d => d.Soc, option => option.ConvertUsing(new SocCodeFormatter(), a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().DisplayText))
-            .ForMember(d => d.Soc2020, option => option.ConvertUsing(new SocCodeFormatter(), a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().SOC2020))
-            .ForMember(d => d.Soc2020Extension, option => option.ConvertUsing(new SocCodeFormatter(), a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().SOC2020extension))
-            .ForMember(d => d.ONetOccupationalCode, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().OnetOccupationCode))
-            .ForMember(d => d.AlternativeTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().AlternativeTitle))
-            .ForMember(d => d.Overview, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Overview))
-            .ForMember(d => d.SalaryStarter, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().SalaryStarter))
-            .ForMember(d => d.SalaryExperienced, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().SalaryExperienced))
-            //.ForMember(d => d.SalaryStarter, option => option.ConvertUsing(new SalaryToStringFormatter()))
-            //.ForMember(d => d.SalaryExperienced, option => option.ConvertUsing(new SalaryToStringFormatter()))
-            .ForMember(d => d.MinimumHours, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Minimumhours))
-            .ForMember(d => d.MaximumHours, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Maximumhours))
-            .ForMember(d => d.WorkingHoursDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingHoursDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
-            .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
-            .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().DisplayText))
+                .ForMember(d => d.Breadcrumb, option => option.Ignore())
+                .ForMember(d => d.LastUpdatedDate, option => option.Ignore())
+                .ForMember(d => d.Url, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().PageLocation.UrlName))
+                .ForMember(d => d.Soc, option => option.ConvertUsing(new SocCodeFormatter(), a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().DisplayText))
+                .ForMember(d => d.Soc2020, option => option.ConvertUsing(new SocCodeFormatter(), a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().SOC2020))
+                .ForMember(d => d.Soc2020Extension, option => option.ConvertUsing(new SocCodeFormatter(), a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().SOC2020extension))
+                .ForMember(d => d.ONetOccupationalCode, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().SocCode.ContentItems.FirstOrDefault().OnetOccupationCode))
+                .ForMember(d => d.AlternativeTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().AlternativeTitle))
+                .ForMember(d => d.Overview, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Overview))
+                .ForMember(d => d.SalaryStarter, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().SalaryStarter))
+                .ForMember(d => d.SalaryExperienced, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().SalaryExperienced))
+                .ForMember(d => d.MinimumHours, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Minimumhours))
+                .ForMember(d => d.MaximumHours, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().Maximumhours))
+                .ForMember(d => d.WorkingHoursDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingHoursDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
+                .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
+                .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
         }
     }
 }

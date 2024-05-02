@@ -29,13 +29,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public ProfileServiceUpdateTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-
             segmentService = A.Fake<ISegmentService>();
-            mapper = A.Fake<IMapper>();
             mapper = A.Fake<IMapper>();
             logService = A.Fake<ILogService>();
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
-            fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeConfiguration = A.Fake<IConfiguration>();
             jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);

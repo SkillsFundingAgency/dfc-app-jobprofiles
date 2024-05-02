@@ -53,6 +53,7 @@ namespace DFC.App.JobProfile
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
         public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
+        private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
         private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
 
         private readonly IConfiguration configuration;
@@ -159,6 +160,8 @@ namespace DFC.App.JobProfile
             services.AddScoped<ISegmentService, SegmentService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
+
+            services.AddStackExchangeRedisCache(options => { options.Configuration = configuration.GetSection(RedisCacheConnectionStringAppSettings).Get<string>(); });
 
             services.AddSingleton<IGraphQLClient>(s =>
             {

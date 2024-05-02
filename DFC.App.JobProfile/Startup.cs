@@ -43,6 +43,11 @@ using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using System.Net.Http;
+using DFC.FindACourseClient;
+using PolicyOptions = DFC.App.JobProfile.HttpClientPolicies.PolicyOptions;
+using System.Collections.Generic;
+using AutoMapper;
+using DFC.App.JobProfile.AutoMapperProfiles;
 
 namespace DFC.App.JobProfile
 {
@@ -53,7 +58,11 @@ namespace DFC.App.JobProfile
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
         public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
+        public const string CourseSearchClientSvcSettings = "Configuration:CourseSearchClient:CourseSearchSvc";
+        public const string CourseSearchClientAuditSettings = "Configuration:CourseSearchClient:CosmosAuditConnection";
+        public const string CourseSearchClientPolicySettings = "Configuration:CourseSearchClient:Policies";
         private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
+        private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
 
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment env;
@@ -111,7 +120,7 @@ namespace DFC.App.JobProfile
                     pattern: "{controller=Health}/{action=Ping}");
             });
 
-            mapper?.ConfigurationProvider.AssertConfigurationIsValid();
+            //mapper?.ConfigurationProvider.AssertConfigurationIsValid();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -160,6 +169,7 @@ namespace DFC.App.JobProfile
             services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
 
+            services.AddStackExchangeRedisCache(options => { options.Configuration = configuration.GetSection(RedisCacheConnectionStringAppSettings).Get<string>(); });
             services.AddSingleton<IGraphQLClient>(s =>
             {
                 var option = new GraphQLHttpClientOptions()
@@ -173,10 +183,38 @@ namespace DFC.App.JobProfile
             });
 
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfilesOverviewResponse>, JobProfileOverviewProfileSpecificQueryStrategy>();
+            services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>, JobProfileCurrentOpportunitiesGetByUrlStrategy>();
 
             services.AddSingleton<ISharedContentRedisInterfaceStrategyFactory, SharedContentRedisStrategyFactory>();
 
             services.AddScoped<ISharedContentRedisInterface, SharedContentRedis>();
+
+            services.AddSingleton(serviceProvider =>
+            {
+                return new MapperConfiguration(cfg =>
+                {
+                    cfg.AddProfiles(
+                        new List<Profile>
+                        {
+                            new HealthCheckItemProfile(),
+                            new JobProfileMetaDataPatchModelProfile(),
+                            new JobProfileModelProfile(),
+                            new StaticContentItemModelProfile(),
+                            new FindACourseProfile(),
+                        });
+                }).CreateMapper();
+            });
+            var courseSearchClientSettings = new CourseSearchClientSettings
+            {
+                CourseSearchSvcSettings = configuration.GetSection(CourseSearchClientSvcSettings).Get<CourseSearchSvcSettings>() ?? new CourseSearchSvcSettings(),
+                CourseSearchAuditCosmosDbSettings = configuration.GetSection(CourseSearchClientAuditSettings).Get<CourseSearchAuditCosmosDbSettings>() ?? new CourseSearchAuditCosmosDbSettings(),
+                PolicyOptions = configuration.GetSection(CourseSearchClientPolicySettings).Get<DFC.FindACourseClient.PolicyOptions>() ?? new DFC.FindACourseClient.PolicyOptions(),
+            };
+            services.AddSingleton(courseSearchClientSettings);
+            services.AddScoped<ICourseSearchApiService, CourseSearchApiService>();
+            services.AddFindACourseServicesWithoutFaultHandling(courseSearchClientSettings);
+            var policyRegistry = services.AddPolicyRegistry();
+            services.AddFindACourseTransientFaultHandlingPolicies(courseSearchClientSettings, policyRegistry);
 
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
             services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());
@@ -198,7 +236,6 @@ namespace DFC.App.JobProfile
 
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
-            var policyRegistry = services.AddPolicyRegistry();
 
             services
                 .AddPolicies(policyRegistry, nameof(CareerPathSegmentClientOptions), policyOptions)

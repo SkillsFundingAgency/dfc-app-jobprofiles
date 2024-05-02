@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var logService = A.Fake<ILogService>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
+            var fakeclient = A.Fake<ICourseSearchApiService>();
 
             IList<HealthCheckItem> expectedResult = new List<HealthCheckItem>
             {
@@ -37,7 +39,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             A.CallTo(() => segmentService.SegmentsHealthCheckAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakeclient);
 
             // act
             var result = jobProfileService.SegmentsHealthCheckAsync().Result;

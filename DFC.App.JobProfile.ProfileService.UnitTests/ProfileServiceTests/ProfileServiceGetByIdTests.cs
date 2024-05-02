@@ -2,6 +2,7 @@
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         private readonly ISharedContentRedisInterface fakeSharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
         private readonly IConfiguration fakeConfiguration;
+        private readonly ICourseSearchApiService fakeclient;
 
         public ProfileServiceGetByIdTests()
         {
@@ -36,7 +38,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeConfiguration = A.Fake<IConfiguration>();
-            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
+            fakeclient = A.Fake<ICourseSearchApiService>();
+            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakeclient);
         }
 
         [Fact]

@@ -366,6 +366,7 @@ namespace DFC.App.JobProfile.ProfileService
                     logService.LogError(ex.ToString());
                 }
             }
+
             return redisdata;
         }
 

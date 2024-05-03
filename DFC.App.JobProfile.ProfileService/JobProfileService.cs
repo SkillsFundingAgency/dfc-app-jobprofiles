@@ -104,13 +104,15 @@ namespace DFC.App.JobProfile.ProfileService
             var data = new JobProfileModel();
 
             //TODO - will need to update this section and adjust the unit tests accordingly once the other segments have been added in.  
-            if (data != null)
+            if (data != null && overview.Markup != null) //howtobecome.Markup != null && whatittakes != null
             {
+
                 data.Segments = new List<SegmentModel>();
                 //data.Segments.RemoveAt(6);
                 data.Segments.Add(overview);
                 data.Video = video;
             }
+            else return null;
 
             return data;
         }

@@ -113,28 +113,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Markup, s => s.MapFrom(a => a.JobProileCareerPath.FirstOrDefault().Content.Html))
                 .ForMember(d => d.LastReviewed, d => d.Ignore());
 
-                CreateMap<SkillsResponse, OnetSkill>()
-                .ForMember(d => d.Title, s => s.MapFrom(a => a.Skill.FirstOrDefault().DisplayText))
-                .ForMember(d => d.Description, s => s.MapFrom(a => a.Skill.FirstOrDefault().Description))
-                .ForMember(d => d.ONetElementId, s => s.MapFrom(a => a.Skill.FirstOrDefault().ONetElementId))
-                .ForMember(d => d.Id, s => s.MapFrom(a => a.Skill.FirstOrDefault().GraphSync.NodeId.Substring(a.Skill.FirstOrDefault().GraphSync.NodeId.LastIndexOf('/') + 1)));
-
-            CreateMap<JobProfileSkillsResponse, Restriction>()
-                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().DisplayText))
-                .ForMember(d => d.Description, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().Info))
-                .ForMember(d => d.Id, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().GraphSync.NodeId.Substring(a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().GraphSync.NodeId.LastIndexOf('/') + 1)));
-
-            CreateMap<JobProfileSkillsResponse, ContextualisedSkill>()
-                .ForMember(d => d.ONetRank, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().ONetRank))
-                .ForMember(d => d.ONetAttributeType, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().ONetAttributeType))
-                .ForMember(d => d.Description, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().RelatedSkillDesc))
-                .ForMember(d => d.Id, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().GraphSync.NodeId.Substring(a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().GraphSync.NodeId.LastIndexOf('/') + 1)))
-                .ForMember(d => d.OriginalRank, d => d.Ignore());
-
-
-            /* CreateMap<JobProfileSkillsResponse, JobProfileSkillSegmentDataModel>()
-                 .ForAllMembers(d => d.Ignore());*/
-
             CreateMap<JobProfileSkillsResponse, JobProfileSkillSegmentDataModel>()
                 .ForMember(d => d.DigitalSkill, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().DigitalSkills.ContentItems.FirstOrDefault().DisplayText))
                 .ForMember(d => d.OtherRequirements, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Otherrequirements.Html))
@@ -158,12 +136,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.RelatedSkillDesc))
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.GraphSync.NodeId.Substring(a.GraphSync.NodeId.LastIndexOf('/') + 1)))
                 .ForMember(d => d.OriginalRank, d => d.Ignore());
-
-            /*CreateMap<JobProfileSkillsResponse, Restriction>()
-                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().DisplayText));*/
-
-
-
         }
     }
 }

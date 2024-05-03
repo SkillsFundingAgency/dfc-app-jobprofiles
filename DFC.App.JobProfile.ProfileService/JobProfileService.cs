@@ -107,19 +107,20 @@ namespace DFC.App.JobProfile.ProfileService
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
 
                 //Get Current Opportunity data
+                
                 currentOpportunity = await GetCurrentOpportunities(canonicalName, status);
 
                 //WaitUntil.Completed
 
-                //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                //For developer, when debugging there is no data from Cosmos DB, we need initial data value.
-                var data = new JobProfileModel();
-                data.Segments = new List<SegmentModel>();
-                data.Segments.Add(howToBecome);
-                data.Segments.Add(relatedCareers);
-                data.Segments.Add(overview);
-                data.Segments.Add(currentOpportunity);
+                //For developer, when debugging there is no data from Cosmos DB, we need initial data value. This can be deleted when deploying
+                //var data = new JobProfileModel();
+                //data.Segments = new List<SegmentModel>();
+                //data.Segments.Add(howToBecome);
+                //data.Segments.Add(relatedCareers);
+                //data.Segments.Add(overview);
+                //data.Segments.Add(currentOpportunity);
 
                 if (data != null && howToBecome != null && overview != null && relatedCareers != null)
                 {
@@ -259,7 +260,7 @@ namespace DFC.App.JobProfile.ProfileService
             var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix, "/", canonicalName), filter);
 
             //get couses by course key words
-            if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().Coursekeywords))
+            if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].Coursekeywords))
             {
                 string coursekeywords = jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().Coursekeywords;
                 var results = await GetCourses(coursekeywords);
@@ -276,9 +277,9 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             //get apprenticeship by lars code.
-            if (jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().SOCCode?.ContentItems.Count() > 0 && jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().SOCCode?.ContentItems?.First().ApprenticeshipStandards.ContentItems.Count() > 0)
+            if (jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems.Count() > 0 && jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Count() > 0)
             {
-                if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().SOCCode?.ContentItems?.First().ApprenticeshipStandards.ContentItems?.FirstOrDefault().LARScode))
+                if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
                 {
                     //get apprenticeship vacancy data by lars code.
                 }

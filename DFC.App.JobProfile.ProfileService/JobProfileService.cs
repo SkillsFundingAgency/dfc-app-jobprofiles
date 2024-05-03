@@ -7,8 +7,11 @@ using DFC.App.JobProfile.Data.Models.CareerPath;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.SkillsModels;
+using DFC.App.JobProfile.ProfileService.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
@@ -21,6 +24,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
+using JobProfSkills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
+using NHibernate.Criterion;
 
 namespace DFC.App.JobProfile.ProfileService
 {
@@ -89,6 +95,7 @@ namespace DFC.App.JobProfile.ProfileService
             var relatedCareers = new SegmentModel();
             var overview = new SegmentModel();
             var careersPath = new SegmentModel();
+            var skills = new SegmentModel();
 
             try
             {
@@ -96,6 +103,7 @@ namespace DFC.App.JobProfile.ProfileService
                 overview = await GetOverviewSegment(canonicalName, status);
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
                 careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
+                skills = await GetSkillSegmentAsync(canonicalName, status);
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
@@ -109,6 +117,8 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments[index] = overview;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CareerPathsAndProgression));
                     data.Segments[index] = careersPath;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatItTakes));
+                    data.Segments[index] = skills;
                 }
 
                 return data;
@@ -293,6 +303,70 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(exception.ToString());
                 throw;
             }
+        }
+
+        public async Task<SegmentModel> GetSkillSegmentAsync(string canonicalName, string status)
+        {
+            SegmentModel skills = new SegmentModel();
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, status);
+                var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, status);
+
+                SkillsResponse jobProfileSkillsResponse = new SkillsResponse();
+                List<Skills> jobProfileSkillsList = new List<Skills>();
+
+                var filteredSkills = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).Select(d => d.RelatedSkillDesc).ToList();
+                var filteredSkills2 = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).ToList();
+
+
+                foreach (var skill in skillsResponse.Skill)
+                {
+                    if (skill.DisplayText != null && filteredSkills.Contains(skill.DisplayText))
+                    {
+                        jobProfileSkillsList.Add(skill);
+                    }
+                }
+
+                jobProfileSkillsResponse.Skill = jobProfileSkillsList;
+                if (response != null && skillsResponse != null)
+                {
+                    var mappedResponse = mapper.Map<JobProfileSkillSegmentDataModel>(response);
+                    List<JobProfSkills> sortedSkills = new List<JobProfSkills>();
+                    var mappedSkillsResponse = mapper.Map<List<OnetSkill>>(jobProfileSkillsResponse.Skill);
+                    var mappedContextualSkills = mapper.Map<List<ContextualisedSkill>>(filteredSkills2);
+
+                    foreach (var skill in filteredSkills2)
+                    {
+                        sortedSkills.Add(new JobProfSkills
+                        {
+                            ContextualisedSkill = mappedContextualSkills.Single(s => s.Description == skill.RelatedSkillDesc),
+                            OnetSkill = mappedSkillsResponse.Single(s => s.Title == skill.RelatedSkillDesc),
+                        });
+                    }
+
+                    mappedResponse.Skills = sortedSkills;
+
+                    var skillsObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Skills/Body.cshtml", mappedResponse).ConfigureAwait(false);
+
+                    skills = new SegmentModel
+                    {
+                        Segment = JobProfileSegment.WhatItTakes,
+                        JsonV1 = skillsObject,
+                        RefreshStatus = RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                logService.LogError(ex.ToString());
+                throw;
+            }
+
+            return skills;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

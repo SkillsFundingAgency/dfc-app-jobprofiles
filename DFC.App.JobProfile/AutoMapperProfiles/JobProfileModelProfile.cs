@@ -8,11 +8,20 @@ using DFC.App.JobProfile.Data.Models.CareerPath;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.SkillsModels;
+using DFC.App.JobProfile.Models;
+using DFC.App.JobProfile.ProfileService.Models;
 using DFC.App.JobProfile.ViewModels;
+using DFC.App.JobProfile.ViewModels.Segment.Skills;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using JobProfSkills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
+using RelatedSkill = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.RelatedSkill;
+using Skills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
@@ -22,7 +31,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
         public JobProfileModelProfile()
         {
             CreateMap<JobProfileModel, JobProfileModel>();
-            CreateMap<JobProfileModel, BodyViewModel>()
+            CreateMap<JobProfileModel, ViewModels.BodyViewModel>()
                 .ForMember(d => d.SmartSurveyJP, s => s.Ignore())
                 .ForMember(d => d.SpeakToAnAdviser, s => s.Ignore());
 
@@ -104,6 +113,60 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<JobProfileCareerPathAndProgressionResponse, CareerPathSegmentDataModel>()
                 .ForMember(d => d.Markup, s => s.MapFrom(a => a.JobProileCareerPath.FirstOrDefault().Content.Html))
                 .ForMember(d => d.LastReviewed, d => d.Ignore());
+
+           
+
+                CreateMap<SkillsResponse, OnetSkill>()
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.Skill.FirstOrDefault().DisplayText))
+                .ForMember(d => d.Description, s => s.MapFrom(a => a.Skill.FirstOrDefault().Description))
+                .ForMember(d => d.ONetElementId, s => s.MapFrom(a => a.Skill.FirstOrDefault().ONetElementId))
+                .ForMember(d => d.Id, s => s.MapFrom(a => a.Skill.FirstOrDefault().GraphSync.NodeId.Substring(a.Skill.FirstOrDefault().GraphSync.NodeId.LastIndexOf('/') + 1)));
+
+            CreateMap<JobProfileSkillsResponse, Restriction>()
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().DisplayText))
+                .ForMember(d => d.Description, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().Info))
+                .ForMember(d => d.Id, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().GraphSync.NodeId.Substring(a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().GraphSync.NodeId.LastIndexOf('/') + 1)));
+
+            CreateMap<JobProfileSkillsResponse, ContextualisedSkill>()
+                .ForMember(d => d.ONetRank, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().ONetRank))
+                .ForMember(d => d.ONetAttributeType, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().ONetAttributeType))
+                .ForMember(d => d.Description, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().RelatedSkillDesc))
+                .ForMember(d => d.Id, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().GraphSync.NodeId.Substring(a.JobProfileSkills.FirstOrDefault().Relatedskills.ContentItems.FirstOrDefault().GraphSync.NodeId.LastIndexOf('/') + 1)))
+                .ForMember(d => d.OriginalRank, d => d.Ignore());
+
+
+            /* CreateMap<JobProfileSkillsResponse, JobProfileSkillSegmentDataModel>()
+                 .ForAllMembers(d => d.Ignore());*/
+
+            CreateMap<JobProfileSkillsResponse, JobProfileSkillSegmentDataModel>()
+                .ForMember(d => d.DigitalSkill, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().DigitalSkills.ContentItems.FirstOrDefault().DisplayText))
+                .ForMember(d => d.OtherRequirements, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Otherrequirements.Html))
+                .ForMember(d => d.Restrictions, s => s.MapFrom<SkillsResolver>())
+                .ForMember(d => d.Skills, d => d.Ignore())
+                .ForMember(d => d.LastReviewed, d => d.Ignore());
+
+            CreateMap<JobSkills, Skills>()
+                .ForMember(d => d.OnetSkill, s => s.MapFrom(a => a.Skills))
+                .ForMember(d => d.ContextualisedSkill, s => s.MapFrom(a => a.JobProfileContextualisedSkills));
+
+            CreateMap<JobProfSkills, OnetSkill>()
+                .ForMember(d => d.ONetElementId, s => s.MapFrom(a => a.ONetElementId))
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.DisplayText))
+                .ForMember(d => d.Description, s => s.MapFrom(a => a.Description))
+                .ForMember(d => d.Id, s => s.MapFrom(a => a.GraphSync.NodeId.Substring(a.GraphSync.NodeId.LastIndexOf('/') + 1)));
+
+            CreateMap<RelatedSkill, ContextualisedSkill>()
+                .ForMember(d => d.ONetRank, s => s.MapFrom(a => a.ONetRank))
+                .ForMember(d => d.ONetAttributeType, s => s.MapFrom(a => a.ONetAttributeType))
+                .ForMember(d => d.Description, s => s.MapFrom(a => a.RelatedSkillDesc))
+                .ForMember(d => d.Id, s => s.MapFrom(a => a.GraphSync.NodeId.Substring(a.GraphSync.NodeId.LastIndexOf('/') + 1)))
+                .ForMember(d => d.OriginalRank, d => d.Ignore());
+
+            /*CreateMap<JobProfileSkillsResponse, Restriction>()
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Relatedrestrictions.ContentItems.FirstOrDefault().DisplayText));*/
+
+
+
         }
     }
 }

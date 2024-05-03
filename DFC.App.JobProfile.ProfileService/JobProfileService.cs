@@ -110,7 +110,16 @@ namespace DFC.App.JobProfile.ProfileService
                 currentOpportunity = await GetCurrentOpportunities(canonicalName, status);
 
                 //WaitUntil.Completed
-                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+
+                //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+
+                //For developer, when debugging there is no data from Cosmos DB, we need initial data value.
+                var data = new JobProfileModel();
+                data.Segments = new List<SegmentModel>();
+                data.Segments.Add(howToBecome);
+                data.Segments.Add(relatedCareers);
+                data.Segments.Add(overview);
+                data.Segments.Add(currentOpportunity);
 
                 if (data != null && howToBecome != null && overview != null && relatedCareers != null)
                 {

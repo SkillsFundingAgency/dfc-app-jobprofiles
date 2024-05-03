@@ -101,7 +101,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
                                 DisplayText = "Skill1",
                                 GraphSync = new ()
                                 {
-                                    NodeId = "123",
+                                    NodeId = "29d1a617-92b7-446f-81a1-070e69b00aa9",
                                 },
                             },
                         },
@@ -126,7 +126,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
                                DisplayText = "Restriction1",
                                GraphSync = new ()
                                {
-                                   NodeId = "1234",
+                                   NodeId = "29d1a617-92b7-446f-81a1-070e69b00aa9",
                                },
                                Info = new ()
                                {
@@ -145,10 +145,10 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
                                RelatedSkillDesc = "RelatedSkillDesc",
                                GraphSync = new ()
                                {
-                                   NodeId = "12345",
+                                   NodeId = "29d1a617-92b7-446f-81a1-070e69b00aa9",
                                },
                                ONetAttributeType = "testONet",
-                               ONetRank = "TestONetRank",
+                               ONetRank = "3.185",
                                Ordinal = 1,
                                RelatedSOCcode = "TestSocCode",
                            },
@@ -169,10 +169,10 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
                 new Skills
                 {
                     Description = "Skill1Desc",
-                    DisplayText = "Skill1",
+                    DisplayText = "RelatedSkillDesc",
                     GraphSync = new()
                     {
-                        NodeId = "13345",
+                        NodeId = "29d1a617-92b7-446f-81a1-070e69b00aa9",
                     },
                     ONetElementId = "12345",
                 },

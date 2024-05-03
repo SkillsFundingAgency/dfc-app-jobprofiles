@@ -308,29 +308,31 @@ namespace DFC.App.JobProfile.ProfileService
         public async Task<SegmentModel> GetSkillSegmentAsync(string canonicalName, string status)
         {
             SegmentModel skills = new SegmentModel();
+
             try
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, status);
                 var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, status);
 
-                SkillsResponse jobProfileSkillsResponse = new SkillsResponse();
-                List<Skills> jobProfileSkillsList = new List<Skills>();
-
-                var filteredSkills = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).Select(d => d.RelatedSkillDesc).ToList();
-                var filteredSkills2 = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).ToList();
-
-
-                foreach (var skill in skillsResponse.Skill)
+                if (response.JobProfileSkills != null && skillsResponse.Skill != null)
                 {
-                    if (skill.DisplayText != null && filteredSkills.Contains(skill.DisplayText))
+                    SkillsResponse jobProfileSkillsResponse = new SkillsResponse();
+                    List<Skills> jobProfileSkillsList = new List<Skills>();
+
+                    var filteredSkills = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).Select(d => d.RelatedSkillDesc).ToList();
+                    var filteredSkills2 = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).ToList();
+
+
+                    foreach (var skill in skillsResponse.Skill)
                     {
-                        jobProfileSkillsList.Add(skill);
+                        if (skill.DisplayText != null && filteredSkills.Contains(skill.DisplayText))
+                        {
+                            jobProfileSkillsList.Add(skill);
+                        }
                     }
-                }
 
-                jobProfileSkillsResponse.Skill = jobProfileSkillsList;
-                if (response != null && skillsResponse != null)
-                {
+                    jobProfileSkillsResponse.Skill = jobProfileSkillsList;
+
                     var mappedResponse = mapper.Map<JobProfileSkillSegmentDataModel>(response);
                     List<JobProfSkills> sortedSkills = new List<JobProfSkills>();
                     var mappedSkillsResponse = mapper.Map<List<OnetSkill>>(jobProfileSkillsResponse.Skill);

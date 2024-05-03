@@ -113,8 +113,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Markup, s => s.MapFrom(a => a.JobProileCareerPath.FirstOrDefault().Content.Html))
                 .ForMember(d => d.LastReviewed, d => d.Ignore());
 
-           
-
                 CreateMap<SkillsResponse, OnetSkill>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.Skill.FirstOrDefault().DisplayText))
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.Skill.FirstOrDefault().Description))

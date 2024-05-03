@@ -24,12 +24,12 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             mapper = A.Fake<IMapper>();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
-            var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
-
+          
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
 
             // act
             var result = jobProfileService.PingAsync().Result;
@@ -45,15 +45,13 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             // arrange
             var repository = A.Dummy<ICosmosRepository<JobProfileModel>>();
             var expectedResult = false;
-            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var logService = A.Fake<ILogService>();
-            var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
-
             A.CallTo(() => repository.PingAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
-
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
             // act
             var result = jobProfileService.PingAsync().Result;
 

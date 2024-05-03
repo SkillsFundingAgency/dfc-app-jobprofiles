@@ -88,7 +88,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
                 VideoTitle = string.Empty,
                 VideoTranscript = string.Empty,
                 VideoSummary = new VideoSummary { Html = string.Empty },
-                VideoThumbnail = new VideoThumbnail { Paths = new List<string>() { string.Empty }, Urls = new List<string>() { string.Empty } },
+                VideoThumbnail = new VideoThumbnail { MediaText = new List<string>() { string.Empty }, Urls = new List<string>() { string.Empty } },
                 VideoUrl = string.Empty,
                 VideoLinkText = string.Empty,
                 VideoFurtherInformation = new VideoFurtherInformation { Html = string.Empty },

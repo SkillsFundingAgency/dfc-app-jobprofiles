@@ -85,7 +85,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<VideoThumbnail, Data.Models.Thumbnail>()
                  //find thumbnail text and replace this below - temp solution
-                 .ForMember(d => d.Text, s => s.MapFrom(a => a.Paths.FirstOrDefault() ?? string.Empty))
+                 .ForMember(d => d.Text, s => s.MapFrom(a => a.MediaText.FirstOrDefault() ?? string.Empty))
                  .ForMember(d => d.Url, s => s.MapFrom(a => a.Urls.FirstOrDefault() ?? string.Empty));
         }
 

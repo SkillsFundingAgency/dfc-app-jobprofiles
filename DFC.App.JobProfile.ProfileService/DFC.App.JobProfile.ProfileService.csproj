@@ -12,7 +12,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="11.0.1" />
-		<PackageReference Include="DFC.Common.SharedContent.Pkg.Netcore" Version="0.1.93" />
+		<PackageReference Include="DFC.Common.SharedContent.Pkg.Netcore" Version="0.1.97" />
 		<PackageReference Include="DFC.Logger.AppInsights" Version="1.0.8" />
 		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0">
 			<PrivateAssets>all</PrivateAssets>

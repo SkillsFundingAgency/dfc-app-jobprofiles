@@ -12,7 +12,6 @@ using DFC.App.JobProfile.Data.Models.SkillsModels;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService.Models;
 using DFC.App.JobProfile.ViewModels;
-using DFC.App.JobProfile.ViewModels.Segment.Skills;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;

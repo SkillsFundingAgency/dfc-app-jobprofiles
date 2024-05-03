@@ -1,0 +1,26 @@
+﻿@model DFC.App.JobProfile.Data.Models.Segment.HowToBecome.RealStory;
+
+<section class="job-profile-subsection" id="real-story">
+    <h3>Real career story</h3>
+    <div class="job-profile-subsection-content">
+        <p>@Model.Summary</p>
+
+        @if (Model.Thumbnail != null)
+        {
+            <img class="job-profile-real-story-image" src="@Model.Thumbnail.Url" alt="@Model.Thumbnail.Text" />
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.FurtherInformationHtml))
+        {
+            <div class="govuk-!-margin-top-4">
+                @Html.Raw(Model.FurtherInformationHtml)
+            </div>
+        }
+
+        <div class="ncs-highlight-box govuk-!-margin-top-4">
+            <div class="ncs-highlight-box__card govuk-!-padding-top-5 govuk-!-padding-left-5 govuk-!-padding-right-5">
+                @Html.Raw(Model.BodyHtml)
+            </div>
+        </div>
+    </div>
+</section>

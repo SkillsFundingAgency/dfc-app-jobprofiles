@@ -141,6 +141,7 @@ namespace DFC.App.JobProfile.ProfileService
             currentOpportunitiesSegmentModel.Data = new CurrentOpportunitiesSegmentDataModel();
             currentOpportunitiesSegmentModel.Data.Courses = new Courses();
             currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
+
             //Get job profile cousekeyword and lars code
             var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix, "/", canonicalName), filter);
 
@@ -164,7 +165,7 @@ namespace DFC.App.JobProfile.ProfileService
             //get apprenticeship by lars code.
             if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().SOCCode.ContentItems.First().ApprenticeshipStandards.ContentItems.First().LARScode))
             {
-                //get apprenticeship by lars code.
+                //get apprenticeship vacancy data by lars code.
             }
 
             currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
@@ -183,27 +184,6 @@ namespace DFC.App.JobProfile.ProfileService
             };
 
             return currentOpportunities;
-        }
-
-        private List<Opportunity> MapCourses(List<FindACourseClient.Course> courseSearchResults, List<Opportunity> opportunities)
-        {
-            foreach (var course in courseSearchResults)
-            {
-                var opportunity = mapper.Map<Opportunity>(course);
-
-                var courseIdGuid = new Guid(opportunity.CourseId);
-                var tLevelIdGuid = new Guid(opportunity.TLevelId);
-                var urlPath = $"/find-a-course/";
-                var urlQueryString = courseIdGuid == Guid.Empty && tLevelIdGuid != Guid.Empty
-                    ? $"tdetails?tlevelId={opportunity.TLevelId}&tlevelLocationId={opportunity.TLevelLocationId}"
-                    : $"course-details?CourseId={opportunity.CourseId}&r={opportunity.RunId}";
-                opportunity.Url = $"{urlPath}{urlQueryString}";
-                opportunities.Add(opportunity);
-
-                logService.LogInformation($"{nameof(MapCourses)} added details for {course.CourseId} to list");
-            }
-
-            return opportunities;
         }
 
         /// <summary>
@@ -284,11 +264,6 @@ namespace DFC.App.JobProfile.ProfileService
             }
             return redisdata;
         }
-
-        //private async SegmentModel GetHowToBecomeSegment(string canonicalName)
-        //{
-        //    return new SegmentModel();
-        //}
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {
@@ -411,6 +386,33 @@ namespace DFC.App.JobProfile.ProfileService
             var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
 
             return result == HttpStatusCode.NoContent;
+        }
+
+        /// <summary>
+        /// Mapping courses data with Opportunity object.
+        /// </summary>
+        /// <param name="courseSearchResults">List of courses result data.</param>
+        /// <param name="opportunities">List of Opportunity object.</param>
+        /// <returns> List of Opportunity object. </returns>
+        private List<Opportunity> MapCourses(List<FindACourseClient.Course> courseSearchResults, List<Opportunity> opportunities)
+        {
+            foreach (var course in courseSearchResults)
+            {
+                var opportunity = mapper.Map<Opportunity>(course);
+
+                var courseIdGuid = new Guid(opportunity.CourseId);
+                var tLevelIdGuid = new Guid(opportunity.TLevelId);
+                var urlPath = $"/find-a-course/";
+                var urlQueryString = courseIdGuid == Guid.Empty && tLevelIdGuid != Guid.Empty
+                    ? $"tdetails?tlevelId={opportunity.TLevelId}&tlevelLocationId={opportunity.TLevelLocationId}"
+                    : $"course-details?CourseId={opportunity.CourseId}&r={opportunity.RunId}";
+                opportunity.Url = $"{urlPath}{urlQueryString}";
+                opportunities.Add(opportunity);
+
+                logService.LogInformation($"{nameof(MapCourses)} added details for {course.CourseId} to list");
+            }
+
+            return opportunities;
         }
 
         private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)

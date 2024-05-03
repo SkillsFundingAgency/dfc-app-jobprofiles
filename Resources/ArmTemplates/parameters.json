@@ -87,7 +87,7 @@
       "value": "__surveyFeedbackUrl__"
     },
     "enableAlerts": {
-      "value": "__EnableAzureMonitorAlerting__"
+      "value": __EnableAzureMonitorAlerting__
     },
     "ExceptionCountThreshold": {
       "value": "__ExceptionCountThreshold__"
@@ -117,7 +117,7 @@
       "value": "__LmiBaseEndPoint__"
     },
     "EnableLMI": {
-      "value": "__EnableLMI__"
+      "value": __EnableLMI__
     },
     "ApimResourceGroup": {
       "value": "__SharedResourceGroupName__"

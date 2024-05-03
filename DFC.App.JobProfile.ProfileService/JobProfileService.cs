@@ -4,8 +4,8 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Overview;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
@@ -16,8 +16,8 @@ using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
@@ -276,9 +276,12 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             //get apprenticeship by lars code.
-            if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().SOCCode.ContentItems.First().ApprenticeshipStandards.ContentItems.First().LARScode))
+            if (jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().SOCCode?.ContentItems.Count() > 0 && jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().SOCCode?.ContentItems?.First().ApprenticeshipStandards.ContentItems.Count() > 0)
             {
-                //get apprenticeship vacancy data by lars code.
+                if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().SOCCode?.ContentItems?.First().ApprenticeshipStandards.ContentItems?.FirstOrDefault().LARScode))
+                {
+                    //get apprenticeship vacancy data by lars code.
+                }
             }
 
             currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();

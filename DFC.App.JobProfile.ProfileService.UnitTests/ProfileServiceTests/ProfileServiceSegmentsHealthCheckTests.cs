@@ -22,9 +22,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var segmentService = A.Fake<ISegmentService>();
             var mapper = A.Fake<IMapper>();
-            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var logService = A.Fake<ILogService>();
-            var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
             var fakeclient = A.Fake<ICourseSearchApiService>();
 
@@ -39,7 +39,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             A.CallTo(() => segmentService.SegmentsHealthCheckAsync()).Returns(expectedResult);
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakeclient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient);
 
             // act
             var result = jobProfileService.SegmentsHealthCheckAsync().Result;

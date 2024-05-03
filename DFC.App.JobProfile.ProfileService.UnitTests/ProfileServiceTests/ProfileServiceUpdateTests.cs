@@ -24,23 +24,21 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         private readonly IJobProfileService jobProfileService;
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface fakeSharedContentRedisInterface;
-        private readonly IRazorTemplateEngine razorTemplateEngine;
+        private readonly IRazorTemplateEngine fakeRazorTemplateEngine;
         private readonly IConfiguration fakeConfiguration;
         private readonly ICourseSearchApiService fakeclient;
 
         public ProfileServiceUpdateTests()
         {
             repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-
             segmentService = A.Fake<ISegmentService>();
-            mapper = A.Fake<IMapper>();
             mapper = A.Fake<IMapper>();
             logService = A.Fake<ILogService>();
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
-            razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeConfiguration = A.Fake<IConfiguration>();
             fakeclient = A.Fake<ICourseSearchApiService>();
-            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakeclient);
+            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient);
         }
 
         [Fact]

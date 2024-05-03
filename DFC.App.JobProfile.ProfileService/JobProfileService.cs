@@ -99,6 +99,7 @@ namespace DFC.App.JobProfile.ProfileService
                 video = await GetSocialProofVideoSegment(canonicalName, status);
 
                 //WaitUntil.Completed
+                var data = new JobProfileModel();
                 
                 if (data != null && overview.Markup != null) //howtobecome.Markup != null && whatittakes != null
                 {

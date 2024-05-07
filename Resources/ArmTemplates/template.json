@@ -195,7 +195,7 @@
     "CmsSqlApiUrl": {
       "type": "string"
     },
-    "ContentMode": {
+    "contentMode": {
       "type": "string"
     },
     "apprenticeshipServiceUrl": {
@@ -713,6 +713,10 @@
               {
                 "name": "Cms__RedisCacheConnectionString",
                 "value": "[parameters('CmsRedisCacheConnectionString')]"
+              },
+              {
+                "name": "contentMode__contentMode",
+                "value": "[parameters('contentMode')]"
               },
               {
                 "name": "Configuration__AVAPIService__FAAEndPoint",

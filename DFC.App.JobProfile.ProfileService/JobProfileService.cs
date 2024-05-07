@@ -3,22 +3,20 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Overview;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -34,6 +32,7 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
         private readonly IConfiguration configuration;
+        private readonly IAVAPIService avAPIService;
         private string status = string.Empty;
 
         public JobProfileService(
@@ -43,7 +42,8 @@ namespace DFC.App.JobProfile.ProfileService
             ILogService logService,
             ISharedContentRedisInterface sharedContentRedisInterface,
             IRazorTemplateEngine razorTemplateEngine,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IAVAPIService avAPIService)
         {
             this.repository = repository;
             this.segmentService = segmentService;
@@ -51,6 +51,7 @@ namespace DFC.App.JobProfile.ProfileService
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             this.razorTemplateEngine = razorTemplateEngine;
+            this.avAPIService = avAPIService;
             status = configuration.GetSection("contentMode:contentMode").Get<string>() ?? "PUBLISHED";
         }
 
@@ -95,6 +96,7 @@ namespace DFC.App.JobProfile.ProfileService
                 howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
+                var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(canonicalName, status);
 
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
@@ -256,6 +258,23 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return overview;
+        }
+
+        public async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(string canonicalName, string filter)
+        {
+            // Get the response from STAX GraphQl
+            var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix, "/", canonicalName), filter);
+
+            // Map list of LARS codes to AVMapping
+            var mappedResponse = mapper.Map<AVMapping>(response);
+
+            // Get apprenticeship vacancies from Apprenticeship API
+            var avResponse = await avAPIService.GetAVsForMultipleProvidersAsync(mappedResponse).ConfigureAwait(false);
+
+            // Map list of vacancies to IEnumerable<Vacancy>
+            var mappedAVResponse = mapper.Map<IEnumerable<Vacancy>>(avResponse);
+
+            return mappedAVResponse;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

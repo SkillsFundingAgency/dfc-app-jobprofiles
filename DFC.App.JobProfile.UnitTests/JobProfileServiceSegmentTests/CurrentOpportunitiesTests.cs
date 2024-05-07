@@ -47,7 +47,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             //Act
-            var response = await jobProfileService.GetCurrentOpportunities(canonicalName, "PUBLISHED");
+            var response = await jobProfileService.GetCurrentOpportunities(canonicalName);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();

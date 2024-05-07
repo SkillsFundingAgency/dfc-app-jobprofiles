@@ -103,7 +103,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
 
             CreateMap<JobProfileVideoResponse, SocialProofVideo>()
-                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().DisplayText))
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoTitle))
                 .ForMember(d => d.Type, s => s.MapFrom(a => MapType(a.JobProfileVideo.FirstOrDefault().VideoType)))
                 .ForMember(d => d.SummaryHtml, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoSummary.Html ?? string.Empty))
                 .ForMember(d => d.Thumbnail, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoThumbnail))

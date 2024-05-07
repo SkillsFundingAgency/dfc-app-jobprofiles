@@ -25,6 +25,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
 
             IList<HealthCheckItem> expectedResult = new List<HealthCheckItem>
             {
@@ -36,7 +37,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             };
 
             A.CallTo(() => segmentService.SegmentsHealthCheckAsync()).Returns(expectedResult);
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeAVAPIService);
 
             // act
             var result = jobProfileService.SegmentsHealthCheckAsync().Result;

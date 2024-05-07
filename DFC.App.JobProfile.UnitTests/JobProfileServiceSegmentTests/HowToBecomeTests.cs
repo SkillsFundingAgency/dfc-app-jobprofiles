@@ -67,7 +67,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var avAPIService = A.Fake<IAVAPIService>();
             var fakefacclient = A.Fake<ICourseSearchApiService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakefacclient, configuration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, avAPIService);
             var expectedResult = GetExpectedData();
             var canonicalName = "bookmaker";
             var filter = "PUBLISHED";

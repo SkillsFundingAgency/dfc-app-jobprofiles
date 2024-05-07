@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

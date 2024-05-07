@@ -1,4 +1,6 @@
-﻿namespace DFC.App.JobProfile.Data.Models.PatchModels
+﻿using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
+
+namespace DFC.App.JobProfile.Data.Models.PatchModels
 {
     public class CurrentOpportunitiesPatchSegmentModel
     {

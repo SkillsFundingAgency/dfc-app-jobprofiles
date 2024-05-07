@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CorrelationId;
+using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.AVService;
 using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Data.Configuration;
@@ -8,9 +9,9 @@ using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.HttpClientPolicies.Polly;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.HostedServices;
-using DFC.App.JobProfile.HttpClientPolicies;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ProfileService.SegmentServices;
@@ -30,6 +31,7 @@ using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Content.Pkg.Netcore.Services;
 using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
 using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Extensions;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
@@ -45,13 +47,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
-using DFC.FindACourseClient;
 using PolicyOptions = DFC.App.JobProfile.HttpClientPolicies.PolicyOptions;
-using System.Collections.Generic;
-using AutoMapper;
-using DFC.App.JobProfile.AutoMapperProfiles;
 
 namespace DFC.App.JobProfile
 {
@@ -62,12 +61,12 @@ namespace DFC.App.JobProfile
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
         public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
-        public const string CourseSearchClientSvcSettings = "Configuration:CourseSearchClient:CourseSearchSvc";
-        public const string CourseSearchClientAuditSettings = "Configuration:CourseSearchClient:CosmosAuditConnection";
-        public const string CourseSearchClientPolicySettings = "Configuration:CourseSearchClient:Policies";
         public const string ServiceBusOptionsAppSettings = "ServiceBusOptions";
         public const string AVAPIServiceAppSettings = "Configuration:AVAPIService";
         public const string AVAPIServiceClientPolicySettings = "Configuration:AVAPIService:Policies";
+        public const string CourseSearchClientSvcSettings = "Configuration:CourseSearchClient:CourseSearchSvc";
+        public const string CourseSearchClientAuditSettings = "Configuration:CourseSearchClient:CosmosAuditConnection";
+        public const string CourseSearchClientPolicySettings = "Configuration:CourseSearchClient:Policies";
         private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
         private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
 
@@ -224,7 +223,7 @@ namespace DFC.App.JobProfile
             services.AddFindACourseServicesWithoutFaultHandling(courseSearchClientSettings);
             var policyRegistry = services.AddPolicyRegistry();
             services.AddFindACourseTransientFaultHandlingPolicies(courseSearchClientSettings, policyRegistry);
-          
+
             services.AddRazorTemplating();
 
             services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());

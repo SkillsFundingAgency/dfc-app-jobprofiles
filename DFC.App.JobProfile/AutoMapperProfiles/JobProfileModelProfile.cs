@@ -102,12 +102,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
 
-            CreateMap<Course, Opportunity>()
-                    .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
-                    .ForMember(d => d.PullDate, s => s.Ignore())
-                    .ForMember(d => d.Url, s => s.Ignore())
-                    .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
-
             CreateMap<JobProfileCurrentOpportunitiesGetbyUrlReponse, AVMapping>()
                 .ForMember(d => d.Standards, s => s.MapFrom(a => a.JobProileCurrentOpportunitiesGetbyUrl.FirstOrDefault().SOCCode.ContentItems.SelectMany(item => item.ApprenticeshipStandards.ContentItems.Select(standard => standard.LARScode))))
                 .ForMember(d => d.Frameworks, s => s.Ignore());
@@ -120,6 +114,12 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForPath(d => d.Location.Town, s => s.MapFrom(a => a.Address.Town))
                 .ForMember(d => d.URL, s => s.MapFrom(a => a.EmployerWebsiteUrl))
                 .ForMember(d => d.PullDate, s => s.Ignore());
+
+            CreateMap<Course, Opportunity>()
+                    .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
+                    .ForMember(d => d.PullDate, s => s.Ignore())
+                    .ForMember(d => d.Url, s => s.Ignore())
+                    .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
         }
     }
 }

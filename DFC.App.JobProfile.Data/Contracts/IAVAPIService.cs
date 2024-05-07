@@ -1,4 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models;
+﻿using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

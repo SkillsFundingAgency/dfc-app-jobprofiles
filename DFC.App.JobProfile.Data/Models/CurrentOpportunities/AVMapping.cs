@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models
+namespace DFC.App.JobProfile.Data.Models.CurrentOpportunities
 {
     public class AVMapping
     {

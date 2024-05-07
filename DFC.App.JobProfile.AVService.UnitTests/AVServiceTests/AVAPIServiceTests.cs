@@ -1,5 +1,5 @@
 using DFC.App.JobProfile.Data.Configuration;
-using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 
 namespace DFC.App.JobProfile.Data.Models.PatchModels
 {

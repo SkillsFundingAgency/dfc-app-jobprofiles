@@ -319,13 +319,11 @@ namespace DFC.App.JobProfile.ProfileService
                     SkillsResponse jobProfileSkillsResponse = new SkillsResponse();
                     List<Skills> jobProfileSkillsList = new List<Skills>();
 
-                    var filteredSkills = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).Select(d => d.RelatedSkillDesc).ToList();
-                    var filteredSkills2 = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).ToList();
-
+                    var filteredSkills = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).ToList();
 
                     foreach (var skill in skillsResponse.Skill)
                     {
-                        if (skill.DisplayText != null && filteredSkills.Contains(skill.DisplayText))
+                        if (skill.DisplayText != null && filteredSkills.Any(d => d.RelatedSkillDesc.Equals(skill.DisplayText)))
                         {
                             jobProfileSkillsList.Add(skill);
                         }
@@ -336,9 +334,9 @@ namespace DFC.App.JobProfile.ProfileService
                     var mappedResponse = mapper.Map<JobProfileSkillSegmentDataModel>(response);
                     List<JobProfSkills> sortedSkills = new List<JobProfSkills>();
                     var mappedSkillsResponse = mapper.Map<List<OnetSkill>>(jobProfileSkillsResponse.Skill);
-                    var mappedContextualSkills = mapper.Map<List<ContextualisedSkill>>(filteredSkills2);
+                    var mappedContextualSkills = mapper.Map<List<ContextualisedSkill>>(filteredSkills);
 
-                    foreach (var skill in filteredSkills2)
+                    foreach (var skill in filteredSkills)
                     {
                         sortedSkills.Add(new JobProfSkills
                         {

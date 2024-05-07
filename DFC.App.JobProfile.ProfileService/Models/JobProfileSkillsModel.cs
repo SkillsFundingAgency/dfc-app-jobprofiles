@@ -10,7 +10,7 @@ using RelatedSkill = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.Job
 
 namespace DFC.App.JobProfile.ProfileService.Models
 {
-    public class JobProfileSkillsNuget
+    public class JobProfileSkillsModel
     {
        public List<JobSkills> JobSkills { get; set; }
     }

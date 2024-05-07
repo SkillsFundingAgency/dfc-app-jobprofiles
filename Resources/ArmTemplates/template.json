@@ -194,9 +194,51 @@
     },
     "CmsSqlApiUrl": {
       "type": "string"
-    },    
-    "ContentMode": {
+    },
+    "contentMode": {
       "type": "string"
+    },
+    "apprenticeshipServiceUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Url to the apprenticeship service"
+      }
+    },
+    "apprenticeshipServiceKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for the apprenticeship service"
+      }
+    },
+    "avfeedCosmosDbEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Endpoint for av feed cosmosdb instance"
+      }
+    },
+    "avfeedCosmosDbKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for av feed cosmosdb instance"
+      }
+    },
+    "csclientCosmosDbDatabaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Course provider (Sitefinity) database name in cosmosdb"
+      }
+    },
+    "courseProviderServiceEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Url for course provider service"
+      }
+    },
+    "courseProviderServiceApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for course provider service"
+      }
     }
   },
     "variables": {
@@ -671,6 +713,110 @@
               {
                 "name": "Cms__RedisCacheConnectionString",
                 "value": "[parameters('CmsRedisCacheConnectionString')]"
+              },
+              {
+                "name": "contentMode__contentMode",
+                "value": "[parameters('contentMode')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAEndPoint",
+                "value": "[parameters('apprenticeshipServiceUrl')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAASubscriptionKey",
+                "value": "[parameters('apprenticeshipServiceKey')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAPageSize",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAMaxPagesToTryPerMapping",
+                "value": "100"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAASortBy",
+                "value": "AgeDesc"
+              },
+              {
+                "name": "Configuration__AVAPIService__RequestTimeOutSeconds",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__AVAPIService__StandardsForHealthCheck",
+                "value": "26,30"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpCircuitBreaker__DurationOfBreak",
+                "value": "00:00:10"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpCircuitBreaker__ExceptionsAllowedBeforeBreaking",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpRetry__BackoffPower",
+                "value": "2"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpRetry__Count",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__AccessKey",
+                "value": "[parameters('avfeedCosmosDbKey')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__EndpointUrl",
+                "value": "[parameters('avfeedCosmosDbEndpoint')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__DatabaseId",
+                "value": "[parameters('csclientCosmosDbDatabaseName')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__CollectionId",
+                "value": "CourseSearchAudit"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__PartitionKey",
+                "value": "/PartitionKey"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__ServiceEndpoint",
+                "value": "[Parameters('courseProviderServiceEndpoint')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__APIKey",
+                "value": "[Parameters('courseProviderServiceApiKey')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__SearchPageSize",
+                "value": "20"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__RequestTimeOutSeconds",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__TransientErrorsNumberOfRetries",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpCircuitBreaker__DurationOfBreak",
+                "value": "00:01:00"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpCircuitBreaker__ExceptionsAllowedBeforeBreaking",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpRetry__BackoffPower",
+                "value": "2"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpRetry__Count",
+                "value": "3"
               }
             ]
           }

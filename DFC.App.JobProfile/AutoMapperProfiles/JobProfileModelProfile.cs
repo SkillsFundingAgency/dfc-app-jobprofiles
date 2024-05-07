@@ -5,10 +5,12 @@ using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using DFC.FindACourseClient;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -99,6 +101,12 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.WorkingHoursDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingHoursDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
+
+            CreateMap<Course, Opportunity>()
+                    .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
+                    .ForMember(d => d.PullDate, s => s.Ignore())
+                    .ForMember(d => d.Url, s => s.Ignore())
+                    .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
 
             CreateMap<JobProfileCurrentOpportunitiesGetbyUrlReponse, AVMapping>()
                 .ForMember(d => d.Standards, s => s.MapFrom(a => a.JobProileCurrentOpportunitiesGetbyUrl.FirstOrDefault().SOCCode.ContentItems.SelectMany(item => item.ApprenticeshipStandards.ContentItems.Select(standard => standard.LARScode))))

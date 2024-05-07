@@ -28,6 +28,7 @@
   </ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\DFC.App.JobProfile.AVService\DFC.App.JobProfile.AVService.csproj" />
 		<ProjectReference Include="..\DFC.App.JobProfile.Data\DFC.App.JobProfile.Data.csproj" />
 		<ProjectReference Include="..\DFC.App.JobProfile.Repository.CosmosDb\DFC.App.JobProfile.Repository.CosmosDb.csproj" />
 	</ItemGroup>

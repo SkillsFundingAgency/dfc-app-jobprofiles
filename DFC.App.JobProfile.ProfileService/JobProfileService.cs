@@ -116,7 +116,7 @@ namespace DFC.App.JobProfile.ProfileService
                 skills = await GetSkillSegmentAsync(canonicalName, status);
 
                 //Get Current Opportunity data
-                
+
                 currentOpportunity = await GetCurrentOpportunities(canonicalName, status);
 
                 //WaitUntil.Completed
@@ -124,16 +124,22 @@ namespace DFC.App.JobProfile.ProfileService
                 //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
                 //For developer, when debugging there is no data from Cosmos DB, we need initial data value. This can be deleted when deploying
-                var data = new JobProfileModel();
-                data.Segments = new List<SegmentModel>();
-                data.Segments.Add(howToBecome);
-                data.Segments.Add(relatedCareers);
-                data.Segments.Add(overview);
-                data.Segments.Add(currentOpportunity);
+                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+
+                /* if (data != null && overview.Markup != null)
+                 {
+                     data.Segments = new List<SegmentModel>();
+                     data.Segments.Add(howToBecome);
+                     data.Segments.Add(relatedCareers);
+                     data.Segments.Add(overview);
+                     data.Segments.Add(currentOpportunity);
+                     data.Segments.Add(skills);
+                     data.Segments.Add(careersPath);
+                 }*/
 
                 if (data != null && howToBecome != null && overview != null && relatedCareers != null && careersPath != null)
                 {
-                    /*int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                   /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
                     data.Segments[index] = howToBecome;*/
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
                     data.Segments[index] = relatedCareers;
@@ -466,6 +472,7 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return skills;
+        }
 
         /// <summary>
         /// Get Courses from FAC client API.

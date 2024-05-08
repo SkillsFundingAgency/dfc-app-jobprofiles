@@ -11,6 +11,7 @@ using DFC.App.JobProfile.ProfileService;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using FluentAssertions;
@@ -33,11 +34,12 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var configuration = A.Fake<IConfiguration>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeCourseSearch = A.Fake<ICourseSearchApiService>();
 
             var canonicalName = "biochemist";
             var filter = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch);
             var expectedResult = GetExpectedData();
             var expectedSkillsResult = GetSkillsData();
 
@@ -66,11 +68,13 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var configuration = A.Fake<IConfiguration>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeCourseSearch = A.Fake<ICourseSearchApiService>();
+
 
             var canonicalName = "biochemist";
             var filter = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch);
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileSkillsResponse());
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new SkillsResponse());

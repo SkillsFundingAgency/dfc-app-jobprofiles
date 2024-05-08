@@ -138,7 +138,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.RelatedSkillDesc))
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.GraphSync.NodeId.Substring(a.GraphSync.NodeId.LastIndexOf('/') + 1)))
                 .ForMember(d => d.OriginalRank, d => d.Ignore());
-                
+
             CreateMap<Course, Opportunity>()
                     .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
                     .ForMember(d => d.PullDate, s => s.Ignore())

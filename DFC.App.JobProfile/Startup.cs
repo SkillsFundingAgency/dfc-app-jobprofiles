@@ -46,7 +46,6 @@ using System.Net.Http;
 using DFC.FindACourseClient;
 using PolicyOptions = DFC.App.JobProfile.HttpClientPolicies.PolicyOptions;
 using System.Collections.Generic;
-using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles;
 
 namespace DFC.App.JobProfile

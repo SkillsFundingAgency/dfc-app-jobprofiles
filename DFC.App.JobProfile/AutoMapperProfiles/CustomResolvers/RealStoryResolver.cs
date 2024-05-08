@@ -20,23 +20,25 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             if (source.JobProfileHowToBecome.IsAny())
             {
                 var responseData = source.JobProfileHowToBecome.FirstOrDefault();
-
-                if (responseData.RealStory.ContentItems.IsAny())
+                if (responseData.RealStory != null)
                 {
-                    var realStoryData = responseData.RealStory.ContentItems.FirstOrDefault();
-
-                    realStory = new RealStory
+                    if (responseData.RealStory.ContentItems.IsAny())
                     {
-                        Title = realStoryData.DisplayText,
-                        Summary = realStoryData.Text,
-                        BodyHtml = realStoryData.Body.Html,
-                        FurtherInformationHtml = realStoryData.FurtherInformation.Html,
-                        Thumbnail = new Thumbnail
+                        var realStoryData = responseData.RealStory.ContentItems.FirstOrDefault();
+
+                        realStory = new RealStory
                         {
-                            Text = realStoryData.Thumbnail.Paths,
-                            Url = realStoryData.Thumbnail.Urls,
-                        },
-                    };
+                            Title = realStoryData.DisplayText,
+                            Summary = realStoryData.Text,
+                            BodyHtml = realStoryData.Body.Html,
+                            FurtherInformationHtml = realStoryData.FurtherInformation.Html,
+                            Thumbnail = new Thumbnail
+                            {
+                                Url = realStoryData.Thumbnail.Urls.FirstOrDefault(),
+                                Text = realStoryData.Thumbnail.MediaText.FirstOrDefault(),
+                            },
+                        };
+                    }
                 }
             }
 

@@ -7,6 +7,7 @@ using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Common;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using FluentAssertions;
@@ -34,8 +35,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
+            var fakefacclient = A.Fake<ICourseSearchApiService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "auditor";
@@ -63,8 +65,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
+            var fakefacclient = A.Fake<ICourseSearchApiService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient);
             var expectedResult = GetExpectedData();
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfilesOverviewResponse());

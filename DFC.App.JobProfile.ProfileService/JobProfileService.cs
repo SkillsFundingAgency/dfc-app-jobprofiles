@@ -4,18 +4,25 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.CareerPath;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using DFC.CompositeInterfaceModels.FindACourseClient;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +40,7 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
         private readonly IConfiguration configuration;
+        private readonly ICourseSearchApiService client;
         private string status = string.Empty;
 
         public JobProfileService(
@@ -42,7 +50,8 @@ namespace DFC.App.JobProfile.ProfileService
             ILogService logService,
             ISharedContentRedisInterface sharedContentRedisInterface,
             IRazorTemplateEngine razorTemplateEngine,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ICourseSearchApiService client)
         {
             this.repository = repository;
             this.segmentService = segmentService;
@@ -50,6 +59,7 @@ namespace DFC.App.JobProfile.ProfileService
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             this.razorTemplateEngine = razorTemplateEngine;
+            this.client = client;
             status = configuration.GetSection("contentMode:contentMode").Get<string>() ?? "PUBLISHED";
         }
 
@@ -89,6 +99,7 @@ namespace DFC.App.JobProfile.ProfileService
             var relatedCareers = new SegmentModel();
             var overview = new SegmentModel();
             var careersPath = new SegmentModel();
+            var currentOpportunity = new SegmentModel();
 
             try
             {
@@ -97,7 +108,21 @@ namespace DFC.App.JobProfile.ProfileService
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
                 careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
 
-                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+                //Get Current Opportunity data
+                
+                currentOpportunity = await GetCurrentOpportunities(canonicalName, status);
+
+                //WaitUntil.Completed
+
+                //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+
+                //For developer, when debugging there is no data from Cosmos DB, we need initial data value. This can be deleted when deploying
+                var data = new JobProfileModel();
+                data.Segments = new List<SegmentModel>();
+                data.Segments.Add(howToBecome);
+                data.Segments.Add(relatedCareers);
+                data.Segments.Add(overview);
+                data.Segments.Add(currentOpportunity);
 
                 if (data != null && howToBecome != null && overview != null && relatedCareers != null && careersPath != null)
                 {
@@ -109,6 +134,8 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments[index] = overview;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CareerPathsAndProgression));
                     data.Segments[index] = careersPath;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CurrentOpportunities));
+                    data.Segments[index] = currentOpportunity;
                 }
 
                 return data;
@@ -219,6 +246,73 @@ namespace DFC.App.JobProfile.ProfileService
             }
         }
 
+        /// <summary>
+        /// Get current opportunities data for individual job profile
+        /// </summary>
+        /// <param name="canonicalName">Jobprofile url.</param>
+        /// <param name="filter">PUBLISHED or DRAFT.</param>
+        /// <returns>Current Opportunitie Segment model</returns>
+        public async Task<SegmentModel> GetCurrentOpportunities(string canonicalName, string filter)
+        {
+            var currentOpportunities = new SegmentModel();
+            var currentOpportunitiesSegmentModel = new CurrentOpportunitiesSegmentModel();
+            currentOpportunitiesSegmentModel.Data = new CurrentOpportunitiesSegmentDataModel();
+            currentOpportunitiesSegmentModel.Data.Courses = new Courses();
+            currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
+
+            //Get job profile cousekeyword and lars code
+            var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix, "/", canonicalName), filter);
+
+            //get couses by course key words
+            if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].Coursekeywords))
+            {
+                string coursekeywords = jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().Coursekeywords;
+                var results = await GetCourses(coursekeywords);
+                var courseSearchResults = results.Courses?.ToList();
+
+                var opportunities = new List<Opportunity>();
+                if (courseSearchResults != null)
+                {
+                    opportunities = MapCourses(courseSearchResults, opportunities);
+                }
+
+                currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = coursekeywords;
+                currentOpportunitiesSegmentModel.Data.Courses.Opportunities = opportunities;
+            }
+
+            //get apprenticeship by lars code.
+            if (jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems.Count() > 0 && jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Count() > 0)
+            {
+                if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
+                {
+                    //get apprenticeship vacancy data by lars code.
+                }
+            }
+
+            currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
+            currentOpportunitiesSegmentModel.Data.JobTitle = canonicalName;
+
+            var currentOpportunitiesObject = JsonConvert.SerializeObject(currentOpportunitiesSegmentModel.Data, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+
+            var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/CurrentOpportunities/BodyData.cshtml", currentOpportunitiesSegmentModel.Data).ConfigureAwait(false);
+
+            currentOpportunities = new SegmentModel
+            {
+                Segment = JobProfileSegment.CurrentOpportunities,
+                JsonV1 = currentOpportunitiesObject,
+                RefreshStatus = RefreshStatus.Success,
+                Markup = new HtmlString(html),
+            };
+
+            return currentOpportunities;
+        }
+
+        /// <summary>
+        /// Get Overview Segment data from NuGet packages.
+        /// </summary>
+        /// <param name="canonicalName">Jobprofile url.</param>
+        /// <param name="filter">PUBLISHED or DRAFT.</param>
+        /// <returns>Overview Segment model.</returns>
         public async Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter)
         {
             SegmentModel overview = new SegmentModel();
@@ -261,6 +355,7 @@ namespace DFC.App.JobProfile.ProfileService
             return overview;
         }
 
+
         public async Task<SegmentModel> GetCareerPathSegmentAsync(string canonicalName, string status)
         {
             SegmentModel careerPath = new SegmentModel();
@@ -293,6 +388,37 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(exception.ToString());
                 throw;
             }
+
+        /// <summary>
+        /// Get Courses from FAC client API.
+        /// </summary>
+        /// <param name="courseKeywords">Couses key words, such as 'building services engineering'.</param>
+        /// <returns>CourseResponse contains list Courses.</returns>
+        public async Task<CoursesReponse> GetCourses(string courseKeywords)
+        {
+            string cachekey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
+            var redisdata = await sharedContentRedisInterface.GetCurrentOpportunitiesData<CoursesReponse>(cachekey);
+            if (redisdata == null)
+            {
+                redisdata = new CoursesReponse();
+                try
+                {
+                    var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
+
+                    redisdata.Courses = result.ToList();
+
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisdata, cachekey, 48);
+                    if (!save)
+                        throw new InvalidOperationException("Redis save process failed.");
+
+                }
+                catch (Exception ex)
+                {
+                    logService.LogError(ex.ToString());
+                }
+            }
+
+            return redisdata;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
@@ -416,6 +542,33 @@ namespace DFC.App.JobProfile.ProfileService
             var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
 
             return result == HttpStatusCode.NoContent;
+        }
+
+        /// <summary>
+        /// Mapping courses data with Opportunity object.
+        /// </summary>
+        /// <param name="courseSearchResults">List of courses result data.</param>
+        /// <param name="opportunities">List of Opportunity object.</param>
+        /// <returns> List of Opportunity object. </returns>
+        private List<Opportunity> MapCourses(List<FindACourseClient.Course> courseSearchResults, List<Opportunity> opportunities)
+        {
+            foreach (var course in courseSearchResults)
+            {
+                var opportunity = mapper.Map<Opportunity>(course);
+
+                var courseIdGuid = new Guid(opportunity.CourseId);
+                var tLevelIdGuid = new Guid(opportunity.TLevelId);
+                var urlPath = $"/find-a-course/";
+                var urlQueryString = courseIdGuid == Guid.Empty && tLevelIdGuid != Guid.Empty
+                    ? $"tdetails?tlevelId={opportunity.TLevelId}&tlevelLocationId={opportunity.TLevelLocationId}"
+                    : $"course-details?CourseId={opportunity.CourseId}&r={opportunity.RunId}";
+                opportunity.Url = $"{urlPath}{urlQueryString}";
+                opportunities.Add(opportunity);
+
+                logService.LogInformation($"{nameof(MapCourses)} added details for {course.CourseId} to list");
+            }
+
+            return opportunities;
         }
 
         private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)

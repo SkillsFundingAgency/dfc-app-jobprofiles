@@ -1,96 +1,244 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-"parameters": {
-  "ApimLoggerName": {
-    "type": "string"
-  },
-  "ApimProductInstanceName": {
-    "type": "string"
-  },
-  "ApimResourceGroup": {
-    "type": "string"
-  },
-  "ApimServiceName": {
-    "type": "string"
-  },
-  "ApiName": {
-    "type": "string"
-  },
-  "appServiceDomain": {
-    "type": "string"
-  },
-  "appSharedResourceGroup": {
-    "type": "string"
-  },
-  "appSharedServiceBusName": {
-    "type": "string"
-  },
-  "appSharedStorageAccountName": {
-    "type": "string"
-  },
-  "aseHostingEnvironmentName": {
-    "type": "string",
-    "defaultValue": ""
-  },
-  "aseResourceGroup": {
-    "type": "string",
-    "defaultValue": ""
-  },
-  "aspInstances": {
-    "type": "int",
-    "defaultValue": 2
-  },
-  "aspSize": {
-    "type": "string",
-    "defaultValue": ""
-  },
-  "aspTier": {
-    "type": "string",
-    "defaultValue": ""
-  },
-  "AllowedRedirects": {
-    "type": "string"
-  },
-  "brandingAssetsAppCssFilePath": {
-    "type": "string"
-  },
-  "cmsTimeout": {
-    "type": "string"
-  },
-  "cmsApiKey": {
-    "type": "string"
-  },
-  "cmsBaseAddress": {
-    "type": "string"
-  },
-  "cmsStaticContentEndpoint": {
-    "type": "string"
-  },
-  "cmsContentIds": {
-    "type": "string"
-  },
-  "cosmosDbName": {
-    "type": "string"
-  },
-  "cosmosDbKey": {
-    "type": "securestring"
-  },
-  "environment": {
-    "type": "string"
-  },
-  "sharedAppServicePlanName": {
-    "type": "string",
-    "defaultValue": ""
-  },
-  "sharedAppServicePlanResourceGroup": {
-    "type": "string",
-    "defaultValue": ""
-  },
-  "cosmosDbCollectionName": {
-    "type": "string",
-    "metadata": {
-      "description": "The name of the collection to create"
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "ApimLoggerName": {
+      "type": "string"
+    },
+    "ApimProductInstanceName": {
+      "type": "string"
+    },
+    "ApimResourceGroup": {
+      "type": "string"
+    },
+    "ApimServiceName": {
+      "type": "string"
+    },
+    "ApiName": {
+      "type": "string"
+    },
+    "appServiceDomain": {
+      "type": "string"
+    },
+    "appSharedResourceGroup": {
+      "type": "string"
+    },
+    "appSharedServiceBusName": {
+      "type": "string"
+    },
+    "appSharedStorageAccountName": {
+      "type": "string"
+    },
+    "aseHostingEnvironmentName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "aseResourceGroup": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "aspInstances": {
+      "type": "int",
+      "defaultValue": 2
+    },
+    "aspSize": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "aspTier": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "AllowedRedirects": {
+      "type": "string"
+    },
+    "brandingAssetsAppCssFilePath": {
+      "type": "string"
+    },
+    "cmsTimeout": {
+      "type": "string"
+    },
+    "cmsApiKey": {
+      "type": "string"
+    },
+    "cmsBaseAddress": {
+      "type": "string"
+    },
+    "cmsStaticContentEndpoint": {
+      "type": "string"
+    },
+    "cmsContentIds": {
+      "type": "string"
+    },
+    "cosmosDbName": {
+      "type": "string"
+    },
+    "cosmosDbKey": {
+      "type": "securestring"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "sharedAppServicePlanName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "sharedAppServicePlanResourceGroup": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "cosmosDbCollectionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the collection to create"
+      }
+    },
+    "cosmosDbSharedCollectionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the shared cms collection to create"
+      }
+    },
+    "cmsTopicName": {
+      "type": "string",
+      "defaultValue": "cms-messages",
+      "metadata": {
+        "description": "Name of CMS messages topic"
+      }
+    },
+    "cmsSubscriptionSqlFilter": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Filter to apply to subscription (no filter applied if left blank)"
+      }
+    },
+    "refreshTopicName": {
+      "type": "string",
+      "defaultValue": "job-profile-refresh",
+      "metadata": {
+        "description": "Name of job profile refresh topic"
+      }
+    },
+    "subscriptionUrl": {
+      "type": "string"
+    },
+    "SubscriptionSettingsEndpoint": {
+      "type": "string"
+    },
+    "surveyUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "URL of customer survey"
+      }
+    },
+    "enableAlerts": {
+      "type": "bool",
+      "metadata": {
+        "description": "Enable or disable alerting"
+      }
+    },
+    "ExceptionCountThreshold": {
+      "type": "string"
+    },
+    "CPUPercentageThreshold": {
+      "type": "string"
+    },
+    "MemoryPercentageThreshold": {
+      "type": "string"
+    },
+    "EventGridSubscriptionModelEndpoint": {
+      "type": "string"
+    },
+    "EventGridSubscriptionClientOptionsEndpoint": {
+      "type": "string"
+    },
+    "apimCompositeKey": {
+      "type": "securestring"
+    },
+    "apimProxyAddress": {
+      "type": "string"
+    },
+    "apimContentApiKey": {
+      "type": "securestring"
+    },
+    "LmiBaseEndPoint": {
+      "type": "string"
+    },
+    "EnableLMI": {
+      "type": "bool",
+      "metadata": {
+        "description": "Enable or disable LMI"
+      }
+    },
+    "workspaceName": {
+      "type": "string"
+    },
+    "workspaceResourceGroup": {
+      "type": "string"
+    },
+    "CmsTokenEndpointUrl": {
+      "type": "string"
+    },
+    "CmsGraphApiUrl": {
+      "type": "string"
+    },
+    "CmsClientId": {
+      "type": "string"
+    },
+    "CmsClientSecret": {
+      "type": "securestring"
+    },
+    "CmsRedisCacheConnectionString": {
+      "type": "securestring"
+    },
+    "CmsSqlApiUrl": {
+      "type": "string"
+    },
+    "contentMode": {
+      "type": "string"
+    },
+    "apprenticeshipServiceUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Url to the apprenticeship service"
+      }
+    },
+    "apprenticeshipServiceKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for the apprenticeship service"
+      }
+    },
+    "avfeedCosmosDbEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Endpoint for av feed cosmosdb instance"
+      }
+    },
+    "avfeedCosmosDbKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for av feed cosmosdb instance"
+      }
+    },
+    "csclientCosmosDbDatabaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Course provider (Sitefinity) database name in cosmosdb"
+      }
+    },
+    "courseProviderServiceEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Url for course provider service"
+      }
+    },
+    "courseProviderServiceApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for course provider service"
+      }
     }
   },
   "cosmosDbSharedCollectionName": {
@@ -269,14 +417,493 @@
         "appInsightsName": {
           "value": "[variables('webAppInsightsName')]"
         },
-        "attachedService": {
-          "value": ""
-        },
-        "workspaceName": {
-          "value": "[parameters('workspaceName')]"
-        },
-        "workspaceResourceGroup": {
-          "value": "[parameters('workspaceResourceGroup')]"
+        "parameters": {
+          "appServiceName": {
+            "value": "[variables('webAppName')]"
+          },
+          "appServicePlanName": {
+            "value": "[variables('appServicePlanName')]"
+          },
+          "appServicePlanResourceGroup": {
+            "value": "[variables('appServicePlanResourceGroup')]"
+          },
+          "appServiceType": {
+            "value": "app"
+          },
+          "deployStagingSlot": {
+            "value": true
+          },
+          "clientAffinity": {
+            "value": false
+          },
+          "appServiceAppSettings": {
+            "value": [
+              {
+                "name": "MSDEPLOY_RENAME_LOCKED_FILES",
+                "value": "1"
+              },
+              {
+                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
+              },
+              {
+                "name": "AzureWebJobsStorage",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('appSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('appSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+              },
+              {
+                "name": "WEBSITE_RUN_FROM_PACKAGE",
+                "value": "1"
+              },
+              {
+                "name": "WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG",
+                "value": "1"
+              },
+              {
+                "name": "WEBSITE_ENABLE_SYNC_UPDATE_SITE",
+                "value": false
+              },
+              {
+                "name": "BrandingAssets__AppCssFilePath",
+                "value": "[parameters('brandingAssetsAppCssFilePath')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__JobProfile__AccessKey",
+                "value": "[parameters('cosmosDbKey')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__JobProfile__EndpointUrl",
+                "value": "[variables('cosmosDbEndpoint')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__JobProfile__DatabaseId",
+                "value": "[variables('cosmosDbDatabaseName')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__JobProfile__CollectionId",
+                "value": "[parameters('cosmosDbCollectionName')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__JobProfile__PartitionKey",
+                "value": "[variables('cosmosDbCollectionPartitionKey')]"
+              },
+              {
+                "name": "Policies__HttpCircuitBreaker__DurationOfBreak",
+                "value": "00:01:00"
+              },
+              {
+                "name": "Policies__HttpCircuitBreaker__ExceptionsAllowedBeforeBreaking",
+                "value": 3
+              },
+              {
+                "name": "Policies__HttpRetry__BackoffPower",
+                "value": 2
+              },
+              {
+                "name": "Policies__HttpRetry__Count",
+                "value": 3
+              },
+              {
+                "name": "AllowedRedirects",
+                "value": "[parameters('AllowedRedirects')]"
+              },
+              {
+                "name": "OverviewBannerSegmentClientOptions__Timeout",
+                "value": "00:00:10"
+              },
+              {
+                "name": "OverviewBannerSegmentClientOptions__BaseAddress",
+                "value": "[variables('urlJobprofileOverviewApp')]"
+              },
+              {
+                "name": "OverviewBannerSegmentClientOptions__Endpoint",
+                "value": "segment/{0}/contents"
+              },
+              {
+                "name": "OverviewBannerSegmentClientOptions__OfflineHtml",
+                "value": ""
+              },
+              {
+                "name": "OverviewBannerSegmentClientOptions__Name",
+                "value": "DFC.App.JobProfileOverview"
+              },
+              {
+                "name": "CurrentOpportunitiesSegmentClientOptions__Timeout",
+                "value": "00:00:10"
+              },
+              {
+                "name": "CurrentOpportunitiesSegmentClientOptions__BaseAddress",
+                "value": "[variables('urlJobprofileCurrentopportunitiesApp')]"
+              },
+              {
+                "name": "CurrentOpportunitiesSegmentClientOptions__Endpoint",
+                "value": "segment/{0}/contents"
+              },
+              {
+                "name": "CurrentOpportunitiesSegmentClientOptions__OfflineHtml",
+                "value": "<section id=\"CurrentOpportunities\"> <h2 class=\"job-profile-heading\">Current opportunities</h2> <div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
+              },
+              {
+                "name": "CurrentOpportunitiesSegmentClientOptions__Name",
+                "value": "DFC.App.JobProfile.CurrentOpportunities"
+              },
+              {
+                "name": "CareerPathSegmentClientOptions__Timeout",
+                "value": "00:00:10"
+              },
+              {
+                "name": "CareerPathSegmentClientOptions__BaseAddress",
+                "value": "[variables('urlCareerpathApp')]"
+              },
+              {
+                "name": "CareerPathSegmentClientOptions__Endpoint",
+                "value": "segment/{0}/contents"
+              },
+              {
+                "name": "CareerPathSegmentClientOptions__OfflineHtml",
+                "value": "<section id=\"CareerPathAndProgression\"> <h2 class=\"job-profile-heading\">Career path and progression</h2> <div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
+              },
+              {
+                "name": "CareerPathSegmentClientOptions__Name",
+                "value": "DFC.App.CareerPath"
+              },
+              {
+                "name": "HowToBecomeSegmentClientOptions__Timeout",
+                "value": "00:00:10"
+              },
+              {
+                "name": "HowToBecomeSegmentClientOptions__BaseAddress",
+                "value": "[variables('urlJobprofileHowtobecomeApp')]"
+              },
+              {
+                "name": "HowToBecomeSegmentClientOptions__Endpoint",
+                "value": "segment/{0}/contents"
+              },
+              {
+                "name": "HowToBecomeSegmentClientOptions__OfflineHtml",
+                "value": ""
+              },
+              {
+                "name": "HowToBecomeSegmentClientOptions__Name",
+                "value": "DFC.App.JobProfiles.HowToBecome"
+              },
+              {
+                "name": "RelatedCareersSegmentClientOptions__Timeout",
+                "value": "00:00:10"
+              },
+              {
+                "name": "RelatedCareersSegmentClientOptions__BaseAddress",
+                "value": "[variables('urlRelatedcareersApp')]"
+              },
+              {
+                "name": "RelatedCareersSegmentClientOptions__Endpoint",
+                "value": "segment/{0}/contents"
+              },
+              {
+                "name": "RelatedCareersSegmentClientOptions__OfflineHtml",
+                "value": "<div class=\"job-profile-related\"> <h3 class=\"govuk-heading-m\">Related careers</h3><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></div>"
+              },
+              {
+                "name": "RelatedCareersSegmentClientOptions__Name",
+                "value": "DFC.App.RelatedCareers"
+              },
+              {
+                "name": "WhatItTakesSegmentClientOptions__Timeout",
+                "value": "00:00:10"
+              },
+              {
+                "name": "WhatItTakesSegmentClientOptions__BaseAddress",
+                "value": "[variables('urlJobprofileSkillsApp')]"
+              },
+              {
+                "name": "WhatItTakesSegmentClientOptions__Endpoint",
+                "value": "segment/{0}/contents"
+              },
+              {
+                "name": "WhatItTakesSegmentClientOptions__OfflineHtml",
+                "value": ""
+              },
+              {
+                "name": "WhatItTakesSegmentClientOptions__Name",
+                "value": "DFC.App.JobProfileSkills"
+              },
+              {
+                "name": "WhatYouWillDoSegmentClientOptions__Timeout",
+                "value": "00:00:10"
+              },
+              {
+                "name": "WhatYouWillDoSegmentClientOptions__BaseAddress",
+                "value": "[variables('urlJobprofileTasksApp')]"
+              },
+              {
+                "name": "WhatYouWillDoSegmentClientOptions__Endpoint",
+                "value": "segment/{0}/contents"
+              },
+              {
+                "name": "WhatYouWillDoSegmentClientOptions__OfflineHtml",
+                "value": "<section id=\"WhatYouWillDo\"><h2 class=\"job-profile-heading\">What you'll do</h2><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
+              },
+              {
+                "name": "WhatYouWillDoSegmentClientOptions__Name",
+                "value": "DFC.App.JobProfileTasks"
+              },
+              {
+                "name": "FeedbackLinks__SmartSurveyJP",
+                "value": "[parameters('surveyUrl')]"
+              },
+              {
+                "name": "Logging__ApplicationInsights__LogLevel__Default",
+                "value": "Error"
+              },
+              {
+                "name": "ApplicationInsights__LogLevel__Default",
+                "value": "Information"
+              },
+              {
+                "name": "Configuration__ApplicationName",
+                "value": "DFC-App-Job-Profiles"
+              },
+              {
+                "name": "EventGridSubscriptionModel__Endpoint",
+                "value": "[parameters('EventGridSubscriptionModelEndpoint')]"
+              },
+              {
+                "name": "EventGridSubscriptionModel__Endpoint__Filter__BeginsWith",
+                "value": "/job-profile/"
+              },
+              {
+                "name": "EventGridSubscriptionModel__Endpoint__Filter__IncludeEventTypes",
+                "value": "published"
+              },
+              {
+                "name": "EventGridSubscriptionClientOptions__Timeout",
+                "value": "00:00:30"
+              },
+              {
+                "name": "EventGridSubscriptionClientOptions__ApiKey",
+                "value": "[parameters('apimCompositeKey')]"
+              },
+              {
+                "name": "EventGridSubscriptionClientOptions__BaseAddress",
+                "value": "[concat(parameters('apimProxyAddress'),'/content/Subscription/')]"
+              },
+              {
+                "name": "EventGridSubscriptionClientOptions__Endpoint",
+                "value": "[parameters('EventGridSubscriptionClientOptionsEndpoint')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__SharedContent__AccessKey",
+                "value": "[parameters('cosmosDbKey')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__SharedContent__EndpointUrl",
+                "value": "[variables('cosmosDbEndpoint')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__SharedContent__DatabaseId",
+                "value": "[variables('cosmosDbDatabaseName')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__SharedContent__CollectionId",
+                "value": "[parameters('cosmosDbSharedCollectionName')]"
+              },
+              {
+                "name": "Configuration__CosmosDbConnections__SharedContent__PartitionKey",
+                "value": "[variables('cosmosDbCollectionPartitionKey')]"
+              },
+              {
+                "name": "SubscriptionSettings__Filter__IncludeEventTypes__0",
+                "value": "published"
+              },
+              {
+                "name": "SubscriptionSettings__Filter__IncludeEventTypes__1",
+                "value": "unpublished"
+              },
+              {
+                "name": "SubscriptionSettings__Filter__IncludeEventTypes__2",
+                "value": "deleted"
+              },
+              {
+                "name": "SubscriptionSettings__Endpoint",
+                "value": "[concat(parameters('SubscriptionSettingsEndpoint'),'/api/webhook/ReceiveEvents?subscription-key=',parameters('apimCompositeKey'))]"
+              },
+              {
+                "name": "SubscriptionSettings__SubscriptionRegistrationDelay",
+                "value": "00:02:00"
+              },
+              {
+                "name": "SubscriptionSettings__SubscriptionServiceEndpoint",
+                "value": "[concat(parameters('subscriptionUrl'),'/api/Execute')]"
+              },
+              {
+                "name": "SubscriptionSettings__Filter__AdvancedFilters__0__Property",
+                "value": "subject"
+              },
+              {
+                "name": "SubscriptionSettings__Filter__AdvancedFilters__0__Values__0",
+                "value": "/content/sharedcontent/"
+              },
+              {
+                "name": "SubscriptionSettings__Filter__AdvancedFilters__0__Type",
+                "value": "StringContains"
+              },
+              {
+                "name": "CmsApiClientOptions__Timeout",
+                "value": "[parameters('cmsTimeout')]"
+              },
+              {
+                "name": "CmsApiClientOptions__ApiKey",
+                "value": "[parameters('cmsApiKey')]"
+              },
+              {
+                "name": "CmsApiClientOptions__BaseAddress",
+                "value": "[parameters('cmsBaseAddress')]"
+              },
+              {
+                "name": "CmsApiClientOptions__StaticContentEndpoint",
+                "value": "[parameters('cmsStaticContentEndpoint')]"
+              },
+              {
+                "name": "CmsApiClientOptions__ContentIds",
+                "value": "[parameters('cmsContentIds')]"
+              },
+              {
+                "name": "CmsApiClientOptions__SummaryEndpoint",
+                "value": "content/getcontent/api/execute/jobprofile"
+              },
+              {
+                "name": "LmiBaseEndPoint",
+                "value": "[parameters('LmiBaseEndPoint')]"
+              },
+              {
+                "name": "Configuration__EnableLMI",
+                "value": "[parameters('EnableLMI')]"
+              },
+              {
+                "name": "Cms__TokenEndPointUrl",
+                "value": "[parameters('CmsTokenEndpointUrl')]"
+              },
+              {
+                "name": "Cms__GraphApiUrl",
+                "value": "[parameters('CmsGraphApiUrl')]"
+              },
+              {
+                "name": "Cms__ClientId",
+                "value": "[parameters('CmsClientId')]"
+              },
+              {
+                "name": "Cms__ClientSecret",
+                "value": "[parameters('CmsClientSecret')]"
+              },
+              {
+                "name": "Cms__RedisCacheConnectionString",
+                "value": "[parameters('CmsRedisCacheConnectionString')]"
+              },
+              {
+                "name": "contentMode__contentMode",
+                "value": "[parameters('contentMode')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAEndPoint",
+                "value": "[parameters('apprenticeshipServiceUrl')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAASubscriptionKey",
+                "value": "[parameters('apprenticeshipServiceKey')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAPageSize",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAMaxPagesToTryPerMapping",
+                "value": "100"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAASortBy",
+                "value": "AgeDesc"
+              },
+              {
+                "name": "Configuration__AVAPIService__RequestTimeOutSeconds",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__AVAPIService__StandardsForHealthCheck",
+                "value": "26,30"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpCircuitBreaker__DurationOfBreak",
+                "value": "00:00:10"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpCircuitBreaker__ExceptionsAllowedBeforeBreaking",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpRetry__BackoffPower",
+                "value": "2"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpRetry__Count",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__AccessKey",
+                "value": "[parameters('avfeedCosmosDbKey')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__EndpointUrl",
+                "value": "[parameters('avfeedCosmosDbEndpoint')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__DatabaseId",
+                "value": "[parameters('csclientCosmosDbDatabaseName')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__CollectionId",
+                "value": "CourseSearchAudit"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__PartitionKey",
+                "value": "/PartitionKey"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__ServiceEndpoint",
+                "value": "[Parameters('courseProviderServiceEndpoint')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__APIKey",
+                "value": "[Parameters('courseProviderServiceApiKey')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__SearchPageSize",
+                "value": "20"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__RequestTimeOutSeconds",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__TransientErrorsNumberOfRetries",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpCircuitBreaker__DurationOfBreak",
+                "value": "00:01:00"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpCircuitBreaker__ExceptionsAllowedBeforeBreaking",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpRetry__BackoffPower",
+                "value": "2"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpRetry__Count",
+                "value": "3"
+              }
+            ]
+          }
         }
       }
     }
@@ -1103,9 +1730,4 @@
         }
       }
     }
-
-  }
-],
-  "outputs": {
-  }
 }

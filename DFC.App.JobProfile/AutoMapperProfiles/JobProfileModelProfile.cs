@@ -5,11 +5,13 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.CareerPath;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using DFC.FindACourseClient;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -101,9 +103,16 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
 
+
             CreateMap<JobProfileCareerPathAndProgressionResponse, CareerPathSegmentDataModel>()
                 .ForMember(d => d.Markup, s => s.MapFrom(a => a.JobProileCareerPath.FirstOrDefault().Content.Html))
                 .ForMember(d => d.LastReviewed, d => d.Ignore());
+
+            CreateMap<Course, Opportunity>()
+                    .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
+                    .ForMember(d => d.PullDate, s => s.Ignore())
+                    .ForMember(d => d.Url, s => s.Ignore())
+                    .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
         }
     }
 }

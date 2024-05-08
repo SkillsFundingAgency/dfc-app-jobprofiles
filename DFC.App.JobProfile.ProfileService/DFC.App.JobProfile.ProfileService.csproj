@@ -10,7 +10,7 @@
 		<AdditionalFiles Include="..\stylecop.json" Link="../stylecop.json" />
 	</ItemGroup>
 
-	<ItemGroup>
+  <ItemGroup>
 		<PackageReference Include="DFC.Common.SharedContent.Pkg.Netcore" Version="0.1.97" />
 		<PackageReference Include="DFC.FindACourseClient" Version="3.0.8" />
 		<PackageReference Include="DFC.Logger.AppInsights" Version="1.0.8" />

@@ -3,10 +3,13 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CareerPath;
 using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.SkillsModels;
+using DFC.App.JobProfile.ProfileService.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
@@ -24,10 +27,12 @@ using Razor.Templating.Core;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
+using JobProfSkills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
+using NHibernate.Criterion;
 
 namespace DFC.App.JobProfile.ProfileService
 {
@@ -98,16 +103,20 @@ namespace DFC.App.JobProfile.ProfileService
             var howToBecome = new SegmentModel();
             var relatedCareers = new SegmentModel();
             var overview = new SegmentModel();
+            var careersPath = new SegmentModel();
+            var skills = new SegmentModel();
             var currentOpportunity = new SegmentModel();
 
             try
             {
-                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
+                //howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
+                careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
+                skills = await GetSkillSegmentAsync(canonicalName, status);
 
                 //Get Current Opportunity data
-                
+
                 currentOpportunity = await GetCurrentOpportunities(canonicalName, status);
 
                 //WaitUntil.Completed
@@ -115,21 +124,31 @@ namespace DFC.App.JobProfile.ProfileService
                 //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
                 //For developer, when debugging there is no data from Cosmos DB, we need initial data value. This can be deleted when deploying
-                var data = new JobProfileModel();
-                data.Segments = new List<SegmentModel>();
-                data.Segments.Add(howToBecome);
-                data.Segments.Add(relatedCareers);
-                data.Segments.Add(overview);
-                data.Segments.Add(currentOpportunity);
+                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
-                if (data != null && howToBecome != null && overview != null && relatedCareers != null)
+                /* if (data != null && overview.Markup != null)
+                 {
+                     data.Segments = new List<SegmentModel>();
+                     data.Segments.Add(howToBecome);
+                     data.Segments.Add(relatedCareers);
+                     data.Segments.Add(overview);
+                     data.Segments.Add(currentOpportunity);
+                     data.Segments.Add(skills);
+                     data.Segments.Add(careersPath);
+                 }*/
+
+                if (data != null && howToBecome != null && overview != null && relatedCareers != null && careersPath != null)
                 {
-                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
-                    data.Segments[index] = howToBecome;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
+                   /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                    data.Segments[index] = howToBecome;*/
+                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
                     data.Segments[index] = relatedCareers;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     data.Segments[index] = overview;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CareerPathsAndProgression));
+                    data.Segments[index] = careersPath;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatItTakes));
+                    data.Segments[index] = skills;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CurrentOpportunities));
                     data.Segments[index] = currentOpportunity;
                 }
@@ -349,6 +368,110 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return overview;
+        }
+
+        public async Task<SegmentModel> GetCareerPathSegmentAsync(string canonicalName, string status)
+        {
+            SegmentModel careerPath = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfilesCarreerPath + "/" + canonicalName, status);
+
+                if (response.JobProileCareerPath != null)
+                {
+                    var mappedResponse = mapper.Map<CareerPathSegmentDataModel>(response);
+
+                    var careerPathObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/CareerPath/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+
+                    careerPath = new SegmentModel
+                    {
+                        Segment = JobProfileSegment.CareerPathsAndProgression,
+                        JsonV1 = careerPathObject,
+                        RefreshStatus = RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };
+                }
+
+                return careerPath;
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Method to retrieve the segment data for the "What it Takes" section on a job-profiles page.
+        /// </summary>
+        /// <param name="canonicalName"> Contains the name of the job profile.</param>
+        /// <param name="status"> Contains the contentMode variable value used to determine whether to retrieve data from draft or published on graphQL.</param>
+        /// <returns>Returns segment information containing HTML markup data to render the "What it Takes" segment.</returns>
+        public async Task<SegmentModel> GetSkillSegmentAsync(string canonicalName, string status)
+        {
+            SegmentModel skills = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, status);
+                var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, "PUBLISHED");
+
+                if (response.JobProfileSkills != null && skillsResponse.Skill != null)
+                {
+                    SkillsResponse jobProfileSkillsResponse = new SkillsResponse();
+                    List<Skills> jobProfileSkillsList = new List<Skills>();
+
+                    var filteredSkills = response.JobProfileSkills.SelectMany(d => d.Relatedskills.ContentItems).ToList();
+
+                    foreach (var skill in skillsResponse.Skill)
+                    {
+                        if (skill.DisplayText != null && filteredSkills.Any(d => d.RelatedSkillDesc.Equals(skill.DisplayText)))
+                        {
+                            jobProfileSkillsList.Add(skill);
+                        }
+                    }
+
+                    jobProfileSkillsResponse.Skill = jobProfileSkillsList;
+
+                    var mappedResponse = mapper.Map<JobProfileSkillSegmentDataModel>(response);
+                    List<JobProfSkills> sortedSkills = new List<JobProfSkills>();
+                    var mappedSkillsResponse = mapper.Map<List<OnetSkill>>(jobProfileSkillsResponse.Skill);
+                    var mappedContextualSkills = mapper.Map<List<ContextualisedSkill>>(filteredSkills);
+
+                    foreach (var skill in filteredSkills)
+                    {
+                        sortedSkills.Add(new JobProfSkills
+                        {
+                            ContextualisedSkill = mappedContextualSkills.Single(s => s.Description == skill.RelatedSkillDesc),
+                            OnetSkill = mappedSkillsResponse.Single(s => s.Title == skill.RelatedSkillDesc),
+                        });
+                    }
+
+                    mappedResponse.Skills = sortedSkills;
+
+                    var skillsObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Skills/Body.cshtml", mappedResponse).ConfigureAwait(false);
+
+                    skills = new SegmentModel
+                    {
+                        Segment = JobProfileSegment.WhatItTakes,
+                        JsonV1 = skillsObject,
+                        RefreshStatus = RefreshStatus.Success,
+                        Markup = new HtmlString(html),
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                logService.LogError(ex.ToString());
+                throw;
+            }
+
+            return skills;
         }
 
         /// <summary>

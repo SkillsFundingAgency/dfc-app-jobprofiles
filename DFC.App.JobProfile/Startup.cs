@@ -46,7 +46,6 @@ using System.Net.Http;
 using DFC.FindACourseClient;
 using PolicyOptions = DFC.App.JobProfile.HttpClientPolicies.PolicyOptions;
 using System.Collections.Generic;
-using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles;
 
 namespace DFC.App.JobProfile
@@ -185,6 +184,9 @@ namespace DFC.App.JobProfile
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>, JobProfileCurrentOpportunitiesGetByUrlStrategy>();
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<RelatedCareersResponse>, JobProfileRelatedCareersQueryStrategy>();
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfileHowToBecomeResponse>, JobProfileHowToBecomeQueryStrategy>();
+            services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfileCareerPathAndProgressionResponse>, JobProfileCareerPathAndProgressionStrategy>();
+            services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfileSkillsResponse>, JobProfileSkillsStrategy>();
+            services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<SkillsResponse>, SkillsQueryStrategy>();
 
             services.AddSingleton<ISharedContentRedisInterfaceStrategyFactory, SharedContentRedisStrategyFactory>();
 

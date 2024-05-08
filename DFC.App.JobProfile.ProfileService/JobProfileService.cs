@@ -305,6 +305,12 @@ namespace DFC.App.JobProfile.ProfileService
             }
         }
 
+        /// <summary>
+        /// Method to retrieve the segment data for the "What it Takes" section on a job-profiles page.
+        /// </summary>
+        /// <param name="canonicalName"> Contains the name of the job profile.</param>
+        /// <param name="status"> Contains the contentMode variable value used to determine whether to retrieve data from draft or published on graphQL.</param>
+        /// <returns>Returns segment information containing HTML markup data to render the "What it Takes" segment.</returns>
         public async Task<SegmentModel> GetSkillSegmentAsync(string canonicalName, string status)
         {
             SegmentModel skills = new SegmentModel();

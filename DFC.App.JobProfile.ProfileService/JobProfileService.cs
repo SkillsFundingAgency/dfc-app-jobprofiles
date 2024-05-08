@@ -166,6 +166,12 @@ namespace DFC.App.JobProfile.ProfileService
             }
         }
 
+        /// <summary>
+        /// Get HowToBecome from STAX via GraphQl for a job profile.
+        /// </summary>
+        /// <param name="canonicalName">Job profile URL.</param>
+        /// <param name="filter">PUBLISHED or DRAFT.</param>
+        /// <returns>HowToBecome segment model.</returns>
         public async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName, string filter)
         {
             var howToBecome = new SegmentModel();
@@ -235,7 +241,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// Get current opportunities data for individual job profile.
         /// </summary>
         /// <param name="canonicalName">Job profile url.</param>
-        /// <returns>Current Opportunities Segment model</returns>
+        /// <returns>Current Opportunities Segment model.</returns>
         public async Task<SegmentModel> GetCurrentOpportunities(string canonicalName)
         {
             var currentOpportunities = new SegmentModel() { Segment = JobProfileSegment.CurrentOpportunities };
@@ -360,8 +366,9 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisData, cacheKey, 48);
                     if (!save)
+                    {
                         throw new InvalidOperationException("Redis save process failed.");
-
+                    }
                 }
                 catch (Exception ex)
                 {

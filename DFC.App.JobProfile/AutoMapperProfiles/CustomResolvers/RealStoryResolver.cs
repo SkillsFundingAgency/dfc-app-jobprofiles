@@ -17,7 +17,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
         {
             RealStory realStory = null;
 
-            if (source.JobProfileHowToBecome.IsAny())
+            if (source != null && source.JobProfileHowToBecome.IsAny())
             {
                 var responseData = source.JobProfileHowToBecome.FirstOrDefault();
                 if (responseData.RealStory != null)

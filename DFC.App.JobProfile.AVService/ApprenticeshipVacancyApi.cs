@@ -39,11 +39,17 @@ namespace DFC.App.JobProfile.AVService
 
             var response = await httpClient.GetAsync(new Uri(fullRequest)).ConfigureAwait(false);
 
-            var responseContent = await (response?.Content?.ReadAsStringAsync()).ConfigureAwait(false);
-
-            if (response != null && !response.IsSuccessStatusCode)
+            if (response == null || response.Content == null)
             {
-                logger.LogError($"Error status {response.StatusCode},  Getting API data for request :'{fullRequest}' \nResponse : {responseContent}");
+                logger.LogError($"Response or its content is null for request: '{fullRequest}'");
+                throw new HttpRequestException();
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.LogError($"Error status {response.StatusCode}, Getting API data for request: '{fullRequest}' \nResponse: {responseContent}");
                 response.EnsureSuccessStatusCode();
             }
 

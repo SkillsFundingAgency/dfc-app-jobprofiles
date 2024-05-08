@@ -1,0 +1,17 @@
+﻿<span class="govuk-body govuk-!-font-weight-bold">Start date:</span>
+@{ 
+    var isNullStartDate = Model.StartDate == null || Model.StartDate == DateTime.MinValue;
+}
+
+@if (isNullStartDate && Model.FlexibleStartDate)
+{
+    <span id="start-date">Flexible</span>
+}
+else if (!isNullStartDate)
+{
+    <span id="start-date">@Model.StartDate.ToString("dd MMMM yyyy")</span>
+}
+else
+{
+    <span id="start-date">Not known</span>
+}

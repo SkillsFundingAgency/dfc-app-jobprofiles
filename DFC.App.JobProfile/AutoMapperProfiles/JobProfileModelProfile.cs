@@ -5,6 +5,7 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.CareerPath;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
@@ -15,6 +16,7 @@ using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using DFC.FindACourseClient;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -136,6 +138,12 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Description, s => s.MapFrom(a => a.RelatedSkillDesc))
                 .ForMember(d => d.Id, s => s.MapFrom(a => a.GraphSync.NodeId.Substring(a.GraphSync.NodeId.LastIndexOf('/') + 1)))
                 .ForMember(d => d.OriginalRank, d => d.Ignore());
+                
+            CreateMap<Course, Opportunity>()
+                    .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
+                    .ForMember(d => d.PullDate, s => s.Ignore())
+                    .ForMember(d => d.Url, s => s.Ignore())
+                    .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
         }
     }
 }

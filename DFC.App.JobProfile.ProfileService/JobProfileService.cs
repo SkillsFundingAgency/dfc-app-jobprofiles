@@ -10,6 +10,7 @@ using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.Data.Models.SkillsModels;
 using DFC.App.JobProfile.ProfileService.Models;
+using DFC.App.JobProfile.Data.Models.Segment.Tasks;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
@@ -27,6 +28,7 @@ using Razor.Templating.Core;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -106,6 +108,7 @@ namespace DFC.App.JobProfile.ProfileService
             var careersPath = new SegmentModel();
             var skills = new SegmentModel();
             var currentOpportunity = new SegmentModel();
+            var tasks = new SegmentModel();
 
             try
             {
@@ -114,6 +117,7 @@ namespace DFC.App.JobProfile.ProfileService
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
                 careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
                 skills = await GetSkillSegmentAsync(canonicalName, status);
+                tasks = await GetTasksSegmentAsync(canonicalName, status);
 
                 //Get Current Opportunity data
 
@@ -151,6 +155,8 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments[index] = skills;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CurrentOpportunities));
                     data.Segments[index] = currentOpportunity;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatYouWillDo));
+                    data.Segments[index] = tasks;
                 }
 
                 return data;
@@ -355,9 +361,9 @@ namespace DFC.App.JobProfile.ProfileService
 
                     overview = new SegmentModel
                     {
-                        Segment = Data.JobProfileSegment.Overview,
+                        Segment = JobProfileSegment.Overview,
                         JsonV1 = overviewObject,
-                        RefreshStatus = Data.Enums.RefreshStatus.Success,
+                        RefreshStatus = RefreshStatus.Success,
                         Markup = new HtmlString(html),
                     };
                 }
@@ -368,6 +374,42 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return overview;
+        }
+
+        public async Task<SegmentModel> GetTasksSegmentAsync(string canonicalName, string filter)
+        {
+            var tasks = new SegmentModel();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(ApplicationKeys.JobProfileWhatYoullDo + "/" + canonicalName, filter);
+
+                var mappedResponse = mapper.Map<TasksSegmentDataModel>(response);
+
+                var tasksObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy(),
+                    },
+                });
+
+                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Tasks/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+
+                tasks = new SegmentModel
+                {
+                    Segment = JobProfileSegment.WhatYouWillDo,
+                    Markup = new HtmlString(html),
+                    JsonV1 = tasksObject,
+                    RefreshStatus = RefreshStatus.Success,
+                };
+            }
+            catch (Exception e)
+            {
+                logService.LogError(e.ToString());
+            }
+
+            return tasks;
         }
 
         public async Task<SegmentModel> GetCareerPathSegmentAsync(string canonicalName, string status)

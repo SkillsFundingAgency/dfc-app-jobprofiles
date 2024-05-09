@@ -1,4 +1,4 @@
-﻿/*using AutoMapper;
+﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
@@ -21,7 +21,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 {
     public class HowToBecomeTests
     {
-        [Fact]
+        /*[Fact]
         public async Task GetHowToBecomeValidInputAsync()
         {
             //Arrange
@@ -55,6 +55,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         [Fact]
         public async Task GetHowToBecomeInvalidInputAsync()
         {
+            //Arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
@@ -78,7 +79,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             response.Should().BeOfType(typeof(SegmentModel));
-        }
+        }*/
 
         private static JobProfileHowToBecomeResponse GetExpectedData()
         {
@@ -148,4 +149,3 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         }
     }
 }
-*/

@@ -18,7 +18,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             RouteName routeName = (RouteName)context.Items["RouteName"];
             string furtherRouteInfo = null;
 
-            if (source.JobProfileHowToBecome.IsAny())
+            if (source != null && source.JobProfileHowToBecome.IsAny())
             {
                 var responseData = source.JobProfileHowToBecome.FirstOrDefault();
 

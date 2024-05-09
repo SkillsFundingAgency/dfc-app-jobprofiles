@@ -69,6 +69,14 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileModel, IndexDocumentViewModel>();
 
+            CreateMap<JobProfileWhatYoullDoResponse, TasksSegmentDataModel>()
+                .ForMember(d => d.Tasks, s => s.MapFrom(a => a.JobProfileWhatYoullDo.FirstOrDefault().Daytodaytasks.Html))
+                .ForMember(d => d.Location, s => s.MapFrom<LocationResolver>())
+                .ForMember(d => d.Environment, s => s.MapFrom<EnvironmentResolver>())
+                .ForMember(d => d.Uniform, s => s.MapFrom<UniformResolver>())
+                .ForMember(d => d.Introduction, s => s.Ignore())
+                .ForMember(d => d.LastReviewed, s => s.Ignore());
+
             CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().DisplayText))
                 .ForMember(d => d.LastReviewed, s => s.Ignore())
@@ -180,14 +188,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             {
                 return SocialProofVideoType.Bitesize;
             }
-            
-            CreateMap<JobProfileWhatYoullDoResponse, TasksSegmentDataModel>()
-                .ForMember(d => d.Tasks, s => s.MapFrom(a => a.JobProfileWhatYoullDo.FirstOrDefault().Daytodaytasks.Html))
-                .ForMember(d => d.Location, s => s.MapFrom<LocationResolver>())
-                .ForMember(d => d.Environment, s => s.MapFrom<EnvironmentResolver>())
-                .ForMember(d => d.Uniform, s => s.MapFrom<UniformResolver>())
-                .ForMember(d => d.Introduction, s => s.Ignore())
-                .ForMember(d => d.LastReviewed, s => s.Ignore());
         }
     }
 }

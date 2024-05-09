@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.Helpers;
@@ -20,23 +20,25 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             if (source.JobProfileHowToBecome.IsAny())
             {
                 var responseData = source.JobProfileHowToBecome.FirstOrDefault();
-
-                if (responseData.RealStory.ContentItems.IsAny())
+                if (responseData.RealStory != null)
                 {
-                    var realStoryData = responseData.RealStory.ContentItems.FirstOrDefault();
-
-                    realStory = new RealStory
+                    if (responseData.RealStory.ContentItems.IsAny())
                     {
-                        Title = realStoryData.DisplayText,
-                        Summary = realStoryData.Text,
-                        BodyHtml = realStoryData.Body.Html,
-                        FurtherInformationHtml = realStoryData.FurtherInformation.Html,
-                        Thumbnail = new Thumbnail
+                        var realStoryData = responseData.RealStory.ContentItems.FirstOrDefault();
+
+                        realStory = new RealStory
                         {
-                            Url = realStoryData.Thumbnail.Urls.FirstOrDefault(),
-                            Text = realStoryData.Thumbnail.MediaText.FirstOrDefault(),
-                        },
-                    };
+                            Title = realStoryData.DisplayText,
+                            Summary = realStoryData.Text,
+                            BodyHtml = realStoryData.Body.Html,
+                            FurtherInformationHtml = realStoryData.FurtherInformation.Html,
+                            Thumbnail = new Thumbnail
+                            {
+                                Url = realStoryData.Thumbnail.Urls.FirstOrDefault(),
+                                Text = realStoryData.Thumbnail.MediaText.FirstOrDefault(),
+                            },
+                        };
+                    }
                 }
             }
 
@@ -44,3 +46,4 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
         }
     }
 }
+*/

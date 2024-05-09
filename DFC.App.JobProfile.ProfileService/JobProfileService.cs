@@ -98,79 +98,35 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
-            var howToBecome = new SegmentModel();
-            var relatedCareers = new SegmentModel();
-            var overview = new SegmentModel();
-            var careersPath = new SegmentModel();
-            var skills = new SegmentModel();
-            var currentOpportunity = new SegmentModel();
-            var video = new SocialProofVideo();
-            var tasks = new SegmentModel();
-
             try
             {
-                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
-                overview = await GetOverviewSegment(canonicalName, status);
-                relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
-                careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
-                skills = await GetSkillSegmentAsync(canonicalName, status);
-                video = await GetSocialProofVideoSegment(canonicalName, status);
-                tasks = await GetTasksSegmentAsync(canonicalName, status);
-                currentOpportunity = await GetCurrentOpportunities(canonicalName);
+                // TODO: WaitUntil.Completed
+                var howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
+                var overview = await GetOverviewSegment(canonicalName, status);
+                var relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
+                var careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
+                var skills = await GetSkillSegmentAsync(canonicalName, status);
+                var video = await GetSocialProofVideoSegment(canonicalName, status);
+                var tasks = await GetTasksSegmentAsync(canonicalName, status);
+                var currentOpportunity = await GetCurrentOpportunities(canonicalName);
 
-                //WaitUntil.Completed
-
-                //For developer, when debugging there is no data from Cosmos DB, we need initial data value. This can be deleted when deploying
-                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
-
-                /* if (data != null && overview.Markup != null)
-                 {
-                     data.Segments = new List<SegmentModel>();
-                     data.Segments.Add(howToBecome);
-                     data.Segments.Add(relatedCareers);
-                     data.Segments.Add(overview);
-                     data.Segments.Add(currentOpportunity);
-                     data.Segments.Add(skills);
-                     data.Segments.Add(careersPath);
-                 }*/
-
-                /*var data = new JobProfileModel()
+                var data = new JobProfileModel()
                 {
                     CanonicalName = canonicalName,
                     BreadcrumbTitle = new CultureInfo("en-GB").TextInfo.ToTitleCase(canonicalName),
                     Segments = new List<SegmentModel>(),
                 };
 
-                data.Segments.Add(howToBecome);
-                data.Segments.Add(relatedCareers);
-                data.Segments.Add(overview);
-                data.Segments.Add(currentOpportunity);
-                data.Segments.Add(skills);
-                data.Segments.Add(careersPath);
-                data.Segments.Add(tasks);
-                data.Video = video ?? null;*/
-
-                if (data.Segments != null && !string.IsNullOrWhiteSpace(howToBecome.Markup.Value) && !string.IsNullOrWhiteSpace(overview.Markup.Value) && !string.IsNullOrWhiteSpace(relatedCareers.Markup.Value) && currentOpportunity.Markup != null)
+                if (howToBecome != null && relatedCareers != null && overview != null && currentOpportunity != null && skills != null && careersPath != null && video != null)
                 {
-                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
-                    data.Segments[index] = howToBecome;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
-                    data.Segments[index] = relatedCareers;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
-                    data.Segments[index] = overview;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CareerPathsAndProgression));
-                    data.Segments[index] = careersPath;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatItTakes));
-                    data.Segments[index] = skills;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CurrentOpportunities));
-                    data.Segments[index] = currentOpportunity;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatYouWillDo));
-                    data.Segments[index] = tasks;
-                    data.Video = video;
-                }
-                else
-                {
-                    return null;
+                    data.Segments.Add(howToBecome);
+                    data.Segments.Add(relatedCareers);
+                    data.Segments.Add(overview);
+                    data.Segments.Add(currentOpportunity);
+                    data.Segments.Add(skills);
+                    data.Segments.Add(careersPath);
+                    data.Segments.Add(tasks);
+                    data.Video = video ?? null;
                 }
 
                 return data;

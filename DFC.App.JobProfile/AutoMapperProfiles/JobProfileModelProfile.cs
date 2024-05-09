@@ -1,19 +1,29 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CareerPath;
 using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Overview;
+using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.SkillsModels;
+using DFC.App.JobProfile.Models;
+using DFC.App.JobProfile.ProfileService.Models;
+using DFC.App.JobProfile.Data.Models.Segment.Tasks;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using JobProfSkills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
+using RelatedSkill = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.RelatedSkill;
+using Skills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
@@ -23,7 +33,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
         public JobProfileModelProfile()
         {
             CreateMap<JobProfileModel, JobProfileModel>();
-            CreateMap<JobProfileModel, BodyViewModel>()
+            CreateMap<JobProfileModel, ViewModels.BodyViewModel>()
                 .ForMember(d => d.SmartSurveyJP, s => s.Ignore())
                 .ForMember(d => d.SpeakToAnAdviser, s => s.Ignore());
 
@@ -60,7 +70,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileModel, IndexDocumentViewModel>();
 
-            CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
+            /*CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().DisplayText))
                 .ForMember(d => d.LastReviewed, s => s.Ignore())
                 .ForMember(d => d.EntryRouteSummary, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().EntryRoutes.Html))
@@ -72,16 +82,16 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForPath(d => d.MoreInformation.FurtherInformation, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().FurtherInformation.Html))
                 .ForPath(d => d.MoreInformation.CareerTips, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().CareerTips.Html))
                 .ForPath(d => d.MoreInformation.ProfessionalAndIndustryBodies, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().ProfessionalAndIndustryBodies.Html))
-                .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>())
-                .ForMember(d => d.RealStory, s => s.MapFrom<RealStoryResolver>());
+                .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>());
+                //.ForMember(d => d.RealStory, s => s.MapFrom<RealStoryResolver>());*/
 
-            CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
+            /*CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
                 .ForMember(d => d.RouteName, s => s.MapFrom((src, dest, routeName, context) => context.Items["RouteName"]))
                 .ForMember(d => d.Subject, s => s.MapFrom<RelevantSubjectsResolver>())
                 .ForMember(d => d.FurtherInformation, s => s.MapFrom<FurtherRouteInfoResolver>())
                 .ForMember(d => d.EntryRequirementPreface, s => s.MapFrom<EntryRequirementsPrefaceResolver>())
                 .ForMember(d => d.AdditionalInformation, s => s.MapFrom<AdditionalInfoResolver>())
-                .ForMember(d => d.EntryRequirements, s => s.MapFrom<EntryRequirementsResolver>());
+                .ForMember(d => d.EntryRequirements, s => s.MapFrom<EntryRequirementsResolver>());*/
 
             CreateMap<JobProfilesOverviewResponse, OverviewApiModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().DisplayText))
@@ -111,11 +121,47 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.URL, s => s.MapFrom(a => a.EmployerWebsiteUrl))
                 .ForMember(d => d.PullDate, s => s.Ignore());
 
+            CreateMap<JobProfileCareerPathAndProgressionResponse, CareerPathSegmentDataModel>()
+                .ForMember(d => d.Markup, s => s.MapFrom(a => a.JobProileCareerPath.FirstOrDefault().Content.Html))
+                .ForMember(d => d.LastReviewed, d => d.Ignore());
+
+            CreateMap<JobProfileSkillsResponse, JobProfileSkillSegmentDataModel>()
+                .ForMember(d => d.DigitalSkill, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().DigitalSkills.ContentItems.FirstOrDefault().DisplayText))
+                .ForMember(d => d.OtherRequirements, s => s.MapFrom(a => a.JobProfileSkills.FirstOrDefault().Otherrequirements.Html))
+                .ForMember(d => d.Restrictions, s => s.MapFrom<SkillsResolver>())
+                .ForMember(d => d.Skills, d => d.Ignore())
+                .ForMember(d => d.LastReviewed, d => d.Ignore());
+
+            CreateMap<JobSkills, Skills>()
+                .ForMember(d => d.OnetSkill, s => s.MapFrom(a => a.Skills))
+                .ForMember(d => d.ContextualisedSkill, s => s.MapFrom(a => a.JobProfileContextualisedSkills));
+
+            CreateMap<JobProfSkills, OnetSkill>()
+                .ForMember(d => d.ONetElementId, s => s.MapFrom(a => a.ONetElementId))
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.DisplayText))
+                .ForMember(d => d.Description, s => s.MapFrom(a => a.Description))
+                .ForMember(d => d.Id, s => s.MapFrom(a => a.GraphSync.NodeId.Substring(a.GraphSync.NodeId.LastIndexOf('/') + 1)));
+
+            CreateMap<RelatedSkill, ContextualisedSkill>()
+                .ForMember(d => d.ONetRank, s => s.MapFrom(a => a.ONetRank))
+                .ForMember(d => d.ONetAttributeType, s => s.MapFrom(a => a.ONetAttributeType))
+                .ForMember(d => d.Description, s => s.MapFrom(a => a.RelatedSkillDesc))
+                .ForMember(d => d.Id, s => s.MapFrom(a => a.GraphSync.NodeId.Substring(a.GraphSync.NodeId.LastIndexOf('/') + 1)))
+                .ForMember(d => d.OriginalRank, d => d.Ignore());
+
             CreateMap<Course, Opportunity>()
                     .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
                     .ForMember(d => d.PullDate, s => s.Ignore())
                     .ForMember(d => d.Url, s => s.Ignore())
                     .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
+
+            CreateMap<JobProfileWhatYoullDoResponse, TasksSegmentDataModel>()
+                .ForMember(d => d.Tasks, s => s.MapFrom(a => a.JobProfileWhatYoullDo.FirstOrDefault().Daytodaytasks.Html))
+                .ForMember(d => d.Location, s => s.MapFrom<LocationResolver>())
+                .ForMember(d => d.Environment, s => s.MapFrom<EnvironmentResolver>())
+                .ForMember(d => d.Uniform, s => s.MapFrom<UniformResolver>())
+                .ForMember(d => d.Introduction, s => s.Ignore())
+                .ForMember(d => d.LastReviewed, s => s.Ignore());
         }
     }
 }

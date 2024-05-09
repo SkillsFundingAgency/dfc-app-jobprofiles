@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.Helpers;
@@ -20,7 +20,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
             if (source != null && source.JobProfileHowToBecome.IsAny())
             {
                 var responseData = source.JobProfileHowToBecome.FirstOrDefault();
-                if (responseData.RealStory != null)
+
+                if (responseData.RealStory != null && responseData.RealStory.ContentItems.IsAny())
                 {
                     if (responseData.RealStory.ContentItems.IsAny())
                     {
@@ -46,3 +47,4 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
         }
     }
 }
+*/

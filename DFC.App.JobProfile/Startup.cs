@@ -61,7 +61,6 @@ namespace DFC.App.JobProfile
         public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
         public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
-        public const string ServiceBusOptionsAppSettings = "ServiceBusOptions";
         public const string AVAPIServiceAppSettings = "Configuration:AVAPIService";
         public const string AVAPIServiceClientPolicySettings = "Configuration:AVAPIService:Policies";
         public const string CourseSearchClientSvcSettings = "Configuration:CourseSearchClient:CourseSearchSvc";
@@ -252,10 +251,6 @@ namespace DFC.App.JobProfile
             const string AppSettingsPolicies = "Policies";
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
 
-            var serviceBusOptions = configuration.GetSection(ServiceBusOptionsAppSettings).Get<ServiceBusOptions>();
-            /*var topicClient = new TopicClient(serviceBusOptions.ServiceBusConnectionString, serviceBusOptions.TopicName);
-            services.AddSingleton<ITopicClient>(topicClient);*/
-
             var avPolicyOptions = configuration.GetSection(AVAPIServiceClientPolicySettings).Get<CorePolicyOptions>();
             avPolicyOptions.HttpRateLimitRetry ??= new RateLimitPolicyOptions();
             policyRegistry.AddRateLimitPolicy(nameof(RefreshClientOptions), avPolicyOptions.HttpRateLimitRetry);
@@ -298,7 +293,7 @@ namespace DFC.App.JobProfile
                 .AddPolicies(policyRegistry, nameof(WhatYouWillDoSegmentClientOptions), policyOptions)
                 .AddHttpClient<ISegmentRefreshService<WhatYouWillDoSegmentClientOptions>, RefreshSegmentService<WhatYouWillDoSegmentClientOptions>, WhatYouWillDoSegmentClientOptions>(configuration, nameof(WhatYouWillDoSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
 
-            //services.AddHealthChecks().AddCheck<AVAPIService>("Apprenticeship Service");
+            services.AddHealthChecks().AddCheck<AVAPIService>("Apprenticeship Service");
         }
     }
 }

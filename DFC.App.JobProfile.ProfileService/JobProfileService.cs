@@ -280,7 +280,7 @@ namespace DFC.App.JobProfile.ProfileService
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
-            if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl.Count() > 0)
+            if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl != null && jobProfile.JobProileCurrentOpportunitiesGetbyUrl.Count() > 0)
             {
                 string coursekeywords = jobProfile.JobProileCurrentOpportunitiesGetbyUrl.First().Coursekeywords;
                 var results = await GetCourses(coursekeywords);

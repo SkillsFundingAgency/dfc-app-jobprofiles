@@ -540,7 +540,6 @@ namespace DFC.App.JobProfile.ProfileService
             string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + '/' + string.Join(",", larsCodes);
             var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
             var avMapping = new AVMapping { Standards = larsCodes };
-            var vacancies = new List<Vacancy>();
 
             // If there are no apprenticeship vacancies data in Redis then get data from the Apprenticeship Vacancy API
             if (redisData == null)
@@ -553,7 +552,7 @@ namespace DFC.App.JobProfile.ProfileService
                     // Map list of vacancies to IEnumerable<Vacancy>
                     var mappedAVResponse = mapper.Map<IEnumerable<Vacancy>>(avResponse);
 
-                    vacancies = mappedAVResponse.Take(2).ToList();
+                    var vacancies = mappedAVResponse.Take(2).ToList();
 
                     // Save data to Redis
                     var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);

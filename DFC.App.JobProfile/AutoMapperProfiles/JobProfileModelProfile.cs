@@ -9,13 +9,10 @@ using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
-using DFC.App.JobProfile.Data.Models.SkillsModels;
-using DFC.App.JobProfile.Models;
-using DFC.App.JobProfile.ProfileService.Models;
 using DFC.App.JobProfile.Data.Models.Segment.Tasks;
+using DFC.App.JobProfile.Data.Models.SkillsModels;
+using DFC.App.JobProfile.ProfileService.Models;
 using DFC.App.JobProfile.ViewModels;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
 using Newtonsoft.Json;
@@ -70,7 +67,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileModel, IndexDocumentViewModel>();
 
-            /*CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
+            CreateMap<JobProfileHowToBecomeResponse, HowToBecomeSegmentDataModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().DisplayText))
                 .ForMember(d => d.LastReviewed, s => s.Ignore())
                 .ForMember(d => d.EntryRouteSummary, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().EntryRoutes.Html))
@@ -82,16 +79,16 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForPath(d => d.MoreInformation.FurtherInformation, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().FurtherInformation.Html))
                 .ForPath(d => d.MoreInformation.CareerTips, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().CareerTips.Html))
                 .ForPath(d => d.MoreInformation.ProfessionalAndIndustryBodies, s => s.MapFrom(a => a.JobProfileHowToBecome.FirstOrDefault().ProfessionalAndIndustryBodies.Html))
-                .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>());
-                //.ForMember(d => d.RealStory, s => s.MapFrom<RealStoryResolver>());*/
+                .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>())
+                .ForMember(d => d.RealStory, s => s.MapFrom<RealStoryResolver>());
 
-            /*CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
+            CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
                 .ForMember(d => d.RouteName, s => s.MapFrom((src, dest, routeName, context) => context.Items["RouteName"]))
                 .ForMember(d => d.Subject, s => s.MapFrom<RelevantSubjectsResolver>())
                 .ForMember(d => d.FurtherInformation, s => s.MapFrom<FurtherRouteInfoResolver>())
                 .ForMember(d => d.EntryRequirementPreface, s => s.MapFrom<EntryRequirementsPrefaceResolver>())
                 .ForMember(d => d.AdditionalInformation, s => s.MapFrom<AdditionalInfoResolver>())
-                .ForMember(d => d.EntryRequirements, s => s.MapFrom<EntryRequirementsResolver>());*/
+                .ForMember(d => d.EntryRequirements, s => s.MapFrom<EntryRequirementsResolver>());
 
             CreateMap<JobProfilesOverviewResponse, OverviewApiModel>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().DisplayText))

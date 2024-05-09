@@ -107,7 +107,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                //howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
+                howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
                 overview = await GetOverviewSegment(canonicalName, status);
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
                 careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
@@ -590,7 +590,7 @@ namespace DFC.App.JobProfile.ProfileService
                 }
             }
 
-            return vacancies;
+            return redisData;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

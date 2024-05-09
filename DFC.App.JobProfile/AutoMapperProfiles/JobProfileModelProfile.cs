@@ -14,6 +14,7 @@ using DFC.App.JobProfile.Data.Models.Segment.Tasks;
 using DFC.App.JobProfile.Data.Models.SkillsModels;
 using DFC.App.JobProfile.ProfileService.Models;
 using DFC.App.JobProfile.ViewModels;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
 using Newtonsoft.Json;
@@ -148,10 +149,10 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.OriginalRank, d => d.Ignore());
 
             CreateMap<Course, Opportunity>()
-                    .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
-                    .ForMember(d => d.PullDate, s => s.Ignore())
-                    .ForMember(d => d.Url, s => s.Ignore())
-                    .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
+                .ForMember(d => d.Provider, s => s.MapFrom(f => f.ProviderName))
+                .ForMember(d => d.PullDate, s => s.Ignore())
+                .ForMember(d => d.Url, s => s.Ignore())
+                .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
 
             CreateMap<JobProfileVideoResponse, SocialProofVideo>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoTitle))

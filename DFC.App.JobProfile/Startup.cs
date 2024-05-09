@@ -254,9 +254,6 @@ namespace DFC.App.JobProfile
             services.AddTransient<IWebhooksService, WebhooksService>();
             services.AddSubscriptionBackgroundService(configuration);
 
-            const string AppSettingsPolicies = "Policies";
-            var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
-
             var avPolicyOptions = configuration.GetSection(AVAPIServiceClientPolicySettings).Get<CorePolicyOptions>();
             avPolicyOptions.HttpRateLimitRetry ??= new RateLimitPolicyOptions();
             policyRegistry.AddRateLimitPolicy(nameof(RefreshClientOptions), avPolicyOptions.HttpRateLimitRetry);

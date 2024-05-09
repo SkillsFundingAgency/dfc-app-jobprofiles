@@ -306,6 +306,7 @@ namespace DFC.App.JobProfile.ProfileService
             if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl != null && jobProfile.JobProileCurrentOpportunitiesGetbyUrl.Count() > 0)
             {
                 string coursekeywords = jobProfile.JobProileCurrentOpportunitiesGetbyUrl.First().Coursekeywords;
+                string jobTitle = jobProfile.JobProileCurrentOpportunitiesGetbyUrl.FirstOrDefault().DisplayText;
                 var results = await GetCourses(coursekeywords);
                 var courseSearchResults = results.Courses?.ToList();
 
@@ -333,7 +334,7 @@ namespace DFC.App.JobProfile.ProfileService
                     }
                 }
 
-                currentOpportunitiesSegmentModel.Data.JobTitle = canonicalName;
+                currentOpportunitiesSegmentModel.Data.JobTitle = jobTitle;
 
                 var currentOpportunitiesObject = JsonConvert.SerializeObject(currentOpportunitiesSegmentModel.Data, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
 

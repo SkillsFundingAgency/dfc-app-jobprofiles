@@ -9,30 +9,23 @@ using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.Data.Models.SkillsModels;
-using DFC.App.JobProfile.ProfileService.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
-using DFC.CompositeInterfaceModels.FindACourseClient;
 using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
-using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
 using JobProfSkills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
-using NHibernate.Criterion;
+using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
 
 namespace DFC.App.JobProfile.ProfileService
 {
@@ -141,8 +134,8 @@ namespace DFC.App.JobProfile.ProfileService
 
                 if (data != null && howToBecome != null && overview != null && relatedCareers != null && careersPath != null)
                 {
-                   /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
-                    data.Segments[index] = howToBecome;*/
+                    /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                     data.Segments[index] = howToBecome;*/
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
                     data.Segments[index] = relatedCareers;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
@@ -517,10 +510,12 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
 
-                if (response.JobProfileVideo != null && response.JobProfileVideo.Count > 0 && response.JobProfileVideo.FirstOrDefault().VideoType != null)
+                if (response != null)
                 {
-                    //MAPPING
-                    mappedVideo = mapper.Map<SocialProofVideo>(response);
+                    if (response.JobProfileVideo != null && response.JobProfileVideo.Count > 0 && response.JobProfileVideo.FirstOrDefault().VideoType != null)
+                    {
+                        mappedVideo = mapper.Map<SocialProofVideo>(response);
+                    }
                 }
             }
             catch (Exception exception)
@@ -531,10 +526,6 @@ namespace DFC.App.JobProfile.ProfileService
             return mappedVideo;
         }
 
-        //private async SegmentModel GetHowToBecomeSegment(string canonicalName)
-        //{
-        //    return new SegmentModel();
-        //}
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {
             if (string.IsNullOrWhiteSpace(alternativeName))
@@ -547,7 +538,6 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<HttpStatusCode> Create(JobProfileModel jobProfileModel)
         {
-
             if (jobProfileModel == null)
             {
                 throw new ArgumentNullException(nameof(jobProfileModel));

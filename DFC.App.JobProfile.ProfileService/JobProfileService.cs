@@ -22,6 +22,7 @@ using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -133,11 +134,27 @@ namespace DFC.App.JobProfile.ProfileService
                      data.Segments.Add(careersPath);
                  }*/
 
+                /*var data = new JobProfileModel()
+                {
+                    CanonicalName = canonicalName,
+                    BreadcrumbTitle = new CultureInfo("en-GB").TextInfo.ToTitleCase(canonicalName),
+                    Segments = new List<SegmentModel>(),
+                };
+
+                data.Segments.Add(howToBecome);
+                data.Segments.Add(relatedCareers);
+                data.Segments.Add(overview);
+                data.Segments.Add(currentOpportunity);
+                data.Segments.Add(skills);
+                data.Segments.Add(careersPath);
+                data.Segments.Add(tasks);
+                data.Video = video ?? null;*/
+
                 if (data.Segments != null && !string.IsNullOrWhiteSpace(howToBecome.Markup.Value) && !string.IsNullOrWhiteSpace(overview.Markup.Value) && !string.IsNullOrWhiteSpace(relatedCareers.Markup.Value) && currentOpportunity.Markup != null)
                 {
-                    /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
-                     data.Segments[index] = howToBecome;*/
-                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
+                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                    data.Segments[index] = howToBecome;
+                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
                     data.Segments[index] = relatedCareers;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     data.Segments[index] = overview;
@@ -147,11 +164,14 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments[index] = skills;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CurrentOpportunities));
                     data.Segments[index] = currentOpportunity;
-                    data.Video = video;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatYouWillDo));
                     data.Segments[index] = tasks;
+                    data.Video = video;
                 }
-                else return null;
+                else
+                {
+                    return null;
+                }
 
                 return data;
             }

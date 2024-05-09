@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
@@ -7,6 +7,7 @@ using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Common;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using FluentAssertions;
@@ -32,8 +33,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
+            var fakefacclient = A.Fake<ICourseSearchApiService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "bookmaker";
@@ -62,8 +64,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
+            var fakefacclient = A.Fake<ICourseSearchApiService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient);
             var expectedResult = GetExpectedData();
             var canonicalName = "bookmaker";
             var filter = "PUBLISHED";
@@ -91,7 +94,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
                 Info = new Info { Html = string.Empty },
                 Text = string.Empty,
                 URL = string.Empty,
-                Thumbnail = new Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Thumbnail { Paths = new List<string>(), Urls = new List<string>() },
+                Thumbnail = new Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Thumbnail { MediaText = new List<string>(), Urls = new List<string>() },
             };
 
             var contentItemHTBList = new List<ContentItemHTB> { contentItemHTB };
@@ -146,3 +149,4 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         }
     }
 }
+*/

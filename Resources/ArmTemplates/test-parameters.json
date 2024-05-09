@@ -114,10 +114,10 @@
       "value": "contactus"
     },
     "workspaceName": {
-        "value": "aTestLogAnalyticsAccount"
+      "value": "aTestLogAnalyticsAccount"
     },
     "workspaceResourceGroup": {
-        "value": "aResourceGroup"
+      "value": "aResourceGroup"
     },
     "CmsTokenEndpointUrl": {
       "value": "http://url"
@@ -139,6 +139,27 @@
     },
     "contentMode": {
       "value": "PUBLISHED"
+    },
+    "apprenticeshipServiceUrl": {
+      "value": "https://apprenticeship.example.net"
+    },
+    "apprenticeshipServiceKey": {
+      "value": "not-a-real-key"
+    },
+    "avfeedCosmosDbEndpoint": {
+      "value": "https://avfeed.cosmos.endpoint/"
+    },
+    "avfeedCosmosDbKey": {
+      "value": "not-a-real-key"
+    },
+    "csclientCosmosDbDatabaseName": {
+      "value": "someOtherDatabase"
+    },
+    "courseProviderServiceEndpoint": {
+      "value": "https://course-provider-service.example.net/"
+    },
+    "courseProviderServiceApiKey": {
+      "value": "not-a-real-key"
     }
   }
 }

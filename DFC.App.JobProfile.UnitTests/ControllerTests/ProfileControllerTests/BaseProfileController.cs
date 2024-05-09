@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Compui.Cosmos;
 using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
@@ -10,6 +11,7 @@ using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -27,6 +29,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             FakeSegmentService = A.Fake<ISegmentService>();
             FakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
             FakeStaticContentDocumentService = A.Fake<IDocumentService<StaticContentItemModel>>();
+            FakeConfiguration = A.Fake<IConfiguration>();
+            FakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
         }
 
         public static IEnumerable<object[]> HtmlMediaTypes => new List<string[]>
@@ -59,6 +63,10 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected IDocumentService<StaticContentItemModel> FakeStaticContentDocumentService { get; }
 
+        protected IConfiguration FakeConfiguration { get; }
+
+        protected ISharedContentRedisInterface FakeSharedContentRedisInterface { get; }
+
 
         protected ProfileController BuildProfileController(
             string mediaTypeName = MediaTypeNames.Application.Json,
@@ -78,7 +86,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                 ContentIds = sharedContentItemId,
             };
 
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService, FakeStaticContentDocumentService, cmsApiClientOptions)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService, FakeStaticContentDocumentService, cmsApiClientOptions, FakeSharedContentRedisInterface, FakeConfiguration)
             {
                 ControllerContext = new ControllerContext()
                 {

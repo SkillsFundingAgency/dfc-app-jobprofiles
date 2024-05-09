@@ -3,6 +3,7 @@ using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
 using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
 using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Models.CareerPath;
 using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
@@ -146,6 +147,33 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                     .ForMember(d => d.Url, s => s.Ignore())
                     .ForPath(d => d.Location.Town, s => s.MapFrom(f => f.Location));
 
+            CreateMap<JobProfileVideoResponse, SocialProofVideo>()
+                .ForMember(d => d.Title, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoTitle))
+                .ForMember(d => d.Type, s => s.MapFrom(a => MapType(a.JobProfileVideo.FirstOrDefault().VideoType)))
+                .ForMember(d => d.SummaryHtml, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoSummary.Html ?? string.Empty))
+                .ForMember(d => d.Thumbnail, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoThumbnail))
+                .ForMember(d => d.FurtherInformationHtml, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoFurtherInformation.Html ?? string.Empty))
+                .ForMember(d => d.Url, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoUrl))
+                .ForMember(d => d.LinkText, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoLinkText))
+                .ForMember(d => d.Duration, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoDuration))
+                .ForMember(d => d.Transcript, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoTranscript));
+
+            CreateMap<VideoThumbnail, Data.Models.Thumbnail>()
+                 //find thumbnail text and replace this below - temp solution
+                 .ForMember(d => d.Text, s => s.MapFrom(a => a.MediaText.FirstOrDefault() ?? string.Empty))
+                 .ForMember(d => d.Url, s => s.MapFrom(a => a.Urls.FirstOrDefault() ?? string.Empty));
+        }
+
+        public SocialProofVideoType MapType(string type)
+        {
+            if (type.ToLower() == "youtube")
+            {
+                return SocialProofVideoType.YouTube;
+            } else
+            {
+                return SocialProofVideoType.Bitesize;
+            }
+            
             CreateMap<JobProfileWhatYoullDoResponse, TasksSegmentDataModel>()
                 .ForMember(d => d.Tasks, s => s.MapFrom(a => a.JobProfileWhatYoullDo.FirstOrDefault().Daytodaytasks.Html))
                 .ForMember(d => d.Location, s => s.MapFrom<LocationResolver>())

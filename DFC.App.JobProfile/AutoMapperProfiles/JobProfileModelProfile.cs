@@ -102,10 +102,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.WorkingPatternTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPattern.ContentItems.FirstOrDefault().DisplayText ?? string.Empty))
                 .ForMember(d => d.WorkingPatternDetailTitle, s => s.MapFrom(a => a.JobProfileOverview.FirstOrDefault().WorkingPatternDetails.ContentItems.FirstOrDefault().DisplayText ?? string.Empty));
 
-            CreateMap<JobProfileCurrentOpportunitiesGetbyUrlReponse, AVMapping>()
-                .ForMember(d => d.Standards, s => s.MapFrom(a => a.JobProileCurrentOpportunitiesGetbyUrl.FirstOrDefault().SOCCode.ContentItems.SelectMany(item => item.ApprenticeshipStandards.ContentItems.Select(standard => standard.LARScode))))
-                .ForMember(d => d.Frameworks, s => s.Ignore());
-
             CreateMap<ApprenticeshipVacancySummary, Vacancy>()
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.Title))
                 .ForMember(d => d.WageUnit, s => s.MapFrom(a => a.Wage.WageUnit))

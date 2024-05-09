@@ -275,7 +275,11 @@ namespace DFC.App.JobProfile.ProfileService
                 {
                     if (!string.IsNullOrEmpty(jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
                     {
-                        var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(jobProfile);
+                        var larsCodes = jobProfile.JobProileCurrentOpportunitiesGetbyUrl
+                            .FirstOrDefault().SOCCode.ContentItems
+                            .SelectMany(socCode => socCode.ApprenticeshipStandards.ContentItems
+                            .Select(standard => standard.LARScode)).ToList();
+                        var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(larsCodes);
                         currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = apprenticeshipVacancies;
                     }
                 }
@@ -382,20 +386,43 @@ namespace DFC.App.JobProfile.ProfileService
         /// <summary>
         /// Get apprenticeship vacancies from Apprenticeship API.
         /// </summary>
-        /// <param name="jobProfile">JobProfileCurrentOpportunitiesGetByUrl response.</param>
+        /// <param name="larsCodes">List of LARS codes.</param>
         /// <returns>IEnumerable of Vacancy.</returns>
-        public async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(JobProfileCurrentOpportunitiesGetbyUrlReponse jobProfile)
+        public async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes)
         {
-            // Map list of LARS codes to AVMapping
-            var mappedJobProfile = mapper.Map<AVMapping>(jobProfile);
+            // Add LARS code to cache key
+            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + '/' + String.Join(",", larsCodes);
+            var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
+            var avMapping = new AVMapping { Standards = larsCodes };
+            var vacancies = new List<Vacancy>();
 
-            // Get apprenticeship vacancies from Apprenticeship API
-            var avResponse = await avAPIService.GetAVsForMultipleProvidersAsync(mappedJobProfile).ConfigureAwait(false);
+            // If there are no apprenticeship vacancies data in Redis then get data from the Apprenticeship Vacancy API
+            if (redisData == null)
+            {
+                try
+                {
+                    // Get apprenticeship vacancies from Apprenticeship API
+                    var avResponse = await avAPIService.GetAVsForMultipleProvidersAsync(avMapping).ConfigureAwait(false);
 
-            // Map list of vacancies to IEnumerable<Vacancy>
-            var mappedAVResponse = mapper.Map<IEnumerable<Vacancy>>(avResponse);
+                    // Map list of vacancies to IEnumerable<Vacancy>
+                    var mappedAVResponse = mapper.Map<IEnumerable<Vacancy>>(avResponse);
 
-            var vacancies = mappedAVResponse.Take(2);
+                    vacancies = mappedAVResponse.Take(2).ToList();
+
+                    // Save data to Redis
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);
+                    if (!save)
+                    {
+                        throw new InvalidOperationException("Redis save process failed.");
+                    }
+
+                    return vacancies;
+                }
+                catch (Exception e)
+                {
+                    logService.LogError(e.ToString());
+                }
+            }
 
             return vacancies;
         }

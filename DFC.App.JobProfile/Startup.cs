@@ -253,8 +253,8 @@ namespace DFC.App.JobProfile
             var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
 
             var serviceBusOptions = configuration.GetSection(ServiceBusOptionsAppSettings).Get<ServiceBusOptions>();
-            var topicClient = new TopicClient(serviceBusOptions.ServiceBusConnectionString, serviceBusOptions.TopicName);
-            services.AddSingleton<ITopicClient>(topicClient);
+            /*var topicClient = new TopicClient(serviceBusOptions.ServiceBusConnectionString, serviceBusOptions.TopicName);
+            services.AddSingleton<ITopicClient>(topicClient);*/
 
             var avPolicyOptions = configuration.GetSection(AVAPIServiceClientPolicySettings).Get<CorePolicyOptions>();
             avPolicyOptions.HttpRateLimitRetry ??= new RateLimitPolicyOptions();

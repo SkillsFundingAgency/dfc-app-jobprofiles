@@ -3,10 +3,12 @@ using DFC.App.JobProfile.Controllers;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
+using Microsoft.Extensions.Configuration;
 using System;
 using Xunit;
 
@@ -27,6 +29,8 @@ public class ProfileControllerTests
         var fakeSegmentService = A.Fake<ISegmentService>();
         var fakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
         var fakeStaticContentDocumentService = A.Fake<IDocumentService<StaticContentItemModel>>();
+        var fakeConfiguration = A.Fake<IConfiguration>();
+        var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
 
         // Act
         var ex = Assert.Throws<ArgumentNullException>(() =>
@@ -39,7 +43,9 @@ public class ProfileControllerTests
                 fakeSegmentService,
                 fakeRedirectionSecurityService,
                 fakeStaticContentDocumentService,
-                new CmsApiClientOptions()));
+        new CmsApiClientOptions(),
+                fakeSharedContentRedisInterface, 
+                fakeConfiguration));
 
         // Assert
         Assert.Equal("ContentIds cannot be null (Parameter 'cmsApiClientOptions')", ex.Message);

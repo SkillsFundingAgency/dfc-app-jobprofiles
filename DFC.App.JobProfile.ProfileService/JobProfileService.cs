@@ -103,6 +103,7 @@ namespace DFC.App.JobProfile.ProfileService
             var careersPath = new SegmentModel();
             var skills = new SegmentModel();
             var currentOpportunity = new SegmentModel();
+            var video = new SocialProofVideo();
             var tasks = new SegmentModel();
 
             try
@@ -112,6 +113,7 @@ namespace DFC.App.JobProfile.ProfileService
                 relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
                 careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
                 skills = await GetSkillSegmentAsync(canonicalName, status);
+                video = await GetSocialProofVideoSegment(canonicalName, status);
                 tasks = await GetTasksSegmentAsync(canonicalName, status);
                 currentOpportunity = await GetCurrentOpportunities(canonicalName);
 
@@ -133,8 +135,8 @@ namespace DFC.App.JobProfile.ProfileService
 
                 if (data.Segments != null && !string.IsNullOrWhiteSpace(howToBecome.Markup.Value) && !string.IsNullOrWhiteSpace(overview.Markup.Value) && !string.IsNullOrWhiteSpace(relatedCareers.Markup.Value) && currentOpportunity.Markup != null)
                 {
-                   /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
-                    data.Segments[index] = howToBecome;*/
+                    /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                     data.Segments[index] = howToBecome;*/
                     int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
                     data.Segments[index] = relatedCareers;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
@@ -145,9 +147,11 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments[index] = skills;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CurrentOpportunities));
                     data.Segments[index] = currentOpportunity;
+                    data.Video = video;
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatYouWillDo));
                     data.Segments[index] = tasks;
                 }
+                else return null;
 
                 return data;
             }
@@ -161,7 +165,6 @@ namespace DFC.App.JobProfile.ProfileService
         public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName, string status)
         {
             var relatedCareers = new SegmentModel();
-
             try
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, status);
@@ -593,6 +596,30 @@ namespace DFC.App.JobProfile.ProfileService
             return redisData;
         }
 
+        public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
+        {
+            SocialProofVideo mappedVideo = new SocialProofVideo();
+
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
+
+                if (response != null)
+                {
+                    if (response.JobProfileVideo != null && response.JobProfileVideo.Count > 0 && response.JobProfileVideo.FirstOrDefault().VideoType != null)
+                    {
+                        mappedVideo = mapper.Map<SocialProofVideo>(response);
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+            }
+
+            return mappedVideo;
+        }
+
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
         {
             if (string.IsNullOrWhiteSpace(alternativeName))
@@ -605,7 +632,6 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<HttpStatusCode> Create(JobProfileModel jobProfileModel)
         {
-
             if (jobProfileModel == null)
             {
                 throw new ArgumentNullException(nameof(jobProfileModel));

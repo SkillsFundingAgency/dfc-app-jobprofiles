@@ -1,4 +1,4 @@
-﻿/*using AutoMapper;
+﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
@@ -149,4 +149,3 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         }
     }
 }
-*/

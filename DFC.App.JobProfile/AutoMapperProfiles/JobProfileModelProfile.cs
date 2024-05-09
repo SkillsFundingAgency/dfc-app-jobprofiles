@@ -85,7 +85,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Registrations, s => s.MapFrom<RegistrationResolver>());
                 //.ForMember(d => d.RealStory, s => s.MapFrom<RealStoryResolver>());*/
 
-            CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
+            /*CreateMap<JobProfileHowToBecomeResponse, CommonRoutes>()
                 .ForMember(d => d.RouteName, s => s.MapFrom((src, dest, routeName, context) => context.Items["RouteName"]))
                 .ForMember(d => d.Subject, s => s.MapFrom<RelevantSubjectsResolver>())
                 .ForMember(d => d.FurtherInformation, s => s.MapFrom<FurtherRouteInfoResolver>())

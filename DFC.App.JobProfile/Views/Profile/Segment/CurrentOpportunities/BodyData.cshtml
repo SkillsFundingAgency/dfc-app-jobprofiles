@@ -59,7 +59,7 @@
                         <ul class="govuk-list">
                             <li><span class="govuk-body govuk-!-font-weight-bold">Provider:</span> @course.Provider</li>
                             <li>
-                                <partial name="~/Views/Profile/Segment/CurrentOpportunities/_StartDate" model="course" />
+                                <partial name="~/Views/Profile/Segment/CurrentOpportunities/_StartDate.cshtml" model="course" />
                             </li>
                             @{
                                 var location = course.Location == null || string.IsNullOrWhiteSpace(course.Location.Town) ? "Not known" : course.Location.Town;

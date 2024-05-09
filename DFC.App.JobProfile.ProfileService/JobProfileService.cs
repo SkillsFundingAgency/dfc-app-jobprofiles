@@ -8,9 +8,8 @@ using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Overview;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
-using DFC.App.JobProfile.Data.Models.SkillsModels;
-using DFC.App.JobProfile.ProfileService.Models;
 using DFC.App.JobProfile.Data.Models.Segment.Tasks;
+using DFC.App.JobProfile.Data.Models.SkillsModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
@@ -26,9 +25,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
 using JobProfSkills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
-using NHibernate.Criterion;
+using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
 
 namespace DFC.App.JobProfile.ProfileService
 {
@@ -115,11 +113,9 @@ namespace DFC.App.JobProfile.ProfileService
                 careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
                 skills = await GetSkillSegmentAsync(canonicalName, status);
                 tasks = await GetTasksSegmentAsync(canonicalName, status);
-                currentOpportunity = await GetCurrentOpportunities(canonicalName, status);
+                currentOpportunity = await GetCurrentOpportunities(canonicalName);
 
                 //WaitUntil.Completed
-
-                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
                 //For developer, when debugging there is no data from Cosmos DB, we need initial data value. This can be deleted when deploying
                 var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
@@ -561,7 +557,7 @@ namespace DFC.App.JobProfile.ProfileService
         public async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes)
         {
             // Add LARS code to cache key
-            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + '/' + String.Join(",", larsCodes);
+            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + '/' + string.Join(",", larsCodes);
             var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
             var avMapping = new AVMapping { Standards = larsCodes };
             var vacancies = new List<Vacancy>();

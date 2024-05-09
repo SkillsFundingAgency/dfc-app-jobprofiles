@@ -33,8 +33,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
             var facClient = A.Fake<ICourseSearchApiService>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "bookmaker";
@@ -64,8 +65,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
             var facClient = A.Fake<ICourseSearchApiService>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
             var canonicalName = "bookmaker";
             var filter = "PUBLISHED";

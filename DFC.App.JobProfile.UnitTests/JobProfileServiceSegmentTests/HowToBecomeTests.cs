@@ -21,7 +21,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 {
     public class HowToBecomeTests
     {
-        /*[Fact]
+        [Fact]
         public async Task GetHowToBecomeValidInputAsync()
         {
             //Arrange
@@ -33,9 +33,10 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
-            var fakefacclient = A.Fake<ICourseSearchApiService>();
+            var fakeFACClient = A.Fake<ICourseSearchApiService>();
+            var avAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, avAPIService);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "bookmaker";
@@ -64,9 +65,10 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
-            var fakefacclient = A.Fake<ICourseSearchApiService>();
+            var avAPIService = A.Fake<IAVAPIService>();
+            var fakeFACClient = A.Fake<ICourseSearchApiService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, avAPIService);
             var expectedResult = GetExpectedData();
             var canonicalName = "bookmaker";
             var filter = "PUBLISHED";
@@ -79,7 +81,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             response.Should().BeOfType(typeof(SegmentModel));
-        }*/
+        }
 
         private static JobProfileHowToBecomeResponse GetExpectedData()
         {

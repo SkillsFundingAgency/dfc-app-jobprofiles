@@ -37,8 +37,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
             var fakefacclient = A.Fake<ICourseSearchApiService>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "auditor";
@@ -46,11 +47,40 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             //Act
-            var response = await jobProfileService.GetCurrentOpportunities(canonicalName, "PUBLISHED");
+            var response = await jobProfileService.GetCurrentOpportunities(canonicalName);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             Assert.NotNull(response);
+            response.Should().BeOfType(typeof(SegmentModel));
+        }
+
+        [Fact]
+        public async Task GetCurrentOpportunitiesInvalidInputAsync()
+        {
+            //Arrange
+            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
+            var segmentService = A.Fake<ISegmentService>();
+            var mapper = GetMapperInstance();
+
+            var logService = A.Fake<ILogService>();
+            var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeConfiguration = A.Fake<IConfiguration>();
+            var fakefacclient = A.Fake<ICourseSearchApiService>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
+
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient, fakeAVAPIService);
+
+            var canonicalName = "auditor";
+
+            A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileCurrentOpportunitiesGetbyUrlReponse());
+
+            //Act
+            var response = await jobProfileService.GetCurrentOpportunities(canonicalName);
+
+            //Assert
+            A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             response.Should().BeOfType(typeof(SegmentModel));
         }
 

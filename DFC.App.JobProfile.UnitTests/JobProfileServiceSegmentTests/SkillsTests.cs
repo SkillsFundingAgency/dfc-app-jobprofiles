@@ -35,17 +35,17 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var configuration = A.Fake<IConfiguration>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeCourseSearch = A.Fake<ICourseSearchApiService>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
 
             var canonicalName = "biochemist";
             var filter = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch, fakeAVAPIService);
             var expectedResult = GetExpectedData();
             var expectedSkillsResult = GetSkillsData();
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedSkillsResult);
-
 
             //Act
             var response = await jobProfileService.GetSkillSegmentAsync(canonicalName, filter);
@@ -69,12 +69,12 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var configuration = A.Fake<IConfiguration>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeCourseSearch = A.Fake<ICourseSearchApiService>();
-
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
 
             var canonicalName = "biochemist";
             var filter = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch, fakeAVAPIService);
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileSkillsResponse());
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new SkillsResponse());

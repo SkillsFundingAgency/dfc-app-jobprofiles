@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace DFC.App.JobProfile.Data.Models.CurrentOpportunities
 {
@@ -23,7 +18,7 @@ namespace DFC.App.JobProfile.Data.Models.CurrentOpportunities
 
         public string Provider { get; set; }
 
-        public DateTime? StartDate { get; set; }
+        public string StartDate { get; set; }
 
         public bool FlexibleStartDate { get; set; }
 

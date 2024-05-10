@@ -116,7 +116,6 @@ namespace DFC.App.JobProfile.ProfileService
                 tasks = await GetTasksSegmentAsync(canonicalName, status);
 
                 //Get Current Opportunity data
-
                 currentOpportunity = await GetCurrentOpportunities(canonicalName, status);
 
                 //WaitUntil.Completed
@@ -124,38 +123,40 @@ namespace DFC.App.JobProfile.ProfileService
                 //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
 
                 //For developer, when debugging there is no data from Cosmos DB, we need initial data value. This can be deleted when deploying
-                var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
-
-                /* if (data != null && overview.Markup != null)
-                 {
-                     data.Segments = new List<SegmentModel>();
-                     data.Segments.Add(howToBecome);
-                     data.Segments.Add(relatedCareers);
-                     data.Segments.Add(overview);
-                     data.Segments.Add(currentOpportunity);
-                     data.Segments.Add(skills);
-                     data.Segments.Add(careersPath);
-                 }*/
-
-                if (data != null && howToBecome != null && overview != null && relatedCareers != null && careersPath != null)
+                //var data = await repository.GetAsync(d => d.CanonicalName == canonicalName.ToLowerInvariant()).ConfigureAwait(false);
+                var data = new JobProfileModel();
+                if (data != null && overview.Markup != null)
                 {
-                    /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
-                     data.Segments[index] = howToBecome;*/
-                    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
-                    data.Segments[index] = relatedCareers;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
+                    data.Segments = new List<SegmentModel>();
+                    data.Segments.Add(howToBecome);
+                    data.Segments.Add(relatedCareers);
+                    //data.Segments.Add(overview);
+                    data.Segments.Add(currentOpportunity);
+                    data.Segments.Add(skills);
+                    data.Segments.Add(careersPath);
+                    var index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
                     data.Segments[index] = overview;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CareerPathsAndProgression));
-                    data.Segments[index] = careersPath;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatItTakes));
-                    data.Segments[index] = skills;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CurrentOpportunities));
-                    data.Segments[index] = currentOpportunity;
-                    data.Video = video;
-                    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatYouWillDo));
-                    data.Segments[index] = tasks;
                 }
-                else return null;
+
+                //if (data != null && howToBecome != null && overview != null && relatedCareers != null && careersPath != null)
+                //{
+                //    /* int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.HowToBecome));
+                //     data.Segments[index] = howToBecome;*/
+                //    int index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.RelatedCareers));
+                //    data.Segments[index] = relatedCareers;
+                //    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.Overview));
+                //    data.Segments[index] = overview;
+                //    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CareerPathsAndProgression));
+                //    data.Segments[index] = careersPath;
+                //    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatItTakes));
+                //    data.Segments[index] = skills;
+                //    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.CurrentOpportunities));
+                //    data.Segments[index] = currentOpportunity;
+                //    data.Video = video;
+                //    index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatYouWillDo));
+                //    data.Segments[index] = tasks;
+                //}
+                //else return null;
 
                 return data;
             }
@@ -524,25 +525,32 @@ namespace DFC.App.JobProfile.ProfileService
             var redisdata = await sharedContentRedisInterface.GetCurrentOpportunitiesData<CoursesReponse>(cachekey);
             if (redisdata == null)
             {
-                redisdata = new CoursesReponse();
-                try
-                {
-                    var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
-
-                    redisdata.Courses = result.ToList();
-
-                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisdata, cachekey, 48);
-                    if (!save)
-                        throw new InvalidOperationException("Redis save process failed.");
-
-                }
-                catch (Exception ex)
-                {
-                    logService.LogError(ex.ToString());
-                }
+                redisdata = await GetCoursesAndCachedRedis(courseKeywords, cachekey);
             }
 
             return redisdata;
+        }
+
+        public async Task<bool> RefreshCourses(string filter)
+        {
+            bool returndata = true;
+
+            //Get job profile cousekeyword and lars code
+            var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+            if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities.Count() > 0)
+            {
+                foreach (var each in jobprfile.JobProfileCurrentOpportunities)
+                {
+                    string courseKeywords = each.Coursekeywords;
+                    if (!string.IsNullOrEmpty(courseKeywords))
+                    {
+                        string cachekey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
+                        var refreshdata = await GetCoursesAndCachedRedis(courseKeywords, cachekey);
+                    }
+                }
+            }
+
+            return returndata;
         }
 
         public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
@@ -742,6 +750,39 @@ namespace DFC.App.JobProfile.ProfileService
             viewModel.Paths.Last().AddHyperlink = false;
 
             return viewModel;
+        }
+
+        /// <summary>
+        /// Get courses from API and save to Redis.
+        /// </summary>
+        /// <param name="courseKeywords">course search key words.</param>
+        /// <param name="cachekey">Redis cache key.</param>
+        /// <returns>courses list.</returns>
+        private async Task<CoursesReponse> GetCoursesAndCachedRedis(string courseKeywords, string cachekey)
+        {
+            var redisdata = new CoursesReponse();
+            try
+            {
+                var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
+
+                redisdata.Courses = result.ToList();
+
+                var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisdata, cachekey, 48);
+                if (!save)
+                {
+                    logService.LogError("Redis failed: Course Keywords-" + courseKeywords + " Cache Key-" + cachekey);
+                }
+                else
+                {
+                    logService.LogInformation("Redis saved: Course Keywords-" + courseKeywords + " Cache Key-" + cachekey);
+                }
+            }
+            catch (Exception ex)
+            {
+                logService.LogError(ex.ToString());
+            }
+
+            return redisdata;
         }
     }
 }

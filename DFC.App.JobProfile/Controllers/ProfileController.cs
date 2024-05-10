@@ -331,6 +331,17 @@ namespace DFC.App.JobProfile.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        [Route("refreshCourses")]
+        public async Task<IActionResult> RefreshCourses()
+        {
+            logService.LogInformation($"{nameof(RefreshCourses)} has been called");
+
+            var response = await jobProfileService.RefreshCourses("PUBLISHED").ConfigureAwait(false);
+            logService.LogInformation($"{nameof(RefreshCourses)} has upserted content for: " + response.ToString());
+            return NoContent();
+        }
+
         #region Static helper methods
 
         private static string ComputeSha256Hash(string rawData)

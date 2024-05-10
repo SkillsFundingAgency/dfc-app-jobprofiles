@@ -28,6 +28,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             this.correlationIdProvider = correlationIdProvider;
         }
 
+        [Disable]
         [FunctionName("SitefinityMessageHandler")]
         public async Task Run([ServiceBusTrigger("%cms-messages-topic%", "%cms-messages-subscription%", Connection = "service-bus-connection-string")] ServiceBusReceivedMessage sitefinityMessage)
         {

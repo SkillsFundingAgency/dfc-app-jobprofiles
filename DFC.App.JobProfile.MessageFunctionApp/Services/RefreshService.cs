@@ -1,7 +1,6 @@
 ﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
-using Microsoft.Azure.Documents.ChangeFeedProcessor.Logging;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -44,7 +43,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST type {typeof(T)}, Id: {postModel.JobProfileId}.");
+                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Refresh Courses.");
 
                 if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
                 {

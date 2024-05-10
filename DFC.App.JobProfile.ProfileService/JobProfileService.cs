@@ -666,7 +666,7 @@ namespace DFC.App.JobProfile.ProfileService
             string pattern = @"'([^']*)'";
 
             // Find all matches of substrings within single quotes, extract substrings from matches, join by a comma and convert to a string
-            var result = string.Join(",", Regex.Matches(input, pattern)
+            var result = string.Join(",", Regex.Matches(input, pattern, RegexOptions.None, TimeSpan.FromMilliseconds(1))
                 .OfType<Match>()
                 .Select(m => m.Groups[1].Value));
 

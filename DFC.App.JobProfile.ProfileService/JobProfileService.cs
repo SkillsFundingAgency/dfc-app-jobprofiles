@@ -261,10 +261,10 @@ namespace DFC.App.JobProfile.ProfileService
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
-            if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl != null && jobProfile.JobProileCurrentOpportunitiesGetbyUrl.Any())
+            if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.Any())
             {
-                string coursekeywords = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].Coursekeywords;
-                string jobTitle = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].DisplayText;
+                string coursekeywords = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords;
+                string jobTitle = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].DisplayText;
                 var results = await GetCourses(coursekeywords, canonicalName);
                 var courseSearchResults = results.Courses?.ToList();
 
@@ -280,11 +280,11 @@ namespace DFC.App.JobProfile.ProfileService
                 currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
 
                 //get apprenticeship by lars code.
-                if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems.Length > 0 && jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
+                if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems.Length > 0 && jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
                 {
-                    if (!string.IsNullOrEmpty(jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
+                    if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
                     {
-                        var larsCodes = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode.ContentItems
+                        var larsCodes = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode.ContentItems
                             .SelectMany(socCode => socCode.ApprenticeshipStandards.ContentItems
                             .Select(standard => standard.LARScode)).ToList();
                         var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(larsCodes, canonicalName);

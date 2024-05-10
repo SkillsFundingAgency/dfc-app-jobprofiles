@@ -126,7 +126,7 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments.Add(skills);
                     data.Segments.Add(careersPath);
                     data.Segments.Add(tasks);
-                    data.Video = video ?? null;
+                    data.Video = video;
                 }
 
                 return data;
@@ -259,10 +259,10 @@ namespace DFC.App.JobProfile.ProfileService
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
-            if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl != null && jobProfile.JobProileCurrentOpportunitiesGetbyUrl.Count() > 0)
+            if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl != null && jobProfile.JobProileCurrentOpportunitiesGetbyUrl.Any())
             {
-                string coursekeywords = jobProfile.JobProileCurrentOpportunitiesGetbyUrl.First().Coursekeywords;
-                string jobTitle = jobProfile.JobProileCurrentOpportunitiesGetbyUrl.FirstOrDefault().DisplayText;
+                string coursekeywords = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].Coursekeywords;
+                string jobTitle = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].DisplayText;
                 var results = await GetCourses(coursekeywords);
                 var courseSearchResults = results.Courses?.ToList();
 
@@ -278,12 +278,11 @@ namespace DFC.App.JobProfile.ProfileService
                 currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
 
                 //get apprenticeship by lars code.
-                if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems.Count() > 0 && jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Count() > 0)
+                if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems.Length > 0 && jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
                 {
                     if (!string.IsNullOrEmpty(jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
                     {
-                        var larsCodes = jobProfile.JobProileCurrentOpportunitiesGetbyUrl
-                            .FirstOrDefault().SOCCode.ContentItems
+                        var larsCodes = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode.ContentItems
                             .SelectMany(socCode => socCode.ApprenticeshipStandards.ContentItems
                             .Select(standard => standard.LARScode)).ToList();
                         var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(larsCodes);
@@ -643,6 +642,49 @@ namespace DFC.App.JobProfile.ProfileService
             return result == HttpStatusCode.NoContent;
         }
 
+        private static string AddPrefix(string jobTitle)
+        {
+            string[] vowels = { "a", "e", "i", "o", "u" };
+            string prefix = string.Empty;
+            foreach (var vowel in vowels.Where(vowel => jobTitle.StartsWith(vowel, StringComparison.InvariantCultureIgnoreCase)).Select(vowel => new { }))
+            {
+                prefix = "an";
+            }
+
+            if (string.IsNullOrEmpty(prefix))
+            {
+                prefix = "a";
+            }
+
+            return prefix;
+        }
+
+        private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
+        {
+            var viewModel = new BreadcrumbViewModel
+            {
+                Paths = new List<BreadcrumbPathViewModel>()
+                {
+                    new BreadcrumbPathViewModel()
+                    {
+                        Route = $"/explore-careers",
+                        Title = "Home: Explore careers",
+                    },
+                },
+            };
+
+            var breadcrumbPathViewModel = new BreadcrumbPathViewModel
+            {
+                Route = $"/{routePrefix}/{canonicalName}",
+                Title = title,
+            };
+
+            viewModel.Paths.Add(breadcrumbPathViewModel);
+            viewModel.Paths.Last().AddHyperlink = false;
+
+            return viewModel;
+        }
+
         /// <summary>
         /// Get Courses from FAC client API.
         /// </summary>
@@ -744,54 +786,6 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return redisData;
-        }
-
-        private static string AddPrefix(string jobTitle)
-        {
-            string[] vowels = { "a", "e", "i", "o", "u" };
-            string prefix = string.Empty;
-
-            foreach (string vowel in vowels)
-            {
-                if (jobTitle.StartsWith(vowel, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    prefix = "an";
-                    break;
-                }
-            }
-
-            if (string.IsNullOrEmpty(prefix))
-            {
-                prefix = "a";
-            }
-
-            return prefix;
-        }
-
-        private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
-        {
-            var viewModel = new BreadcrumbViewModel
-            {
-                Paths = new List<BreadcrumbPathViewModel>()
-                {
-                    new BreadcrumbPathViewModel()
-                    {
-                        Route = $"/explore-careers",
-                        Title = "Home: Explore careers",
-                    },
-                },
-            };
-
-            var breadcrumbPathViewModel = new BreadcrumbPathViewModel
-            {
-                Route = $"/{routePrefix}/{canonicalName}",
-                Title = title,
-            };
-
-            viewModel.Paths.Add(breadcrumbPathViewModel);
-            viewModel.Paths.Last().AddHyperlink = false;
-
-            return viewModel;
         }
     }
 }

@@ -497,82 +497,6 @@ namespace DFC.App.JobProfile.ProfileService
             return skills;
         }
 
-        /// <summary>
-        /// Get Courses from FAC client API.
-        /// </summary>
-        /// <param name="courseKeywords">Courses key words, such as 'building services engineering'.</param>
-        /// <returns>CourseResponse contains list Courses.</returns>
-        public async Task<CoursesReponse> GetCourses(string courseKeywords)
-        {
-            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
-            var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<CoursesReponse>(cacheKey);
-            if (redisData == null)
-            {
-                redisData = new CoursesReponse();
-                try
-                {
-                    var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
-
-                    redisData.Courses = result.ToList();
-
-                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisData, cacheKey, 48);
-                    if (!save)
-                    {
-                        throw new InvalidOperationException("Redis save process failed.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    logService.LogError(ex.ToString());
-                }
-            }
-
-            return redisData;
-        }
-
-        /// <summary>
-        /// Get apprenticeship vacancies from Apprenticeship API.
-        /// </summary>
-        /// <param name="larsCodes">List of LARS codes.</param>
-        /// <returns>IEnumerable of Vacancy.</returns>
-        public async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes)
-        {
-            // Add LARS code to cache key
-            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + '/' + string.Join(",", larsCodes);
-            var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
-            var avMapping = new AVMapping { Standards = larsCodes };
-
-            // If there are no apprenticeship vacancies data in Redis then get data from the Apprenticeship Vacancy API
-            if (redisData == null)
-            {
-                try
-                {
-                    // Get apprenticeship vacancies from Apprenticeship API
-                    var avResponse = await avAPIService.GetAVsForMultipleProvidersAsync(avMapping).ConfigureAwait(false);
-
-                    // Map list of vacancies to IEnumerable<Vacancy>
-                    var mappedAVResponse = mapper.Map<IEnumerable<Vacancy>>(avResponse);
-
-                    var vacancies = mappedAVResponse.Take(2).ToList();
-
-                    // Save data to Redis
-                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);
-                    if (!save)
-                    {
-                        throw new InvalidOperationException("Redis save process failed.");
-                    }
-
-                    return vacancies;
-                }
-                catch (Exception e)
-                {
-                    logService.LogError(e.ToString());
-                }
-            }
-
-            return redisData;
-        }
-
         public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
         {
             SocialProofVideo mappedVideo = new SocialProofVideo();
@@ -595,28 +519,6 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return mappedVideo;
-        }
-
-        private static string AddPrefix(string jobTitle)
-        {
-            string[] vowels = { "a", "e", "i", "o", "u" };
-            string prefix = string.Empty;
-
-            foreach (string vowel in vowels)
-            {
-                if (jobTitle.StartsWith(vowel, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    prefix = "an";
-                    break;
-                }
-            }
-
-            if (string.IsNullOrEmpty(prefix))
-            {
-                prefix = "a";
-            }
-
-            return prefix;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)
@@ -742,6 +644,39 @@ namespace DFC.App.JobProfile.ProfileService
         }
 
         /// <summary>
+        /// Get Courses from FAC client API.
+        /// </summary>
+        /// <param name="courseKeywords">Courses key words, such as 'building services engineering'.</param>
+        /// <returns>CourseResponse contains list Courses.</returns>
+        private async Task<CoursesReponse> GetCourses(string courseKeywords)
+        {
+            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
+            var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<CoursesReponse>(cacheKey);
+            if (redisData == null)
+            {
+                redisData = new CoursesReponse();
+                try
+                {
+                    var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
+
+                    redisData.Courses = result.ToList();
+
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisData, cacheKey, 48);
+                    if (!save)
+                    {
+                        throw new InvalidOperationException("Redis save process failed.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logService.LogError(ex.ToString());
+                }
+            }
+
+            return redisData;
+        }
+
+        /// <summary>
         /// Mapping courses data with Opportunity object.
         /// </summary>
         /// <param name="courseSearchResults">List of courses result data.</param>
@@ -766,6 +701,71 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return opportunities;
+        }
+
+        /// <summary>
+        /// Get apprenticeship vacancies from Apprenticeship API.
+        /// </summary>
+        /// <param name="larsCodes">List of LARS codes.</param>
+        /// <returns>IEnumerable of Vacancy.</returns>
+        private async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes)
+        {
+            // Add LARS code to cache key
+            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + '/' + string.Join(",", larsCodes);
+            var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
+            var avMapping = new AVMapping { Standards = larsCodes };
+
+            // If there are no apprenticeship vacancies data in Redis then get data from the Apprenticeship Vacancy API
+            if (redisData == null)
+            {
+                try
+                {
+                    // Get apprenticeship vacancies from Apprenticeship API
+                    var avResponse = await avAPIService.GetAVsForMultipleProvidersAsync(avMapping).ConfigureAwait(false);
+
+                    // Map list of vacancies to IEnumerable<Vacancy>
+                    var mappedAVResponse = mapper.Map<IEnumerable<Vacancy>>(avResponse);
+
+                    var vacancies = mappedAVResponse.Take(2).ToList();
+
+                    // Save data to Redis
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);
+                    if (!save)
+                    {
+                        throw new InvalidOperationException("Redis save process failed.");
+                    }
+
+                    return vacancies;
+                }
+                catch (Exception e)
+                {
+                    logService.LogError(e.ToString());
+                }
+            }
+
+            return redisData;
+        }
+
+        private static string AddPrefix(string jobTitle)
+        {
+            string[] vowels = { "a", "e", "i", "o", "u" };
+            string prefix = string.Empty;
+
+            foreach (string vowel in vowels)
+            {
+                if (jobTitle.StartsWith(vowel, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    prefix = "an";
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(prefix))
+            {
+                prefix = "a";
+            }
+
+            return prefix;
         }
 
         private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)

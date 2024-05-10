@@ -29,6 +29,9 @@ using System.Net;
 using System.Threading.Tasks;
 using JobProfSkills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
 using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
+using System.Net.Http;
+using System.Net.Mime;
+using NHibernate.Cache;
 
 namespace DFC.App.JobProfile.ProfileService
 {
@@ -155,7 +158,10 @@ namespace DFC.App.JobProfile.ProfileService
                     index = data.Segments.IndexOf(data.Segments.FirstOrDefault(s => s.Segment == JobProfileSegment.WhatYouWillDo));
                     data.Segments[index] = tasks;
                 }
-                else return null;
+                else
+                {
+                    return null;
+                }
 
                 return data;
             }
@@ -278,10 +284,10 @@ namespace DFC.App.JobProfile.ProfileService
             currentOpportunitiesSegmentModel.Data.Courses = new Courses();
             currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
 
-            //Get job profile cousekeyword and lars code
+            //Get job profile coursekeyword and lars code
             var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix, "/", canonicalName), filter);
 
-            //get couses by course key words
+            //get courses by course key words
             if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].Coursekeywords))
             {
                 string coursekeywords = jobprfile.JobProileCurrentOpportunitiesGetbyUrl.First().Coursekeywords;
@@ -299,11 +305,19 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             //get apprenticeship by lars code.
+            //Do we need a For Each loop here?  
             if (jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems.Count() > 0 && jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Count() > 0)
             {
                 if (!string.IsNullOrEmpty(jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
                 {
+                    var larsCode = jobprfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode;
                     //get apprenticeship vacancy data by lars code.
+                    var results = await GetApprenticeships(larsCode);
+
+                    //Map the returned data here and assign to ovject. 
+
+                    currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = new List<Vacancy>();
+                    currentOpportunitiesSegmentModel.Data.Apprenticeships.Frameworks = new List<ApprenticeshipFramework>();
                 }
             }
 
@@ -533,8 +547,9 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisdata, cachekey, 48);
                     if (!save)
+                    {
                         throw new InvalidOperationException("Redis save process failed.");
-
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -543,6 +558,121 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return redisdata;
+        }
+
+        public async Task<CoursesReponse> GetApprenticeships(string larscode)
+        {
+            //Get the lars code from the service
+
+            //Update the Redis cache here.  
+
+            return null;
+        }
+
+        public async Task RefreshApprenticeships()//RunAsync([TimerTrigger("%RefreshApprenticeshipsCron%")] TimerInfo myTimer)
+        {
+            logService.LogInformation($"{nameof(RefreshApprenticeships)}: Timer trigger function starting at: {DateTime.Now}, using TimerInfo: {myTimer.Schedule.ToString()}");
+
+            int abortAfterErrorCount = 10;
+            int errorCount = 0;
+            int totalErrorCount = 0;
+            int totalSuccessCount = 0;
+            int aVRequestsPerMinute = 240;
+            int aVRequestsPerMinuteSettingOveride = 0;
+
+            _ = int.TryParse(Environment.GetEnvironmentVariable(nameof(abortAfterErrorCount)), out abortAfterErrorCount);
+            _ = int.TryParse(Environment.GetEnvironmentVariable(nameof(aVRequestsPerMinuteSettingOveride)), out aVRequestsPerMinuteSettingOveride);
+
+            //override with a setting variable if required
+            aVRequestsPerMinute = aVRequestsPerMinuteSettingOveride > 0 ? aVRequestsPerMinuteSettingOveride : aVRequestsPerMinute;
+
+            var sleepTimeMilliSecsBetweenRequests = 60000 / (aVRequestsPerMinute / 3);   //on average we make 3 calls per profile to get 2 vacancies, so divide by 3
+
+            HttpStatusCode statusCode = HttpStatusCode.OK;
+
+            //Makes a HTTP call to GET data
+            var simpleJobProfileModels = await refreshService.GetListAsync().ConfigureAwait(false);
+
+            if (simpleJobProfileModels != null)
+            {
+                //logService.LogInformation($"{nameof(RefreshApprenticeships)}: Retrieved {simpleJobProfileModels.Count} Job Profiles");
+
+                foreach (var simpleJobProfileModel in simpleJobProfileModels)
+                {
+                    logService.LogInformation($"{nameof(RefreshApprenticeships)}: Refreshing Job Profile Apprenticeships: {simpleJobProfileModel.DocumentId} / {simpleJobProfileModel.CanonicalName}");
+
+                    await Task.Delay(sleepTimeMilliSecsBetweenRequests).ConfigureAwait(false);
+
+                    //statusCode = await refreshService.RefreshApprenticeshipsAsync(simpleJobProfileModel.DocumentId).ConfigureAwait(false);
+
+                    //Update Redis:
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisdata, cachekey, 48);
+                    if (!save)
+                    {
+                        throw new InvalidOperationException("Redis save process failed.");
+                    }
+
+                    //switch (statusCode)
+                    //{
+                    //    case HttpStatusCode.OK:
+                    //        errorCount = 0;
+                    //        totalSuccessCount++;
+                    //        logService.LogInformation($"{nameof(RefreshApprenticeships)}: Refreshed Job Profile Apprenticeships: {simpleJobProfileModel.DocumentId} / {simpleJobProfileModel.CanonicalName}");
+                    //        break;
+
+                    //    default:
+                    //        errorCount++;
+                    //        totalErrorCount++;
+                    //        logService.LogError($"{nameof(RefreshApprenticeships)}: Error refreshing Job Profile Apprenticeships: {simpleJobProfileModel.DocumentId} / {simpleJobProfileModel.CanonicalName} - Status code = {statusCode}");
+                    //        break;
+                    //}
+
+                    if (errorCount >= abortAfterErrorCount)
+                    {
+                        logService.LogWarning($"{nameof(RefreshApprenticeships)}: Timer trigger aborting after {abortAfterErrorCount} consecutive errors");
+                        break;
+                    }
+                }
+            }
+
+            logService.LogInformation($"{nameof(RefreshApprenticeships)}: Timer trigger function, Apprenticeships refreshed: {totalSuccessCount}");
+            logService.LogInformation($"{nameof(RefreshApprenticeships)}: Timer trigger function, Apprenticeships refresh errors: {totalErrorCount}");
+            logService.LogInformation($"{nameof(RefreshApprenticeships)}: Timer trigger function completed at: {DateTime.Now}");
+
+            // if we aborted due to the number of errors exceeding the abortAfterErrorCount
+            if (errorCount >= abortAfterErrorCount)
+            {
+                logService.LogError(StatusCode = statusCode, ReasonPhrase = $"Timer trigger aborting after {abortAfterErrorCount} consecutive errors");
+                throw new HttpResponseException(new HttpResponseMessage() { StatusCode = statusCode, ReasonPhrase = $"Timer trigger aborting after {abortAfterErrorCount} consecutive errors" });
+            }
+        }
+
+        public async Task<IList<SimpleJobProfileModel>> GetListAsync()
+        {
+            var url = $"{refreshClientOptions.BaseAddress}segment";
+
+            logger.LogInformation($"{nameof(GetListAsync)}: Loading list from {url}");
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            request.Headers.Accept.Clear();
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+
+            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var result = JsonConvert.DeserializeObject<List<SimpleJobProfileModel>>(responseString);
+
+                logger.LogInformation($"{nameof(GetListAsync)}: Loaded list from {url}");
+
+                return result;
+            }
+
+            logger.LogError($"{nameof(GetListAsync)}: Error Loading list from {url}, status: {response.StatusCode}");
+
+            return null;
         }
 
         public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)

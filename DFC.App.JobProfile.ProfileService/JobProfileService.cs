@@ -22,9 +22,11 @@ using Newtonsoft.Json.Serialization;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JobProfSkills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
 using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
@@ -256,14 +258,14 @@ namespace DFC.App.JobProfile.ProfileService
             currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
 
             //Get job profile course keyword and lars code
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix, "/", canonicalName), "PUBLISHED");
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
-            if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl != null && jobProfile.JobProileCurrentOpportunitiesGetbyUrl.Any())
+            if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.Any())
             {
-                string coursekeywords = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].Coursekeywords;
-                string jobTitle = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].DisplayText;
-                var results = await GetCourses(coursekeywords);
+                string coursekeywords = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords;
+                string jobTitle = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].DisplayText;
+                var results = await GetCourses(coursekeywords, canonicalName);
                 var courseSearchResults = results.Courses?.ToList();
 
                 var opportunities = new List<Opportunity>();
@@ -278,14 +280,14 @@ namespace DFC.App.JobProfile.ProfileService
                 currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
 
                 //get apprenticeship by lars code.
-                if (jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems.Length > 0 && jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
+                if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems.Length > 0 && jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
                 {
-                    if (!string.IsNullOrEmpty(jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
+                    if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
                     {
-                        var larsCodes = jobProfile.JobProileCurrentOpportunitiesGetbyUrl[0].SOCCode.ContentItems
+                        var larsCodes = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode.ContentItems
                             .SelectMany(socCode => socCode.ApprenticeshipStandards.ContentItems
                             .Select(standard => standard.LARScode)).ToList();
-                        var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(larsCodes);
+                        var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(larsCodes, canonicalName);
                         currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = apprenticeshipVacancies;
                     }
                 }
@@ -320,7 +322,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfilesOverview, "/", canonicalName), filter);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfileOverview, "/", canonicalName), filter);
 
                 if (response.JobProfileOverview != null && response.JobProfileOverview.Count > 0)
                 {
@@ -398,7 +400,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfilesCarreerPath + "/" + canonicalName, status);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfileCareerPath + "/" + canonicalName, status);
 
                 if (response.JobProileCareerPath != null)
                 {
@@ -644,19 +646,31 @@ namespace DFC.App.JobProfile.ProfileService
 
         private static string AddPrefix(string jobTitle)
         {
-            string[] vowels = { "a", "e", "i", "o", "u" };
-            string prefix = string.Empty;
-            foreach (var vowel in vowels.Where(vowel => jobTitle.StartsWith(vowel, StringComparison.InvariantCultureIgnoreCase)).Select(vowel => new { }))
+            if (string.IsNullOrEmpty(jobTitle))
             {
-                prefix = "an";
+                return "a";
             }
-
-            if (string.IsNullOrEmpty(prefix))
+            else if ("AEIOUaeiou".IndexOf(jobTitle[0]) != -1)
             {
-                prefix = "a";
+                return "an";
             }
+            else
+            {
+                return "a";
+            }
+        }
 
-            return prefix;
+        private static string ConvertCourseKeywordsString(string input)
+        {
+            // Regular expression pattern to match substrings within single quotes
+            string pattern = @"'([^']*)'";
+
+            // Find all matches of substrings within single quotes, extract substrings from matches, join by a comma and convert to a string
+            var result = string.Join(",", Regex.Matches(input, pattern, RegexOptions.None, TimeSpan.FromMilliseconds(1))
+                .OfType<Match>()
+                .Select(m => m.Groups[1].Value));
+
+            return result;
         }
 
         private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
@@ -690,9 +704,9 @@ namespace DFC.App.JobProfile.ProfileService
         /// </summary>
         /// <param name="courseKeywords">Courses key words, such as 'building services engineering'.</param>
         /// <returns>CourseResponse contains list Courses.</returns>
-        private async Task<CoursesReponse> GetCourses(string courseKeywords)
+        private async Task<CoursesReponse> GetCourses(string courseKeywords, string canonicalName)
         {
-            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
+            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + ConvertCourseKeywordsString(courseKeywords);
             var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<CoursesReponse>(cacheKey);
             if (redisData == null)
             {
@@ -750,10 +764,10 @@ namespace DFC.App.JobProfile.ProfileService
         /// </summary>
         /// <param name="larsCodes">List of LARS codes.</param>
         /// <returns>IEnumerable of Vacancy.</returns>
-        private async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes)
+        private async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes, string canonicalName)
         {
             // Add LARS code to cache key
-            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + '/' + string.Join(",", larsCodes);
+            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix + '/' + canonicalName + '/' + string.Join(",", larsCodes);
             var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
             var avMapping = new AVMapping { Standards = larsCodes };
 

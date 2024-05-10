@@ -114,7 +114,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
                 },
             };
 
-            expectedResult.JobProileCurrentOpportunitiesGetbyUrl = list;
+            expectedResult.JobProfileCurrentOpportunitiesGetByUrl = list;
             return expectedResult;
         }
 

@@ -272,6 +272,7 @@ namespace DFC.App.JobProfile.ProfileService
                     opportunities = MapCourses(courseSearchResults, opportunities);
                 }
 
+                currentOpportunitiesSegmentModel.Data.TitlePrefix = AddPrefix(jobTitle);
                 currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = coursekeywords;
                 currentOpportunitiesSegmentModel.Data.Courses.Opportunities = opportunities;
                 currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
@@ -594,6 +595,28 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return mappedVideo;
+        }
+
+        private static string AddPrefix(string jobTitle)
+        {
+            string[] vowels = { "a", "e", "i", "o", "u" };
+            string prefix = string.Empty;
+
+            foreach (string vowel in vowels)
+            {
+                if (jobTitle.StartsWith(vowel, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    prefix = "an";
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(prefix))
+            {
+                prefix = "a";
+            }
+
+            return prefix;
         }
 
         public async Task<JobProfileModel> GetByAlternativeNameAsync(string alternativeName)

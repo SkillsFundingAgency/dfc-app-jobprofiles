@@ -35,7 +35,7 @@
         else
         {
             <div class="govuk-grid-column-full govuk-body dfc-code-jp-novacancyText">
-                <p>We can't find any apprenticeship vacancies in England for @Model.JobTitle right now.</p>
+                <p>We can't find any apprenticeship vacancies in England for @Model.TitlePrefix @Model.JobTitle right now.</p>
                 <p>The <a href="https://www.gov.uk/apply-apprenticeship">Find an apprenticeship service</a> can help you with your search, send alerts when new apprenticeships become available and has advice on how to apply.</p>
             </div>
         }
@@ -76,7 +76,7 @@
         else
         {
             <div class="govuk-grid-column-full dfc-code-jp-NoTrainingCoursesText">
-                <p>Are you interested in becoming @Model.JobTitle?</p>
+                <p>Are you interested in becoming @Model.TitlePrefix @Model.JobTitle?</p>
                 <p>Search for <a href="/find-a-course/search">training courses near you</a>.</p>
             </div>
         }

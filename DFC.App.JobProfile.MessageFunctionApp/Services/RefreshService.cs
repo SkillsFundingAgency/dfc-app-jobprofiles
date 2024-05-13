@@ -1,17 +1,11 @@
 ﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+using DFC.App.JobProfile.MessageFunctionApp.Models;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
-using Microsoft.Azure.Documents.ChangeFeedProcessor.Logging;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Services
@@ -35,6 +29,16 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             this.correlationIdProvider = correlationIdProvider;
         }
 
+        public Task<IList<SimpleJobProfileModel>> GetListAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<HttpStatusCode> RefreshApprenticeshipsAsync(Guid documentId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<HttpStatusCode> RefreshCoursesAsync(int retryCount = 0)
         {
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}refreshCourses");
@@ -44,7 +48,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST type {typeof(T)}, Id: {postModel.JobProfileId}.");
+                //logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST type {typeof(T)}, Id: {postModel.JobProfileId}.");
 
                 if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
                 {

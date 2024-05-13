@@ -35,5 +35,7 @@ namespace DFC.App.JobProfile.Data.Contracts
         Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter);
 
         Task<bool> RefreshCourses(string filter);
+
+        Task<bool> RefreshApprenticeshipsAsync(string filter);
     }
 }

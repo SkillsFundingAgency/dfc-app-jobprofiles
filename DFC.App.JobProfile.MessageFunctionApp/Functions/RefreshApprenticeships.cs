@@ -1,13 +1,13 @@
-using DFC.App.JobProfile.CurrentOpportunities.MessageFunctionApp.Services;
-using DFC.Functions.DI.Standard.Attributes;
+using DFC.App.JobProfile.MessageFunctionApp.Models;
+using DFC.App.JobProfile.MessageFunctionApp.Services;
+using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using DFC.Logger.AppInsights.Contracts;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Functions
 {

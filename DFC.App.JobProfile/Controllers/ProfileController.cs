@@ -9,13 +9,11 @@ using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Compui.Cosmos.Contracts;
-using DFC.Compui.Sessionstate;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
-using NHibernate.Engine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -342,6 +340,17 @@ namespace DFC.App.JobProfile.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        [Route("refreshApprenticeships")]
+        public async Task<IActionResult> RefreshApprenticeships()
+        {
+            logService.LogInformation($"{nameof(RefreshApprenticeships)} has been called");
+
+            var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED").ConfigureAwait(false);
+            logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
+            return NoContent();
+        }
+
         #region Static helper methods
 
         private static string ComputeSha256Hash(string rawData)
@@ -461,6 +470,5 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         #endregion Static helper methods
-
     }
 }

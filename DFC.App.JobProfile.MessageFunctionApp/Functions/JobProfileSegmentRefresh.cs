@@ -29,7 +29,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             this.correlationIdProvider = correlationIdProvider;
         }
 
-        [Disable]
         [FunctionName("JobProfileSegmentRefresh")]
         public async Task Run([ServiceBusTrigger("%job-profiles-refresh-topic%", "%job-profiles-refresh-subscription%", Connection = "service-bus-connection-string")] ServiceBusReceivedMessage segmentRefreshMessage)
         {

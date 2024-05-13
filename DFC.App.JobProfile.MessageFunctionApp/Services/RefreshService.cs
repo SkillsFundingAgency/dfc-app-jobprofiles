@@ -66,6 +66,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                 logService.LogInformation($"{nameof(ConfigureHttpClient)} does not contain {nameof(HeaderName.CorrelationId)}");
 
                 httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
+                httpClient.Timeout = TimeSpan.FromMinutes(5);
             }
         }
     }

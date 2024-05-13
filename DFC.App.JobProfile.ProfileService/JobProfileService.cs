@@ -531,23 +531,36 @@ namespace DFC.App.JobProfile.ProfileService
             return redisdata;
         }
 
+        /// <summary>
+        /// Refresh all courses redis.
+        /// </summary>
+        /// <param name="filter">PUBLISHED</param>
+        /// <returns>boolean.</returns>
+        /// <exception cref="ArgumentNullException">throw exception when jobprofile data is null.</exception>
         public async Task<bool> RefreshCourses(string filter)
         {
             bool returndata = true;
 
             //Get job profile cousekeyword and lars code
             var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
-            if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities.Count() > 0)
+            if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities != null)
             {
-                foreach (var each in jobprfile.JobProfileCurrentOpportunities)
+                if (jobprfile.JobProfileCurrentOpportunities.Count() > 0)
                 {
-                    string courseKeywords = each.Coursekeywords;
-                    if (!string.IsNullOrEmpty(courseKeywords))
+                    foreach (var each in jobprfile.JobProfileCurrentOpportunities)
                     {
-                        string cachekey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
-                        var refreshdata = await GetCoursesAndCachedRedis(courseKeywords, cachekey);
+                        string courseKeywords = each.Coursekeywords;
+                        if (!string.IsNullOrEmpty(courseKeywords))
+                        {
+                            string cachekey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
+                            var refreshdata = await GetCoursesAndCachedRedis(courseKeywords, cachekey);
+                        }
                     }
                 }
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(RefreshCourses));
             }
 
             return returndata;

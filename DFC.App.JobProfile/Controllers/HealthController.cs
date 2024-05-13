@@ -1,8 +1,8 @@
-﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Extensions;
+﻿using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -13,14 +13,12 @@ namespace DFC.App.JobProfile.Controllers
     public class HealthController : Controller
     {
         private readonly ILogService logService;
-        private readonly IJobProfileService jobProfileService;
-        private readonly AutoMapper.IMapper mapper;
+        private readonly HealthCheckService healthCheckService;
 
-        public HealthController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper)
+        public HealthController(ILogService logService, HealthCheckService healthCheckService)
         {
             this.logService = logService;
-            this.jobProfileService = jobProfileService;
-            this.mapper = mapper;
+            this.healthCheckService = healthCheckService;
         }
 
         [HttpGet]
@@ -34,19 +32,15 @@ namespace DFC.App.JobProfile.Controllers
 
             try
             {
-                var isHealthy = await jobProfileService.PingAsync().ConfigureAwait(false);
+                var report = await healthCheckService.CheckHealthAsync();
+                var status = report.Status;
 
-                if (isHealthy)
+                if (status == HealthStatus.Healthy)
                 {
-                    message = "Document store is available";
+                    message = "Redis and GraphQl are available";
                     logService.LogInformation($"{nameof(Health)} responded with: {resourceName} - {message}");
 
                     var viewModel = CreateHealthViewModel(resourceName, message);
-
-                    var segmentData = await jobProfileService.SegmentsHealthCheckAsync().ConfigureAwait(false);
-                    var segmentHealthItemViewModels = mapper.Map<List<HealthItemViewModel>>(segmentData);
-
-                    viewModel.HealthItems.AddRange(segmentHealthItemViewModels);
 
                     return this.NegotiateContentResult(viewModel, viewModel.HealthItems);
                 }

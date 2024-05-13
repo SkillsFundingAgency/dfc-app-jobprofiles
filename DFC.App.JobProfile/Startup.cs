@@ -2,6 +2,7 @@
 using CorrelationId;
 using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.ClientHandlers;
+using DFC.App.JobProfile.Data.Configuration;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
@@ -62,6 +63,9 @@ namespace DFC.App.JobProfile
         public const string CourseSearchClientPolicySettings = "Configuration:CourseSearchClient:Policies";
         private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
         private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
+        public const string AVAPIServiceAppSettings = "Configuration:AVAPIService";
+        public const string AVAPIServiceClientPolicySettings = "Configuration:AVAPIService:Policies";
+        public const string AVFeedAuditSettings = "Configuration:CosmosDbConnections:AVFeedAudit";
 
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment env;
@@ -130,6 +134,13 @@ namespace DFC.App.JobProfile
             services.AddCorrelationId();
             services.AddRazorTemplating();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            var aVAPIServiceSettings = configuration.GetSection(AVAPIServiceAppSettings).Get<AVAPIServiceSettings>();
+            services.AddSingleton(aVAPIServiceSettings ?? new AVAPIServiceSettings());
+            var corePolicyOptions = configuration.GetSection(AVAPIServiceClientPolicySettings).Get<CorePolicyOptions>() ?? new CorePolicyOptions();
+            corePolicyOptions.HttpRateLimitRetry ??= new RateLimitPolicyOptions();
+
+            //services.AddScoped<IAVAPIService, AVAPIService>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

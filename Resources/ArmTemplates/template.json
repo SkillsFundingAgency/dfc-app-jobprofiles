@@ -239,6 +239,12 @@
       "metadata": {
         "description": "Access token for course provider service"
       }
+    },
+    "WorkerThreads": {
+      "type": "string"
+    },
+    "IocpThreads": {
+      "type": "string"
     }
   },
   "variables": {
@@ -817,7 +823,15 @@
               {
                 "name": "Configuration__CourseSearchClient__Policies__HttpRetry__Count",
                 "value": "3"
-              }
+              },
+              {
+                "name": "ThreadSettings__WorkerThreads",
+                "value": "[parameters('WorkerThreads')]"
+              },
+              {
+                 "name": "ThreadSettings__IocpThreads",
+                 "value": "[parameters('IocpThreads')]"   
+			  }
             ]
           }
         }

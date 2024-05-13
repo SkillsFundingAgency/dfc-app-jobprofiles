@@ -160,6 +160,12 @@
     },
     "courseProviderServiceApiKey": {
       "value": "not-a-real-key"
+    },
+    "WorkerThreads": {
+      "value": "200"
+    },
+    "IocpThreads": {
+      "value": "200"
     }
   }
 }

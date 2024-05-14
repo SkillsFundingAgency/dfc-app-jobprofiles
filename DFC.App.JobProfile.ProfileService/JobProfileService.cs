@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using NHibernate.Cache;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
@@ -499,23 +500,6 @@ namespace DFC.App.JobProfile.ProfileService
         }
 
         /// <summary>
-        /// Get Courses from FAC client API.
-        /// </summary>
-        /// <param name="courseKeywords">Couses key words, such as 'building services engineering'.</param>
-        /// <returns>CourseResponse contains list Courses.</returns>
-        public async Task<CoursesReponse> GetCourses(string courseKeywords)
-        {
-            string cachekey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
-            var redisdata = await sharedContentRedisInterface.GetCurrentOpportunitiesData<CoursesReponse>(cachekey);
-            if (redisdata == null)
-            {
-                redisdata = await GetCoursesAndCachedRedis(courseKeywords, cachekey);
-            }
-
-            return redisdata;
-        }
-
-        /// <summary>
         /// Refresh all courses redis.
         /// </summary>
         /// <param name="filter">PUBLISHED</param>
@@ -533,11 +517,12 @@ namespace DFC.App.JobProfile.ProfileService
                 {
                     foreach (var each in jobprfile.JobProfileCurrentOpportunities)
                     {
+                        string canonicalName = each.PageLocation.UrlName;
                         string courseKeywords = each.Coursekeywords;
                         if (!string.IsNullOrEmpty(courseKeywords))
                         {
-                            string cachekey = ApplicationKeys.JobProfileCurrentOpportunitiesGetByUrlPrefix + "/" + courseKeywords;
-                            var refreshdata = await GetCoursesAndCachedRedis(courseKeywords, cachekey);
+                            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + ConvertCourseKeywordsString(courseKeywords);
+                            var refreshdata = await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
                         }
                     }
                 }
@@ -765,15 +750,7 @@ namespace DFC.App.JobProfile.ProfileService
                 redisData = new CoursesReponse();
                 try
                 {
-                    var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
-
-                    redisData.Courses = result.ToList();
-
-                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisData, cacheKey, 48);
-                    if (!save)
-                    {
-                        throw new InvalidOperationException("Redis save process failed.");
-                    }
+                    redisData = await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
                 }
                 catch (Exception ex)
                 {

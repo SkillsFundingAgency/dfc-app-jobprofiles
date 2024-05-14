@@ -21,7 +21,7 @@
                         <ul class="govuk-list">
                             <li><span class="govuk-body govuk-!-font-weight-bold">Wage: </span> @apprenticeVacancy.WageText <span class="govuk-body-s govuk-secondary-colour">@apprenticeVacancy.WageUnit</span></li>
                             @{
-                                var location = apprenticeVacancy.Location == null || (string.IsNullOrWhiteSpace(apprenticeVacancy.Location.Town) && string.IsNullOrWhiteSpace(apprenticeVacancy.Location.PostCode)) ? "Not known" : $"{apprenticeVacancy.Location.Town} {apprenticeVacancy.Location.PostCode}";
+                                var location = apprenticeVacancy.Location == null || (string.IsNullOrWhiteSpace(apprenticeVacancy.Location.Town) && string.IsNullOrWhiteSpace(apprenticeVacancy.Location.PostCode)) ? "Not known" : $"{apprenticeVacancy.Location.Town}, {apprenticeVacancy.Location.PostCode}";
                             }
                         <li><span class="govuk-body govuk-!-font-weight-bold">Location:</span> @location</li>
                         </ul>

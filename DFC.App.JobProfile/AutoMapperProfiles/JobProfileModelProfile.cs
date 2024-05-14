@@ -123,9 +123,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.Title))
                 .ForMember(d => d.WageUnit, s => s.MapFrom(a => a.Wage.WageUnit))
                 .ForMember(d => d.WageText, s => s.MapFrom(a => a.Wage.WageAdditionalInformation))
-                .ForPath(d => d.Location.PostCode, s => s.MapFrom(a => a.Address.PostCode))
-                .ForPath(d => d.Location.Town, s => s.MapFrom(a => a.Address.Town))
-                .ForMember(d => d.URL, s => s.MapFrom(a => a.EmployerWebsiteUrl))
+                .ForMember(d => d.Location, s => s.MapFrom<VacancyLocationResolver>())
+                .ForMember(d => d.URL, s => s.MapFrom(a => a.VacancyUrl))
                 .ForMember(d => d.PullDate, s => s.Ignore());
 
             CreateMap<JobProfileCareerPathAndProgressionResponse, CareerPathSegmentDataModel>()

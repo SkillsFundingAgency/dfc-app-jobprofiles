@@ -26,6 +26,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
             var fakeclient = A.Fake<ICourseSearchApiService>();
 
             IList<HealthCheckItem> expectedResult = new List<HealthCheckItem>
@@ -38,8 +39,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             };
 
             A.CallTo(() => segmentService.SegmentsHealthCheckAsync()).Returns(expectedResult);
-
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             // act
             var result = jobProfileService.SegmentsHealthCheckAsync().Result;

@@ -1,6 +1,6 @@
 ﻿<span class="govuk-body govuk-!-font-weight-bold">Start date:</span>
 @{ 
-    var isNullStartDate = Model.StartDate == null || Model.StartDate == DateTime.MinValue;
+    var isNullStartDate = Model.StartDate == null || Model.StartDate == DateTime.MinValue.ToString();
 }
 
 @if (isNullStartDate && Model.FlexibleStartDate)
@@ -9,7 +9,7 @@
 }
 else if (!isNullStartDate)
 {
-    <span id="start-date">@Model.StartDate.ToString("dd MMMM yyyy")</span>
+    <span id="start-date">@DateTime.Parse(Model.StartDate).ToString("dd MMMM yyyy")</span>
 }
 else
 {

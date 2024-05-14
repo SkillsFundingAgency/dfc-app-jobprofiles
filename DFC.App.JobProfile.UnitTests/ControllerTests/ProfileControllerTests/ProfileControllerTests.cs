@@ -4,7 +4,6 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
-using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
@@ -28,7 +27,6 @@ public class ProfileControllerTests
         var feedbackLinks = A.Fake<FeedbackLinks>();
         var fakeSegmentService = A.Fake<ISegmentService>();
         var fakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
-        var fakeStaticContentDocumentService = A.Fake<IDocumentService<StaticContentItemModel>>();
         var fakeConfiguration = A.Fake<IConfiguration>();
         var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
 
@@ -42,9 +40,8 @@ public class ProfileControllerTests
                 feedbackLinks,
                 fakeSegmentService,
                 fakeRedirectionSecurityService,
-                fakeStaticContentDocumentService,
-        new CmsApiClientOptions(),
-                fakeSharedContentRedisInterface, 
+                new CmsApiClientOptions(),
+                fakeSharedContentRedisInterface,
                 fakeConfiguration));
 
         // Assert

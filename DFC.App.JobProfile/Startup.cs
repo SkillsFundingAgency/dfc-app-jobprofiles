@@ -10,12 +10,9 @@ using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.HttpClientPolicies.Polly;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
-using DFC.App.JobProfile.HostedServices;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.App.JobProfile.ProfileService.SegmentServices;
-using DFC.App.JobProfile.Repository.CosmosDb;
-using DFC.App.JobProfile.Services;
 using DFC.Common.SharedContent.Pkg.Netcore;
 using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure;
 using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure.Strategy;
@@ -23,7 +20,6 @@ using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Common.SharedContent.Pkg.Netcore.RequestHandler;
-using DFC.Compui.Cosmos;
 using DFC.Compui.Subscriptions.Pkg.Netstandard.Extensions;
 using DFC.Compui.Telemetry;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
@@ -40,8 +36,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,8 +53,6 @@ namespace DFC.App.JobProfile
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        public const string StaticCosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:SharedContent";
-        public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
         public const string ConfigAppSettings = "Configuration";
         public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
         public const string AVAPIServiceAppSettings = "Configuration:AVAPIService";
@@ -170,22 +162,10 @@ namespace DFC.App.JobProfile
                 Password = redisCacheConnectionString.Password,
             }));
 
-            services.AddHealthChecks().AddCheck<HealthCheck>("GraphQlRedisConnectionCheck");
-
-            var cosmosDbConnection = configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
-            var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
-
-            services.AddSingleton(cosmosDbConnection);
-            services.AddSingleton<IDocumentClient>(documentClient);
-            services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
             services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();
 
             services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
-            var staticContentDbConnection = configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<DFC.Compui.Cosmos.Contracts.CosmosDbConnection>();
-            var cosmosRetryOptions = new RetryOptions { MaxRetryAttemptsOnThrottledRequests = 20, MaxRetryWaitTimeInSeconds = 60 };
-            services.AddDocumentServices<StaticContentItemModel>(staticContentDbConnection, env.IsDevelopment(), cosmosRetryOptions);
             services.AddTransient<ICmsApiService, CmsApiService>();
-            services.AddTransient<IStaticContentReloadService, StaticContentReloadService>();
             services.AddTransient<IContentTypeMappingService, ContentTypeMappingService>();
 
             var configValues = configuration.GetSection(ConfigAppSettings).Get<ConfigValues>();
@@ -270,8 +250,6 @@ namespace DFC.App.JobProfile
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
             services.AddTransient<IApiCacheService, ApiCacheService>();
 
-            services.AddHostedService<StaticContentReloadBackgroundService>();
-            services.AddTransient<IWebhooksService, WebhooksService>();
             services.AddSubscriptionBackgroundService(configuration);
 
             var avPolicyOptions = configuration.GetSection(AVAPIServiceClientPolicySettings).Get<CorePolicyOptions>();

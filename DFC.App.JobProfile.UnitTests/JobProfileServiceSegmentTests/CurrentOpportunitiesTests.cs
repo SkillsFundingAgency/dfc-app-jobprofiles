@@ -4,8 +4,6 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.Common;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
@@ -28,8 +26,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetCurrentOpportunitiesValidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
@@ -39,7 +35,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakefacclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "auditor";
@@ -59,8 +55,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetCurrentOpportunitiesInvalidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
@@ -70,7 +64,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakefacclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient, fakeAVAPIService);
 
             var canonicalName = "auditor";
 

@@ -4,7 +4,6 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.Common;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
@@ -25,8 +24,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetSocialProofVideoValidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
@@ -36,7 +33,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakefacclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "bookmaker";
@@ -56,8 +53,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         [Fact]
         public async Task GetHowToBecomeInvalidInputAsync()
         {
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
@@ -67,8 +62,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakefacclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
-            var expectedResult = GetExpectedData();
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
             var canonicalName = "bookmaker";
             var filter = "PUBLISHED";
 

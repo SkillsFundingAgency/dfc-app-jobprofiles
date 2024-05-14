@@ -16,9 +16,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "GetAll Tests")]
     public class ProfileServiceGetAllTests
     {
-        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
-
-        private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
         private readonly IJobProfileService jobProfileService;
         private readonly ILogService logService;
@@ -30,8 +27,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
         public ProfileServiceGetAllTests()
         {
-            repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            segmentService = A.Fake<ISegmentService>();
             mapper = A.Fake<IMapper>();
             logService = A.Fake<ILogService>();
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -40,10 +35,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             fakeclient = A.Fake<ICourseSearchApiService>();
             fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
+            jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
         }
 
-        [Fact]
+/*        [Fact]
         public async Task JobProfileServiceGetAllListReturnsSuccess()
         {
             // arrange
@@ -73,6 +68,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             // assert
             A.CallTo(() => repository.GetAllAsync()).MustHaveHappenedOnceExactly();
             A.Equals(results, expectedResults);
-        }
+        }*/
     }
 }

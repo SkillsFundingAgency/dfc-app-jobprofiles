@@ -25,10 +25,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetHowToBecomeValidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
-
             var logService = A.Fake<ILogService>();
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
@@ -36,7 +33,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakeFACClient = A.Fake<ICourseSearchApiService>();
             var avAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, avAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, avAPIService);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "bookmaker";
@@ -57,10 +54,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetHowToBecomeInvalidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
-
             var logService = A.Fake<ILogService>();
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
@@ -68,7 +62,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var avAPIService = A.Fake<IAVAPIService>();
             var fakeFACClient = A.Fake<ICourseSearchApiService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, avAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, avAPIService);
             var expectedResult = GetExpectedData();
             var canonicalName = "bookmaker";
             var filter = "PUBLISHED";

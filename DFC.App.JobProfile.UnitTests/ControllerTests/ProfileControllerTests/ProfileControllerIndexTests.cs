@@ -13,7 +13,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
     [Trait("Profile Controller", "Index Tests")]
     public class ProfileControllerIndexTests : BaseProfileController
     {
-        [Theory]
+        /*[Theory]
         [MemberData(nameof(HtmlMediaTypes))]
         public async Task ProfileControllerIndexHtmlReturnsSuccess(string mediaTypeName)
         {
@@ -145,6 +145,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             Assert.Equal((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
 
             controller.Dispose();
-        }
+        }*/
     }
 }

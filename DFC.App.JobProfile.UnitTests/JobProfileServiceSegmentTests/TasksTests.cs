@@ -24,8 +24,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetTasksValidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
@@ -35,7 +33,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var facClient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             var canonicalName = "bookmaker";
@@ -56,8 +54,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetTasksInvalidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
@@ -67,8 +63,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var facClient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient, fakeAVAPIService);
-            var expectedResult = GetExpectedData();
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient, fakeAVAPIService);
             var canonicalName = "bookmaker";
             var filter = "PUBLISHED";
 

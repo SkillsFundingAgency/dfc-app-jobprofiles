@@ -21,11 +21,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
     public class RelatedCareersTests
     {
         [Fact]
-        public async void GetRelatedCareersDataSuccess()
+        public async Task GetRelatedCareersDataSuccess()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -37,7 +35,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var canonicalName = "biochemist";
             var filter = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
@@ -55,8 +53,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetRelatedCareersDataNoSuccessAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -68,8 +64,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var canonicalName = "biochemist";
             var filter = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
-            var expectedResult = GetExpectedData();
+            var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new RelatedCareersResponse());
 

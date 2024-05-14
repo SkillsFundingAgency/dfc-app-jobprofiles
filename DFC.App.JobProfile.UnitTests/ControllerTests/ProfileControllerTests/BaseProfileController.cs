@@ -4,8 +4,6 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
-using DFC.Compui.Cosmos;
-using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
@@ -28,7 +26,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             DummyConfigValues = A.Dummy<ConfigValues>();
             FakeSegmentService = A.Fake<ISegmentService>();
             FakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
-            FakeStaticContentDocumentService = A.Fake<IDocumentService<StaticContentItemModel>>();
             FakeConfiguration = A.Fake<IConfiguration>();
             FakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
         }
@@ -61,12 +58,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected IRedirectionSecurityService FakeRedirectionSecurityService { get; }
 
-        protected IDocumentService<StaticContentItemModel> FakeStaticContentDocumentService { get; }
-
         protected IConfiguration FakeConfiguration { get; }
 
         protected ISharedContentRedisInterface FakeSharedContentRedisInterface { get; }
-
 
         protected ProfileController BuildProfileController(
             string mediaTypeName = MediaTypeNames.Application.Json,
@@ -86,7 +80,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                 ContentIds = sharedContentItemId,
             };
 
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService, FakeStaticContentDocumentService, cmsApiClientOptions, FakeSharedContentRedisInterface, FakeConfiguration)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService, cmsApiClientOptions, FakeSharedContentRedisInterface, FakeConfiguration)
             {
                 ControllerContext = new ControllerContext()
                 {

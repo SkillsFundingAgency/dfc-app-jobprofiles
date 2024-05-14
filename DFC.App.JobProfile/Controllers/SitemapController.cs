@@ -21,7 +21,8 @@ namespace DFC.App.JobProfile.Controllers
             this.jobProfileService = jobProfileService;
         }
 
-        [HttpGet]
+        //TODO: Fix when GetAllAsync method has been updated to retrieve all job profile data from STAX
+        /*[HttpGet]
         public async Task<ContentResult> Sitemap()
         {
             try
@@ -67,6 +68,6 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             return null;
-        }
+        }*/
     }
 }

@@ -102,15 +102,16 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                // TODO: WaitUntil.Completed
-                var howToBecome = await GetHowToBecomeSegmentAsync(canonicalName, status);
-                var overview = await GetOverviewSegment(canonicalName, status);
-                var relatedCareers = await GetRelatedCareersSegmentAsync(canonicalName, status);
-                var careersPath = await GetCareerPathSegmentAsync(canonicalName, status);
-                var skills = await GetSkillSegmentAsync(canonicalName, status);
-                var video = await GetSocialProofVideoSegment(canonicalName, status);
-                var tasks = await GetTasksSegmentAsync(canonicalName, status);
-                var currentOpportunity = await GetCurrentOpportunities(canonicalName);
+                var howToBecomeTask = GetHowToBecomeSegmentAsync(canonicalName, status);
+                var overviewTask = GetOverviewSegment(canonicalName, status);
+                var relatedCareersTask = GetRelatedCareersSegmentAsync(canonicalName, status);
+                var careersPathTask = GetCareerPathSegmentAsync(canonicalName, status);
+                var skillsTask = GetSkillSegmentAsync(canonicalName, status);
+                var videoTask = GetSocialProofVideoSegment(canonicalName, status);
+                var tasksTask = GetTasksSegmentAsync(canonicalName, status);
+                var currentOpportunityTask = GetCurrentOpportunities(canonicalName);
+
+                await Task.WhenAll(howToBecomeTask, overviewTask, relatedCareersTask, careersPathTask, skillsTask, videoTask, tasksTask, currentOpportunityTask);
 
                 var data = new JobProfileModel()
                 {
@@ -119,16 +120,18 @@ namespace DFC.App.JobProfile.ProfileService
                     Segments = new List<SegmentModel>(),
                 };
 
-                if (howToBecome != null && relatedCareers != null && overview != null && currentOpportunity != null && skills != null && careersPath != null && video != null)
+                if (howToBecomeTask.IsCompletedSuccessfully && overviewTask.IsCompletedSuccessfully && relatedCareersTask.IsCompletedSuccessfully &&
+                    careersPathTask.IsCompletedSuccessfully && skillsTask.IsCompletedSuccessfully && videoTask.IsCompletedSuccessfully &&
+                    tasksTask.IsCompletedSuccessfully && currentOpportunityTask.IsCompletedSuccessfully)
                 {
-                    data.Segments.Add(howToBecome);
-                    data.Segments.Add(relatedCareers);
-                    data.Segments.Add(overview);
-                    data.Segments.Add(currentOpportunity);
-                    data.Segments.Add(skills);
-                    data.Segments.Add(careersPath);
-                    data.Segments.Add(tasks);
-                    data.Video = video;
+                    data.Segments.Add(await howToBecomeTask);
+                    data.Segments.Add(await relatedCareersTask);
+                    data.Segments.Add(await overviewTask);
+                    data.Segments.Add(await currentOpportunityTask);
+                    data.Segments.Add(await skillsTask);
+                    data.Segments.Add(await careersPathTask);
+                    data.Segments.Add(await tasksTask);
+                    data.Video = await videoTask;
                 }
 
                 return data;

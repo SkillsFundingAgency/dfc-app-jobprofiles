@@ -34,10 +34,11 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
             var fakeclient = A.Fake<ICourseSearchApiService>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
             var expectedResult = GetExpectedData();
             var status = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient);
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
@@ -62,7 +63,9 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
             var fakeclient = A.Fake<ICourseSearchApiService>();
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient);
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
+
+            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             // act
             var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshCourses(null).ConfigureAwait(false)).ConfigureAwait(false);
@@ -79,6 +82,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
                 new JobProfileCurrentOpportunities {
                     DisplayText = "Auditor",
                     Coursekeywords = "'building services engineering'",
+                    PageLocation = new Common.SharedContent.Pkg.Netcore.Model.Common.PageLocation()
+                    {
+                        UrlName = "Auditor",
+                    },
                     SOCCode = new SOCCode()
                     {
                         ContentItems = new SOCCodeContentItem[]

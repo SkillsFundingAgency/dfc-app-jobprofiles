@@ -156,7 +156,7 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var relatedCareersObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
 
-                    var html = await razorTemplateEngine.RenderAsync("~/Views/RelatedCareers/RelatedCareersBody.cshtml", mappedResponse).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/RelatedCareers/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
                     relatedCareers = new SegmentModel
                     {
@@ -227,7 +227,7 @@ namespace DFC.App.JobProfile.ProfileService
                 });
 
                 // Render the CSHTML to string
-                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/HowToBecome/Body.cshtml", mappedResponse).ConfigureAwait(false);
+                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/HowToBecome/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
                 // Build the SegmentModel
                 howToBecome = new SegmentModel
@@ -342,7 +342,7 @@ namespace DFC.App.JobProfile.ProfileService
                             },
                         });
 
-                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
 
                     overview = new SegmentModel
                     {
@@ -411,7 +411,7 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var careerPathObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
 
-                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/CareerPath/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/CareerPath/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
                     careerPath = new SegmentModel
                     {
@@ -481,7 +481,7 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var skillsObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
 
-                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Skills/Body.cshtml", mappedResponse).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Skills/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
                     skills = new SegmentModel
                     {

@@ -1,9 +1,7 @@
 ﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
-using DFC.App.JobProfile.MessageFunctionApp.Models;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -29,14 +27,26 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             this.correlationIdProvider = correlationIdProvider;
         }
 
-        public Task<IList<SimpleJobProfileModel>> GetListAsync()
+        public async Task<HttpStatusCode> RefreshApprenticeshipsAsync(int retryCount = 0)
         {
-            throw new NotImplementedException();
-        }
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}refreshApprenticeships");
+            ConfigureHttpClient();
 
-        public Task<HttpStatusCode> RefreshApprenticeshipsAsync(Guid documentId)
-        {
-            throw new NotImplementedException();
+            var response = await httpClient.PostAsync(url, null).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Apprenticeships.");
+
+                if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
+                {
+                    return await RefreshApprenticeshipsAsync(retryCount++).ConfigureAwait(false);
+                }
+
+                response.EnsureSuccessStatusCode();
+            }
+
+            return response.StatusCode;
         }
 
         public async Task<HttpStatusCode> RefreshCoursesAsync(int retryCount = 0)
@@ -48,7 +58,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                //logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST type {typeof(T)}, Id: {postModel.JobProfileId}.");
+                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Refresh Courses.");
 
                 if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
                 {
@@ -59,7 +69,6 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             return response.StatusCode;
-
         }
 
         private void ConfigureHttpClient()
@@ -71,6 +80,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                 logService.LogInformation($"{nameof(ConfigureHttpClient)} does not contain {nameof(HeaderName.CorrelationId)}");
 
                 httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
+                httpClient.Timeout = TimeSpan.FromMinutes(5);
             }
         }
     }

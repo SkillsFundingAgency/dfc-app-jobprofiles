@@ -1,4 +1,4 @@
-﻿namespace DFC.App.JobProfile.Data.Models.Apprenticeships
+﻿namespace DFC.App.JobProfile.Data.Models.CurrentOpportunities
 {
     public class Qualification
     {

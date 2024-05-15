@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DFC.App.JobProfile.Data.Models;
+﻿using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Functions.DI.Standard;
@@ -36,6 +35,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Startup
             builder?.Services.AddScoped<IHttpClientService<JobProfileModel>, HttpClientService<JobProfileModel>>();
             builder?.Services.AddDFCLogging(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             builder?.Services.AddScoped<ICorrelationIdProvider, InMemoryCorrelationIdProvider>();
+            builder?.Services.AddScoped<IRefreshService, RefreshService>();
         }
     }
 }

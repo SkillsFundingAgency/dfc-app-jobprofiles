@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace DFC.App.JobProfile.Data.HttpClientPolicies
+namespace DFC.App.JobProfile.Data.HttpClientPolicies.Polly
 {
     [ExcludeFromCodeCoverage] //This model is only used by startup in polly setup extention methods and hence can not be used in tests.
 

@@ -31,12 +31,13 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var configuration = A.Fake<IConfiguration>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
             var fakefacclient = A.Fake<ICourseSearchApiService>();
 
             var canonicalName = "biochemist";
             var filter = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
@@ -61,12 +62,13 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var configuration = A.Fake<IConfiguration>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
             var fakefacclient = A.Fake<ICourseSearchApiService>();
 
             var canonicalName = "biochemist";
             var filter = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new RelatedCareersResponse());

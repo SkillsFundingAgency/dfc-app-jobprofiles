@@ -36,11 +36,12 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var configuration = A.Fake<IConfiguration>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeCourseSearch = A.Fake<ICourseSearchApiService>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
 
             var canonicalName = "biochemist";
             var status = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
@@ -66,11 +67,12 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var configuration = A.Fake<IConfiguration>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeCourseSearch = A.Fake<ICourseSearchApiService>();
+            var fakeAVAPIService = A.Fake<IAVAPIService>();
 
             var canonicalName = "biochemist";
             var status = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch);
+            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch, fakeAVAPIService);
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileCareerPathAndProgressionResponse());
 

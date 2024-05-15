@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DFC.App.JobProfile.Data.Contracts
+namespace DFC.App.JobProfile.AVService
 {
     public enum RequestType
     {

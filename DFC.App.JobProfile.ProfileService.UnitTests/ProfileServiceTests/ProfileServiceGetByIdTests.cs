@@ -26,6 +26,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         private readonly ISharedContentRedisInterface fakeSharedContentRedisInterface;
         private readonly IRazorTemplateEngine fakeRazorTemplateEngine;
         private readonly IConfiguration fakeConfiguration;
+        private readonly IAVAPIService fakeAVAPIService;
         private readonly ICourseSearchApiService fakeclient;
 
         public ProfileServiceGetByIdTests()
@@ -37,8 +38,10 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeConfiguration = A.Fake<IConfiguration>();
+            fakeAVAPIService = A.Fake<IAVAPIService>();
             fakeclient = A.Fake<ICourseSearchApiService>();
-            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient);
+
+            jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
         }
 
         [Fact]

@@ -1,16 +1,18 @@
 ﻿using DFC.App.JobProfile.Data.Configuration;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models.Apprenticeships;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace DFC.App.JobProfile.MessageFunctionApp.Services
+namespace DFC.App.JobProfile.AVService
 {
-    public class AVAPIService : IAVAPIService //, IHealthCheck
+    public class AVAPIService : IAVAPIService, IHealthCheck
     {
         private readonly IApprenticeshipVacancyApi apprenticeshipVacancyApi;
         private readonly ILogger<AVAPIService> logger;
@@ -43,16 +45,15 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
             logger.LogInformation($"Getting vacancies for mapping {JsonConvert.SerializeObject(mapping)}");
 
-            //Allways break after a given number off loops
             while (aVAPIServiceSettings.FAAMaxPagesToTryPerMapping > pageNumber)
             {
-                var apprenticeshipVacancySummaryResponse = await GetAVSumaryPageAsync(mapping, ++pageNumber).ConfigureAwait(false);
+                var apprenticeshipVacancySummaryResponse = await GetAVSummaryPageAsync(mapping, ++pageNumber).ConfigureAwait(false);
 
                 logger.LogInformation($"Got {apprenticeshipVacancySummaryResponse.TotalFiltered} vacancies of {apprenticeshipVacancySummaryResponse.Total} on page: {pageNumber} of {apprenticeshipVacancySummaryResponse.TotalPages}");
 
                 avSummary.AddRange(apprenticeshipVacancySummaryResponse.Vacancies);
 
-                //stop when there are no more pages or we have more then multiple supplier
+                // Stop when there are no more pages or we have more then multiple supplier
                 if (apprenticeshipVacancySummaryResponse.TotalPages < pageNumber ||
                      avSummary.Select(v => v.ProviderName).Distinct().Count() > 1)
                 {
@@ -63,7 +64,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return avSummary;
         }
 
-        public async Task<ApprenticeshipVacancySummaryResponse> GetAVSumaryPageAsync(AVMapping mapping, int pageNumber)
+        public async Task<ApprenticeshipVacancySummaryResponse> GetAVSummaryPageAsync(AVMapping mapping, int pageNumber)
         {
             if (mapping == null)
             {
@@ -76,6 +77,23 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             var responseResult = await apprenticeshipVacancyApi.GetAsync(queryString, RequestType.ListVacancies).ConfigureAwait(false);
 
             return JsonConvert.DeserializeObject<ApprenticeshipVacancySummaryResponse>(responseResult);
+        }
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+        {
+            var description = $"{typeof(AVAPIService).Namespace} - Mappings used standards[{aVAPIServiceSettings.StandardsForHealthCheck}]";
+            logger.LogInformation($"{nameof(CheckHealthAsync)} has been called - service {description}");
+
+            var apprenticeshipVacancySummaryResponse = await GetAVSummaryPageAsync(new AVMapping { Standards = aVAPIServiceSettings.StandardsForHealthCheck.Split(',') }, 1).ConfigureAwait(false);
+
+            if (apprenticeshipVacancySummaryResponse.Vacancies.Any())
+            {
+                return HealthCheckResult.Healthy(description);
+            }
+            else
+            {
+                return HealthCheckResult.Degraded(description);
+            }
         }
 
         private string GetQueryString(AVMapping mapping, int pageNumber)
@@ -97,22 +115,5 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             var queryString = string.Join("&", queryStringList);
             return queryString;
         }
-
-        //public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
-        //{
-        //    var description = $"{typeof(AVAPIService).Namespace} - Mappings used standards[{aVAPIServiceSettings.StandardsForHealthCheck}]";
-        //    logger.LogInformation($"{nameof(CheckHealthAsync)} has been called - service {description}");
-
-        //    var apprenticeshipVacancySummaryResponse = await GetAVSumaryPageAsync(new AVMapping { Standards = aVAPIServiceSettings.StandardsForHealthCheck.Split(',') }, 1).ConfigureAwait(false);
-
-        //    if (apprenticeshipVacancySummaryResponse.Vacancies.Any())
-        //    {
-        //        return HealthCheckResult.Healthy(description);
-        //    }
-        //    else
-        //    {
-        //        return HealthCheckResult.Degraded(description);
-        //    }
-        //}
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models.Apprenticeships
+namespace DFC.App.JobProfile.Data.Models.CurrentOpportunities
 {
-    public class ApprenticeshipVacancyDetails
+    public class ApprenticeshipVacancySummary
     {
         public DateTime ClosingDate { get; set; }
 
@@ -19,7 +18,7 @@ namespace DFC.App.JobProfile.Data.Models.Apprenticeships
 
         public int NumberOfPositions { get; set; }
 
-        public string PostedDate { get; set; }
+        public DateTime PostedDate { get; set; }
 
         public string ProviderName { get; set; }
 
@@ -41,8 +40,6 @@ namespace DFC.App.JobProfile.Data.Models.Apprenticeships
 
         public AddressLocation Address { get; set; }
 
-        public double? Distance { get; set; }
-
         public string EmployerContactPhone { get; set; }
 
         public string EmployerContactName { get; set; }
@@ -54,19 +51,5 @@ namespace DFC.App.JobProfile.Data.Models.Apprenticeships
         public string ApprenticeshipLevel { get; set; }
 
         public string ExpectedDuration { get; set; }
-
-        public string TrainingDescription { get; set; }
-
-        public string FullDescription { get; set; }
-
-        public string OutcomeDescription { get; set; }
-
-        public string EmployerDescription { get; set; }
-
-        public List<string> Skills { get; set; }
-
-        public List<Qualification> Qualifications { get; set; }
-
-        public string ThingsToConsider { get; set; }
     }
 }

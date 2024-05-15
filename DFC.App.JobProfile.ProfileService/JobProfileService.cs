@@ -396,7 +396,7 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<SegmentModel> GetCareerPathSegmentAsync(string canonicalName, string status)
         {
-            SegmentModel careerPath = new SegmentModel();
+            SegmentModel careerPath = new();
 
             try
             {
@@ -501,7 +501,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <summary>
         /// Refresh all courses redis.
         /// </summary>
-        /// <param name="filter">PUBLISHED</param>
+        /// <param name="filter">PUBLISHED.</param>
         /// <returns>boolean.</returns>
         /// <exception cref="ArgumentNullException">throw exception when jobprofile data is null.</exception>
         public async Task<bool> RefreshCourses(string filter)
@@ -539,7 +539,7 @@ namespace DFC.App.JobProfile.ProfileService
             bool returndata = true;
 
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
-            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities.Count() > 0)
+            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities.Count > 0)
             {
                 foreach (var each in jobProfile.JobProfileCurrentOpportunities)
                 {

@@ -1,6 +1,8 @@
 ﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;

@@ -9,9 +9,12 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Net.Mime;
 
 [assembly: WebJobsStartup(typeof(DFC.App.JobProfile.MessageFunctionApp.Startup.WebJobsExtensionStartup), "Web Jobs Extension Startup")]
 

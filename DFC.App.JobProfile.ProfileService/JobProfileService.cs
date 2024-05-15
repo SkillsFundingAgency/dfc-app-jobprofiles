@@ -509,12 +509,12 @@ namespace DFC.App.JobProfile.ProfileService
             bool returndata = true;
 
             //Get job profile cousekeyword and lars code
-            var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
-            if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities != null)
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
-                if (jobprfile.JobProfileCurrentOpportunities.Count() > 0)
+                if (jobProfile.JobProfileCurrentOpportunities.Count() > 0)
                 {
-                    foreach (var each in jobprfile.JobProfileCurrentOpportunities)
+                    foreach (var each in jobProfile.JobProfileCurrentOpportunities)
                     {
                         string canonicalName = each.PageLocation.UrlName;
                         string courseKeywords = each.Coursekeywords;

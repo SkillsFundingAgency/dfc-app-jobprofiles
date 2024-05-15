@@ -17,8 +17,8 @@ using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 {
-    [Trait("Profile Service", "Refresh Courses Tests")]
-    public class ProfileServiceRefreshCoursesTests
+    [Trait("Profile Service", "Refresh Apprenticeship Tests")]
+    public class ProfileServiceRefreshApprenticeshipTests
     {
         [Fact]
         public async Task JobProfileServiceRefreshCoursesReturnsSuccessAsync()
@@ -40,7 +40,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             // act
-            var response = await jobProfileService.RefreshCourses(status);
+            var response = await jobProfileService.RefreshApprenticeshipsAsync(status);
 
             // assert
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
@@ -65,7 +65,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshCourses(null).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshApprenticeshipsAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
             exceptionResult.Should().BeOfType(typeof(ArgumentNullException));

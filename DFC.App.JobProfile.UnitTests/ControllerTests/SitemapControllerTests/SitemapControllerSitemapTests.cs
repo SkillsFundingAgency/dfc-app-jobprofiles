@@ -11,7 +11,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.SitemapControllerTests
     [Trait("Category", "Sitemap Controller Unit Tests")]
     public class SitemapControllerSitemapTests : BaseSitemapController
     {
-        /*[Fact]
+        [Fact]
         public async Task SitemapControllerSitemapReturnsSuccess()
         {
             // Arrange
@@ -39,9 +39,9 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.SitemapControllerTests
             contentResult.ContentType.Should().Be(MediaTypeNames.Application.Xml);
 
             controller.Dispose();
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public async Task SitemapControllerSitemapReturnsSuccessWhenNoData()
         {
             // Arrange
@@ -62,6 +62,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.SitemapControllerTests
             contentResult.ContentType.Should().Be(MediaTypeNames.Application.Xml);
 
             controller.Dispose();
-        }*/
+        }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using FakeItEasy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using System.Linq;
 
 namespace DFC.App.JobProfile.IntegrationTests
 {
@@ -13,10 +15,10 @@ namespace DFC.App.JobProfile.IntegrationTests
     {
         public CustomWebApplicationFactory()
         {
-            this.MockSharedContentRedis = new Mock<ISharedContentRedisInterface>();
+            this.FakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
         }
 
-        public Mock<ISharedContentRedisInterface> MockSharedContentRedis { get; set; }
+        internal ISharedContentRedisInterface FakeSharedContentRedisInterface { get; }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -31,7 +33,16 @@ namespace DFC.App.JobProfile.IntegrationTests
 
             builder.ConfigureTestServices(services =>
             {
-                services.AddScoped(_ => MockSharedContentRedis.Object);
+                var hostedServices = services.Where(descriptor =>
+                    descriptor.ServiceType == typeof(ISharedContentRedisInterface))
+                .ToList();
+
+                foreach (var service in hostedServices)
+                {
+                    services.Remove(service);
+                }
+
+                services.AddTransient(sp => FakeSharedContentRedisInterface);
             });
         }
     }

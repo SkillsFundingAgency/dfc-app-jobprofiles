@@ -18,6 +18,7 @@ using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JobProfSkills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
@@ -176,6 +177,10 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                  //find thumbnail text and replace this below - temp solution
                  .ForMember(d => d.Text, s => s.MapFrom(a => a.MediaText.FirstOrDefault() ?? string.Empty))
                  .ForMember(d => d.Url, s => s.MapFrom(a => a.Urls.FirstOrDefault() ?? string.Empty));
+
+            CreateMap<JobProfileCurrentOpportunities, JobProfileModel>()
+                .ForMember(d => d.CanonicalName, opt => opt.MapFrom(s => s.DisplayText))
+                .ForMember(d => d.IncludeInSitemap, opt => opt.MapFrom(s => true));
         }
 
         public SocialProofVideoType MapType(string type)

@@ -893,14 +893,21 @@ namespace DFC.App.JobProfile.ProfileService
                 var mappedAVResponse = mapper.Map<IEnumerable<Vacancy>>(avResponse);
                 var vacancies = mappedAVResponse.Take(2).ToList();
 
-                var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);
-                if (!save)
+                if (vacancies.Count() > 0)
                 {
-                    throw new InvalidOperationException("Redis save process failed.");
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);
+                    if (!save)
+                    {
+                        throw new InvalidOperationException("Redis save process failed.");
+                    }
+                    else
+                    {
+                        logService.LogInformation($"Redis saved: Apprenticeship cache key: {cacheKey}.");
+                    }
                 }
                 else
                 {
-                    logService.LogInformation($"Redis saved: Apprenticeship cache key: {cacheKey}.");
+                    logService.LogInformation($"Redis not saved: Apprenticeship cache key: {cacheKey}.  No vacancies found.");
                 }
             }
             catch (Exception exception)

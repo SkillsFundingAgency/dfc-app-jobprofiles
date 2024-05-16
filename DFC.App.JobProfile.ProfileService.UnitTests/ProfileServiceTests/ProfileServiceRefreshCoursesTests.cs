@@ -27,7 +27,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async Task JobProfileServiceRefreshCoursesReturnsSuccessAsync()
         {
             // arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var mapper = A.Fake<IMapper>();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -38,7 +37,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var expectedResult = GetExpectedData();
             var status = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
@@ -55,7 +54,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async Task JobProfileServiceRefreshCoursesReturnsArgumentNullExceptionWhenNullParamIsUsedAsync()
         {
             // arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
             var expectedResult = true;
             var mapper = A.Fake<IMapper>();
             var logService = A.Fake<ILogService>();
@@ -65,7 +63,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             // act
             var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshCourses(null).ConfigureAwait(false)).ConfigureAwait(false);

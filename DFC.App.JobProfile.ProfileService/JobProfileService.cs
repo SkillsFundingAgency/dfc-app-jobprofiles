@@ -260,23 +260,31 @@ namespace DFC.App.JobProfile.ProfileService
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
-            if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.Any())
+            if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl != null &&
+                jobProfile.JobProfileCurrentOpportunitiesGetByUrl.Any())
             {
-                string coursekeywords = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords;
                 string jobTitle = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].DisplayText;
-                var results = await GetCourses(coursekeywords, canonicalName);
-                var courseSearchResults = results.Courses?.ToList();
-
+                currentOpportunitiesSegmentModel.Data.TitlePrefix = AddPrefix(jobTitle);
+                currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = string.Empty;
                 var opportunities = new List<Opportunity>();
-                if (courseSearchResults != null)
+                if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords))
                 {
-                    opportunities = MapCourses(courseSearchResults, opportunities);
+                    string coursekeywords = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords;
+                    var results = await GetCourses(coursekeywords, canonicalName);
+                    var courseSearchResults = results.Courses?.ToList();
+
+                    if (courseSearchResults != null)
+                    {
+                        opportunities = MapCourses(courseSearchResults, opportunities);
+                    }
+
+                    currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = coursekeywords;
                 }
 
-                currentOpportunitiesSegmentModel.Data.TitlePrefix = AddPrefix(jobTitle);
-                currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = coursekeywords;
                 currentOpportunitiesSegmentModel.Data.Courses.Opportunities = opportunities;
+
                 currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
+                currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = new List<Vacancy>();
 
                 //get apprenticeship by lars code.
                 if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems.Length > 0 &&

@@ -29,28 +29,23 @@ namespace DFC.App.JobProfile.Controllers
         private readonly AutoMapper.IMapper mapper;
         private readonly ConfigValues configValues;
         private readonly FeedbackLinks feedbackLinks;
-        private readonly ISegmentService segmentService;
         private readonly IRedirectionSecurityService redirectionSecurityService;
-        private readonly Guid sharedContentItemGuid;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private string status;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService, CmsApiClientOptions cmsApiClientOptions, ISharedContentRedisInterface sharedContentRedisInterface, IConfiguration configuration)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, IRedirectionSecurityService redirectionSecurityService, ISharedContentRedisInterface sharedContentRedisInterface, IConfiguration configuration)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
             this.configValues = configValues;
             this.feedbackLinks = feedbackLinks;
-            this.segmentService = segmentService;
             this.redirectionSecurityService = redirectionSecurityService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
-            sharedContentItemGuid = new Guid(cmsApiClientOptions?.ContentIds ?? throw new ArgumentNullException(nameof(cmsApiClientOptions), "ContentIds cannot be null"));
             status = configuration.GetSection("contentMode:contentMode").Get<string>();
         }
 
-        //TODO: Update to retrieve all job profiles from STAX
-        /*[HttpGet]
+        [HttpGet]
         [Route("profile/index")]
         public async Task<IActionResult> Index()
         {
@@ -58,7 +53,7 @@ namespace DFC.App.JobProfile.Controllers
             logService.LogInformation($"{nameof(Index)} has been called");
 
             var viewModel = new IndexViewModel();
-            //var jobProfileModels = await jobProfileService.GetAllAsync().ConfigureAwait(false);
+            var jobProfileModels = await jobProfileService.GetAllAsync().ConfigureAwait(false);
 
             if (jobProfileModels is null)
             {
@@ -73,7 +68,7 @@ namespace DFC.App.JobProfile.Controllers
             }
 
             return this.NegotiateContentResult(viewModel);
-        }*/
+        }
 
         [HttpGet]
         [Route("profile/{article}")]
@@ -179,16 +174,6 @@ namespace DFC.App.JobProfile.Controllers
                 return ValidateJobProfile(viewModel, jobProfileModel);
             }
 
-            //TODO: Fix when we know if GetByAlternativeNameAsync() is still required
-            /*var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
-            if (alternateJobProfileModel != null)
-            {
-                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
-
-                return RedirectPermanentPreserveMethod(alternateUrl);
-            }*/
-
             logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
             return NotFound();
         }
@@ -238,7 +223,7 @@ namespace DFC.App.JobProfile.Controllers
 
             if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
             {
-                throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
+                throw new InvalidProfileException($"JobProfile {jobProfileModel.CanonicalName} is missing critical segment information");
             }
 
             return ValidateMarkup(bodyViewModel, jobProfileModel);
@@ -262,16 +247,16 @@ namespace DFC.App.JobProfile.Controllers
                         case JobProfileSegment.Overview:
                         case JobProfileSegment.HowToBecome:
                         case JobProfileSegment.WhatItTakes:
-                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}");
+                                throw new InvalidProfileException($"JobProfile {jobProfileModel.CanonicalName} is missing markup for segment {segmentModel.Segment.ToString()}");
 
-                        case JobProfileSegment.RelatedCareers:
+/*                        case JobProfileSegment.RelatedCareers:
                         case JobProfileSegment.CurrentOpportunities:
                         case JobProfileSegment.WhatYouWillDo:
                         case JobProfileSegment.CareerPathsAndProgression:
                             {
                                 segmentModel.Markup = segmentService.GetOfflineSegment(segmentModel.Segment).OfflineMarkup;
                                 break;
-                            }
+                            }*/
                     }
                 }
             }

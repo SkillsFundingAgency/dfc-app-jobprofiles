@@ -24,7 +24,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             FakeJobProfileService = A.Fake<IJobProfileService>();
             FakeMapper = A.Fake<IMapper>();
             DummyConfigValues = A.Dummy<ConfigValues>();
-            FakeSegmentService = A.Fake<ISegmentService>();
             FakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
             FakeConfiguration = A.Fake<IConfiguration>();
             FakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -54,8 +53,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
         protected ConfigValues DummyConfigValues { get; }
 
-        protected ISegmentService FakeSegmentService { get; }
-
         protected IRedirectionSecurityService FakeRedirectionSecurityService { get; }
 
         protected IConfiguration FakeConfiguration { get; }
@@ -65,9 +62,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
         protected ProfileController BuildProfileController(
             string mediaTypeName = MediaTypeNames.Application.Json,
             IMapper mapper = null,
-            string host = "localhost",
-            string[] whitelist = null,
-            string sharedContentItemId = "2c9da1b3-3529-4834-afc9-9cd741e59788")
+            string host = "localhost")
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[HeaderNames.Accept] = mediaTypeName;
@@ -75,12 +70,8 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             httpContext.Request.Host = new HostString(host);
 
             var feedbackLinks = A.Fake<FeedbackLinks>();
-            var cmsApiClientOptions = new CmsApiClientOptions
-            {
-                ContentIds = sharedContentItemId,
-            };
 
-            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeSegmentService, FakeRedirectionSecurityService, cmsApiClientOptions, FakeSharedContentRedisInterface, FakeConfiguration)
+            var controller = new ProfileController(FakeLogger, FakeJobProfileService, mapper ?? FakeMapper, DummyConfigValues, feedbackLinks, FakeRedirectionSecurityService, FakeSharedContentRedisInterface, FakeConfiguration)
             {
                 ControllerContext = new ControllerContext()
                 {

@@ -73,7 +73,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
-            response.Should().BeOfType(typeof(SocialProofVideo));
+            response.Should().BeNull();
         }
 
         private static JobProfileVideoResponse GetExpectedData()

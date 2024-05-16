@@ -481,26 +481,22 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
         {
-            SocialProofVideo mappedVideo = new SocialProofVideo();
-
             try
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
 
-                if (response != null)
+                if (response != null && response.JobProfileVideo != null && response.JobProfileVideo.Count > 0 && response.JobProfileVideo.FirstOrDefault().VideoType != null)
                 {
-                    if (response.JobProfileVideo != null && response.JobProfileVideo.Count > 0 && response.JobProfileVideo.FirstOrDefault().VideoType != null)
-                    {
-                        mappedVideo = mapper.Map<SocialProofVideo>(response);
-                    }
+                    return mapper.Map<SocialProofVideo>(response);
                 }
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
+                throw;
             }
 
-            return mappedVideo;
+            return null;
         }
 
         private static string AddPrefix(string jobTitle)

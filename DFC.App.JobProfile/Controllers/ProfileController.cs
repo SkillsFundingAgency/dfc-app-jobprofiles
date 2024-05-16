@@ -178,6 +178,43 @@ namespace DFC.App.JobProfile.Controllers
             return NotFound();
         }
 
+<<<<<<< AD-175693
+=======
+        [HttpGet]
+        [Route("profile/{documentId}/profile")]
+        public async Task<IActionResult> Profile(Guid documentId)
+        {
+            logService.LogInformation($"{nameof(Profile)} has been called");
+
+            var viewModel = new BodyViewModel();
+            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
+
+            if (jobProfileModel != null)
+            {
+                mapper.Map(jobProfileModel, viewModel);
+
+                logService.LogInformation($"{nameof(Profile)} has returned a profile for: {documentId}");
+
+                return this.NegotiateContentResult(viewModel, jobProfileModel);
+            }
+
+            logService.LogWarning($"{nameof(Profile)} has not returned a profile for: {documentId}");
+
+            return NoContent();
+        }
+
+        [HttpPost]
+        [Route("refreshCourses")]
+        public async Task<IActionResult> RefreshCourses()
+        {
+            logService.LogInformation($"{nameof(RefreshCourses)} has been called");
+
+            var response = await jobProfileService.RefreshCourses("PUBLISHED").ConfigureAwait(false);
+            logService.LogInformation($"{nameof(RefreshCourses)} has upserted content for: " + response.ToString());
+            return NoContent();
+        }
+
+>>>>>>> SS-Phase-1
         #region Static helper methods
 
         private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)

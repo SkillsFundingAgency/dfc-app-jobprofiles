@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using NHibernate.Cache;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
@@ -263,23 +264,31 @@ namespace DFC.App.JobProfile.ProfileService
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
-            if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.Any())
+            if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl != null &&
+                jobProfile.JobProfileCurrentOpportunitiesGetByUrl.Any())
             {
-                string coursekeywords = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords;
                 string jobTitle = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].DisplayText;
-                var results = await GetCourses(coursekeywords, canonicalName);
-                var courseSearchResults = results.Courses?.ToList();
-
+                currentOpportunitiesSegmentModel.Data.TitlePrefix = AddPrefix(jobTitle);
+                currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = string.Empty;
                 var opportunities = new List<Opportunity>();
-                if (courseSearchResults != null)
+                if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords))
                 {
-                    opportunities = MapCourses(courseSearchResults, opportunities);
+                    string coursekeywords = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords;
+                    var results = await GetCourses(coursekeywords, canonicalName);
+                    var courseSearchResults = results.Courses?.ToList();
+
+                    if (courseSearchResults != null)
+                    {
+                        opportunities = MapCourses(courseSearchResults, opportunities);
+                    }
+
+                    currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = coursekeywords;
                 }
 
-                currentOpportunitiesSegmentModel.Data.TitlePrefix = AddPrefix(jobTitle);
-                currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = coursekeywords;
                 currentOpportunitiesSegmentModel.Data.Courses.Opportunities = opportunities;
+
                 currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
+                currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = new List<Vacancy>();
 
                 //get apprenticeship by lars code.
                 if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems.Length > 0 && jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
@@ -522,6 +531,42 @@ namespace DFC.App.JobProfile.ProfileService
             return skills;
         }
 
+        /// <summary>
+        /// Refresh all courses redis.
+        /// </summary>
+        /// <param name="filter">PUBLISHED</param>
+        /// <returns>boolean.</returns>
+        /// <exception cref="ArgumentNullException">throw exception when jobprofile data is null.</exception>
+        public async Task<bool> RefreshCourses(string filter)
+        {
+            bool returndata = true;
+
+            //Get job profile cousekeyword and lars code
+            var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+            if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities != null)
+            {
+                if (jobprfile.JobProfileCurrentOpportunities.Count() > 0)
+                {
+                    foreach (var each in jobprfile.JobProfileCurrentOpportunities)
+                    {
+                        string canonicalName = each.PageLocation.UrlName;
+                        string courseKeywords = each.Coursekeywords;
+                        if (!string.IsNullOrEmpty(courseKeywords))
+                        {
+                            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + ConvertCourseKeywordsString(courseKeywords);
+                            var refreshdata = await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(RefreshCourses));
+            }
+
+            return returndata;
+        }
+
         public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
         {
             try
@@ -611,15 +656,7 @@ namespace DFC.App.JobProfile.ProfileService
                 redisData = new CoursesReponse();
                 try
                 {
-                    var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
-
-                    redisData.Courses = result.ToList();
-
-                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisData, cacheKey, 48);
-                    if (!save)
-                    {
-                        throw new InvalidOperationException("Redis save process failed.");
-                    }
+                    redisData = await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
                 }
                 catch (Exception ex)
                 {
@@ -698,6 +735,39 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return redisData;
+        }
+
+        /// <summary>
+        /// Get courses from API and save to Redis.
+        /// </summary>
+        /// <param name="courseKeywords">course search key words.</param>
+        /// <param name="cachekey">Redis cache key.</param>
+        /// <returns>courses list.</returns>
+        private async Task<CoursesReponse> GetCoursesAndCachedRedis(string courseKeywords, string cachekey)
+        {
+            var redisdata = new CoursesReponse();
+            try
+            {
+                var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
+
+                redisdata.Courses = result.ToList();
+
+                var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesReponse>(redisdata, cachekey, 48);
+                if (!save)
+                {
+                    logService.LogError("Redis failed: Course Keywords-" + courseKeywords + " Cache Key-" + cachekey);
+                }
+                else
+                {
+                    logService.LogInformation("Redis saved: Course Keywords-" + courseKeywords + " Cache Key-" + cachekey);
+                }
+            }
+            catch (Exception ex)
+            {
+                logService.LogError(ex.ToString());
+            }
+
+            return redisdata;
         }
     }
 }

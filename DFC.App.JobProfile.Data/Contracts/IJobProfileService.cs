@@ -24,6 +24,12 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter);
 
+<<<<<<< AD-175693
         Task<SegmentModel> GetTasksSegmentAsync(string canonicalName, string filter);
+=======
+        Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter);
+
+        Task<bool> RefreshCourses(string filter);
+>>>>>>> SS-Phase-1
     }
 }

@@ -1,10 +1,13 @@
 ﻿using DFC.App.JobProfile.Data.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {
     public interface IJobProfileService
     {
+        Task<IEnumerable<JobProfileModel>> GetAllAsync();
+
         Task<JobProfileModel> GetByNameAsync(string canonicalName);
 
         Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName, string filter);

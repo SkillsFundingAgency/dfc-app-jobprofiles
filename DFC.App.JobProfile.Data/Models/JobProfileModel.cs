@@ -6,26 +6,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFC.App.JobProfile.Data.Models
 {
-    public class JobProfileModel : BaseJobProfile, IDataModel
+    public class JobProfileModel : BaseJobProfile
     {
-        [Required]
-        [JsonProperty(PropertyName = "id")]
-        public Guid DocumentId
-        {
-            get => JobProfileId;
-            set => JobProfileId = value;
-        }
 
         [Required]
         public string SocLevelTwo { get; set; }
 
-        public string PartitionKey => SocLevelTwo.ToString();
-
         [Required]
         public DateTime? LastReviewed { get; set; }
-
-        [JsonProperty(PropertyName = "_etag")]
-        public string Etag { get; set; }
 
         public string BreadcrumbTitle { get; set; }
 

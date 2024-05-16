@@ -12,9 +12,6 @@ namespace DFC.App.JobProfile.ViewModels
 
         public BodyViewModel Body { get; set; }
 
-        [Display(Name = "Document Id")]
-        public Guid? DocumentId { get; set; }
-
         [Display(Name = "Canonical Name")]
         public string CanonicalName { get; set; }
 

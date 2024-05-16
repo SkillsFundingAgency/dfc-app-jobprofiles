@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,7 +20,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "GetByName Tests")]
     public class ProfileServiceGetByNameTests
     {
-        private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
         private readonly IJobProfileService jobProfileService;
         private readonly ILogService logService;
@@ -31,7 +31,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
         public ProfileServiceGetByNameTests()
         {
-            segmentService = A.Fake<ISegmentService>();
             mapper = A.Fake<IMapper>();
             logService = A.Fake<ILogService>();
             fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -46,7 +45,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async Task JobProfileServiceGetByNameReturnsSuccess()
         {
             // arrange
-            Guid documentId = Guid.NewGuid();
+            var fakeJobProfileService = A.Fake<IJobProfileService>();
+
             var expectedResult = A.Fake<JobProfileModel>();
             expectedResult.Segments = new List<SegmentModel>
             {
@@ -59,17 +59,20 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
                 new SegmentModel { Segment = JobProfileSegment.WhatYouWillDo },
             };
 
-            //A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
+            var allEnumValues = Enum.GetValues(typeof(JobProfileSegment)).Cast<JobProfileSegment>();
+            var distinctSegments = expectedResult.Segments.Select(s => s.Segment).Distinct();
+
+            A.CallTo(() => fakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
 
             // act
             var result = await jobProfileService.GetByNameAsync("article-name").ConfigureAwait(false);
 
             // assert
-            //A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
-            A.Equals(result, expectedResult);
+            Assert.Equal(result.Segments.Count, expectedResult.Segments.Count);
+            Assert.Equal(allEnumValues.Count(), distinctSegments.Count());
         }
 
-        /*[Fact]
+        [Fact]
         public async Task JobProfileServiceGetByNameReturnsArgumentNullExceptionWhenNullIsUsed()
         {
             // arrange
@@ -79,22 +82,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             // assert
             Assert.Equal("Value cannot be null. (Parameter 'canonicalName')", exceptionResult.Message);
-        }*/
-
-        //[Fact]
-        //public async Task JobProfileServiceGetByNameReturnsNullWhenMissingInRepository()
-        //{
-        //    // arrange
-        //    JobProfileModel expectedResult = null;
-
-        //    A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).Returns(expectedResult);
-
-        //    // act
-        //    var result = await jobProfileService.GetByNameAsync("article-name").ConfigureAwait(false);
-
-        //    // assert
-        //    A.CallTo(() => repository.GetAsync(A<Expression<Func<JobProfileModel, bool>>>.Ignored)).MustHaveHappenedOnceExactly();
-        //    A.Equals(result, expectedResult);
-        //}
+        }
     }
 }

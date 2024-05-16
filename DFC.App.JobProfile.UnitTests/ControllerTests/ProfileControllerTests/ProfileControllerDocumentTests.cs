@@ -123,11 +123,10 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             const string headDescription = "HeadDescription";
             const string headTitle = "HeadTitle";
             const string headKeywords = "some keywords";
-            var jobProfileId = Guid.NewGuid();
 
             var controller = BuildControllerWithMapper();
-            var jobProfileModel = CreateJobProfileModel(headTitle, headDescription, headKeywords, jobProfileId);
-            var expectedViewModel = CreateDocumentViewModel(headTitle, headDescription, headKeywords, jobProfileId);
+            var jobProfileModel = CreateJobProfileModel(headTitle, headDescription, headKeywords);
+            var expectedViewModel = CreateDocumentViewModel(headTitle, headDescription, headKeywords);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(jobProfileModel);
 
@@ -144,7 +143,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             controller.Dispose();
         }
 
-        private static JobProfileModel CreateJobProfileModel(string headTitle, string headDescription, string headKeywords, Guid jobProfileId)
+        private static JobProfileModel CreateJobProfileModel(string headTitle, string headDescription, string headKeywords)
         {
             return new JobProfileModel
             {
@@ -154,7 +153,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                     Description = headDescription,
                     Keywords = headKeywords,
                 },
-                DocumentId = jobProfileId,
                 Segments = new List<SegmentModel>
                 {
                     new SegmentModel
@@ -173,11 +171,10 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             };
         }
 
-        private static DocumentViewModel CreateDocumentViewModel(string headTitle, string headDescription, string headKeywords, Guid jobProfileId)
+        private static DocumentViewModel CreateDocumentViewModel(string headTitle, string headDescription, string headKeywords)
         {
             return new DocumentViewModel
             {
-                DocumentId = jobProfileId,
                 Head = new HeadViewModel
                 {
                     Title = $"{headTitle} | Explore careers | National Careers Service",

@@ -60,10 +60,19 @@ namespace DFC.App.JobProfile.ProfileService
             status = configuration.GetSection("contentMode:contentMode").Get<string>() ?? "PUBLISHED";
         }
 
-        //TODO: Implement code to return all job profiles
         public async Task<IEnumerable<JobProfileModel>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, status);
+
+                return mapper.Map<IEnumerable<JobProfileModel>>(response.JobProfileCurrentOpportunities);
+            }
+            catch (Exception ex)
+            {
+                logService.LogError(ex.ToString());
+                throw;
+            }
         }
 
         public async Task<JobProfileModel> GetByNameAsync(string canonicalName)
@@ -123,7 +132,11 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName, string status)
         {
-            var relatedCareers = new SegmentModel();
+            SegmentModel relatedCareers = new ()
+            {
+                Segment = JobProfileSegment.RelatedCareers,
+                Markup = new HtmlString("<H2>Related careers - Unavailable</H2>"),
+            };
             try
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, status);
@@ -162,7 +175,11 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>HowToBecome segment model.</returns>
         public async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName, string filter)
         {
-            var howToBecome = new SegmentModel();
+            SegmentModel howToBecome = new ()
+            {
+                Segment = JobProfileSegment.HowToBecome,
+                Markup = new HtmlString("<H2>How to become - Unavailable</H2>"),
+            };
 
             try
             {
@@ -232,7 +249,11 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>Current Opportunities Segment model.</returns>
         public async Task<SegmentModel> GetCurrentOpportunities(string canonicalName)
         {
-            var currentOpportunities = new SegmentModel() { Segment = JobProfileSegment.CurrentOpportunities };
+            SegmentModel currentOpportunities = new ()
+            {
+                Segment = JobProfileSegment.CurrentOpportunities,
+                Markup = new HtmlString("<H2>Current opportunities - Unavailable</H2>"),
+            };
             var currentOpportunitiesSegmentModel = new CurrentOpportunitiesSegmentModel();
             currentOpportunitiesSegmentModel.Data = new CurrentOpportunitiesSegmentDataModel();
             currentOpportunitiesSegmentModel.Data.Courses = new Courses();
@@ -294,12 +315,16 @@ namespace DFC.App.JobProfile.ProfileService
         /// <summary>
         /// Get Overview Segment data from NuGet packages.
         /// </summary>
-        /// <param name="canonicalName">Jobprofile url.</param>
+        /// <param name="canonicalName">Job profile name.</param>
         /// <param name="filter">PUBLISHED or DRAFT.</param>
         /// <returns>Overview Segment model.</returns>
         public async Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter)
         {
-            SegmentModel overview = new SegmentModel();
+            SegmentModel overview = new ()
+            {
+                Segment = JobProfileSegment.Overview,
+                Markup = new HtmlString("<H2>Overview banner - Unavailable</H2>"),
+            };
 
             try
             {
@@ -339,9 +364,19 @@ namespace DFC.App.JobProfile.ProfileService
             return overview;
         }
 
+        /// <summary>
+        /// Get What Youll Do from STAX via GraphQl for a job profile.
+        /// </summary>
+        /// <param name="canonicalName">Job profile URL.</param>
+        /// <param name="filter">PUBLISHED or DRAFT.</param>
+        /// <returns>WhatYoullDo segment model.</returns>
         public async Task<SegmentModel> GetTasksSegmentAsync(string canonicalName, string filter)
         {
-            var tasks = new SegmentModel();
+            SegmentModel tasks = new ()
+            {
+                Segment = JobProfileSegment.WhatYouWillDo,
+                Markup = new HtmlString("<H2>What you will do - Unavailable</H2>"),
+            };
 
             try
             {
@@ -377,7 +412,11 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<SegmentModel> GetCareerPathSegmentAsync(string canonicalName, string status)
         {
-            SegmentModel careerPath = new SegmentModel();
+            SegmentModel careerPath = new ()
+            {
+                Segment = JobProfileSegment.CareerPathsAndProgression,
+                Markup = new HtmlString("<H2>Career path - Unavailable</H2>"),
+            };
 
             try
             {
@@ -417,7 +456,11 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>Returns segment information containing HTML markup data to render the "What it Takes" segment.</returns>
         public async Task<SegmentModel> GetSkillSegmentAsync(string canonicalName, string status)
         {
-            SegmentModel skills = new SegmentModel();
+            SegmentModel skills = new ()
+            {
+                Segment = JobProfileSegment.WhatItTakes,
+                Markup = new HtmlString("<H2>What it takes - Unavailable</H2>"),
+            };
 
             try
             {

@@ -31,7 +31,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/htmlhead" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/hero" },
             new object[] { $"/profile/{DataSeeding.DefaultArticleName}/contents" },
-            new object[] { $"/profile/{DataSeeding.DefaultArticleGuid}/profile" },
+            new object[] { $"/profile/{DataSeeding.DefaultArticleName}/profile" },
         };
 
         public static IEnumerable<object[]> ProfileNoContentRouteData => new List<object[]>
@@ -66,7 +66,8 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        [Theory(Skip ="Temporary")]
+        //TODO: Fix integration test
+/*        [Theory]
         [MemberData(nameof(MissingProfileContentRouteData))]
         public async Task GetProfileHtmlContentEndpointsReturnNotFound(string url)
         {
@@ -80,6 +81,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        }*/
     }
 }

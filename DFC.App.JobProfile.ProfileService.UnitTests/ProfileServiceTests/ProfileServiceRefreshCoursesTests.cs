@@ -47,7 +47,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             // assert
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
-            Assert.NotNull(response);
+            Assert.IsType<bool>(response);
             response.Equals(true);
         }
 
@@ -56,7 +56,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var expectedResult = true;
             var mapper = A.Fake<IMapper>();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -79,7 +78,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var expectedResult = new JobProfileCurrentOpportunitiesResponse();
             var list = new List<JobProfileCurrentOpportunities>
             {
-                new JobProfileCurrentOpportunities {
+                new JobProfileCurrentOpportunities
+                {
                     DisplayText = "Auditor",
                     Coursekeywords = "'building services engineering'",
                     PageLocation = new Common.SharedContent.Pkg.Netcore.Model.Common.PageLocation()
@@ -94,7 +94,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
                             {
                                 ApprenticeshipStandards = new ApprenticeshipStandards()
                                 {
-                                    ContentItems= new ApprenticeshipStandardsContentItem[]
+                                    ContentItems = new ApprenticeshipStandardsContentItem[]
                                     {
                                         new ApprenticeshipStandardsContentItem()
                                         {

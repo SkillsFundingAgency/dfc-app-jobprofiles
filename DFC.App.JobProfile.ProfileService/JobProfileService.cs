@@ -513,23 +513,24 @@ namespace DFC.App.JobProfile.ProfileService
             var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
             if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities != null)
             {
-                if (jobprfile.JobProfileCurrentOpportunities.Count() > 0)
+                if (jobprfile.JobProfileCurrentOpportunities.Any())
                 {
                     foreach (var each in jobprfile.JobProfileCurrentOpportunities)
                     {
                         string canonicalName = each.PageLocation.UrlName;
+
                         string courseKeywords = each.Coursekeywords;
                         if (!string.IsNullOrEmpty(courseKeywords))
                         {
                             string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + ConvertCourseKeywordsString(courseKeywords);
-                            var refreshdata = await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
+                            await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
                         }
                     }
                 }
             }
             else
             {
-                throw new ArgumentNullException(nameof(RefreshCourses));
+                logService.LogError("Refresh Courses error: Job profiles is null.");
             }
 
             return returndata;

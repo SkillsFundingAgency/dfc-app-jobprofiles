@@ -10,5 +10,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
     public interface IRefreshService
     {
         Task<HttpStatusCode> RefreshCoursesAsync(int retryCount = 0);
+
+        Task<HttpStatusCode> RefreshAllSegmentsAsync(int retryCount = 0);
     }
 }

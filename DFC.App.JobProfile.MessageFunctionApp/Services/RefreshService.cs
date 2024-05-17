@@ -34,6 +34,28 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             this.correlationIdProvider = correlationIdProvider;
         }
 
+        public async Task<HttpStatusCode> RefreshAllSegmentsAsync(int retryCount = 0)
+        {
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}refreshAllSegments");
+            ConfigureHttpClient();
+
+            var response = await httpClient.PostAsync(url, null).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Refresh Courses.");
+
+                if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
+                {
+                    return await RefreshAllSegmentsAsync(retryCount++).ConfigureAwait(false);
+                }
+
+                response.EnsureSuccessStatusCode();
+            }
+
+            return response.StatusCode;
+        }
+
         public async Task<HttpStatusCode> RefreshCoursesAsync(int retryCount = 0)
         {
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}refreshCourses");
@@ -66,7 +88,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
                 logService.LogInformation($"{nameof(ConfigureHttpClient)} does not contain {nameof(HeaderName.CorrelationId)}");
 
                 httpClient.DefaultRequestHeaders.Add(HeaderName.CorrelationId, correlationIdProvider.CorrelationId);
-                httpClient.Timeout = TimeSpan.FromMinutes(5);
+                httpClient.Timeout = TimeSpan.FromMinutes(30);
             }
         }
     }

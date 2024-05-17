@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Data.Models.CurrentOpportunities
 {
-    public class CoursesReponse
+    public class CoursesResponse
     {
         public List<Course> Courses { get; set; }
     }

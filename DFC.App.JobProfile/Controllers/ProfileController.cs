@@ -184,8 +184,13 @@ namespace DFC.App.JobProfile.Controllers
         {
             logService.LogInformation($"{nameof(RefreshCourses)} has been called");
 
-            var response = await jobProfileService.RefreshCourses("PUBLISHED").ConfigureAwait(false);
-            logService.LogInformation($"{nameof(RefreshCourses)} has upserted content for: " + response.ToString());
+            var response = await jobProfileService.RefreshCourses();
+            if (!response)
+            {
+                logService.LogError($"{nameof(RefreshCourses)} has failed");
+            }
+
+            logService.LogInformation($"{nameof(RefreshCourses)} has completed");
             return NoContent();
         }
 
@@ -258,16 +263,7 @@ namespace DFC.App.JobProfile.Controllers
                         case JobProfileSegment.Overview:
                         case JobProfileSegment.HowToBecome:
                         case JobProfileSegment.WhatItTakes:
-                                throw new InvalidProfileException($"JobProfile {jobProfileModel.CanonicalName} is missing markup for segment {segmentModel.Segment.ToString()}");
-
-/*                        case JobProfileSegment.RelatedCareers:
-                        case JobProfileSegment.CurrentOpportunities:
-                        case JobProfileSegment.WhatYouWillDo:
-                        case JobProfileSegment.CareerPathsAndProgression:
-                            {
-                                segmentModel.Markup = segmentService.GetOfflineSegment(segmentModel.Segment).OfflineMarkup;
-                                break;
-                            }*/
+                            throw new InvalidProfileException($"JobProfile {jobProfileModel.CanonicalName} is missing markup for segment {segmentModel.Segment}");
                     }
                 }
             }

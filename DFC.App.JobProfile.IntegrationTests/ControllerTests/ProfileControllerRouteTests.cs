@@ -1,12 +1,6 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using FluentAssertions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -66,8 +60,7 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        //TODO: Fix integration test
-/*        [Theory]
+        [Theory]
         [MemberData(nameof(MissingProfileContentRouteData))]
         public async Task GetProfileHtmlContentEndpointsReturnNotFound(string url)
         {
@@ -81,6 +74,6 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }*/
+        }
     }
 }

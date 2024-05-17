@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
@@ -11,7 +12,6 @@ using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -63,9 +63,14 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var distinctSegments = expectedResult.Segments.Select(s => s.Segment).Distinct();
 
             A.CallTo(() => fakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored))
+                .Returns(new JobProfilesOverviewResponse()
+                {
+                    JobProfileOverview = [new()],
+                });
 
             // act
-            var result = await jobProfileService.GetByNameAsync("article-name").ConfigureAwait(false);
+            var result = await jobProfileService.GetByNameAsync("auditor").ConfigureAwait(false);
 
             // assert
             Assert.Equal(result.Segments.Count, expectedResult.Segments.Count);

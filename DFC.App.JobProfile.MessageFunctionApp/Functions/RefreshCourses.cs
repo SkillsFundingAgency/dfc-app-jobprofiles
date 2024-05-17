@@ -1,11 +1,9 @@
-using System;
-using System.Threading.Tasks;
-using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Functions
 {

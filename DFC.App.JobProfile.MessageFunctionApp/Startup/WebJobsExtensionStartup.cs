@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DFC.App.JobProfile.Data.Models;
+﻿using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Functions.DI.Standard;

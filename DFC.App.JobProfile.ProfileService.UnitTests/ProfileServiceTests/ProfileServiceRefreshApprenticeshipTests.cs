@@ -17,8 +17,8 @@ using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 {
-    [Trait("Profile Service", "Refresh Courses Tests")]
-    public class ProfileServiceRefreshCoursesTests
+    [Trait("Profile Service", "Refresh Apprenticeship Tests")]
+    public class ProfileServiceRefreshApprenticeshipTests
     {
         [Fact]
         public async Task JobProfileServiceRefreshCoursesReturnsSuccessAsync()
@@ -40,11 +40,11 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             // act
-            var response = await jobProfileService.RefreshCourses(status);
+            var response = await jobProfileService.RefreshApprenticeshipsAsync(status);
 
             // assert
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
-            Assert.IsType<bool>(response);
+            Assert.NotNull(response);
             response.Equals(true);
         }
 
@@ -53,6 +53,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         {
             // arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
+            var expectedResult = true;
             var mapper = A.Fake<IMapper>();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -64,7 +65,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshCourses(null).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshApprenticeshipsAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
             exceptionResult.Should().BeOfType(typeof(ArgumentNullException));
@@ -75,8 +76,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var expectedResult = new JobProfileCurrentOpportunitiesResponse();
             var list = new List<JobProfileCurrentOpportunities>
             {
-                new JobProfileCurrentOpportunities
-                {
+                new JobProfileCurrentOpportunities {
                     DisplayText = "Auditor",
                     Coursekeywords = "'building services engineering'",
                     PageLocation = new Common.SharedContent.Pkg.Netcore.Model.Common.PageLocation()

@@ -9,13 +9,11 @@ using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Compui.Cosmos.Contracts;
-using DFC.Compui.Sessionstate;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
-using NHibernate.Engine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -343,6 +341,17 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         [HttpPost]
+        [Route("refreshApprenticeships")]
+        public async Task<IActionResult> RefreshApprenticeships()
+        {
+            logService.LogInformation($"{nameof(RefreshApprenticeships)} has been called");
+
+            var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED").ConfigureAwait(false);
+            logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
+
+            return NoContent();
+        }
+        
         [Route("refreshAllSegments")]
         public async Task<IActionResult> RefreshAllSegments()
         {
@@ -350,6 +359,7 @@ namespace DFC.App.JobProfile.Controllers
 
             var response = await jobProfileService.RefreshAllSegments("PUBLISHED").ConfigureAwait(false);
             logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+
             return NoContent();
         }
 
@@ -441,7 +451,7 @@ namespace DFC.App.JobProfile.Controllers
                         case JobProfileSegment.Overview:
                         case JobProfileSegment.HowToBecome:
                         case JobProfileSegment.WhatItTakes:
-                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}");
+                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment}");
 
                         case JobProfileSegment.RelatedCareers:
                         case JobProfileSegment.CurrentOpportunities:
@@ -472,6 +482,5 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         #endregion Static helper methods
-
     }
 }

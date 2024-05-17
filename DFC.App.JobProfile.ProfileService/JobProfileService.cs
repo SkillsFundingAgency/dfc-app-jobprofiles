@@ -531,6 +531,7 @@ namespace DFC.App.JobProfile.ProfileService
             else
             {
                 logService.LogError("Refresh Courses error: Job profiles is null.");
+                throw new ArgumentNullException("Refresh Courses error: Job profiles is null.");
             }
 
             return returndata;

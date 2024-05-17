@@ -94,7 +94,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
                             {
                                 ApprenticeshipStandards = new ApprenticeshipStandards()
                                 {
-                                    ContentItems = new ApprenticeshipStandardsContentItem[]
+                                    ContentItems= new ApprenticeshipStandardsContentItem[]
                                     {
                                         new ApprenticeshipStandardsContentItem()
                                         {

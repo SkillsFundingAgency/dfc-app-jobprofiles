@@ -522,7 +522,7 @@ namespace DFC.App.JobProfile.ProfileService
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
-                if (jobprfile.JobProfileCurrentOpportunities.Any())
+                if (jobProfile.JobProfileCurrentOpportunities.Any())
                 {
                     foreach (var each in jobProfile.JobProfileCurrentOpportunities)
                     {

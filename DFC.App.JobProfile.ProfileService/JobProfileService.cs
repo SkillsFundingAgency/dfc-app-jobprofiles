@@ -659,7 +659,7 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<bool> RefreshApprenticeshipsAsync()
         {
-            bool returnData = true;
+            bool returnData = false;
 
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, "PUBLISHED");
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities.Any())
@@ -671,6 +671,7 @@ namespace DFC.App.JobProfile.ProfileService
                     {
                         string cacheKey = string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix, "/", item.PageLocation.UrlName, "/", string.Join(",", larsCodes));
                         await GetApprenticeshipsAndCachedRedisAsync(larsCodes, cacheKey);
+                        returnData = true;
                     }
                 }
             }

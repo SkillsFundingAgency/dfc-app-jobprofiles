@@ -200,12 +200,18 @@ namespace DFC.App.JobProfile.Controllers
         {
             logService.LogInformation($"{nameof(RefreshApprenticeships)} has been called");
 
-            var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED").ConfigureAwait(false);
-            logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
+            var response = await jobProfileService.RefreshApprenticeshipsAsync().ConfigureAwait(false);
+
+            if (!response)
+            {
+                logService.LogError($"{nameof(RefreshApprenticeships)} has failed");
+            }
+
+            logService.LogInformation($"{nameof(RefreshApprenticeships)} has completed");
 
             return NoContent();
         }
-        
+
         [Route("refreshAllSegments")]
         public async Task<IActionResult> RefreshAllSegments()
         {

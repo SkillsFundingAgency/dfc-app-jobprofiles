@@ -599,6 +599,8 @@ namespace DFC.App.JobProfile.ProfileService
             else
             {
                 logService.LogError("Refresh All segments failed, because job profile is null.");
+
+                throw new ArgumentNullException("Refresh All segments failed, because job profile is null.");
             }
 
             return returndata;

@@ -348,6 +348,18 @@ namespace DFC.App.JobProfile.Controllers
 
             var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED").ConfigureAwait(false);
             logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
+
+            return NoContent();
+        }
+        
+        [Route("refreshAllSegments")]
+        public async Task<IActionResult> RefreshAllSegments()
+        {
+            logService.LogInformation($"{nameof(RefreshAllSegments)} has been called");
+
+            var response = await jobProfileService.RefreshAllSegments("PUBLISHED").ConfigureAwait(false);
+            logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+
             return NoContent();
         }
 

@@ -32,14 +32,13 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
             var expectedResult = GetExpectedData();
-            var status = "PUBLISHED";
 
             var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             // act
-            var response = await jobProfileService.RefreshApprenticeshipsAsync(status);
+            var response = await jobProfileService.RefreshApprenticeshipsAsync();
 
             // assert
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
@@ -62,7 +61,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshApprenticeshipsAsync(null).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshApprenticeshipsAsync().ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
             exceptionResult.Should().BeOfType(typeof(ArgumentNullException));

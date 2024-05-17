@@ -3,6 +3,7 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
@@ -27,7 +28,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         private readonly IRazorTemplateEngine fakeRazorTemplateEngine;
         private readonly IConfiguration fakeConfiguration;
         private readonly IAVAPIService fakeAVAPIService;
-        private readonly ICourseSearchApiService fakeclient;
+        private readonly ICourseSearchApiService fakeFACClient;
 
         public ProfileServiceGetByNameTests()
         {
@@ -37,8 +38,8 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             fakeConfiguration = A.Fake<IConfiguration>();
             fakeAVAPIService = A.Fake<IAVAPIService>();
-            fakeclient = A.Fake<ICourseSearchApiService>();
-            jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
+            fakeFACClient = A.Fake<ICourseSearchApiService>();
+            jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeFACClient, fakeAVAPIService);
         }
 
         [Fact]
@@ -66,7 +67,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored))
                 .Returns(new JobProfilesOverviewResponse()
                 {
-                    JobProfileOverview = [new()],
+                    JobProfileOverview = new List<JobProfileOverview> { new JobProfileOverview() },
                 });
 
             // act

@@ -327,47 +327,5 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 
             controller.Dispose();
         }
-
-        //TODO: Fix unit test
-/*        [Theory]
-        [MemberData(nameof(EmptyNonCriticalSegmentModelInput))]
-        public async Task BodyReturnsOfflineMarkupWhenNonCriticalSegmentsHaveNoMarkup(List<SegmentModel> segments)
-        {
-            // Arrange
-            var controller = BuildProfileController(MediaTypeNames.Application.Json);
-            var bodyViewModel = new BodyViewModel
-            {
-                CanonicalName = FakeArticleName,
-                Segments = segments,
-            };
-
-            var offlineSegmentModel = new OfflineSegmentModel
-            {
-                OfflineMarkup = new HtmlString("<h1>Some offline markup for this non-critical segment</h1>"),
-            };
-
-            A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(A.Fake<JobProfileModel>());
-            A.CallTo(() => FakeMapper.Map<BodyViewModel>(A<JobProfileModel>.Ignored)).Returns(bodyViewModel);
-            A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).Returns(offlineSegmentModel);
-            A.CallTo(() => FakeRedirectionSecurityService.IsValidHost(A<Uri>.Ignored)).Returns(true);
-
-            // Act
-            var result = await controller.Body(FakeArticleName).ConfigureAwait(false);
-
-            // Assert
-            var okObjectResult = result as OkObjectResult;
-            var resultViewModel = Assert.IsAssignableFrom<BodyViewModel>(okObjectResult?.Value);
-            var nonCriticalSegment = segments.FirstOrDefault(s => s.Segment != JobProfileSegment.Overview && s.Segment != JobProfileSegment.HowToBecome && s.Segment != JobProfileSegment.WhatItTakes);
-            var resultSegmentModel = resultViewModel.Segments.FirstOrDefault(s => s.Segment == nonCriticalSegment?.Segment);
-
-            A.CallTo(() => FakeSharedContentRedisInterface.GetDataAsync<SharedHtmlResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new SharedHtmlResponse());
-            resultViewModel.SpeakToAnAdviser.Should().BeOfType(typeof(StaticContentItemModel));
-
-            Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
-            A.CallTo(() => FakeSegmentService.GetOfflineSegment(A<JobProfileSegment>.Ignored)).MustHaveHappenedOnceExactly();
-            Assert.Equal(offlineSegmentModel.OfflineMarkup.Value, resultSegmentModel?.Markup.Value);
-
-            controller.Dispose();
-        }*/
     }
 }

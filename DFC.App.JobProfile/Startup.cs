@@ -18,13 +18,10 @@ using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Common.SharedContent.Pkg.Netcore.RequestHandler;
-using DFC.Compui.Subscriptions.Pkg.Netstandard.Extensions;
 using DFC.Compui.Telemetry;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
-using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Content.Pkg.Netcore.Services;
 using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
-using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
 using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Extensions;
 using GraphQL.Client.Abstractions;
@@ -44,7 +41,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading;
-using PolicyOptions = DFC.App.JobProfile.HttpClientPolicies.PolicyOptions;
 
 namespace DFC.App.JobProfile
 {
@@ -133,7 +129,7 @@ namespace DFC.App.JobProfile
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddCorrelationId();
             services.AddRazorTemplating();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -161,14 +157,12 @@ namespace DFC.App.JobProfile
             }));
 
             services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();
-
-            services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
-            services.AddTransient<ICmsApiService, CmsApiService>();
             services.AddTransient<IContentTypeMappingService, ContentTypeMappingService>();
 
             var configValues = configuration.GetSection(ConfigAppSettings).Get<ConfigValues>();
             services.AddSingleton(configValues);
 
+            services.AddScoped<FeedbackLinks>();
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
@@ -220,34 +214,21 @@ namespace DFC.App.JobProfile
             {
                 CourseSearchSvcSettings = configuration.GetSection(CourseSearchClientSvcSettings).Get<CourseSearchSvcSettings>() ?? new CourseSearchSvcSettings(),
                 CourseSearchAuditCosmosDbSettings = configuration.GetSection(CourseSearchClientAuditSettings).Get<CourseSearchAuditCosmosDbSettings>() ?? new CourseSearchAuditCosmosDbSettings(),
-                PolicyOptions = configuration.GetSection(CourseSearchClientPolicySettings).Get<DFC.FindACourseClient.PolicyOptions>() ?? new DFC.FindACourseClient.PolicyOptions(),
+                PolicyOptions = configuration.GetSection(CourseSearchClientPolicySettings).Get<PolicyOptions>() ?? new PolicyOptions(),
             };
             services.AddSingleton(courseSearchClientSettings);
             services.AddScoped<ICourseSearchApiService, CourseSearchApiService>();
             services.AddFindACourseServicesWithoutFaultHandling(courseSearchClientSettings);
 
-            const string AppSettingsPolicies = "Policies";
             var policyRegistry = services.AddPolicyRegistry();
-            var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
             services.AddFindACourseTransientFaultHandlingPolicies(courseSearchClientSettings, policyRegistry);
 
             services.AddRazorTemplating();
-
-            services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
-            services.AddSingleton(configuration.GetSection(nameof(HowToBecomeSegmentClientOptions)).Get<HowToBecomeSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(OverviewBannerSegmentClientOptions)).Get<OverviewBannerSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(RelatedCareersSegmentClientOptions)).Get<RelatedCareersSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(WhatItTakesSegmentClientOptions)).Get<WhatItTakesSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(WhatYouWillDoSegmentClientOptions)).Get<WhatYouWillDoSegmentClientOptions>());
 
             services.AddHostedServiceTelemetryWrapper();
             services.AddTransient<IApiService, ApiService>();
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
             services.AddTransient<IApiCacheService, ApiCacheService>();
-
-            services.AddSubscriptionBackgroundService(configuration);
 
             var avPolicyOptions = configuration.GetSection(AVAPIServiceClientPolicySettings).Get<CorePolicyOptions>();
             avPolicyOptions.HttpRateLimitRetry ??= new RateLimitPolicyOptions();

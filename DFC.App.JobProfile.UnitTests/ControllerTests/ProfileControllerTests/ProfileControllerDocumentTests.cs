@@ -166,7 +166,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                         Segment = JobProfileSegment.Overview,
                     },
                 },
-                SequenceNumber = 123,
                 AlternativeNames = new List<string>(),
             };
         }
@@ -184,7 +183,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                 Description = headDescription,
                 Keywords = headKeywords,
                 Title = headTitle,
-                SequenceNumber = 123,
                 AlternativeNames = Array.Empty<string>(),
                 Body = new BodyViewModel
                 {

@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Models;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -13,43 +12,34 @@ namespace DFC.App.JobProfile.IntegrationTests
         public static void SeedDefaultArticle(CustomWebApplicationFactory<Startup> factory)
         {
             const string url = "/profile";
-            var models = new List<Data.Models.JobProfileModel>()
+            var models = new List<JobProfileModel>()
             {
-                new Data.Models.JobProfileModel()
+                new JobProfileModel()
                 {
                     CanonicalName = DefaultArticleName,
-                    SocLevelTwo = "12",
-                    LastReviewed = DateTime.UtcNow,
                     IncludeInSitemap = true,
                     MetaTags = new MetaTags
                     {
                         Title = $"This is a title",
                     },
-                    SequenceNumber = 1,
                 },
-                new Data.Models.JobProfileModel()
+                new JobProfileModel()
                 {
                     CanonicalName = $"{DefaultArticleName}-2",
-                    SocLevelTwo = "34",
-                    LastReviewed = DateTime.UtcNow,
                     IncludeInSitemap = true,
                     MetaTags = new MetaTags
                     {
                         Title = $"This is a title",
                     },
-                    SequenceNumber = 2,
                 },
-                new Data.Models.JobProfileModel()
+                new JobProfileModel()
                 {
                     CanonicalName = $"{DefaultArticleName}-3",
-                    SocLevelTwo = "56",
-                    LastReviewed = DateTime.UtcNow,
                     IncludeInSitemap = true,
                     MetaTags = new MetaTags
                     {
                         Title = $"This is a title",
                     },
-                    SequenceNumber = 3,
                 },
             };
 

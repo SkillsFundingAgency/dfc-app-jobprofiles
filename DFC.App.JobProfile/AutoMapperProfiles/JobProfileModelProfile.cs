@@ -18,7 +18,6 @@ using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JobProfSkills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
@@ -32,7 +31,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public JobProfileModelProfile()
         {
-            CreateMap<JobProfileModel, JobProfileModel>();
             CreateMap<JobProfileModel, ViewModels.BodyViewModel>()
                 .ForMember(d => d.SmartSurveyJP, s => s.Ignore())
                 .ForMember(d => d.SpeakToAnAdviser, s => s.Ignore());
@@ -65,10 +63,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<RelatedCareersResponse, RelatedCareerSegmentDataModel>()
                 .ForMember(d => d.RelatedCareers, s => s.MapFrom<RelatedCareerResolver>())
                 .ForMember(d => d.LastReviewed, s => s.Ignore());
-
-            CreateMap<RelatedCareerDataModel, RelatedCareerDataViewModel>();
-
-            CreateMap<JobProfileModel, IndexDocumentViewModel>();
 
             CreateMap<JobProfileWhatYoullDoResponse, TasksSegmentDataModel>()
                 .ForMember(d => d.Tasks, s => s.MapFrom(a => a.JobProfileWhatYoullDo.FirstOrDefault().Daytodaytasks.Html))
@@ -174,7 +168,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Transcript, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoTranscript));
 
             CreateMap<VideoThumbnail, Data.Models.Thumbnail>()
-                 //find thumbnail text and replace this below - temp solution
                  .ForMember(d => d.Text, s => s.MapFrom(a => a.MediaText.FirstOrDefault() ?? string.Empty))
                  .ForMember(d => d.Url, s => s.MapFrom(a => a.Urls.FirstOrDefault() ?? string.Empty));
 

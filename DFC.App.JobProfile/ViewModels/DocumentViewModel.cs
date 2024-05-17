@@ -30,8 +30,6 @@ namespace DFC.App.JobProfile.ViewModels
         [Display(Name = "Last Updated")]
         public DateTime LastReviewed { get; set; }
 
-        public long SequenceNumber { get; set; }
-
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }
 

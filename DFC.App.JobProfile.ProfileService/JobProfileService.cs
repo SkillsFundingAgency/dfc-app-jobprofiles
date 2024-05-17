@@ -280,7 +280,7 @@ namespace DFC.App.JobProfile.ProfileService
             currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
 
             //Get job profile course keyword and lars code
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix, "/", canonicalName), "PUBLISHED");
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix, "/", canonicalName), status);
 
             //get courses by course key words
             if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
@@ -309,7 +309,8 @@ namespace DFC.App.JobProfile.ProfileService
                 currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = new List<Vacancy>();
 
                 //get apprenticeship by lars code.
-                if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems.Length > 0 && jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
+                if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems.Length > 0 &&
+                    jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
                 {
                     if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
                     {
@@ -558,32 +559,123 @@ namespace DFC.App.JobProfile.ProfileService
         /// <summary>
         /// Refresh all courses in Redis.
         /// </summary>
-        public async Task<bool> RefreshCourses()
+        /// <param name="filter">PUBLISHED</param>
+        /// <returns>boolean.</returns>
+        /// <exception cref="ArgumentNullException">throw exception when jobprofile data is null.</exception>
+        public async Task<bool> RefreshCourses(string filter)
         {
             bool redisData = false;
 
             //Get job profile course keyword(s)
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, "PUBLISHED");
-            if (jobProfile.JobProfileCurrentOpportunities.IsAny())
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
-                foreach (var each in jobProfile.JobProfileCurrentOpportunities)
+                if (jobProfile.JobProfileCurrentOpportunities.IsAny())
                 {
-                    string canonicalName = each.PageLocation.UrlName;
-                    string courseKeywords = each.Coursekeywords;
-                    if (!string.IsNullOrEmpty(courseKeywords))
+                    foreach (var jobProfile in jobProfile.JobProfileCurrentOpportunities)
                     {
-                        string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + courseKeywords.ConvertCourseKeywordsString();
-                        await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
-                        redisData = true;
+                        string canonicalName = jobProfile.PageLocation.UrlName;
+
+                        string courseKeywords = jobProfile.Coursekeywords;
+                        if (!string.IsNullOrEmpty(courseKeywords))
+                        {
+                            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + courseKeywords.ConvertCourseKeywordsString();
+                            await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
+                            redisData = true;
+                        }
                     }
                 }
             }
             else
             {
-                logService.LogError($"{nameof(RefreshCourses)} has occurred an error: STAX has return no job profiles");
+                logService.LogError("Refresh Courses error: Job profiles is null.");
+                throw new ArgumentNullException("Refresh Courses error: Job profiles is null.");
+            }
+
+            return returndata;
+        }
+
+        /// <summary>
+        /// Refresh all segments redis.
+        /// </summary>
+        /// <param name="filter">PUBLISHED</param>
+        /// <returns>boolean.</returns>
+        /// <exception cref="ArgumentNullException">throw exception when jobprofile data is null.</exception>
+        public async Task<bool> RefreshAllSegments(string filter)
+        {
+            bool returndata = true;
+
+            //Get job profile with Url name
+            var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+            if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities != null)
+            {
+                if (jobprfile.JobProfileCurrentOpportunities.Count() > 0)
+                {
+                    foreach (var each in jobprfile.JobProfileCurrentOpportunities)
+                    {
+                        string canonicalName = each.PageLocation.UrlName;
+
+                        //Refresh Overview
+                        string overviewCacheKey = string.Concat(ApplicationKeys.JobProfileOverview, "/", canonicalName);
+                        var successOverview = await sharedContentRedisInterface.InvalidateEntityAsync(overviewCacheKey, filter);
+                        var responseOverview = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(overviewCacheKey, filter);
+
+                        //Refresh RelatedCareers
+                        string relatedCareersCacheKey = string.Concat(ApplicationKeys.JobProfileRelatedCareersPrefix, "/", canonicalName);
+                        var successRelatedCareers = await sharedContentRedisInterface.InvalidateEntityAsync(relatedCareersCacheKey, filter);
+                        var responseRelatedCareers = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(relatedCareersCacheKey, filter);
+
+                        //Refresh WhatYoullDo
+                        string whatYoullDoCacheKey = string.Concat(ApplicationKeys.JobProfileWhatYoullDo, "/", canonicalName);
+                        var successWhatYoullDo = await sharedContentRedisInterface.InvalidateEntityAsync(whatYoullDoCacheKey, filter);
+                        var responseWhatYoullDo = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(whatYoullDoCacheKey, filter);
+
+                        //Refresh CareerPath
+                        string careerPathCacheKey = string.Concat(ApplicationKeys.JobProfileCareerPath, "/", canonicalName);
+                        var successCareerPath = await sharedContentRedisInterface.InvalidateEntityAsync(careerPathCacheKey, filter);
+                        var responseCareerPath = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(careerPathCacheKey, filter);
+
+                        //Refresh Skill
+                        string skillCacheKey = string.Concat(ApplicationKeys.JobProfileSkillsSuffix, "/", canonicalName);
+                        var successSkill = await sharedContentRedisInterface.InvalidateEntityAsync(skillCacheKey, filter);
+                        var responseSkill = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(skillCacheKey, filter);
+
+                        //Refresh HowToBecome
+                        string howToBecomeCacheKey = string.Concat(ApplicationKeys.JobProfileHowToBecome, "/", canonicalName);
+                        var successHowToBecome = await sharedContentRedisInterface.InvalidateEntityAsync(howToBecomeCacheKey, filter);
+                        var responseHowToBecome = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(howToBecomeCacheKey, filter);
+                    }
+                }
+            }
+            else
+            {
+                logService.LogError("Refresh All segments failed, because job profile is null.");
+
+                throw new ArgumentNullException("Refresh All segments failed, because job profile is null.");
             }
 
             return redisData;
+        }
+
+        public async Task<bool> RefreshApprenticeshipsAsync(string filter)
+        {
+            bool returndata = true;
+
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities.Count() > 0)
+            {
+                foreach (var each in jobProfile.JobProfileCurrentOpportunities)
+                {
+                    var larsCodes = each.SOCCode.ContentItems?.SelectMany(x => x.ApprenticeshipStandards.ContentItems).Select(x => x.LARScode).ToList();
+                    if (larsCodes.Count > 0)
+                    {
+                        string cachekey = string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix, "/", each.PageLocation.UrlName, "/", string.Join(",", larsCodes));
+                        await GetApprenticeshipsAndCachedRedisAsync(larsCodes, cachekey);
+                    }
+                }
+            }
+
+            return returndata;
         }
 
         /// <summary>
@@ -612,7 +704,7 @@ namespace DFC.App.JobProfile.ProfileService
             return null;
         }
 
-        public static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
+        private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
         {
             var viewModel = new BreadcrumbViewModel
             {
@@ -746,7 +838,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
 
-                redisData.Courses = result.ToList();
+                redisdata.Courses = result?.ToList();
 
                 var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesResponse>(redisData, cacheKey, 48);
                 if (!save)
@@ -764,6 +856,38 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return redisData;
+        }
+
+        private async Task GetApprenticeshipsAndCachedRedisAsync(List<string> larsCodes, string cacheKey)
+        {
+            try
+            {
+                var avMapping = new AVMapping { Standards = larsCodes };
+                var avResponse = await avAPIService.GetAVsForMultipleProvidersAsync(avMapping).ConfigureAwait(false);
+                var mappedAVResponse = mapper.Map<IEnumerable<Vacancy>>(avResponse);
+                var vacancies = mappedAVResponse.Take(2).ToList();
+
+                if (vacancies.Count() > 0)
+                {
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);
+                    if (!save)
+                    {
+                        throw new InvalidOperationException("Redis save process failed.");
+                    }
+                    else
+                    {
+                        logService.LogInformation($"Redis saved: Apprenticeship cache key: {cacheKey}.");
+                    }
+                }
+                else
+                {
+                    logService.LogInformation($"Redis not saved: Apprenticeship cache key: {cacheKey}.  No vacancies found.");
+                }
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+            }
         }
     }
 }

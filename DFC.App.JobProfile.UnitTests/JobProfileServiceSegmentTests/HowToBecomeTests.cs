@@ -21,6 +21,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 {
     public class HowToBecomeTests
     {
+        private const string CanonicalName = "auditor";
+        private const string Filter = "PUBLISHED";
+
         [Fact]
         public async Task GetHowToBecomeValidInputAsync()
         {
@@ -35,18 +38,18 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 
             var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, avAPIService);
             var expectedResult = GetExpectedData();
-
-            var canonicalName = "bookmaker";
-            var filter = "PUBLISHED";
+            var expectedHTML = "test";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => razorTemplateEngine.RenderAsync(A<string>.Ignored, A<object>.Ignored, null)).Returns(expectedHTML);
 
             //Act
-            var response = await jobProfileService.GetHowToBecomeSegmentAsync(canonicalName, filter);
+            var response = await jobProfileService.GetHowToBecomeSegmentAsync(CanonicalName, Filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             Assert.NotNull(response);
+            Assert.Equal(expectedHTML, response.Markup.Value);
             response.Should().BeOfType(typeof(SegmentModel));
         }
 
@@ -63,17 +66,15 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakeFACClient = A.Fake<ICourseSearchApiService>();
 
             var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, avAPIService);
-            var expectedResult = GetExpectedData();
-            var canonicalName = "bookmaker";
-            var filter = "PUBLISHED";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileHowToBecomeResponse());
 
             //Act
-            var response = await jobProfileService.GetHowToBecomeSegmentAsync(canonicalName, filter);
+            var response = await jobProfileService.GetHowToBecomeSegmentAsync(CanonicalName, Filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
+            Assert.Equal(Data.JobProfileSegment.HowToBecome, response.Segment);
             response.Should().BeOfType(typeof(SegmentModel));
         }
 

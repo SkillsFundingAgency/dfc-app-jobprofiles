@@ -20,6 +20,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 {
     public class SocialProofVideoTests
     {
+        private const string CanonicalName = "auditor";
+        private const string Filter = "PUBLISHED";
+
         [Fact]
         public async Task GetSocialProofVideoValidInputAsync()
         {
@@ -30,19 +33,16 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
-            var fakefacclient = A.Fake<ICourseSearchApiService>();
+            var fakeFACClient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
-
-            var canonicalName = "bookmaker";
-            var filter = "PUBLISHED";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             //Act
-            var response = await jobProfileService.GetSocialProofVideoSegment(canonicalName, filter);
+            var response = await jobProfileService.GetSocialProofVideoSegment(CanonicalName, Filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
@@ -63,13 +63,11 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
             var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
-            var canonicalName = "bookmaker";
-            var filter = "PUBLISHED";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileVideoResponse());
 
             //Act
-            var response = await jobProfileService.GetSocialProofVideoSegment(canonicalName, filter);
+            var response = await jobProfileService.GetSocialProofVideoSegment(CanonicalName, Filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();

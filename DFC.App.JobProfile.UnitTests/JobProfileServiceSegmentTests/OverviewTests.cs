@@ -32,22 +32,23 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
-            var fakefacclient = A.Fake<ICourseSearchApiService>();
+            var fakeFACClient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakeFACClient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
-
-            var canonicalName = "auditor";
+            var expectedHTML = "test";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => razorTemplateEngine.RenderAsync(A<string>.Ignored, A<object>.Ignored, null)).Returns(expectedHTML);
 
             //Act
-            var response = await jobProfileService.GetOverviewSegment(canonicalName, "PUBLISHED");
+            var response = await jobProfileService.GetOverviewSegment(CanonicalName, "PUBLISHED");
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             Assert.NotNull(response);
+            Assert.Equal(expectedHTML, response.Markup.Value);
             response.Should().BeOfType(typeof(SegmentModel));
         }
 
@@ -60,10 +61,10 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var fakeConfiguration = A.Fake<IConfiguration>();
-            var fakefacclient = A.Fake<ICourseSearchApiService>();
+            var fakeFACClient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakefacclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, fakeConfiguration, fakeFACClient, fakeAVAPIService);
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfilesOverviewResponse());
 

@@ -203,7 +203,7 @@ namespace DFC.App.JobProfile.ProfileService
                 // Get the response from GraphQl
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, filter);
 
-                if (response.JobProfileHowToBecome.IsAny())
+                if (response != null && response.JobProfileHowToBecome.IsAny())
                 {
                     // Map the response to a HowToBecomeSegmentDataModel
                     var mappedResponse = mapper.Map<HowToBecomeSegmentDataModel>(response);
@@ -688,7 +688,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
 
-                if (response != null && response.JobProfileVideo != null && response.JobProfileVideo.Any() && response.JobProfileVideo.FirstOrDefault().VideoType != null)
+                if (response != null && response.JobProfileVideo.IsAny() && response.JobProfileVideo[0].VideoType != "None")
                 {
                     return mapper.Map<SocialProofVideo>(response);
                 }
@@ -732,6 +732,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// Get Courses from FAC client API.
         /// </summary>
         /// <param name="courseKeywords">Courses key words, such as 'building services engineering'.</param>
+        /// <param name="canonicalName">Job profile url name</param>
         /// <returns>CourseResponse contains list Courses.</returns>
         private async Task<CoursesResponse> GetCourses(string courseKeywords, string canonicalName)
         {
@@ -784,6 +785,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// Get apprenticeship vacancies from Apprenticeship API.
         /// </summary>
         /// <param name="larsCodes">List of LARS codes.</param>
+        /// <param name="canonicalName">Job profile url name</param>
         /// <returns>IEnumerable of Vacancy.</returns>
         private async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes, string canonicalName)
         {

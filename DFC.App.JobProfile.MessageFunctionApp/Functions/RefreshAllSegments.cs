@@ -27,12 +27,14 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             int first = 100;
             int skip = 0;
             int count = await refreshService.CountJobProfiles();
+            log.LogInformation($"{nameof(RefreshCourses)}: Total Jobprofiles count is: {count}");
 
-            while (count > 0 && first < count)
+            while (count > 0 && skip < count)
             {
+                log.LogInformation($"{nameof(RefreshCourses)}: Start processing from {skip} to {skip + first}");
                 await refreshService.RefreshAllSegmentsAsync(first, skip);
-                skip = first;
-                first += 100;
+                log.LogInformation($"{nameof(RefreshCourses)}: Finish processing from {skip} to {skip + first}");
+                skip += 100;
             }
 
             log.LogInformation($"{nameof(RefreshCourses)}: Timer trigger function completed at: {DateTime.Now}");

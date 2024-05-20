@@ -1,10 +1,12 @@
 ﻿using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -61,6 +63,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
             var json = JsonConvert.SerializeObject(new JobProfileCurrentOpportunitiesSearchModel { First = first, Skip = skip });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
+            logService.LogInformation($"{nameof(RefreshAllSegmentsAsync)}: Refresh jobprofile starting from {url} at {skip} to {skip + first}");
+            logService.LogInformation($"{nameof(RefreshAllSegmentsAsync)}: Json string is  {content}");
 
             var response = await httpClient.PostAsync(url, content).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
@@ -76,6 +80,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
                 response.EnsureSuccessStatusCode();
             }
+
+            logService.LogInformation($"{nameof(RefreshAllSegmentsAsync)}: Refresh jobprofile completed from {url} at {skip} to {skip + first}");
 
             return response.StatusCode;
         }
@@ -110,20 +116,19 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             ConfigureHttpClient();
 
             var response = await httpClient.GetAsync(url).ConfigureAwait(false);
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Refresh Courses.");
+                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var result = JsonConvert.DeserializeObject<int>(responseString);
 
-                if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
-                {
-                    return await CountJobProfiles(retryCount++).ConfigureAwait(false);
-                }
+                logService.LogInformation($"{nameof(CountJobProfiles)}: Get jobprofile count {result} from {url}");
 
-                response.EnsureSuccessStatusCode();
+                return result;
             }
 
-            return int.Parse(response.ToString());
+            logService.LogError($"{nameof(CountJobProfiles)}: Error Get jobprofile count from {url}, status: {response.StatusCode}");
+
+            return 0;
         }
 
         private void ConfigureHttpClient()

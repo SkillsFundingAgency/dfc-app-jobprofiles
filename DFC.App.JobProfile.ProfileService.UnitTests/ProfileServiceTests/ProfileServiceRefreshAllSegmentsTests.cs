@@ -8,20 +8,23 @@ using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Azure.Documents.SystemFunctions;
 using Microsoft.Extensions.Configuration;
 using Razor.Templating.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 {
     [Trait("Profile Service", "Refresh Courses Tests")]
-    public class ProfileServiceRefreshCoursesTests
+    public class ProfileServiceRefreshAllSegmentsTests
     {
         [Fact]
-        public async Task JobProfileServiceRefreshCoursesReturnsSuccessAsync()
+        public async Task JobProfileServiceRefreshAllSegmentsReturnsSuccessAsync()
         {
             // arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
@@ -40,7 +43,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             // act
-            var response = await jobProfileService.RefreshCourses(status);
+            var response = await jobProfileService.RefreshAllSegments(status);
 
             // assert
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
@@ -49,7 +52,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         }
 
         [Fact]
-        public async Task JobProfileServiceRefreshCoursesReturnsArgumentNullExceptionWhenNullParamIsUsedAsync()
+        public async Task JobProfileServiceRefreshAllSegmentssReturnsArgumentNullExceptionWhenNullParamIsUsedAsync()
         {
             // arrange
             var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
@@ -64,7 +67,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             // act
-            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshCourses(null).ConfigureAwait(false)).ConfigureAwait(false);
+            var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshAllSegments(null).ConfigureAwait(false)).ConfigureAwait(false);
 
             // assert
             exceptionResult.Should().BeOfType(typeof(ArgumentNullException));
@@ -75,7 +78,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var expectedResult = new JobProfileCurrentOpportunitiesResponse();
             var list = new List<JobProfileCurrentOpportunities>
             {
-                new JobProfileCurrentOpportunities
+                new JobProfileCurrentOpportunities 
                 {
                     DisplayText = "Auditor",
                     Coursekeywords = "'building services engineering'",

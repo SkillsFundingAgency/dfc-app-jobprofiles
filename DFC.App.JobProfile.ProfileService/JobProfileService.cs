@@ -555,9 +555,10 @@ namespace DFC.App.JobProfile.ProfileService
         public async Task<bool> RefreshAllSegments(string filter, int first, int skip)
         {
             bool returndata = true;
+            int total = skip + first;
 
             //Get job profile with Url name
-            var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + first, filter, first, skip);
+            var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
             if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities != null)
             {
                 if (jobprfile.JobProfileCurrentOpportunities.Count() > 0)
@@ -779,7 +780,7 @@ namespace DFC.App.JobProfile.ProfileService
         {
             int count = 0;
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
-            count=jobProfile.JobProfileCurrentOpportunities.Count();
+            count = jobProfile.JobProfileCurrentOpportunities.Count();
             return count;
         }
 

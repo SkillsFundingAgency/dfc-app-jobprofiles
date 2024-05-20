@@ -1,6 +1,6 @@
-﻿using DFC.App.JobProfile.Data;
-using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
@@ -10,7 +10,6 @@ using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +28,7 @@ namespace DFC.App.JobProfile.Controllers
         private readonly FeedbackLinks feedbackLinks;
         private readonly IRedirectionSecurityService redirectionSecurityService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
-        private string status;
+        private readonly string status;
 
         public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, IRedirectionSecurityService redirectionSecurityService, ISharedContentRedisInterface sharedContentRedisInterface, IConfiguration configuration)
         {

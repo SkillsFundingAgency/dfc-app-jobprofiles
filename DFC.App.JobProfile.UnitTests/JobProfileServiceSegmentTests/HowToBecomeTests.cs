@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Razor.Templating.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Data.Enums;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
@@ -74,7 +75,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
-            Assert.Equal(Data.JobProfileSegment.HowToBecome, response.Segment);
+            Assert.Equal(JobProfileSegment.HowToBecome, response.Segment);
             response.Should().BeOfType(typeof(SegmentModel));
         }
 

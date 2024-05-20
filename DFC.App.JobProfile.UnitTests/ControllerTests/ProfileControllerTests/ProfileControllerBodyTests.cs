@@ -1,6 +1,5 @@
 ﻿using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.ViewModels;
 using FakeItEasy;
 using Microsoft.AspNetCore.Html;
@@ -11,7 +10,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Data.Enums;
 using Xunit;
+using DFC.App.JobProfile.Exceptions;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 {

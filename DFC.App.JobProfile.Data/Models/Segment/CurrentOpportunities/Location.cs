@@ -1,4 +1,4 @@
-﻿namespace DFC.App.JobProfile.Data.Models.CurrentOpportunities
+﻿namespace DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities
 {
     public class Location
     {

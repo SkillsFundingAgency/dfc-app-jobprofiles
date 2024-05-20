@@ -18,10 +18,6 @@ namespace DFC.App.JobProfile.Data.Models
         [JsonIgnore]
         public string Json { get => JsonV1; set => JsonV1 = value; }
 
-        public DateTime RefreshedAt { get; set; }
-
-        public long RefreshSequence { get; set; }
-
         [JsonConverter(typeof(StringEnumConverter))]
         public RefreshStatus RefreshStatus { get; set; }
     }

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using System.Collections.Generic;
 using System.Linq;
+using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 {

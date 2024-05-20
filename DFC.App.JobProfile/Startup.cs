@@ -2,7 +2,6 @@
 using CorrelationId;
 using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.AVService;
-using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Data.Configuration;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
@@ -47,7 +46,6 @@ namespace DFC.App.JobProfile
     public class Startup
     {
         public const string ConfigAppSettings = "Configuration";
-        public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
         public const string AVAPIServiceAppSettings = "Configuration:AVAPIService";
         public const string AVAPIServiceClientPolicySettings = "Configuration:AVAPIService:Policies";
         public const string CourseSearchClientSvcSettings = "Configuration:CourseSearchClient:CourseSearchSvc";
@@ -163,7 +161,6 @@ namespace DFC.App.JobProfile
 
             services.AddScoped<FeedbackLinks>();
             services.AddScoped<IJobProfileService, JobProfileService>();
-            services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
 
             services.AddSingleton<IGraphQLClient>(s =>

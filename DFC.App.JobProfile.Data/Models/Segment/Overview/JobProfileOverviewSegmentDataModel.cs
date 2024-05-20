@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models.Overview
+namespace DFC.App.JobProfile.Data.Models.Segment.Overview
 {
     public class JobProfileOverviewSegmentDataModel
     {

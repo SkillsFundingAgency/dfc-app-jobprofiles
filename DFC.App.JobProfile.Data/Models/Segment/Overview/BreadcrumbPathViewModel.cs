@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DFC.App.JobProfile.Data.Models.Overview
+namespace DFC.App.JobProfile.Data.Models.Segment.Overview
 {
     public class BreadcrumbPathViewModel
     {

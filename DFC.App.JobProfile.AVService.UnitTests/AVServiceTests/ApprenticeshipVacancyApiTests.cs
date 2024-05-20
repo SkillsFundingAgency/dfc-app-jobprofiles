@@ -1,12 +1,12 @@
-using DFC.App.JobProfile.Data.Configuration;
-using FakeItEasy;
-using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Data.Configuration;
+using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
-namespace DFC.App.JobProfile.AVService.UnitTests
+namespace DFC.App.JobProfile.AVService.UnitTests.AVServiceTests
 {
     [Trait("Apprenticeship Vacancy Api", "Tests")]
     public class ApprenticeshipVacancyApiTests

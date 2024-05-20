@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using DFC.App.JobProfile.Data.Models.SkillsModels;
+using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
 using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 

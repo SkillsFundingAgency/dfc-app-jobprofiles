@@ -34,6 +34,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DFC.App.JobProfile.ProfileService\DFC.App.JobProfile.ProfileService.csproj" />
+		<ProjectReference Include="..\DFC.App.JobProfile\DFC.App.JobProfile.csproj" />
 	</ItemGroup>
 
 </Project>

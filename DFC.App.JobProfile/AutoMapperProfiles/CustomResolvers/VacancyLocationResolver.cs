@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
+using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 {
@@ -16,15 +16,19 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 
             if (source != null && source.Address != null)
             {
-                if (source.Address.AddressLine2 != null && source.Address.AddressLine3 != null)
+                if (source.Address.AddressLine2 != null && source.Address.AddressLine3 != null && source.Address.AddressLine4 != null)
+                {
+                    town = source.Address.AddressLine2 + ", " + source.Address.AddressLine3 + ", " + source.Address.AddressLine4;
+                }
+                else if (source.Address.AddressLine2 != null && source.Address.AddressLine3 != null)
                 {
                     town = source.Address.AddressLine2 + ", " + source.Address.AddressLine3;
                 }
-                else if (source.Address.AddressLine2 != null && source.Address.AddressLine3 == null)
+                else if (source.Address.AddressLine2 != null)
                 {
                     town = source.Address.AddressLine2;
                 }
-                else if (source.Address.AddressLine2 == null && source.Address.AddressLine3 != null)
+                else if (source.Address.AddressLine3 != null)
                 {
                     town = source.Address.AddressLine3;
                 }

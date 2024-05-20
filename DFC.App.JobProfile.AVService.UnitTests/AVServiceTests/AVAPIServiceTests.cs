@@ -1,11 +1,12 @@
 using DFC.App.JobProfile.Data.Configuration;
-using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.AVService.UnitTests.AVServiceTests;
+using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
 using Xunit;
 
 namespace DFC.App.JobProfile.AVService.UnitTests

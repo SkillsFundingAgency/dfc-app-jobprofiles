@@ -1,12 +1,9 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace DFC.App.JobProfile.Data
+namespace DFC.App.JobProfile.Data.Models
 {
     public class BaseJobProfile
     {
-
         [Required]
         public string CanonicalName { get; set; }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.Data.Models.RelatedCareersModels
+namespace DFC.App.JobProfile.Data.Models.Segment.RelatedCareers
 {
     public class RelatedCareerSegmentDataModel
     {

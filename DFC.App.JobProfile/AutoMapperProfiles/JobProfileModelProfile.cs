@@ -5,13 +5,8 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.CareerPath;
-using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
-using DFC.App.JobProfile.Data.Models.Overview;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.Data.Models.Segment.Tasks;
-using DFC.App.JobProfile.Data.Models.SkillsModels;
 using DFC.App.JobProfile.ProfileService.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
@@ -20,9 +15,14 @@ using DFC.FindACourseClient;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DFC.App.JobProfile.Data.Models.Segment.CareerPath;
+using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
+using DFC.App.JobProfile.Data.Models.Segment.Overview;
+using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers;
+using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
 using JobProfSkills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
 using RelatedSkill = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.RelatedSkill;
-using Skills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
+using Skills = DFC.App.JobProfile.Data.Models.Segment.SkillsModels.Skills;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {

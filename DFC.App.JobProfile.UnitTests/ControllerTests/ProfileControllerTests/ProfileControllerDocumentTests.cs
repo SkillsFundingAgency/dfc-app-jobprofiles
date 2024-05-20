@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Data.Enums;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests

@@ -1,4 +1,5 @@
-﻿@model DocumentViewModel
+﻿@using DFC.App.JobProfile.Data.Enums
+@model DocumentViewModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +37,7 @@
         </dl>
     </div>
 
-    <partial name="_Hero" model=@Model.Body.Segments.SingleOrDefault(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview)?.Markup />
+    <partial name="_Hero" model=@Model.Body.Segments.SingleOrDefault(s => s.Segment == JobProfileSegment.Overview)?.Markup />
     <partial name="_BodyContent" model=@Model.Body />
 
     <div>

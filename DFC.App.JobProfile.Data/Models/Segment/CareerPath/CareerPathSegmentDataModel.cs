@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DFC.App.JobProfile.Data.Models.CareerPath
+namespace DFC.App.JobProfile.Data.Models.Segment.CareerPath
 {
     public class CareerPathSegmentDataModel
     {

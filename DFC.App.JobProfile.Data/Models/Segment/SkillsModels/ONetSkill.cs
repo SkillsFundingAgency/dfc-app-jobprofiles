@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DFC.App.JobProfile.Data.Models.SkillsModels
+namespace DFC.App.JobProfile.Data.Models.Segment.SkillsModels
 {
     public class OnetSkill
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DFC.App.JobProfile.Data.Models.CurrentOpportunities
+namespace DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities
 {
     [ExcludeFromCodeCoverage]
     public class Opportunity

@@ -2,9 +2,7 @@
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.ViewModels;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using System;

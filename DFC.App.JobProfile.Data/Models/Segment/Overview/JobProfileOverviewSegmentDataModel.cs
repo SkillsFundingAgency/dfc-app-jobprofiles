@@ -1,5 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models.Overview;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace DFC.App.JobProfile.Data.Models.Overview

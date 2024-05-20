@@ -1,12 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.ViewModels;
-using FakeItEasy;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Xunit;
+﻿using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 {

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;

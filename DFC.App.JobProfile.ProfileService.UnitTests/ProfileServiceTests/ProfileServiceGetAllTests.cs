@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
 using Razor.Templating.Core;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests

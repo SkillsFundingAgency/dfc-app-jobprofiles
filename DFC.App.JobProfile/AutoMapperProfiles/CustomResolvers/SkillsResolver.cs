@@ -5,7 +5,6 @@ using AutoMapper;
 using DFC.App.JobProfile.Data.Models.SkillsModels;
 using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
-using NHibernate.Mapping;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 {

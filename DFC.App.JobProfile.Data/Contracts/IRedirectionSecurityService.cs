@@ -1,7 +1,4 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace DFC.App.JobProfile.Data.Contracts
 {

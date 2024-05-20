@@ -1,8 +1,6 @@
 using DFC.App.JobProfile.Data.Configuration;
-using DFC.App.JobProfile.Data.Contracts;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;

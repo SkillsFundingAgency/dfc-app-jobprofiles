@@ -1,7 +1,5 @@
-﻿using DFC.App.JobProfile.ClientHandlers;
-using DFC.App.JobProfile.Data.HttpClientPolicies;
+﻿using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.HttpClientPolicies.Polly;
-using DFC.App.JobProfile.HttpClientPolicies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

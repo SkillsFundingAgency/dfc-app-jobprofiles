@@ -1,8 +1,6 @@
 ﻿using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using FakeItEasy;
-using Moq;
-using NHibernate.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;

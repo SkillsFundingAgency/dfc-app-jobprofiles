@@ -547,12 +547,14 @@ namespace DFC.App.JobProfile.ProfileService
             bool returndata = true;
 
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities.Count() > 0)
             {
                 foreach (var each in jobProfile.JobProfileCurrentOpportunities)
                 {
                     var larsCodes = each.SOCCode.ContentItems?.SelectMany(x => x.ApprenticeshipStandards.ContentItems).Select(x => x.LARScode).ToList();
-                    if (larsCodes.Count > 0)
+
+                    if (larsCodes != null && larsCodes.Count > 0)
                     {
                         string cachekey = string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix, "/", each.PageLocation.UrlName, "/", string.Join(",", larsCodes));
                         await GetApprenticeshipsAndCachedRedisAsync(larsCodes, cachekey);

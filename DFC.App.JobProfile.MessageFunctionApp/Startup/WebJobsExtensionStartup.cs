@@ -1,10 +1,4 @@
-﻿<<<<<<< HEAD
-using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
-=======
-﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
-using DFC.App.JobProfile.MessageFunctionApp.Services;
->>>>>>> SS-Phase-1
+﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.Functions.DI.Standard;
 using DFC.Logger.AppInsights.Contracts;
 using DFC.Logger.AppInsights.CorrelationIdProviders;

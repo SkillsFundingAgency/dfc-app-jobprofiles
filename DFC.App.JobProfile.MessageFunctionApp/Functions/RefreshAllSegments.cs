@@ -24,7 +24,17 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         public async Task RunAsync([TimerTrigger("0 0 3 * * *", RunOnStartup = true)] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"{nameof(RefreshCourses)}: Timer trigger function executed at: {DateTime.Now}");
-            var run = await refreshService.RefreshAllSegmentsAsync();
+            int first = 100;
+            int skip = 0;
+            int count = await refreshService.CountJobProfiles();
+
+            while (count > 0 && first < count)
+            {
+                await refreshService.RefreshAllSegmentsAsync(first, skip);
+                skip = first;
+                first += 100;
+            }
+
             log.LogInformation($"{nameof(RefreshCourses)}: Timer trigger function completed at: {DateTime.Now}");
         }
     }

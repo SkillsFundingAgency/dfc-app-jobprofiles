@@ -1,12 +1,14 @@
 ﻿using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.Common;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Compui.Cosmos.Contracts;
 using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
@@ -14,6 +16,7 @@ using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -351,16 +354,29 @@ namespace DFC.App.JobProfile.Controllers
 
             return NoContent();
         }
-        
+
+        [HttpPost]
         [Route("refreshAllSegments")]
-        public async Task<IActionResult> RefreshAllSegments()
+        public async Task<IActionResult> RefreshAllSegments([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshAllSegments)} has been called");
+            //var obj = JsonConvert.DeserializeObject<JobProfileCurrentOpportunitiesSearchModel>(jobProfileModel.ToString());
 
-            var response = await jobProfileService.RefreshAllSegments("PUBLISHED").ConfigureAwait(false);
+            var response = await jobProfileService.RefreshAllSegments("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
             logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
 
             return NoContent();
+        }
+
+        [HttpGet]
+        [Route("countJobProfiles")]
+        public async Task<IActionResult> CountJobProfiles()
+        {
+            logService.LogInformation($"{nameof(CountJobProfiles)} has been called");
+
+            var response = await jobProfileService.CountJobProfiles("PUBLISHED").ConfigureAwait(false);
+            logService.LogInformation($"{nameof(CountJobProfiles)} has upserted content for: " + response.ToString());
+            return Ok(response);
         }
 
         #region Static helper methods

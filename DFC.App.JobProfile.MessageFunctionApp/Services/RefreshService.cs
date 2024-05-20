@@ -1,4 +1,5 @@
-﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+﻿using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
+using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Extensions.Logging;
@@ -6,7 +7,9 @@ using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Services
 {
@@ -38,7 +41,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                 logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Apprenticeships.");
+                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Apprenticeships.");
 
                 if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
                 {
@@ -51,12 +54,15 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return response.StatusCode;
         }
 
-        public async Task<HttpStatusCode> RefreshAllSegmentsAsync(int retryCount = 0)
+        public async Task<HttpStatusCode> RefreshAllSegmentsAsync(int first, int skip, int retryCount = 0)
         {
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}refreshAllSegments");
             ConfigureHttpClient();
 
-            var response = await httpClient.PostAsync(url, null).ConfigureAwait(false);
+            var json = JsonConvert.SerializeObject(new JobProfileCurrentOpportunitiesSearchModel { First = first, Skip = skip });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(url, content).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -65,7 +71,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
                 if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
                 {
-                    return await RefreshAllSegmentsAsync(retryCount++).ConfigureAwait(false);
+                    return await RefreshAllSegmentsAsync(first, skip, retryCount++).ConfigureAwait(false);
                 }
 
                 response.EnsureSuccessStatusCode();
@@ -94,6 +100,30 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             return response.StatusCode;
+        }
+
+
+
+        public async Task<int> CountJobProfiles(int retryCount = 0)
+        {
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}countJobProfiles");
+            ConfigureHttpClient();
+
+            var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Refresh Courses.");
+
+                if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
+                {
+                    return await CountJobProfiles(retryCount++).ConfigureAwait(false);
+                }
+
+                response.EnsureSuccessStatusCode();
+            }
+
+            return int.Parse(response.ToString());
         }
 
         private void ConfigureHttpClient()

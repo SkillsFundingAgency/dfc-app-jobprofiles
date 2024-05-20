@@ -9,6 +9,8 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
         Task<HttpStatusCode> RefreshCoursesAsync(int retryCount = 0);
 
-        Task<HttpStatusCode> RefreshAllSegmentsAsync(int retryCount = 0);
+        Task<HttpStatusCode> RefreshAllSegmentsAsync(int first, int skip, int retryCount = 0);
+
+        Task<int> CountJobProfiles(int retryCount = 0);
     }
 }

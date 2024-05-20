@@ -38,6 +38,8 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<bool> RefreshApprenticeshipsAsync(string filter);
 
-        Task<bool> RefreshAllSegments(string filter);
+        Task<bool> RefreshAllSegments(string filter, int first, int skip);
+
+        Task<int> CountJobProfiles(string filter);
     }
 }

@@ -783,7 +783,7 @@ namespace DFC.App.JobProfile.ProfileService
         {
             int count = 0;
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
-            count = jobProfile.JobProfileCurrentOpportunities.Count();
+            count = jobProfile.JobProfileCurrentOpportunities.Count;
             return count;
         }
 

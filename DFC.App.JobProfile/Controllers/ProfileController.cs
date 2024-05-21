@@ -335,6 +335,10 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> RefreshCourses([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshCourses)} has been called");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             if (jobProfileModel != null)
             {
@@ -350,6 +354,10 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> RefreshApprenticeships([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshApprenticeships)} has been called");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             if (jobProfileModel != null)
             {
@@ -365,6 +373,10 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> RefreshAllSegments([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshAllSegments)} has been called");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             if (jobProfileModel != null)
             {

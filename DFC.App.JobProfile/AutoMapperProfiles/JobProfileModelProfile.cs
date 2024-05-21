@@ -31,6 +31,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public JobProfileModelProfile()
         {
+            CreateMap<JobProfileModel, IndexDocumentViewModel>();
+
             CreateMap<JobProfileModel, ViewModels.BodyViewModel>()
                 .ForMember(d => d.SmartSurveyJP, s => s.Ignore())
                 .ForMember(d => d.SpeakToAnAdviser, s => s.Ignore());
@@ -172,13 +174,13 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                  .ForMember(d => d.Url, s => s.MapFrom(a => a.Urls.FirstOrDefault() ?? string.Empty));
 
             CreateMap<JobProfileCurrentOpportunities, JobProfileModel>()
-                .ForMember(d => d.CanonicalName, opt => opt.MapFrom(s => s.DisplayText))
+                .ForMember(d => d.CanonicalName, opt => opt.MapFrom(s => s.PageLocation.UrlName))
                 .ForMember(d => d.IncludeInSitemap, opt => opt.MapFrom(s => true));
         }
 
         public SocialProofVideoType MapType(string type)
         {
-            if (type.ToLower() == "youtube")
+            if (type != null && type.ToLower() == "youtube")
             {
                 return SocialProofVideoType.YouTube;
             } else

@@ -177,47 +177,83 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPost]
         [Route("refreshCourses")]
-        public async Task<IActionResult> RefreshCourses()
+        public async Task<IActionResult> RefreshCourses([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshCourses)} has been called");
-
-            var response = await jobProfileService.RefreshCourses();
-            if (!response)
+            if (!ModelState.IsValid)
             {
-                logService.LogError($"{nameof(RefreshCourses)} has failed");
+                return BadRequest(ModelState);
             }
 
-            logService.LogInformation($"{nameof(RefreshCourses)} has completed");
-            return NoContent();
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshCourses("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
+                logService.LogInformation($"{nameof(RefreshCourses)} has upserted content for: " + response.ToString());
+            }
+            else
+            {
+                return NoContent();
+            }
+
+            return Ok();
         }
 
         [HttpPost]
         [Route("refreshApprenticeships")]
-        public async Task<IActionResult> RefreshApprenticeships()
+        public async Task<IActionResult> RefreshApprenticeships([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshApprenticeships)} has been called");
-
-            var response = await jobProfileService.RefreshApprenticeshipsAsync().ConfigureAwait(false);
-
-            if (!response)
+            if (!ModelState.IsValid)
             {
-                logService.LogError($"{nameof(RefreshApprenticeships)} has failed");
+                return BadRequest(ModelState);
             }
 
-            logService.LogInformation($"{nameof(RefreshApprenticeships)} has completed");
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
+                logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
+            }
+            else
+            {
+                return NoContent();
+            }
 
-            return NoContent();
+            return Ok();
         }
 
+        [HttpPost]
         [Route("refreshAllSegments")]
-        public async Task<IActionResult> RefreshAllSegments()
+        public async Task<IActionResult> RefreshAllSegments([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshAllSegments)} has been called");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            var response = await jobProfileService.RefreshAllSegments("PUBLISHED").ConfigureAwait(false);
-            logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshAllSegments("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
 
-            return NoContent();
+                logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+            }
+            else
+            {
+                return NoContent();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("countJobProfiles")]
+        public async Task<IActionResult> CountJobProfiles()
+        {
+            logService.LogInformation($"{nameof(CountJobProfiles)} has been called");
+
+            var response = await jobProfileService.CountJobProfiles("PUBLISHED").ConfigureAwait(false);
+            logService.LogInformation($"{nameof(CountJobProfiles)} has upserted content for: " + response.ToString());
+            return Ok(response);
         }
 
         #region Static helper methods

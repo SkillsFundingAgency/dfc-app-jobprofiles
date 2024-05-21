@@ -51,8 +51,8 @@ namespace DFC.App.JobProfile
         public const string CourseSearchClientSvcSettings = "Configuration:CourseSearchClient:CourseSearchSvc";
         public const string CourseSearchClientAuditSettings = "Configuration:CourseSearchClient:CosmosAuditConnection";
         public const string CourseSearchClientPolicySettings = "Configuration:CourseSearchClient:Policies";
-        private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
         private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
+        private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
         private const string WorkerThreadsConfigAppSettings = "ThreadSettings:WorkerThreads";
         private const string IocpThreadsConfigAppSettings = "ThreadSettings:IocpThreads";
 
@@ -189,7 +189,6 @@ namespace DFC.App.JobProfile
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfileCurrentOpportunitiesResponse>, JobProfileCurrentOpportunitiesStrategy>();
 
             services.AddSingleton<ISharedContentRedisInterfaceStrategyFactory, SharedContentRedisStrategyFactory>();
-
             services.AddScoped<ISharedContentRedisInterface, SharedContentRedis>();
 
             services.AddSingleton(serviceProvider =>
@@ -199,19 +198,20 @@ namespace DFC.App.JobProfile
                     cfg.AddProfiles(
                         new List<Profile>
                         {
-                            new HealthCheckItemProfile(),
                             new JobProfileModelProfile(),
                             new StaticContentItemModelProfile(),
                             new FindACourseProfile(),
                         });
                 }).CreateMapper();
             });
+
             var courseSearchClientSettings = new CourseSearchClientSettings
             {
                 CourseSearchSvcSettings = configuration.GetSection(CourseSearchClientSvcSettings).Get<CourseSearchSvcSettings>() ?? new CourseSearchSvcSettings(),
                 CourseSearchAuditCosmosDbSettings = configuration.GetSection(CourseSearchClientAuditSettings).Get<CourseSearchAuditCosmosDbSettings>() ?? new CourseSearchAuditCosmosDbSettings(),
                 PolicyOptions = configuration.GetSection(CourseSearchClientPolicySettings).Get<PolicyOptions>() ?? new PolicyOptions(),
             };
+
             services.AddSingleton(courseSearchClientSettings);
             services.AddScoped<ICourseSearchApiService, CourseSearchApiService>();
             services.AddFindACourseServicesWithoutFaultHandling(courseSearchClientSettings);
@@ -232,17 +232,16 @@ namespace DFC.App.JobProfile
             policyRegistry.AddStandardPolicies(nameof(RefreshClientOptions), avPolicyOptions);
 
             var aVAPIServiceSettings = configuration.GetSection(AVAPIServiceAppSettings).Get<AVAPIServiceSettings>();
+            services.AddScoped<IAVAPIService, AVAPIService>();
             services.AddSingleton(aVAPIServiceSettings ?? new AVAPIServiceSettings());
             services.BuildHttpClient<IApprenticeshipVacancyApi, ApprenticeshipVacancyApi, RefreshClientOptions>(configuration, nameof(RefreshClientOptions))
             .AddPolicyHandlerFromRegistry($"{nameof(RefreshClientOptions)}_{nameof(CorePolicyOptions.HttpRateLimitRetry)}")
             .AddPolicyHandlerFromRegistry($"{nameof(RefreshClientOptions)}_{nameof(CorePolicyOptions.HttpRetry)}")
             .AddPolicyHandlerFromRegistry($"{nameof(RefreshClientOptions)}_{nameof(CorePolicyOptions.HttpCircuitBreaker)}");
 
-            services.AddScoped<IAVAPIService, AVAPIService>();
-
             services.AddHealthChecks()
                 .AddCheck<AVAPIService>("Apprenticeship Service")
-                .AddCheck<HealthCheck>("GraphQl and Redis connection check");
+                .AddCheck<HealthCheck>("GraphQl and Redis connection");
         }
 
         private void ConfigureMinimumThreads()

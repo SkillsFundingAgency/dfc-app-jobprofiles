@@ -37,7 +37,7 @@ namespace DFC.App.JobProfile.Controllers
 
                 if (status == HealthStatus.Healthy)
                 {
-                    message = "Redis and GraphQl are available";
+                    message = "Apprenticeship Service, Azure Redis and GraphQl are available";
                     logService.LogInformation($"{nameof(Health)} responded with: {resourceName} - {message}");
 
                     var viewModel = CreateHealthViewModel(resourceName, message);

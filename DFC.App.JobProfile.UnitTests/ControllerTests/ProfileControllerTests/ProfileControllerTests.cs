@@ -26,7 +26,6 @@ public class ProfileControllerTests
         var fakeMapper = A.Fake<IMapper>();
         var dummyConfigValues = A.Dummy<ConfigValues>();
         var feedbackLinks = A.Fake<FeedbackLinks>();
-        var fakeSegmentService = A.Fake<ISegmentService>();
         var fakeRedirectionSecurityService = A.Fake<IRedirectionSecurityService>();
         var fakeStaticContentDocumentService = A.Fake<IDocumentService<StaticContentItemModel>>();
         var fakeConfiguration = A.Fake<IConfiguration>();
@@ -40,10 +39,7 @@ public class ProfileControllerTests
                 fakeMapper,
                 dummyConfigValues,
                 feedbackLinks,
-                fakeSegmentService,
                 fakeRedirectionSecurityService,
-                fakeStaticContentDocumentService,
-                new CmsApiClientOptions(),
                 fakeSharedContentRedisInterface,
                 fakeConfiguration));
 

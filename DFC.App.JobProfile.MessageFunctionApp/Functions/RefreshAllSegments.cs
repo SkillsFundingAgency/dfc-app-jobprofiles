@@ -34,7 +34,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
                 log.LogInformation($"{nameof(RefreshCourses)}: Start processing from {skip} to {skip + first}");
                 await refreshService.RefreshAllSegmentsAsync(first, skip);
                 log.LogInformation($"{nameof(RefreshCourses)}: Finish processing from {skip} to {skip + first}");
-                skip += 100;
+                skip += first;
             }
 
             log.LogInformation($"{nameof(RefreshCourses)}: Timer trigger function completed at: {DateTime.Now}");

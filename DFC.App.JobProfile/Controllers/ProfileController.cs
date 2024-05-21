@@ -360,10 +360,12 @@ namespace DFC.App.JobProfile.Controllers
         public async Task<IActionResult> RefreshAllSegments([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshAllSegments)} has been called");
-            //var obj = JsonConvert.DeserializeObject<JobProfileCurrentOpportunitiesSearchModel>(jobProfileModel.ToString());
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshAllSegments("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
 
-            var response = await jobProfileService.RefreshAllSegments("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
-            logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+                logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+            }
 
             return NoContent();
         }

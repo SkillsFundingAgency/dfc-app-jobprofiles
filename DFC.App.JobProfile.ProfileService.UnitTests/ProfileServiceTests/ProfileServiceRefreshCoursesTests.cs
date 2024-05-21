@@ -33,7 +33,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
             var expectedResult = GetExpectedData();
-            var status = "PUBLISHED"; 
+            var status = "PUBLISHED";
             int first = 100;
             int skip = 0;
 

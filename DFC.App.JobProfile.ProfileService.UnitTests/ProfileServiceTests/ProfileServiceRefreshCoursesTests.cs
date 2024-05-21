@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
@@ -61,7 +60,7 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             var fakeclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, A.Fake<SegmentService>(), mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
 
             // act
             var exceptionResult = await Assert.ThrowsAsync<ArgumentNullException>(async () => await jobProfileService.RefreshCourses(null, 100, 0).ConfigureAwait(false)).ConfigureAwait(false);

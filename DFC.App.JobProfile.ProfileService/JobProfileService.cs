@@ -278,7 +278,7 @@ namespace DFC.App.JobProfile.ProfileService
             currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
 
             //Get job profile course keyword and lars code
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), status);
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
             if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
@@ -577,7 +577,7 @@ namespace DFC.App.JobProfile.ProfileService
                         string courseKeywords = each.Coursekeywords;
                         if (!string.IsNullOrEmpty(courseKeywords))
                         {
-                            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + ConvertCourseKeywordsString(courseKeywords);
+                            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + courseKeywords.ConvertCourseKeywordsString();
                             await GetCoursesAndCachedRedis(courseKeywords, cacheKey);
                         }
                     }

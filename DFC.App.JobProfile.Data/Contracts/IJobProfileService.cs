@@ -26,15 +26,10 @@ namespace DFC.App.JobProfile.Data.Contracts
 
         Task<SegmentModel> GetTasksSegmentAsync(string canonicalName, string filter);
 
-        Task<bool> RefreshCourses();
-
-
         Task<bool> RefreshCourses(string filter, int first, int skip);
 
         Task<bool> RefreshApprenticeshipsAsync(string filter, int first, int skip);
 
         Task<bool> RefreshAllSegments(string filter, int first, int skip);
-
-        Task<int> CountJobProfiles(string filter);
     }
 }

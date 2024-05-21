@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 
 namespace DFC.App.JobProfile.Controllers
 {
@@ -251,9 +252,10 @@ namespace DFC.App.JobProfile.Controllers
         {
             logService.LogInformation($"{nameof(CountJobProfiles)} has been called");
 
-            var response = await jobProfileService.CountJobProfiles("PUBLISHED").ConfigureAwait(false);
-            logService.LogInformation($"{nameof(CountJobProfiles)} has upserted content for: " + response.ToString());
-            return Ok(response);
+            var response = await jobProfileService.GetAllAsync().ConfigureAwait(false);
+            var count = response.Count();
+            logService.LogInformation($"{nameof(CountJobProfiles)} has found " + count + " job profiles.");
+            return Ok(count);
         }
 
         #region Static helper methods

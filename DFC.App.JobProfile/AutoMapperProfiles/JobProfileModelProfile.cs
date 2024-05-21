@@ -175,7 +175,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
 
             CreateMap<JobProfileCurrentOpportunities, JobProfileModel>()
                 .ForMember(d => d.CanonicalName, opt => opt.MapFrom(s => s.PageLocation.UrlName))
-                .ForMember(d => d.IncludeInSitemap, opt => opt.MapFrom(s => true));
+                .ForMember(d => d.IncludeInSitemap, opt => opt.MapFrom(s => true))
+                .ForMember(d => d.BreadcrumbTitle, opt => opt.MapFrom(s => s.DisplayText));
         }
 
         public SocialProofVideoType MapType(string type)

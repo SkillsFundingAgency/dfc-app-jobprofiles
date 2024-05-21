@@ -257,7 +257,7 @@ namespace DFC.App.JobProfile.ProfileService
             currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
 
             //Get job profile course keyword and lars code
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix, "/", canonicalName), status);
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), status);
 
             //get courses by course key words
             if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl != null &&

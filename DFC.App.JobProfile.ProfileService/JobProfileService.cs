@@ -694,7 +694,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
 
-                if (response != null && response.JobProfileVideo.IsAny() && response.JobProfileVideo[0].VideoType != "None")
+                if (response != null && response.JobProfileVideo.IsAny() && response.JobProfileVideo[0].VideoType != null && response.JobProfileVideo[0].VideoType != "None")
                 {
                     return mapper.Map<SocialProofVideo>(response);
                 }

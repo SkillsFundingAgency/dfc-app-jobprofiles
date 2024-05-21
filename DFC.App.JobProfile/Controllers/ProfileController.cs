@@ -345,8 +345,12 @@ namespace DFC.App.JobProfile.Controllers
                 var response = await jobProfileService.RefreshCourses("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
                 logService.LogInformation($"{nameof(RefreshCourses)} has upserted content for: " + response.ToString());
             }
+            else
+            {
+                return NoContent();
+            }
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpPost]
@@ -364,8 +368,12 @@ namespace DFC.App.JobProfile.Controllers
                 var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
                 logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
             }
+            else
+            {
+                return NoContent();
+            }
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpPost]
@@ -384,8 +392,12 @@ namespace DFC.App.JobProfile.Controllers
 
                 logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
             }
+            else
+            {
+                return NoContent();
+            }
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpGet]

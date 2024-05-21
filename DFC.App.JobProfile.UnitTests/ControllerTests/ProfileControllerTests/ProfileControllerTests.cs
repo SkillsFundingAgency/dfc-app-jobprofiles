@@ -43,8 +43,8 @@ public class ProfileControllerTests
                 fakeSegmentService,
                 fakeRedirectionSecurityService,
                 fakeStaticContentDocumentService,
-        new CmsApiClientOptions(),
-                fakeSharedContentRedisInterface, 
+                new CmsApiClientOptions(),
+                fakeSharedContentRedisInterface,
                 fakeConfiguration));
 
         // Assert

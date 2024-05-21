@@ -1,12 +1,17 @@
-﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+﻿using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
+using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Constants;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DFC.App.JobProfile.MessageFunctionApp.Services
 {
@@ -38,7 +43,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                 logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Apprenticeships.");
+                logService.LogError($"Failure status code '{response.StatusCode}' received with content '{responseContent}', for POST Apprenticeships.");
 
                 if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
                 {
@@ -51,12 +56,17 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             return response.StatusCode;
         }
 
-        public async Task<HttpStatusCode> RefreshAllSegmentsAsync(int retryCount = 0)
+        public async Task<HttpStatusCode> RefreshAllSegmentsAsync(int first, int skip, int retryCount = 0)
         {
             var url = new Uri($"{jobProfileClientOptions.BaseAddress}refreshAllSegments");
             ConfigureHttpClient();
 
-            var response = await httpClient.PostAsync(url, null).ConfigureAwait(false);
+            var json = JsonConvert.SerializeObject(new JobProfileCurrentOpportunitiesSearchModel { First = first, Skip = skip });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            logService.LogInformation($"{nameof(RefreshAllSegmentsAsync)}: Refresh jobprofile starting from {url} at {skip} to {skip + first}");
+            logService.LogInformation($"{nameof(RefreshAllSegmentsAsync)}: Json string is  {content}");
+
+            var response = await httpClient.PostAsync(url, content).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -65,11 +75,13 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
 
                 if (response.StatusCode == HttpStatusCode.PreconditionFailed && retryCount <= 5)
                 {
-                    return await RefreshAllSegmentsAsync(retryCount++).ConfigureAwait(false);
+                    return await RefreshAllSegmentsAsync(first, skip, retryCount++).ConfigureAwait(false);
                 }
 
                 response.EnsureSuccessStatusCode();
             }
+
+            logService.LogInformation($"{nameof(RefreshAllSegmentsAsync)}: Refresh jobprofile completed from {url} at {skip} to {skip + first}");
 
             return response.StatusCode;
         }
@@ -94,6 +106,29 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Services
             }
 
             return response.StatusCode;
+        }
+
+
+
+        public async Task<int> CountJobProfiles(int retryCount = 0)
+        {
+            var url = new Uri($"{jobProfileClientOptions.BaseAddress}countJobProfiles");
+            ConfigureHttpClient();
+
+            var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var result = JsonConvert.DeserializeObject<int>(responseString);
+
+                logService.LogInformation($"{nameof(CountJobProfiles)}: Get jobprofile count {result} from {url}");
+
+                return result;
+            }
+
+            logService.LogError($"{nameof(CountJobProfiles)}: Error Get jobprofile count from {url}, status: {response.StatusCode}");
+
+            return 0;
         }
 
         private void ConfigureHttpClient()

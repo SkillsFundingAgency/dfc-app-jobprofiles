@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
-using DFC.App.JobProfile.Helpers;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
-using FluentNHibernate.Conventions;
 using System.Collections.Generic;
 using System.Linq;
+using DFC.App.JobProfile.Helpers;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 {
@@ -28,7 +27,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
                 {
                     case RouteName.Apprenticeship:
                         if (responseData.RelatedApprenticeshipRequirements.ContentItems.IsAny() &&
-                            responseData.RelatedApprenticeshipRequirements.ContentItems.FirstOrDefault().Info.IsAny())
+                            responseData.RelatedApprenticeshipRequirements.ContentItems.FirstOrDefault().Info != null)
                         {
                             foreach (var item in responseData.RelatedApprenticeshipRequirements.ContentItems)
                             {
@@ -42,7 +41,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
                         break;
                     case RouteName.College:
                         if (responseData.RelatedCollegeRequirements.ContentItems.IsAny() &&
-                            responseData.RelatedCollegeRequirements.ContentItems.FirstOrDefault().Info.IsAny())
+                            responseData.RelatedCollegeRequirements.ContentItems.FirstOrDefault().Info != null)
                         {
                             foreach (var item in responseData.RelatedCollegeRequirements.ContentItems)
                             {
@@ -56,7 +55,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
                         break;
                     case RouteName.University:
                         if (responseData.RelatedUniversityRequirements.ContentItems.IsAny() &&
-                            responseData.RelatedUniversityRequirements.ContentItems.FirstOrDefault().Info.IsAny())
+                            responseData.RelatedUniversityRequirements.ContentItems.FirstOrDefault()?.Info != null)
                         {
                             foreach (var item in responseData.RelatedUniversityRequirements.ContentItems)
                             {

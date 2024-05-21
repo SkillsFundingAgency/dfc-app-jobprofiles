@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Models.Segment.Tasks;
-using DFC.App.JobProfile.Helpers;
 using DFC.App.JobProfile.ProfileService.Utilities;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using System.Collections.Generic;

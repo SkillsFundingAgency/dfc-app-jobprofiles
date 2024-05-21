@@ -2,20 +2,14 @@
 using CorrelationId;
 using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.AVService;
-using DFC.App.JobProfile.ClientHandlers;
 using DFC.App.JobProfile.Data.Configuration;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Contracts.SegmentServices;
 using DFC.App.JobProfile.Data.HttpClientPolicies;
 using DFC.App.JobProfile.Data.HttpClientPolicies.Polly;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Extensions;
-using DFC.App.JobProfile.HostedServices;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
-using DFC.App.JobProfile.ProfileService.SegmentServices;
-using DFC.App.JobProfile.Repository.CosmosDb;
-using DFC.App.JobProfile.Services;
 using DFC.Common.SharedContent.Pkg.Netcore;
 using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure;
 using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure.Strategy;
@@ -23,14 +17,10 @@ using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.Common.SharedContent.Pkg.Netcore.RequestHandler;
-using DFC.Compui.Cosmos;
-using DFC.Compui.Subscriptions.Pkg.Netstandard.Extensions;
 using DFC.Compui.Telemetry;
 using DFC.Content.Pkg.Netcore.Data.Contracts;
-using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
 using DFC.Content.Pkg.Netcore.Services;
 using DFC.Content.Pkg.Netcore.Services.ApiProcessorService;
-using DFC.Content.Pkg.Netcore.Services.CmsApiProcessorService;
 using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Extensions;
 using GraphQL.Client.Abstractions;
@@ -39,41 +29,42 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
-using PolicyOptions = DFC.App.JobProfile.HttpClientPolicies.PolicyOptions;
+using System.Threading;
 
 namespace DFC.App.JobProfile
 {
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        public const string StaticCosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:SharedContent";
-        public const string CosmosDbConfigAppSettings = "Configuration:CosmosDbConnections:JobProfile";
         public const string ConfigAppSettings = "Configuration";
-        public const string BrandingAssetsConfigAppSettings = "BrandingAssets";
         public const string AVAPIServiceAppSettings = "Configuration:AVAPIService";
         public const string AVAPIServiceClientPolicySettings = "Configuration:AVAPIService:Policies";
         public const string CourseSearchClientSvcSettings = "Configuration:CourseSearchClient:CourseSearchSvc";
         public const string CourseSearchClientAuditSettings = "Configuration:CourseSearchClient:CosmosAuditConnection";
         public const string CourseSearchClientPolicySettings = "Configuration:CourseSearchClient:Policies";
-        private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
         private const string RedisCacheConnectionStringAppSettings = "Cms:RedisCacheConnectionString";
+        private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
+        private const string WorkerThreadsConfigAppSettings = "ThreadSettings:WorkerThreads";
+        private const string IocpThreadsConfigAppSettings = "ThreadSettings:IocpThreads";
+
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment env;
+        private readonly ILogger<Startup> logger;
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             this.configuration = configuration;
             this.env = env;
+            this.logger = logger;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -129,11 +120,13 @@ namespace DFC.App.JobProfile
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureMinimumThreads();
+
             services.AddApplicationInsightsTelemetry();
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddCorrelationId();
             services.AddRazorTemplating();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -147,31 +140,28 @@ namespace DFC.App.JobProfile
 
         private void AddApplicationSpecificDependencyInjectionConfiguration(IServiceCollection services)
         {
-            var cosmosDbConnection = configuration.GetSection(CosmosDbConfigAppSettings).Get<CosmosDbConnection>();
-            var documentClient = new DocumentClient(new Uri(cosmosDbConnection.EndpointUrl), cosmosDbConnection.AccessKey);
+            var redisCacheConnectionString = ConfigurationOptions.Parse(configuration.GetSection(RedisCacheConnectionStringAppSettings).Get<string>() ??
+                throw new ArgumentNullException($"{nameof(RedisCacheConnectionStringAppSettings)} is missing or has an invalid value."));
 
-            services.AddSingleton(cosmosDbConnection);
-            services.AddSingleton<IDocumentClient>(documentClient);
-            services.AddSingleton<ICosmosRepository<JobProfileModel>, CosmosRepository<JobProfileModel>>();
+            services.AddStackExchangeRedisCache(options => { options.Configuration = configuration.GetSection(RedisCacheConnectionStringAppSettings).Get<string>(); });
+            services.AddSingleton<IConnectionMultiplexer>(option =>
+            ConnectionMultiplexer.Connect(new ConfigurationOptions
+            {
+                EndPoints = { redisCacheConnectionString.EndPoints[0] },
+                AbortOnConnectFail = false,
+                Ssl = true,
+                Password = redisCacheConnectionString.Password,
+            }));
+
             services.AddSingleton<IRedirectionSecurityService, RedirectionSecurityService>();
-
-            services.AddSingleton(configuration.GetSection(nameof(CmsApiClientOptions)).Get<CmsApiClientOptions>() ?? new CmsApiClientOptions());
-            var staticContentDbConnection = configuration.GetSection(StaticCosmosDbConfigAppSettings).Get<DFC.Compui.Cosmos.Contracts.CosmosDbConnection>();
-            var cosmosRetryOptions = new RetryOptions { MaxRetryAttemptsOnThrottledRequests = 20, MaxRetryWaitTimeInSeconds = 60 };
-            services.AddDocumentServices<StaticContentItemModel>(staticContentDbConnection, env.IsDevelopment(), cosmosRetryOptions);
-            services.AddTransient<ICmsApiService, CmsApiService>();
-            services.AddTransient<IStaticContentReloadService, StaticContentReloadService>();
             services.AddTransient<IContentTypeMappingService, ContentTypeMappingService>();
 
             var configValues = configuration.GetSection(ConfigAppSettings).Get<ConfigValues>();
             services.AddSingleton(configValues);
 
+            services.AddScoped<FeedbackLinks>();
             services.AddScoped<IJobProfileService, JobProfileService>();
-            services.AddScoped<ISegmentService, SegmentService>();
-            services.AddTransient<CorrelationIdDelegatingHandler>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
-
-            services.AddStackExchangeRedisCache(options => { options.Configuration = configuration.GetSection(RedisCacheConnectionStringAppSettings).Get<string>(); });
 
             services.AddSingleton<IGraphQLClient>(s =>
             {
@@ -199,7 +189,6 @@ namespace DFC.App.JobProfile
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiry<JobProfileCurrentOpportunitiesResponse>, JobProfileCurrentOpportunitiesStrategy>();
             services.AddSingleton<ISharedContentRedisInterfaceStrategyWithRedisExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>, JobProfileCurrentOpportunitiesWithFirstSkipStrategy>();
             services.AddSingleton<ISharedContentRedisInterfaceStrategyFactory, SharedContentRedisStrategyFactory>();
-
             services.AddScoped<ISharedContentRedisInterface, SharedContentRedis>();
 
             services.AddSingleton(serviceProvider =>
@@ -209,48 +198,33 @@ namespace DFC.App.JobProfile
                     cfg.AddProfiles(
                         new List<Profile>
                         {
-                            new HealthCheckItemProfile(),
-                            new JobProfileMetaDataPatchModelProfile(),
                             new JobProfileModelProfile(),
                             new StaticContentItemModelProfile(),
                             new FindACourseProfile(),
                         });
                 }).CreateMapper();
             });
+
             var courseSearchClientSettings = new CourseSearchClientSettings
             {
                 CourseSearchSvcSettings = configuration.GetSection(CourseSearchClientSvcSettings).Get<CourseSearchSvcSettings>() ?? new CourseSearchSvcSettings(),
                 CourseSearchAuditCosmosDbSettings = configuration.GetSection(CourseSearchClientAuditSettings).Get<CourseSearchAuditCosmosDbSettings>() ?? new CourseSearchAuditCosmosDbSettings(),
-                PolicyOptions = configuration.GetSection(CourseSearchClientPolicySettings).Get<DFC.FindACourseClient.PolicyOptions>() ?? new DFC.FindACourseClient.PolicyOptions(),
+                PolicyOptions = configuration.GetSection(CourseSearchClientPolicySettings).Get<PolicyOptions>() ?? new PolicyOptions(),
             };
+
             services.AddSingleton(courseSearchClientSettings);
             services.AddScoped<ICourseSearchApiService, CourseSearchApiService>();
             services.AddFindACourseServicesWithoutFaultHandling(courseSearchClientSettings);
 
-            const string AppSettingsPolicies = "Policies";
             var policyRegistry = services.AddPolicyRegistry();
-            var policyOptions = configuration.GetSection(AppSettingsPolicies).Get<PolicyOptions>();
             services.AddFindACourseTransientFaultHandlingPolicies(courseSearchClientSettings, policyRegistry);
 
             services.AddRazorTemplating();
-
-            services.AddSingleton(configuration.GetSection(nameof(CareerPathSegmentClientOptions)).Get<CareerPathSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(CurrentOpportunitiesSegmentClientOptions)).Get<CurrentOpportunitiesSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(FeedbackLinks)).Get<FeedbackLinks>() ?? new FeedbackLinks());
-            services.AddSingleton(configuration.GetSection(nameof(HowToBecomeSegmentClientOptions)).Get<HowToBecomeSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(OverviewBannerSegmentClientOptions)).Get<OverviewBannerSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(RelatedCareersSegmentClientOptions)).Get<RelatedCareersSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(WhatItTakesSegmentClientOptions)).Get<WhatItTakesSegmentClientOptions>());
-            services.AddSingleton(configuration.GetSection(nameof(WhatYouWillDoSegmentClientOptions)).Get<WhatYouWillDoSegmentClientOptions>());
 
             services.AddHostedServiceTelemetryWrapper();
             services.AddTransient<IApiService, ApiService>();
             services.AddTransient<IApiDataProcessorService, ApiDataProcessorService>();
             services.AddTransient<IApiCacheService, ApiCacheService>();
-
-            services.AddHostedService<StaticContentReloadBackgroundService>();
-            services.AddTransient<IWebhooksService, WebhooksService>();
-            services.AddSubscriptionBackgroundService(configuration);
 
             var avPolicyOptions = configuration.GetSection(AVAPIServiceClientPolicySettings).Get<CorePolicyOptions>();
             avPolicyOptions.HttpRateLimitRetry ??= new RateLimitPolicyOptions();
@@ -258,43 +232,35 @@ namespace DFC.App.JobProfile
             policyRegistry.AddStandardPolicies(nameof(RefreshClientOptions), avPolicyOptions);
 
             var aVAPIServiceSettings = configuration.GetSection(AVAPIServiceAppSettings).Get<AVAPIServiceSettings>();
+            services.AddScoped<IAVAPIService, AVAPIService>();
             services.AddSingleton(aVAPIServiceSettings ?? new AVAPIServiceSettings());
             services.BuildHttpClient<IApprenticeshipVacancyApi, ApprenticeshipVacancyApi, RefreshClientOptions>(configuration, nameof(RefreshClientOptions))
             .AddPolicyHandlerFromRegistry($"{nameof(RefreshClientOptions)}_{nameof(CorePolicyOptions.HttpRateLimitRetry)}")
             .AddPolicyHandlerFromRegistry($"{nameof(RefreshClientOptions)}_{nameof(CorePolicyOptions.HttpRetry)}")
             .AddPolicyHandlerFromRegistry($"{nameof(RefreshClientOptions)}_{nameof(CorePolicyOptions.HttpCircuitBreaker)}");
 
-            services.AddScoped<IAVAPIService, AVAPIService>();
+            services.AddHealthChecks()
+                .AddCheck<AVAPIService>("Apprenticeship Service")
+                .AddCheck<HealthCheck>("GraphQl and Redis connection");
+        }
 
-            services
-                .AddPolicies(policyRegistry, nameof(CareerPathSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<CareerPathSegmentClientOptions>, RefreshSegmentService<CareerPathSegmentClientOptions>, CareerPathSegmentClientOptions>(configuration, nameof(CareerPathSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+        private void ConfigureMinimumThreads()
+        {
+            var workerThreads = Convert.ToInt32(configuration[WorkerThreadsConfigAppSettings]);
 
-            services
-                .AddPolicies(policyRegistry, nameof(CurrentOpportunitiesSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<CurrentOpportunitiesSegmentClientOptions>, RefreshSegmentService<CurrentOpportunitiesSegmentClientOptions>, CurrentOpportunitiesSegmentClientOptions>(configuration, nameof(CurrentOpportunitiesSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
+            var iocpThreads = Convert.ToInt32(configuration[IocpThreadsConfigAppSettings]);
 
-            services
-                .AddPolicies(policyRegistry, nameof(HowToBecomeSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<HowToBecomeSegmentClientOptions>, RefreshSegmentService<HowToBecomeSegmentClientOptions>, HowToBecomeSegmentClientOptions>(configuration, nameof(HowToBecomeSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(OverviewBannerSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<OverviewBannerSegmentClientOptions>, RefreshSegmentService<OverviewBannerSegmentClientOptions>, OverviewBannerSegmentClientOptions>(configuration, nameof(OverviewBannerSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(RelatedCareersSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<RelatedCareersSegmentClientOptions>, RefreshSegmentService<RelatedCareersSegmentClientOptions>, RelatedCareersSegmentClientOptions>(configuration, nameof(RelatedCareersSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(WhatItTakesSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<WhatItTakesSegmentClientOptions>, RefreshSegmentService<WhatItTakesSegmentClientOptions>, WhatItTakesSegmentClientOptions>(configuration, nameof(WhatItTakesSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services
-                .AddPolicies(policyRegistry, nameof(WhatYouWillDoSegmentClientOptions), policyOptions)
-                .AddHttpClient<ISegmentRefreshService<WhatYouWillDoSegmentClientOptions>, RefreshSegmentService<WhatYouWillDoSegmentClientOptions>, WhatYouWillDoSegmentClientOptions>(configuration, nameof(WhatYouWillDoSegmentClientOptions), nameof(PolicyOptions.HttpRetry), nameof(PolicyOptions.HttpCircuitBreaker));
-
-            services.AddHealthChecks().AddCheck<AVAPIService>("Apprenticeship Service");
+            if (ThreadPool.SetMinThreads(workerThreads, iocpThreads))
+            {
+                logger.LogInformation(
+                    "ConfigureMinimumThreads: Minimum configuration value set. IOCP = {0} and WORKER threads = {1}",
+                    iocpThreads,
+                    workerThreads);
+            }
+            else
+            {
+                logger.LogWarning("ConfigureMinimumThreads: The minimum number of threads was not changed");
+            }
         }
     }
 }

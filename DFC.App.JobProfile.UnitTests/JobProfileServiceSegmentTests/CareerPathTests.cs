@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
 using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
-using NHibernate.Engine;
 using Razor.Templating.Core;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
@@ -25,11 +20,9 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
     public class CareerPathTests
     {
         [Fact]
-        public async void GetRelatedCareersDataSuccess()
+        public async Task GetRelatedCareersDataSuccess()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -40,11 +33,13 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 
             var canonicalName = "biochemist";
             var status = "PUBLISHED";
+            var expectedHTML = "test";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch, fakeAVAPIService);
             var expectedResult = GetExpectedData();
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => razorTemplateEngine.RenderAsync(A<string>.Ignored, A<object>.Ignored, null)).Returns(expectedHTML);
 
             //Act
             var response = await jobProfileService.GetCareerPathSegmentAsync(canonicalName, status);
@@ -52,6 +47,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             //Assert
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             Assert.NotNull(response);
+            Assert.Equal(expectedHTML, response.Markup.Value);
             response.Should().BeOfType(typeof(SegmentModel));
         }
 
@@ -59,8 +55,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetRelatedCareersDataNoSuccessAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
             var logService = A.Fake<ILogService>();
             var fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
@@ -72,7 +66,7 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var canonicalName = "biochemist";
             var status = "PUBLISHED";
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, razorTemplateEngine, configuration, fakeCourseSearch, fakeAVAPIService);
 
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileCareerPathAndProgressionResponse());
 

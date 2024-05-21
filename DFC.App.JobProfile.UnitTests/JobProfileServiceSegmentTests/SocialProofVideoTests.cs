@@ -4,7 +4,6 @@ using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
-using DFC.Common.SharedContent.Pkg.Netcore.Model.Common;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
 using DFC.FindACourseClient;
@@ -21,31 +20,29 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 {
     public class SocialProofVideoTests
     {
+        private const string CanonicalName = "auditor";
+        private const string Filter = "PUBLISHED";
+
         [Fact]
         public async Task GetSocialProofVideoValidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
-            var fakefacclient = A.Fake<ICourseSearchApiService>();
+            var fakeFACClient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
-
-            var canonicalName = "bookmaker";
-            var filter = "PUBLISHED";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
 
             //Act
-            var response = await jobProfileService.GetSocialProofVideoSegment(canonicalName, filter);
+            var response = await jobProfileService.GetSocialProofVideoSegment(CanonicalName, Filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
@@ -56,8 +53,6 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         [Fact]
         public async Task GetHowToBecomeInvalidInputAsync()
         {
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
@@ -67,19 +62,16 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
             var fakefacclient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
-            var expectedResult = GetExpectedData();
-            var canonicalName = "bookmaker";
-            var filter = "PUBLISHED";
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakefacclient, fakeAVAPIService);
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileVideoResponse());
 
             //Act
-            var response = await jobProfileService.GetSocialProofVideoSegment(canonicalName, filter);
+            var response = await jobProfileService.GetSocialProofVideoSegment(CanonicalName, Filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
-            response.Should().BeOfType(typeof(SocialProofVideo));
+            response.Should().BeNull();
         }
 
         private static JobProfileVideoResponse GetExpectedData()

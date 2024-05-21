@@ -1,5 +1,4 @@
 ﻿using DFC.App.JobProfile.Data.Configuration;
-using DFC.App.JobProfile.Data.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;

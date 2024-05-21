@@ -1,6 +1,5 @@
 ﻿using DFC.App.JobProfile.Data.Configuration;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
 
 namespace DFC.App.JobProfile.AVService
 {

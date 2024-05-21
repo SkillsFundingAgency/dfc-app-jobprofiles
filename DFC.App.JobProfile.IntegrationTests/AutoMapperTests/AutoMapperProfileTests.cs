@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DFC.App.JobProfile.AutoMapperProfiles;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

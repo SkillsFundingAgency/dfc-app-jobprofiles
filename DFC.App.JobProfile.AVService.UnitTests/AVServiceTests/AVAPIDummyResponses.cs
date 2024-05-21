@@ -1,9 +1,8 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
+﻿using System.Collections.Generic;
+using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
-namespace DFC.App.JobProfile.AVService.UnitTests
+namespace DFC.App.JobProfile.AVService.UnitTests.AVServiceTests
 {
     public static class AVAPIDummyResponses
     {

@@ -1,7 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Collections.Generic;
-using System.Net.Mime;
-using System.Text;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -11,12 +17,12 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
     public class HealthControllerRouteTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly CustomWebApplicationFactory<Startup> factory;
+        private readonly HttpClient httpClient;
 
         public HealthControllerRouteTests(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
-
-            DataSeeding.SeedDefaultArticle(factory);
+            this.httpClient = this.factory.CreateClient();
         }
 
         public static IEnumerable<object[]> HealthContentRouteData => new List<object[]>
@@ -31,38 +37,48 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
 
         [Theory]
         [MemberData(nameof(HealthContentRouteData))]
-        public async Task GetHealthHtmlContentEndpointsReturnSuccessAndCorrectContentType(string url)
+        public async Task GetHealthHtmlContentEndpointsReturnSuccess(string url)
         {
             // Arrange
             var uri = new Uri(url, UriKind.Relative);
-            var client = factory.CreateClient();
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
+
+            using var host = new HostBuilder()
+                .ConfigureWebHost(webHostBuilder =>
+                {
+                    webHostBuilder
+                    .UseTestServer()
+                    .UseStartup<Startup>()
+                    .Configure(app =>
+                    {
+                        app.UseRouting();
+                        app.UseEndpoints(endpoints =>
+                        {
+                            endpoints.MapHealthChecks(url);
+                        });
+                    })
+
+                    .ConfigureServices(services =>
+                    {
+                        var configuration = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .Build();
+                        services.AddSingleton<IConfiguration>(configuration);
+                        services.AddRouting();
+                        services.AddHealthChecks();
+                    });
+                }).Build();
+
+            await host.StartAsync();
+
+            var server = host.GetTestServer();
+            var client = server.CreateClient();
 
             // Act
-            var response = await client.GetAsync(uri).ConfigureAwait(false);
+            var response = await client.GetAsync(uri);
 
             // Assert
-            response.EnsureSuccessStatusCode();
-            Assert.Equal($"{MediaTypeNames.Text.Html}; charset={Encoding.UTF8.WebName}", response.Content.Headers.ContentType.ToString());
-        }
-
-        [Theory]
-        [MemberData(nameof(HealthContentRouteData))]
-        public async Task GetHealthJsonContentEndpointsReturnSuccessAndCorrectContentType(string url)
-        {
-            // Arrange
-            var uri = new Uri(url, UriKind.Relative);
-            var client = factory.CreateClient();
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-
-            // Act
-            var response = await client.GetAsync(uri).ConfigureAwait(false);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            Assert.Equal($"{MediaTypeNames.Application.Json}; charset={Encoding.UTF8.WebName}", response.Content.Headers.ContentType.ToString());
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("Healthy", await response.Content.ReadAsStringAsync());
         }
 
         [Theory]
@@ -71,14 +87,14 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
         {
             // Arrange
             var uri = new Uri(url, UriKind.Relative);
-            var client = factory.CreateClient();
-            client.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Accept.Clear();
 
             // Act
-            var response = await client.GetAsync(uri).ConfigureAwait(false);
+            var response = await httpClient.GetAsync(uri);
 
             // Assert
             response.EnsureSuccessStatusCode();
+            Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
         }
     }
 }

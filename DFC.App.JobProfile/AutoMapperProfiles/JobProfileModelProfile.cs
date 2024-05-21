@@ -5,13 +5,8 @@ using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.Data.Models.CareerPath;
-using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
-using DFC.App.JobProfile.Data.Models.Overview;
-using DFC.App.JobProfile.Data.Models.RelatedCareersModels;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
 using DFC.App.JobProfile.Data.Models.Segment.Tasks;
-using DFC.App.JobProfile.Data.Models.SkillsModels;
 using DFC.App.JobProfile.ProfileService.Models;
 using DFC.App.JobProfile.ViewModels;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
@@ -20,9 +15,14 @@ using DFC.FindACourseClient;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DFC.App.JobProfile.Data.Models.Segment.CareerPath;
+using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
+using DFC.App.JobProfile.Data.Models.Segment.Overview;
+using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers;
+using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
 using JobProfSkills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
 using RelatedSkill = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.RelatedSkill;
-using Skills = DFC.App.JobProfile.Data.Models.SkillsModels.Skills;
+using Skills = DFC.App.JobProfile.Data.Models.Segment.SkillsModels.Skills;
 
 namespace DFC.App.JobProfile.AutoMapperProfiles
 {
@@ -31,7 +31,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
     {
         public JobProfileModelProfile()
         {
-            CreateMap<JobProfileModel, JobProfileModel>();
+            CreateMap<JobProfileModel, IndexDocumentViewModel>();
+
             CreateMap<JobProfileModel, ViewModels.BodyViewModel>()
                 .ForMember(d => d.SmartSurveyJP, s => s.Ignore())
                 .ForMember(d => d.SpeakToAnAdviser, s => s.Ignore());
@@ -64,10 +65,6 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
             CreateMap<RelatedCareersResponse, RelatedCareerSegmentDataModel>()
                 .ForMember(d => d.RelatedCareers, s => s.MapFrom<RelatedCareerResolver>())
                 .ForMember(d => d.LastReviewed, s => s.Ignore());
-
-            CreateMap<RelatedCareerDataModel, RelatedCareerDataViewModel>();
-
-            CreateMap<JobProfileModel, IndexDocumentViewModel>();
 
             CreateMap<JobProfileWhatYoullDoResponse, TasksSegmentDataModel>()
                 .ForMember(d => d.Tasks, s => s.MapFrom(a => a.JobProfileWhatYoullDo.FirstOrDefault().Daytodaytasks.Html))
@@ -123,9 +120,8 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Title, s => s.MapFrom(a => a.Title))
                 .ForMember(d => d.WageUnit, s => s.MapFrom(a => a.Wage.WageUnit))
                 .ForMember(d => d.WageText, s => s.MapFrom(a => a.Wage.WageAdditionalInformation))
-                .ForPath(d => d.Location.PostCode, s => s.MapFrom(a => a.Address.PostCode))
-                .ForPath(d => d.Location.Town, s => s.MapFrom(a => a.Address.Town))
-                .ForMember(d => d.URL, s => s.MapFrom(a => a.EmployerWebsiteUrl))
+                .ForMember(d => d.Location, s => s.MapFrom<VacancyLocationResolver>())
+                .ForMember(d => d.URL, s => s.MapFrom(a => a.VacancyUrl))
                 .ForMember(d => d.PullDate, s => s.Ignore());
 
             CreateMap<JobProfileCareerPathAndProgressionResponse, CareerPathSegmentDataModel>()
@@ -174,14 +170,18 @@ namespace DFC.App.JobProfile.AutoMapperProfiles
                 .ForMember(d => d.Transcript, s => s.MapFrom(a => a.JobProfileVideo.FirstOrDefault().VideoTranscript));
 
             CreateMap<VideoThumbnail, Data.Models.Thumbnail>()
-                 //find thumbnail text and replace this below - temp solution
                  .ForMember(d => d.Text, s => s.MapFrom(a => a.MediaText.FirstOrDefault() ?? string.Empty))
                  .ForMember(d => d.Url, s => s.MapFrom(a => a.Urls.FirstOrDefault() ?? string.Empty));
+
+            CreateMap<JobProfileCurrentOpportunities, JobProfileModel>()
+                .ForMember(d => d.CanonicalName, opt => opt.MapFrom(s => s.PageLocation.UrlName))
+                .ForMember(d => d.IncludeInSitemap, opt => opt.MapFrom(s => true))
+                .ForMember(d => d.BreadcrumbTitle, opt => opt.MapFrom(s => s.DisplayText));
         }
 
         public SocialProofVideoType MapType(string type)
         {
-            if (type.ToLower() == "youtube")
+            if (type != null && type.ToLower() == "youtube")
             {
                 return SocialProofVideoType.YouTube;
             } else

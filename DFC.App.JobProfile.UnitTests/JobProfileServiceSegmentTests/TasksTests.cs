@@ -20,35 +20,36 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
 {
     public class TasksTests
     {
+        private const string CanonicalName = "auditor";
+        private const string Filter = "PUBLISHED";
+
         [Fact]
         public async Task GetTasksValidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
-            var facClient = A.Fake<ICourseSearchApiService>();
+            var fakeFACClient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient, fakeAVAPIService);
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, fakeAVAPIService);
             var expectedResult = GetExpectedData();
-
-            var canonicalName = "bookmaker";
-            var filter = "PUBLISHED";
+            var expectedHTML = "test";
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(expectedResult);
+            A.CallTo(() => razorTemplateEngine.RenderAsync(A<string>.Ignored, A<object>.Ignored, null)).Returns(expectedHTML);
 
             //Act
-            var response = await jobProfileService.GetTasksSegmentAsync(canonicalName, filter);
+            var response = await jobProfileService.GetTasksSegmentAsync(CanonicalName, Filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
             Assert.NotNull(response);
+            Assert.Equal(expectedHTML, response.Markup.Value);
             response.Should().BeOfType(typeof(SegmentModel));
         }
 
@@ -56,26 +57,21 @@ namespace DFC.App.JobProfile.UnitTests.JobProfileServiceSegmentTests
         public async Task GetTasksInvalidInputAsync()
         {
             //Arrange
-            var repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-            var segmentService = A.Fake<ISegmentService>();
             var mapper = GetMapperInstance();
 
             var logService = A.Fake<ILogService>();
             var sharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
             var razorTemplateEngine = A.Fake<IRazorTemplateEngine>();
             var configuration = A.Fake<IConfiguration>();
-            var facClient = A.Fake<ICourseSearchApiService>();
+            var fakeFACClient = A.Fake<ICourseSearchApiService>();
             var fakeAVAPIService = A.Fake<IAVAPIService>();
 
-            var jobProfileService = new JobProfileService(repository, segmentService, mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, facClient, fakeAVAPIService);
-            var expectedResult = GetExpectedData();
-            var canonicalName = "bookmaker";
-            var filter = "PUBLISHED";
+            var jobProfileService = new JobProfileService(mapper, logService, sharedContentRedisInterface, razorTemplateEngine, configuration, fakeFACClient, fakeAVAPIService);
 
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(new JobProfileWhatYoullDoResponse());
 
             //Act
-            var response = await jobProfileService.GetTasksSegmentAsync(canonicalName, filter);
+            var response = await jobProfileService.GetTasksSegmentAsync(CanonicalName, Filter);
 
             //Assert
             A.CallTo(() => sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();

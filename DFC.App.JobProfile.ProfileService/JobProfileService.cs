@@ -512,12 +512,13 @@ namespace DFC.App.JobProfile.ProfileService
         /// <param name="filter">PUBLISHED.</param>
         /// <returns>boolean.</returns>
         /// <exception cref="ArgumentNullException">throw exception when jobprofile data is null.</exception>
-        public async Task<bool> RefreshCourses(string filter)
+        public async Task<bool> RefreshCourses(string filter, int first, int skip)
         {
             bool returndata = true;
+            int total = skip + first;
 
-            //Get job profile cousekeyword and lars code
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+            //Get job profile with Url name
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
                 if (jobProfile.JobProfileCurrentOpportunities.Any())
@@ -550,17 +551,18 @@ namespace DFC.App.JobProfile.ProfileService
         /// <param name="filter">PUBLISHED</param>
         /// <returns>boolean.</returns>
         /// <exception cref="ArgumentNullException">throw exception when jobprofile data is null.</exception>
-        public async Task<bool> RefreshAllSegments(string filter)
+        public async Task<bool> RefreshAllSegments(string filter, int first, int skip)
         {
             bool returndata = true;
+            int total = skip + first;
 
             //Get job profile with Url name
-            var jobprfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
-            if (jobprfile != null && jobprfile.JobProfileCurrentOpportunities != null)
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
+            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
-                if (jobprfile.JobProfileCurrentOpportunities.Count() > 0)
+                if (jobProfile.JobProfileCurrentOpportunities.Count() > 0)
                 {
-                    foreach (var each in jobprfile.JobProfileCurrentOpportunities)
+                    foreach (var each in jobProfile.JobProfileCurrentOpportunities)
                     {
                         string canonicalName = each.PageLocation.UrlName;
 
@@ -606,12 +608,14 @@ namespace DFC.App.JobProfile.ProfileService
             return returndata;
         }
 
-        public async Task<bool> RefreshApprenticeshipsAsync(string filter)
+        public async Task<bool> RefreshApprenticeshipsAsync(string filter, int first, int skip)
         {
+
             bool returndata = true;
+            int total = skip + first;
 
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
-
+            //Get job profile with Url name
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities.Count() > 0)
             {
                 foreach (var each in jobProfile.JobProfileCurrentOpportunities)
@@ -773,6 +777,14 @@ namespace DFC.App.JobProfile.ProfileService
             var result = await repository.DeleteAsync(documentId).ConfigureAwait(false);
 
             return result == HttpStatusCode.NoContent;
+        }
+
+        public async Task<int> CountJobProfiles(string filter)
+        {
+            int count = 0;
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+            count = jobProfile.JobProfileCurrentOpportunities.Count();
+            return count;
         }
 
         private static string AddPrefix(string jobTitle)

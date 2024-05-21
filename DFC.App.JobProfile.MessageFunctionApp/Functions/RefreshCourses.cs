@@ -21,9 +21,21 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         [FunctionName("RefreshCourses")]
         public async Task RunAsync([TimerTrigger("0 5 * * *", RunOnStartup = true)] TimerInfo myTimer, ILogger log)
         {
-            log.LogInformation($"{nameof(RefreshCourses)}: Timer trigger function executed at: {DateTime.Now}");
-            var run = await refreshService.RefreshCoursesAsync();
-            log.LogInformation($"{nameof(RefreshCourses)}: Timer trigger function completed at: {DateTime.Now}");
+            log.LogInformation($"{nameof(RefreshApprenticeships)}: Timer trigger function executed at: {DateTime.Now}");
+            int first = 100;
+            int skip = 0;
+            int count = await refreshService.CountJobProfiles();
+            log.LogInformation($"{nameof(RefreshApprenticeships)}: Total Jobprofiles count is: {count}");
+
+            while (count > 0 && skip < count)
+            {
+                log.LogInformation($"{nameof(RefreshApprenticeships)}: Start processing from {skip} to {skip + first}");
+                await refreshService.RefreshCoursesAsync(first, skip);
+                log.LogInformation($"{nameof(RefreshApprenticeships)}: Finish processing from {skip} to {skip + first}");
+                skip += first;
+            }
+
+            log.LogInformation($"{nameof(RefreshApprenticeships)}: Timer trigger function completed at: {DateTime.Now}");
         }
     }
 }

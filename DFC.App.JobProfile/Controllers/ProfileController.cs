@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
@@ -331,36 +332,59 @@ namespace DFC.App.JobProfile.Controllers
 
         [HttpPost]
         [Route("refreshCourses")]
-        public async Task<IActionResult> RefreshCourses()
+        public async Task<IActionResult> RefreshCourses([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshCourses)} has been called");
 
-            var response = await jobProfileService.RefreshCourses("PUBLISHED").ConfigureAwait(false);
-            logService.LogInformation($"{nameof(RefreshCourses)} has upserted content for: " + response.ToString());
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshCourses("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
+                logService.LogInformation($"{nameof(RefreshCourses)} has upserted content for: " + response.ToString());
+            }
+
             return NoContent();
         }
 
         [HttpPost]
         [Route("refreshApprenticeships")]
-        public async Task<IActionResult> RefreshApprenticeships()
+        public async Task<IActionResult> RefreshApprenticeships([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshApprenticeships)} has been called");
 
-            var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED").ConfigureAwait(false);
-            logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
+                logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
+            }
 
             return NoContent();
         }
-        
+
+        [HttpPost]
         [Route("refreshAllSegments")]
-        public async Task<IActionResult> RefreshAllSegments()
+        public async Task<IActionResult> RefreshAllSegments([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
             logService.LogInformation($"{nameof(RefreshAllSegments)} has been called");
 
-            var response = await jobProfileService.RefreshAllSegments("PUBLISHED").ConfigureAwait(false);
-            logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshAllSegments("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
+
+                logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+            }
 
             return NoContent();
+        }
+
+        [HttpGet]
+        [Route("countJobProfiles")]
+        public async Task<IActionResult> CountJobProfiles()
+        {
+            logService.LogInformation($"{nameof(CountJobProfiles)} has been called");
+
+            var response = await jobProfileService.CountJobProfiles("PUBLISHED").ConfigureAwait(false);
+            logService.LogInformation($"{nameof(CountJobProfiles)} has upserted content for: " + response.ToString());
+            return Ok(response);
         }
 
         #region Static helper methods

@@ -1,4 +1,5 @@
 ﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Functions.DI.Standard;
 using DFC.Logger.AppInsights.Contracts;
 using DFC.Logger.AppInsights.CorrelationIdProviders;

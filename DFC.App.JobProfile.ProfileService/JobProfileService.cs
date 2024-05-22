@@ -36,15 +36,9 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly IRazorTemplateEngine razorTemplateEngine;
+        private readonly IConfiguration configuration;
         private readonly ICourseSearchApiService client;
         private readonly IAVAPIService avAPIService;
-        private readonly string howToBecomeOfflineMarkup;
-        private readonly string overviewOfflineMarkup;
-        private readonly string currentOpportunitiesOfflineMarkup;
-        private readonly string relatedCareersOfflineMarkup;
-        private readonly string whatItTakesOfflineMarkup;
-        private readonly string whatYouWillDoOfflineMarkup;
-        private readonly string careerPathOfflineMarkup;
         private readonly string filter;
 
         public JobProfileService(
@@ -60,16 +54,10 @@ namespace DFC.App.JobProfile.ProfileService
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             this.razorTemplateEngine = razorTemplateEngine;
+            this.configuration = configuration;
             this.client = client;
             this.avAPIService = avAPIService;
             filter = configuration.GetSection("contentMode:contentMode").Get<string>() ?? "PUBLISHED";
-            howToBecomeOfflineMarkup = configuration.GetSection("HowToBecomeSegmentClientOptions:OfflineHtml").Get<string>();
-            relatedCareersOfflineMarkup = configuration.GetSection("RelatedCareersSegmentClientOptions:OfflineHtml").Get<string>();
-            overviewOfflineMarkup = configuration.GetSection("OverviewBannerSegmentClientOptions:OfflineHtml").Get<string>();
-            currentOpportunitiesOfflineMarkup = configuration.GetSection("CurrentOpportunitiesSegmentClientOptions:OfflineHtml").Get<string>();
-            whatItTakesOfflineMarkup = configuration.GetSection("WhatItTakesSegmentClientOptions:OfflineHtml").Get<string>();
-            whatYouWillDoOfflineMarkup = configuration.GetSection("WhatYouWillDoSegmentClientOptions:OfflineHtml").Get<string>();
-            careerPathOfflineMarkup = configuration.GetSection("CareerPathSegmentClientOptions:OfflineHtml").Get<string>();
         }
 
         public async Task<IEnumerable<JobProfileModel>> GetAllAsync()
@@ -94,43 +82,73 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
+            var requiredSegments = new[] 
+            {
+                JobProfileSegment.Overview,
+                JobProfileSegment.HowToBecome,
+                JobProfileSegment.WhatItTakes,
+            };
+
+            var data = new JobProfileModel()
+            {
+                CanonicalName = canonicalName,
+                BreadcrumbTitle = new CultureInfo("en-GB").TextInfo.ToTitleCase(canonicalName),
+                Segments = new List<SegmentModel>(),
+            };
+
             try
             {
-                var howToBecomeTask = GetHowToBecomeSegmentAsync(canonicalName, filter);
                 var overviewTask = GetOverviewSegment(canonicalName, filter);
-                var relatedCareersTask = GetRelatedCareersSegmentAsync(canonicalName, filter);
-                var careersPathTask = GetCareerPathSegmentAsync(canonicalName, filter);
+                var howToBecomeTask = GetHowToBecomeSegmentAsync(canonicalName, filter);
                 var skillsTask = GetSkillSegmentAsync(canonicalName, filter);
-                var videoTask = GetSocialProofVideoSegment(canonicalName, filter);
-                var tasksTask = GetTasksSegmentAsync(canonicalName, filter);
-                var currentOpportunityTask = GetCurrentOpportunities(canonicalName);
 
-                await Task.WhenAll(howToBecomeTask, overviewTask, relatedCareersTask, careersPathTask, skillsTask, videoTask, tasksTask, currentOpportunityTask);
-
-                var data = new JobProfileModel()
+                var requiredTasks = new Task[]
                 {
-                    CanonicalName = canonicalName,
-                    BreadcrumbTitle = new CultureInfo("en-GB").TextInfo.ToTitleCase(canonicalName),
-                    Segments = new List<SegmentModel>(),
+                    overviewTask,
+                    howToBecomeTask,
+                    skillsTask,
                 };
 
-                if (howToBecomeTask.IsCompletedSuccessfully && overviewTask.IsCompletedSuccessfully && relatedCareersTask.IsCompletedSuccessfully &&
-                    careersPathTask.IsCompletedSuccessfully && skillsTask.IsCompletedSuccessfully && videoTask.IsCompletedSuccessfully &&
-                    tasksTask.IsCompletedSuccessfully && currentOpportunityTask.IsCompletedSuccessfully)
+                await Task.WhenAll(requiredTasks);
+
+                if (requiredTasks.All(t => t.IsCompletedSuccessfully))
                 {
-                    data.Segments.Add(await howToBecomeTask);
-                    data.Segments.Add(await relatedCareersTask);
                     data.Segments.Add(await overviewTask);
-                    data.Segments.Add(await currentOpportunityTask);
+                    data.Segments.Add(await howToBecomeTask);
                     data.Segments.Add(await skillsTask);
-                    data.Segments.Add(await careersPathTask);
-                    data.Segments.Add(await tasksTask);
-                    data.Video = await videoTask;
                 }
 
-                if (data.Segments.Any(segment => segment.Segment == JobProfileSegment.Overview && segment.RefreshStatus == RefreshStatus.Failed))
+                if (data.Segments.Any(segment => 
+                        requiredSegments.Contains(segment.Segment) && 
+                        segment.RefreshStatus == RefreshStatus.Failed))
                 {
                     return null;
+                }
+
+                var tasksTask = GetTasksSegmentAsync(canonicalName, filter);
+                var careersPathTask = GetCareerPathSegmentAsync(canonicalName, filter);
+                var currentOpportunityTask = GetCurrentOpportunities(canonicalName);
+                var relatedCareersTask = GetRelatedCareersSegmentAsync(canonicalName, filter);
+                var videoTask = GetSocialProofVideoSegment(canonicalName, filter);
+
+                var optionalTasks = new Task[]
+                {
+                    tasksTask,
+                    careersPathTask,
+                    currentOpportunityTask,
+                    relatedCareersTask,
+                    videoTask,
+                };
+
+                await Task.WhenAll(optionalTasks);
+
+                if (optionalTasks.All(t => t.IsCompletedSuccessfully))
+                {
+                    data.Segments.Add(await tasksTask);
+                    data.Segments.Add(await careersPathTask);
+                    data.Segments.Add(await currentOpportunityTask);
+                    data.Segments.Add(await relatedCareersTask);
+                    data.Video = await videoTask;
                 }
 
                 return data;
@@ -153,7 +171,7 @@ namespace DFC.App.JobProfile.ProfileService
             SegmentModel relatedCareers = new ()
             {
                 Segment = JobProfileSegment.RelatedCareers,
-                Markup = new HtmlString(relatedCareersOfflineMarkup),
+                Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.RelatedCareers)),
             };
             try
             {
@@ -195,7 +213,7 @@ namespace DFC.App.JobProfile.ProfileService
             SegmentModel howToBecome = new ()
             {
                 Segment = JobProfileSegment.HowToBecome,
-                Markup = new HtmlString(howToBecomeOfflineMarkup),
+                Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.HowToBecome)),
             };
 
             try
@@ -270,7 +288,7 @@ namespace DFC.App.JobProfile.ProfileService
             SegmentModel currentOpportunities = new ()
             {
                 Segment = JobProfileSegment.CurrentOpportunities,
-                Markup = new HtmlString(currentOpportunitiesOfflineMarkup),
+                Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.CurrentOpportunities)),
             };
             var currentOpportunitiesSegmentModel = new CurrentOpportunitiesSegmentModel();
             currentOpportunitiesSegmentModel.Data = new CurrentOpportunitiesSegmentDataModel();
@@ -322,7 +340,14 @@ namespace DFC.App.JobProfile.ProfileService
 
                 currentOpportunitiesSegmentModel.Data.JobTitle = jobTitle;
 
-                var currentOpportunitiesObject = JsonConvert.SerializeObject(currentOpportunitiesSegmentModel.Data, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+                var currentOpportunitiesObject = JsonConvert.SerializeObject(currentOpportunitiesSegmentModel.Data,
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new DefaultContractResolver
+                        {
+                            NamingStrategy = new CamelCaseNamingStrategy()
+                        }
+                    });
 
                 var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/CurrentOpportunities/BodyData.cshtml", currentOpportunitiesSegmentModel.Data).ConfigureAwait(false);
 
@@ -349,7 +374,7 @@ namespace DFC.App.JobProfile.ProfileService
             SegmentModel overview = new ()
             {
                 Segment = JobProfileSegment.Overview,
-                Markup = new HtmlString(overviewOfflineMarkup),
+                Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.Overview)),
             };
 
             try
@@ -373,13 +398,16 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
 
-                    overview = new SegmentModel
+                    if (!string.IsNullOrWhiteSpace(html))
                     {
-                        Segment = JobProfileSegment.Overview,
-                        JsonV1 = overviewObject,
-                        RefreshStatus = RefreshStatus.Success,
-                        Markup = new HtmlString(html),
-                    };
+                        overview = new SegmentModel
+                        {
+                            Segment = JobProfileSegment.Overview,
+                            JsonV1 = overviewObject,
+                            RefreshStatus = RefreshStatus.Success,
+                            Markup = new HtmlString(html),
+                        };
+                    }
                 }
             }
             catch (Exception exception)
@@ -401,7 +429,7 @@ namespace DFC.App.JobProfile.ProfileService
             SegmentModel tasks = new ()
             {
                 Segment = JobProfileSegment.WhatYouWillDo,
-                Markup = new HtmlString(whatYouWillDoOfflineMarkup),
+                Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.WhatYouWillDo)),
             };
 
             try
@@ -447,7 +475,7 @@ namespace DFC.App.JobProfile.ProfileService
             SegmentModel careerPath = new ()
             {
                 Segment = JobProfileSegment.CareerPathsAndProgression,
-                Markup = new HtmlString(careerPathOfflineMarkup),
+                Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.CareerPathsAndProgression)),
             };
 
             try
@@ -458,7 +486,14 @@ namespace DFC.App.JobProfile.ProfileService
                 {
                     var mappedResponse = mapper.Map<CareerPathSegmentDataModel>(response);
 
-                    var careerPathObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+                    var careerPathObject = JsonConvert.SerializeObject(mappedResponse,
+                        new JsonSerializerSettings
+                        {
+                            ContractResolver = new DefaultContractResolver
+                            {
+                                NamingStrategy = new CamelCaseNamingStrategy()
+                            }
+                        });
 
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/CareerPath/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
@@ -491,7 +526,7 @@ namespace DFC.App.JobProfile.ProfileService
             SegmentModel skills = new ()
             {
                 Segment = JobProfileSegment.WhatItTakes,
-                Markup = new HtmlString(whatItTakesOfflineMarkup),
+                Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.WhatItTakes)),
             };
 
             try
@@ -536,13 +571,16 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Skills/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
-                    skills = new SegmentModel
+                    if (!string.IsNullOrWhiteSpace(html))
                     {
-                        Segment = JobProfileSegment.WhatItTakes,
-                        JsonV1 = skillsObject,
-                        RefreshStatus = RefreshStatus.Success,
-                        Markup = new HtmlString(html),
-                    };
+                        skills = new SegmentModel
+                        {
+                            Segment = JobProfileSegment.WhatItTakes,
+                            JsonV1 = skillsObject,
+                            RefreshStatus = RefreshStatus.Success,
+                            Markup = new HtmlString(html),
+                        };
+                    }
                 }
             }
             catch (Exception ex)
@@ -893,5 +931,18 @@ namespace DFC.App.JobProfile.ProfileService
                 logService.LogError(exception.ToString());
             }
         }
+
+        private string GetOfflineMarkup(JobProfileSegment jobProfileSegment) => jobProfileSegment switch
+        {
+            JobProfileSegment.Overview => configuration.GetSection("OverviewBannerSegmentClientOptions:OfflineHtml").Get<string>(),
+            JobProfileSegment.HowToBecome => configuration.GetSection("HowToBecomeSegmentClientOptions:OfflineHtml").Get<string>(),
+            JobProfileSegment.WhatItTakes => configuration.GetSection("WhatItTakesSegmentClientOptions:OfflineHtml").Get<string>(),
+            JobProfileSegment.WhatYouWillDo => configuration.GetSection("WhatYouWillDoSegmentClientOptions:OfflineHtml").Get<string>(),
+            JobProfileSegment.CareerPathsAndProgression => configuration.GetSection("CareerPathSegmentClientOptions:OfflineHtml").Get<string>(),
+            JobProfileSegment.CurrentOpportunities => configuration.GetSection("CurrentOpportunitiesSegmentClientOptions:OfflineHtml").Get<string>(),
+            JobProfileSegment.RelatedCareers => configuration.GetSection("RelatedCareersSegmentClientOptions:OfflineHtml").Get<string>(),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(jobProfileSegment), jobProfileSegment, "enum is invalid or not provided.")
+        };
     }
 }

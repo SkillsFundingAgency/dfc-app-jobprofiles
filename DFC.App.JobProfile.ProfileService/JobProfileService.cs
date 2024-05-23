@@ -2,7 +2,12 @@
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.Segment.CareerPath;
+using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.Segment.Overview;
+using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers;
+using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
 using DFC.App.JobProfile.Data.Models.Segment.Tasks;
 using DFC.App.JobProfile.ProfileService.Utilities;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
@@ -20,11 +25,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using DFC.App.JobProfile.Data.Models.Segment.CareerPath;
-using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
-using DFC.App.JobProfile.Data.Models.Segment.Overview;
-using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers;
-using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
 using JobProfSkills = DFC.App.JobProfile.Data.Models.Segment.SkillsModels.Skills;
 using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
 using Azure;
@@ -151,7 +151,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>RelatedCareers segment model.</returns>
         public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel relatedCareers = new ()
+            SegmentModel relatedCareers = new()
             {
                 Segment = JobProfileSegment.RelatedCareers,
                 Markup = new HtmlString(relatedCareersOfflineMarkup),
@@ -193,7 +193,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>HowToBecome segment model.</returns>
         public async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel howToBecome = new ()
+            SegmentModel howToBecome = new()
             {
                 Segment = JobProfileSegment.HowToBecome,
                 Markup = new HtmlString(howToBecomeOfflineMarkup),
@@ -268,7 +268,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>Current Opportunities Segment model.</returns>
         public async Task<SegmentModel> GetCurrentOpportunities(string canonicalName)
         {
-            SegmentModel currentOpportunities = new ()
+            SegmentModel currentOpportunities = new()
             {
                 Segment = JobProfileSegment.CurrentOpportunities,
                 Markup = new HtmlString(currentOpportunitiesOfflineMarkup),
@@ -347,7 +347,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>Overview Segment model.</returns>
         public async Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter)
         {
-            SegmentModel overview = new ()
+            SegmentModel overview = new()
             {
                 Segment = JobProfileSegment.Overview,
                 Markup = new HtmlString(overviewOfflineMarkup),
@@ -399,7 +399,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>WhatYoullDo segment model.</returns>
         public async Task<SegmentModel> GetTasksSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel tasks = new ()
+            SegmentModel tasks = new()
             {
                 Segment = JobProfileSegment.WhatYouWillDo,
                 Markup = new HtmlString(whatYouWillDoOfflineMarkup),
@@ -447,7 +447,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>CareerPath segment model.</returns>
         public async Task<SegmentModel> GetCareerPathSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel careerPath = new ()
+            SegmentModel careerPath = new()
             {
                 Segment = JobProfileSegment.CareerPathsAndProgression,
                 Markup = new HtmlString(careerPathOfflineMarkup),
@@ -491,7 +491,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>Returns segment information containing HTML markup data to render the "What it Takes" segment.</returns>
         public async Task<SegmentModel> GetSkillSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel skills = new ()
+            SegmentModel skills = new()
             {
                 Segment = JobProfileSegment.WhatItTakes,
                 Markup = new HtmlString(whatItTakesOfflineMarkup),
@@ -660,7 +660,6 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<bool> RefreshApprenticeshipsAsync(string filter, int first, int skip)
         {
-
             bool returndata = true;
             int total = skip + first;
 
@@ -674,7 +673,7 @@ namespace DFC.App.JobProfile.ProfileService
 
                     if (larsCodes != null && larsCodes.Count > 0)
                     {
-                        string cachekey = string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix, "/", each.PageLocation.UrlName, "/", string.Join(",", larsCodes));
+                        string cachekey = string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix, "/", each.PageLocation.UrlName, "/", string.Join(",", larsCodes.OrderBy(x => x)));
                         await GetApprenticeshipsAndCachedRedisAsync(larsCodes, cachekey);
                     }
                 }
@@ -797,7 +796,7 @@ namespace DFC.App.JobProfile.ProfileService
         private async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes, string canonicalName)
         {
             // Add LARS code to cache key
-            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix + '/' + canonicalName + '/' + string.Join(",", larsCodes);
+            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix + '/' + canonicalName + '/' + string.Join(",", larsCodes.OrderBy(x => x));
             var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
             var avMapping = new AVMapping { Standards = larsCodes };
 

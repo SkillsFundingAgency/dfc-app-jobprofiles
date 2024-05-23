@@ -27,6 +27,7 @@ using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers;
 using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
 using JobProfSkills = DFC.App.JobProfile.Data.Models.Segment.SkillsModels.Skills;
 using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
+using Azure;
 
 namespace DFC.App.JobProfile.ProfileService
 {
@@ -159,7 +160,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, filter);
 
-                if (response.JobProfileRelatedCareers.IsAny())
+                if (response != null && response.JobProfileRelatedCareers.IsAny())
                 {
                     var mappedResponse = mapper.Map<RelatedCareerSegmentDataModel>(response);
 
@@ -281,7 +282,7 @@ namespace DFC.App.JobProfile.ProfileService
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
-            if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
+            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
             {
                 string jobTitle = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].DisplayText;
                 currentOpportunitiesSegmentModel.Data.TitlePrefix = jobTitle.AddPrefix();
@@ -356,7 +357,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfileOverview, "/", canonicalName), filter);
 
-                if (response.JobProfileOverview.IsAny())
+                if (response != null && response.JobProfileOverview.IsAny())
                 {
                     var mappedOverview = mapper.Map<OverviewApiModel>(response);
                     mappedOverview.Breadcrumb = BuildBreadcrumb(canonicalName, string.Empty, mappedOverview.Title);
@@ -407,26 +408,28 @@ namespace DFC.App.JobProfile.ProfileService
             try
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(ApplicationKeys.JobProfileWhatYoullDo + "/" + canonicalName, filter);
-
-                var mappedResponse = mapper.Map<TasksSegmentDataModel>(response);
-
-                var tasksObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
+                if (response != null)
                 {
-                    ContractResolver = new DefaultContractResolver
+                    var mappedResponse = mapper.Map<TasksSegmentDataModel>(response);
+
+                    var tasksObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
                     {
-                        NamingStrategy = new CamelCaseNamingStrategy(),
-                    },
-                });
+                        ContractResolver = new DefaultContractResolver
+                        {
+                            NamingStrategy = new CamelCaseNamingStrategy(),
+                        },
+                    });
 
-                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Tasks/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Tasks/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
-                tasks = new SegmentModel
-                {
-                    Segment = JobProfileSegment.WhatYouWillDo,
-                    Markup = new HtmlString(html),
-                    JsonV1 = tasksObject,
-                    RefreshStatus = RefreshStatus.Success,
-                };
+                    tasks = new SegmentModel
+                    {
+                        Segment = JobProfileSegment.WhatYouWillDo,
+                        Markup = new HtmlString(html),
+                        JsonV1 = tasksObject,
+                        RefreshStatus = RefreshStatus.Success,
+                    };
+                }
             }
             catch (Exception e)
             {
@@ -454,7 +457,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfileCareerPath + "/" + canonicalName, filter);
 
-                if (response.JobProileCareerPath != null)
+                if (response != null && response.JobProileCareerPath != null)
                 {
                     var mappedResponse = mapper.Map<CareerPathSegmentDataModel>(response);
 
@@ -499,7 +502,7 @@ namespace DFC.App.JobProfile.ProfileService
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, filter);
                 var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, "PUBLISHED");
 
-                if (response.JobProfileSkills != null && skillsResponse.Skill != null)
+                if (response != null && response.JobProfileSkills != null && skillsResponse.Skill != null)
                 {
                     SkillsResponse jobProfileSkillsResponse = new SkillsResponse();
                     List<Skills> jobProfileSkillsList = new List<Skills>();

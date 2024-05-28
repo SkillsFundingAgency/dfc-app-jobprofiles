@@ -21,7 +21,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             var allowedWhitelistValues = configuration.GetValue<string>("AllowedRedirects");
 
-            if (!String.IsNullOrEmpty(allowedWhitelistValues))
+            if (!string.IsNullOrEmpty(allowedWhitelistValues))
             {
                 redirectionHostWhitelist = allowedWhitelistValues.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
             }

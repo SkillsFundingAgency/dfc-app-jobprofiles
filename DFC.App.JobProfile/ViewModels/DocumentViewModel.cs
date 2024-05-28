@@ -12,9 +12,6 @@ namespace DFC.App.JobProfile.ViewModels
 
         public BodyViewModel Body { get; set; }
 
-        [Display(Name = "Document Id")]
-        public Guid? DocumentId { get; set; }
-
         [Display(Name = "Canonical Name")]
         public string CanonicalName { get; set; }
 
@@ -32,8 +29,6 @@ namespace DFC.App.JobProfile.ViewModels
 
         [Display(Name = "Last Updated")]
         public DateTime LastReviewed { get; set; }
-
-        public long SequenceNumber { get; set; }
 
         [Display(Name = "Alternative Names")]
         public string[] AlternativeNames { get; set; }

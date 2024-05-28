@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
-namespace DFC.App.JobProfile.RedirectionSecurityService.UnitTests.RedirectionSecurityServiceTests
+namespace DFC.App.JobProfile.ProfileService.UnitTests.RedirectionSecurityServiceTests
 {
     [Trait("RedirectionSecurity Service", "Valid Host Tests")]
     public class RedirectionSecurityServiceTests

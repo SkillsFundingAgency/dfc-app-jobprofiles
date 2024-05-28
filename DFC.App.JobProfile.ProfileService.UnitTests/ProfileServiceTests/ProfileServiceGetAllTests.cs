@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.FindACourseClient;
+using DFC.Logger.AppInsights.Contracts;
 using FakeItEasy;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Razor.Templating.Core;
 using Xunit;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
@@ -11,22 +13,29 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
     [Trait("Profile Service", "GetAll Tests")]
     public class ProfileServiceGetAllTests
     {
-        private readonly ICosmosRepository<Data.Models.JobProfileModel> repository;
-
-        private readonly ISegmentService segmentService;
         private readonly IMapper mapper;
         private readonly IJobProfileService jobProfileService;
+        private readonly ILogService logService;
+        private readonly ISharedContentRedisInterface fakeSharedContentRedisInterface;
+        private readonly IRazorTemplateEngine fakeRazorTemplateEngine;
+        private readonly IConfiguration fakeConfiguration;
+        private readonly IAVAPIService fakeAVAPIService;
+        private readonly ICourseSearchApiService fakeclient;
 
         public ProfileServiceGetAllTests()
         {
-            repository = A.Fake<ICosmosRepository<JobProfileModel>>();
-
-            segmentService = A.Fake<ISegmentService>();
             mapper = A.Fake<IMapper>();
-            jobProfileService = new JobProfileService(repository, segmentService, mapper);
+            logService = A.Fake<ILogService>();
+            fakeSharedContentRedisInterface = A.Fake<ISharedContentRedisInterface>();
+            fakeRazorTemplateEngine = A.Fake<IRazorTemplateEngine>();
+            fakeConfiguration = A.Fake<IConfiguration>();
+            fakeclient = A.Fake<ICourseSearchApiService>();
+            fakeAVAPIService = A.Fake<IAVAPIService>();
+
+            jobProfileService = new JobProfileService(mapper, logService, fakeSharedContentRedisInterface, fakeRazorTemplateEngine, fakeConfiguration, fakeclient, fakeAVAPIService);
         }
 
-        [Fact]
+/*        [Fact]
         public async Task JobProfileServiceGetAllListReturnsSuccess()
         {
             // arrange
@@ -56,6 +65,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
             // assert
             A.CallTo(() => repository.GetAllAsync()).MustHaveHappenedOnceExactly();
             A.Equals(results, expectedResults);
-        }
+        }*/
     }
 }

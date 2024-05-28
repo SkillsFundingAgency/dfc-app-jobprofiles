@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.Response;
+using FakeItEasy;
+using System;
 using System.Collections.Generic;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -32,6 +35,13 @@ namespace DFC.App.JobProfile.IntegrationTests.ControllerTests
             var client = factory.CreateClient();
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Xml));
+
+            var jobProfileCurrentOpportunitiesResponse = new JobProfileCurrentOpportunitiesResponse()
+            {
+                JobProfileCurrentOpportunities = new List<JobProfileCurrentOpportunities>() { new JobProfileCurrentOpportunities() { DisplayText = "test" } },
+            };
+
+            A.CallTo(() => factory.FakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored)).Returns(jobProfileCurrentOpportunitiesResponse);
 
             // Act
             var response = await client.GetAsync(uri).ConfigureAwait(false);

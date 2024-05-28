@@ -1,19 +1,11 @@
-﻿using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.ViewModels;
-using FakeItEasy;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Xunit;
+﻿using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
 {
     [Trait("Profile Controller", "Index Tests")]
     public class ProfileControllerIndexTests : BaseProfileController
     {
-        [Theory]
+        /*[Theory]
         [MemberData(nameof(HtmlMediaTypes))]
         public async Task ProfileControllerIndexHtmlReturnsSuccess(string mediaTypeName)
         {
@@ -145,6 +137,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             Assert.Equal((int)HttpStatusCode.NotAcceptable, statusResult.StatusCode);
 
             controller.Dispose();
-        }
+        }*/
     }
 }

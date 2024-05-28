@@ -1,0 +1,14 @@
+﻿@using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers
+@{
+    var relatedCareers = Model.RelatedCareers as List <RelatedCareerDataModel>;
+}
+
+<div class="job-profile-related">
+    <h3 class="govuk-heading-m">Related careers</h3>
+    <ul class="list list-big">
+        @foreach (var relatedCareerDataViewModel in relatedCareers)
+        {
+            <li><a href="@relatedCareerDataViewModel.RoutePrefix@relatedCareerDataViewModel.ProfileLink">@relatedCareerDataViewModel.Title</a></li>
+        }
+    </ul>
+</div>

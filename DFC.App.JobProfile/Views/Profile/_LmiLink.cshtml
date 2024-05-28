@@ -1,6 +1,7 @@
-﻿@model HeroViewModel
+﻿@using DFC.App.JobProfile.Data.Enums
+@model HeroViewModel
 
-@if (Model.ShowLmi && Model.Segments.Any(s => s.Segment == DFC.App.JobProfile.Data.JobProfileSegment.Overview) && Model.LmiLink.OverviewSegmentModel != null)
+@if (Model.ShowLmi && Model.Segments.Any(s => s.Segment == JobProfileSegment.Overview) && Model.LmiLink.OverviewSegmentModel != null)
 {
     <div class="job-profile-hero-additional">
         <div class="govuk-width-container">

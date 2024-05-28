@@ -1,6 +1,6 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
   "parameters": {
     "ApimLoggerName": {
       "type": "string"
@@ -176,34 +176,103 @@
     },
     "workspaceResourceGroup": {
       "type": "string"
+    },
+    "CmsTokenEndpointUrl": {
+      "type": "string"
+    },
+    "CmsGraphApiUrl": {
+      "type": "string"
+    },
+    "CmsClientId": {
+      "type": "string"
+    },
+    "CmsClientSecret": {
+      "type": "securestring"
+    },
+    "CmsRedisCacheConnectionString": {
+      "type": "securestring"
+    },
+    "CmsSqlApiUrl": {
+      "type": "string"
+    },
+    "contentMode": {
+      "type": "string"
+    },
+    "apprenticeshipServiceUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Url to the apprenticeship service"
+      }
+    },
+    "apprenticeshipServiceKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for the apprenticeship service"
+      }
+    },
+    "avfeedCosmosDbEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Endpoint for av feed cosmosdb instance"
+      }
+    },
+    "avfeedCosmosDbKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for av feed cosmosdb instance"
+      }
+    },
+    "csclientCosmosDbDatabaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Course provider (Sitefinity) database name in cosmosdb"
+      }
+    },
+    "courseProviderServiceEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Url for course provider service"
+      }
+    },
+    "courseProviderServiceApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Access token for course provider service"
+      }
+    },
+    "WorkerThreads": {
+      "type": "string"
+    },
+    "IocpThreads": {
+      "type": "string"
     }
   },
-    "variables": {
-        "ApiName": "[concat(parameters('ApimProductInstanceName'), '-', parameters('ApiName'))]",
-        "productionEnvironment": "[or(equals(parameters('environment'), 'PP'), equals(parameters('Environment'), 'PRD'))]",
-        "appServicePlanName": "[if(greater(length(parameters('sharedAppServicePlanName')), 0), parameters('sharedAppServicePlanName'), concat(variables('resourcePrefix'), '-asp'))]",
-        "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
-        "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
-        "cosmosDbCollectionPartitionKey": "/PartitionKey",
-        "cosmosDbDatabaseName": "dfc-app-jobprofiles",
-        "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
-        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
-        "urlJobprofiles": "[toLower(concat('https://', variables('webAppName'), '.', parameters('appServiceDomain')))]",
-        "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofover-as.', parameters('appServiceDomain')))]",
-        "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofcops-as.', parameters('appServiceDomain')))]",
-        "urlCareerpathApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-carpath-as.', parameters('appServiceDomain')))]",
-        "urlJobprofileHowtobecomeApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-howto-as.', parameters('appServiceDomain')))]",
-        "urlRelatedcareersApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-relcar-as.', parameters('appServiceDomain')))]",
-        "urlJobprofileSkillsApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofskills-as.', parameters('appServiceDomain')))]",
-        "urlJobprofileTasksApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobproftasks-as.', parameters('appServiceDomain')))]",
-        "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
-        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
-        "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
-        "functionAppInsightsName": "[concat(variables('functionAppName'), '-ai')]",
-        "cmsSubscriptionName": "job-profile-metadata",
-        "refreshSubscriptionName": "job-profile-segment-refresh",
-        "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-app-sharedresources-actgrp')]"
-    },
+  "variables": {
+    "ApiName": "[concat(parameters('ApimProductInstanceName'), '-', parameters('ApiName'))]",
+    "productionEnvironment": "[or(equals(parameters('environment'), 'PP'), equals(parameters('Environment'), 'PRD'))]",
+    "appServicePlanName": "[if(greater(length(parameters('sharedAppServicePlanName')), 0), parameters('sharedAppServicePlanName'), concat(variables('resourcePrefix'), '-asp'))]",
+    "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
+    "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
+    "cosmosDbCollectionPartitionKey": "/PartitionKey",
+    "cosmosDbDatabaseName": "dfc-app-jobprofiles",
+    "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
+    "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
+    "urlJobprofiles": "[toLower(concat('https://', variables('webAppName'), '.', parameters('appServiceDomain')))]",
+    "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofover-as.', parameters('appServiceDomain')))]",
+    "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofcops-as.', parameters('appServiceDomain')))]",
+    "urlCareerpathApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-carpath-as.', parameters('appServiceDomain')))]",
+    "urlJobprofileHowtobecomeApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-howto-as.', parameters('appServiceDomain')))]",
+    "urlRelatedcareersApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-relcar-as.', parameters('appServiceDomain')))]",
+    "urlJobprofileSkillsApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofskills-as.', parameters('appServiceDomain')))]",
+    "urlJobprofileTasksApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobproftasks-as.', parameters('appServiceDomain')))]",
+    "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
+    "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
+    "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
+    "functionAppInsightsName": "[concat(variables('functionAppName'), '-ai')]",
+    "cmsSubscriptionName": "job-profile-metadata",
+    "refreshSubscriptionName": "job-profile-segment-refresh",
+    "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-app-sharedresources-actgrp')]"
+  },
   "resources": [
     {
       "name": "[variables('ApiName')]",
@@ -630,7 +699,139 @@
               {
                 "name": "Configuration__EnableLMI",
                 "value": "[parameters('EnableLMI')]"
-              }
+              },
+              {
+                "name": "Cms__TokenEndPointUrl",
+                "value": "[parameters('CmsTokenEndpointUrl')]"
+              },
+              {
+                "name": "Cms__GraphApiUrl",
+                "value": "[parameters('CmsGraphApiUrl')]"
+              },
+              {
+                "name": "Cms__ClientId",
+                "value": "[parameters('CmsClientId')]"
+              },
+              {
+                "name": "Cms__ClientSecret",
+                "value": "[parameters('CmsClientSecret')]"
+              },
+              {
+                "name": "Cms__RedisCacheConnectionString",
+                "value": "[parameters('CmsRedisCacheConnectionString')]"
+              },
+              {
+                "name": "contentMode__contentMode",
+                "value": "[parameters('contentMode')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAEndPoint",
+                "value": "[parameters('apprenticeshipServiceUrl')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAASubscriptionKey",
+                "value": "[parameters('apprenticeshipServiceKey')]"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAPageSize",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAAMaxPagesToTryPerMapping",
+                "value": "100"
+              },
+              {
+                "name": "Configuration__AVAPIService__FAASortBy",
+                "value": "AgeDesc"
+              },
+              {
+                "name": "Configuration__AVAPIService__RequestTimeOutSeconds",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__AVAPIService__StandardsForHealthCheck",
+                "value": "26,30"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpCircuitBreaker__DurationOfBreak",
+                "value": "00:00:10"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpCircuitBreaker__ExceptionsAllowedBeforeBreaking",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpRetry__BackoffPower",
+                "value": "2"
+              },
+              {
+                "name": "Configuration__AVAPIService__Policies__HttpRetry__Count",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__AccessKey",
+                "value": "[parameters('avfeedCosmosDbKey')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__EndpointUrl",
+                "value": "[parameters('avfeedCosmosDbEndpoint')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__DatabaseId",
+                "value": "[parameters('csclientCosmosDbDatabaseName')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__CollectionId",
+                "value": "CourseSearchAudit"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CosmosAuditConnection__PartitionKey",
+                "value": "/PartitionKey"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__ServiceEndpoint",
+                "value": "[Parameters('courseProviderServiceEndpoint')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__APIKey",
+                "value": "[Parameters('courseProviderServiceApiKey')]"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__SearchPageSize",
+                "value": "20"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__RequestTimeOutSeconds",
+                "value": "10"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__CourseSearchSvc__TransientErrorsNumberOfRetries",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpCircuitBreaker__DurationOfBreak",
+                "value": "00:01:00"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpCircuitBreaker__ExceptionsAllowedBeforeBreaking",
+                "value": "3"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpRetry__BackoffPower",
+                "value": "2"
+              },
+              {
+                "name": "Configuration__CourseSearchClient__Policies__HttpRetry__Count",
+                "value": "3"
+              },
+              {
+                "name": "ThreadSettings__WorkerThreads",
+                "value": "[parameters('WorkerThreads')]"
+              },
+              {
+                 "name": "ThreadSettings__IocpThreads",
+                 "value": "[parameters('IocpThreads')]"   
+			  }
             ]
           }
         }
@@ -1061,6 +1262,6 @@
 
     }
   ],
-    "outputs": {
-    }
+  "outputs": {
+  }
 }

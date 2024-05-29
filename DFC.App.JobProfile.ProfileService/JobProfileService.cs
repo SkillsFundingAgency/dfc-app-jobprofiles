@@ -618,7 +618,6 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Skills/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
-
                     if (!string.IsNullOrWhiteSpace(html))
                     {
                         logService.LogInformation($"{nameof(GetSkillSegmentAsync)} has successfully retrieved data");
@@ -640,6 +639,36 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return skills;
+        }
+
+        /// <summary>
+        /// Get SocialProofVideo from STAX via GraphQl for a job profile.
+        /// </summary>
+        /// <param name="canonicalName">Job profile URL.</param>
+        /// <param name="filter">PUBLISHED or DRAFT.</param>
+        /// <returns>SocialProofVideo segment model.</returns>
+        public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
+        {
+            try
+            {
+                logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} is attempting to retrieve data");
+
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
+
+                if (response != null && response.JobProfileVideo.IsAny() && response.JobProfileVideo[0].VideoType != null && response.JobProfileVideo[0].VideoType != "None")
+                {
+                    logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} has successfully retrieved data");
+                    return mapper.Map<SocialProofVideo>(response);
+                }
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+                throw;
+            }
+            logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} has not returned any data - returning null");
+
+            return null;
         }
 
         /// <summary>
@@ -765,32 +794,6 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return returndata;
-        }
-
-        /// <summary>
-        /// Get SocialProofVideo from STAX via GraphQl for a job profile.
-        /// </summary>
-        /// <param name="canonicalName">Job profile URL.</param>
-        /// <param name="filter">PUBLISHED or DRAFT.</param>
-        /// <returns>SocialProofVideo segment model.</returns>
-        public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
-        {
-            try
-            {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
-
-                if (response != null && response.JobProfileVideo.IsAny() && response.JobProfileVideo[0].VideoType != null && response.JobProfileVideo[0].VideoType != "None")
-                {
-                    return mapper.Map<SocialProofVideo>(response);
-                }
-            }
-            catch (Exception exception)
-            {
-                logService.LogError(exception.ToString());
-                throw;
-            }
-
-            return null;
         }
 
         private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)

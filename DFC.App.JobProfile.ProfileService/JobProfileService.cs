@@ -101,7 +101,7 @@ namespace DFC.App.JobProfile.ProfileService
                 Segments = new List<SegmentModel>(),
             };
 
-            var requiredSegments = new[] 
+            var requiredSegments = new[]
             {
                 JobProfileSegment.Overview,
                 JobProfileSegment.HowToBecome,
@@ -116,7 +116,7 @@ namespace DFC.App.JobProfile.ProfileService
                 var howToBecomeTask = GetHowToBecomeSegmentAsync(canonicalName, filter);
                 var skillsTask = GetSkillSegmentAsync(canonicalName, filter);
 
-                Task<SegmentModel>[] requiredTasks = 
+                Task<SegmentModel>[] requiredTasks =
                 {
                     overviewTask,
                     howToBecomeTask,
@@ -132,8 +132,8 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments.Add(await skillsTask);
                 }
 
-                if (data.Segments.Any(segment => 
-                        requiredSegments.Contains(segment.Segment) && 
+                if (data.Segments.Any(segment =>
+                        requiredSegments.Contains(segment.Segment) &&
                         segment.RefreshStatus == RefreshStatus.Failed))
                 {
                     logService.LogError($"{nameof(GetByNameAsync)} has failed to retrieve data for required segments");
@@ -148,7 +148,7 @@ namespace DFC.App.JobProfile.ProfileService
                 var relatedCareersTask = GetRelatedCareersSegmentAsync(canonicalName, filter);
                 var videoTask = GetSocialProofVideoSegment(canonicalName, filter);
 
-                Task<SegmentModel>[] optionalTasks = 
+                Task<SegmentModel>[] optionalTasks =
                 {
                     relatedCareersTask,
                     careersPathTask,

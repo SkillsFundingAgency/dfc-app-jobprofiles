@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Models;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
@@ -15,7 +14,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DFC.App.JobProfile.Data.Enums;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles;
 using Xunit;
+using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
+using RelatedSkill = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.RelatedSkill;
+using Relatedskills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Relatedskills;
+using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
+using DFC.App.JobProfile.Data.Models.Segment.Overview;
 
 namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 {
@@ -47,8 +53,6 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
         public async Task JobProfileServiceGetByNameReturnsSuccess()
         {
             // arrange
-            var fakeJobProfileService = A.Fake<IJobProfileService>();
-
             var expectedResult = A.Fake<JobProfileModel>();
             expectedResult.Segments = new List<SegmentModel>
             {
@@ -61,15 +65,57 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
                 new SegmentModel { Segment = JobProfileSegment.WhatYouWillDo },
             };
 
+            var expectedSkillsResponse = new SkillsResponse();
+            var list = new List<Skills>
+            {
+                new Skills
+                {
+                    Description = "Skill1Desc",
+                    DisplayText = "RelatedSkillDesc",
+                    GraphSync = new()
+                    {
+                        NodeId = "29d1a617-92b7-446f-81a1-070e69b00aa9",
+                    },
+                    ONetElementId = "12345",
+                },
+            };
+            expectedSkillsResponse.Skill = list;
+
             var allEnumValues = Enum.GetValues(typeof(JobProfileSegment)).Cast<JobProfileSegment>();
             var distinctSegments = expectedResult.Segments.Select(s => s.Segment).Distinct();
 
-            A.CallTo(() => fakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(expectedResult);
+            // Fake Skills GraphQl returns
             A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored))
                 .Returns(new JobProfilesOverviewResponse()
                 {
                     JobProfileOverview = new List<JobProfileOverview> { new JobProfileOverview() },
                 });
+            A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored))
+                .Returns(new JobProfileHowToBecomeResponse()
+                {
+                    JobProfileHowToBecome = new List<JobProfileHowToBecome> { new JobProfileHowToBecome() },
+                });
+
+            A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored))
+                .Returns(ExpectedJobProfileSkillsResponse());
+            A.CallTo(() => fakeSharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(A<string>.Ignored, A<string>.Ignored, A<double>.Ignored))
+                .Returns(expectedSkillsResponse);
+
+            // Fake AutoMapper returns
+            A.CallTo(() => fakeRazorTemplateEngine.RenderAsync(A<string>.Ignored, A<OverviewApiModel>.Ignored, null))
+                .Returns("test");
+            A.CallTo(() => fakeRazorTemplateEngine.RenderAsync(A<string>.Ignored, A<HowToBecomeSegmentDataModel>.Ignored, null))
+                .Returns("test");
+            A.CallTo(() => fakeRazorTemplateEngine.RenderAsync(A<string>.Ignored, A<JobProfileSkillSegmentDataModel>.Ignored, null))
+                .Returns("test");
+
+            // Fake Skills AutoMapper returns
+            A.CallTo(() => mapper.Map<List<OnetSkill>>(A<List<Skills>>.Ignored))
+                .Returns(new List<OnetSkill>() { new OnetSkill() { Title = "RelatedSkillDesc" } });
+
+            A.CallTo(() => mapper.Map<List<ContextualisedSkill>>(A<List<RelatedSkill>>.Ignored))
+                .Returns(new List<ContextualisedSkill>() { new ContextualisedSkill() { Description = "RelatedSkillDesc" } });
+
 
             // act
             var result = await jobProfileService.GetByNameAsync("auditor").ConfigureAwait(false);
@@ -89,6 +135,82 @@ namespace DFC.App.JobProfile.ProfileService.UnitTests.ProfileServiceTests
 
             // assert
             Assert.Equal("Value cannot be null. (Parameter 'canonicalName')", exceptionResult.Message);
+        }
+
+        private static JobProfileSkillsResponse ExpectedJobProfileSkillsResponse()
+        {
+            var expectedResult = new JobProfileSkillsResponse();
+            var list = new List<JobProfileSkill>()
+            {
+                new JobProfileSkill
+                {
+                    DigitalSkills = new DigitalSkills
+                    {
+                        ContentItems = new List<DigitalSkillsContentItem>
+                        {
+                            new DigitalSkillsContentItem()
+                            {
+                                Description = "Skill1Desc",
+                                DisplayText = "Skill1",
+                                GraphSync = new ()
+                                {
+                                    NodeId = "29d1a617-92b7-446f-81a1-070e69b00aa9",
+                                },
+                            },
+                        },
+                    },
+                    DisplayText = "BioSkill",
+                    Otherrequirements = new ()
+                   {
+                       Html = "ExampleHTML",
+                   },
+                    PageLocation = new ()
+                   {
+                       DefaultPageForLocation = false,
+                       FullUrl = "/biochemist",
+                       UrlName = "biochemist",
+                   },
+                    Relatedrestrictions = new Relatedrestrictions
+                   {
+                       ContentItems = new List<RelatedrestrictionsContentItem>
+                       {
+                           new RelatedrestrictionsContentItem()
+                           {
+                               DisplayText = "Restriction1",
+                               GraphSync = new ()
+                               {
+                                   NodeId = "29d1a617-92b7-446f-81a1-070e69b00aa9",
+                               },
+                               Info = new ()
+                               {
+                                   Html = "InfoExampleText",
+                               },
+                           },
+                       },
+                   },
+                    Relatedskills = new Relatedskills
+                   {
+                       ContentItems = new List<RelatedSkill>
+                       {
+                           new RelatedSkill()
+                           {
+                               DisplayText = "RelatedSkill1",
+                               RelatedSkillDesc = "RelatedSkillDesc",
+                               GraphSync = new ()
+                               {
+                                   NodeId = "29d1a617-92b7-446f-81a1-070e69b00aa9",
+                               },
+                               ONetAttributeType = "testONet",
+                               ONetRank = "3.185",
+                               Ordinal = 1,
+                               RelatedSOCcode = "TestSocCode",
+                           },
+                       },
+                   },
+                },
+            };
+            expectedResult.JobProfileSkills = list;
+            return expectedResult;
         }
     }
 }

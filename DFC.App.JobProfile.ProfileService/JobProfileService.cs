@@ -2,7 +2,12 @@
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.Segment.CareerPath;
+using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
 using DFC.App.JobProfile.Data.Models.Segment.HowToBecome;
+using DFC.App.JobProfile.Data.Models.Segment.Overview;
+using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers;
+using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
 using DFC.App.JobProfile.Data.Models.Segment.Tasks;
 using DFC.App.JobProfile.ProfileService.Utilities;
 using DFC.Common.SharedContent.Pkg.Netcore.Constant;
@@ -20,11 +25,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using DFC.App.JobProfile.Data.Models.Segment.CareerPath;
-using DFC.App.JobProfile.Data.Models.Segment.CurrentOpportunities;
-using DFC.App.JobProfile.Data.Models.Segment.Overview;
-using DFC.App.JobProfile.Data.Models.Segment.RelatedCareers;
-using DFC.App.JobProfile.Data.Models.Segment.SkillsModels;
 using JobProfSkills = DFC.App.JobProfile.Data.Models.Segment.SkillsModels.Skills;
 using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
 
@@ -82,13 +82,6 @@ namespace DFC.App.JobProfile.ProfileService
                 throw new ArgumentNullException(nameof(canonicalName));
             }
 
-            var requiredSegments = new[] 
-            {
-                JobProfileSegment.Overview,
-                JobProfileSegment.HowToBecome,
-                JobProfileSegment.WhatItTakes,
-            };
-
             var data = new JobProfileModel()
             {
                 CanonicalName = canonicalName,
@@ -96,13 +89,22 @@ namespace DFC.App.JobProfile.ProfileService
                 Segments = new List<SegmentModel>(),
             };
 
+            var requiredSegments = new[]
+            {
+                JobProfileSegment.Overview,
+                JobProfileSegment.HowToBecome,
+                JobProfileSegment.WhatItTakes,
+            };
+
             try
             {
+                logService.LogInformation($"{nameof(GetByNameAsync)} is attempting to retrieve data for required segments");
+
                 var overviewTask = GetOverviewSegment(canonicalName, filter);
                 var howToBecomeTask = GetHowToBecomeSegmentAsync(canonicalName, filter);
                 var skillsTask = GetSkillSegmentAsync(canonicalName, filter);
 
-                var requiredTasks = new Task[]
+                Task<SegmentModel>[] requiredTasks =
                 {
                     overviewTask,
                     howToBecomeTask,
@@ -118,12 +120,15 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments.Add(await skillsTask);
                 }
 
-                if (data.Segments.Any(segment => 
-                        requiredSegments.Contains(segment.Segment) && 
+                if (data.Segments.Any(segment =>
+                        requiredSegments.Contains(segment.Segment) &&
                         segment.RefreshStatus == RefreshStatus.Failed))
                 {
+                    logService.LogError($"{nameof(GetByNameAsync)} has failed to retrieve data for required segments");
                     return null;
                 }
+
+                logService.LogInformation($"{nameof(GetByNameAsync)} has successfully retrieved data for required segments");
 
                 var tasksTask = GetTasksSegmentAsync(canonicalName, filter);
                 var careersPathTask = GetCareerPathSegmentAsync(canonicalName, filter);
@@ -131,13 +136,12 @@ namespace DFC.App.JobProfile.ProfileService
                 var relatedCareersTask = GetRelatedCareersSegmentAsync(canonicalName, filter);
                 var videoTask = GetSocialProofVideoSegment(canonicalName, filter);
 
-                var optionalTasks = new Task[]
+                Task<SegmentModel>[] optionalTasks =
                 {
-                    tasksTask,
-                    careersPathTask,
-                    currentOpportunityTask,
                     relatedCareersTask,
-                    videoTask,
+                    careersPathTask,
+                    tasksTask,
+                    currentOpportunityTask,
                 };
 
                 await Task.WhenAll(optionalTasks);
@@ -168,16 +172,18 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>RelatedCareers segment model.</returns>
         public async Task<SegmentModel> GetRelatedCareersSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel relatedCareers = new ()
+            SegmentModel relatedCareers = new()
             {
                 Segment = JobProfileSegment.RelatedCareers,
                 Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.RelatedCareers)),
             };
             try
             {
+                logService.LogInformation($"{nameof(GetRelatedCareersSegmentAsync)} is attempting to retrieve data");
+
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, filter);
 
-                if (response.JobProfileRelatedCareers.IsAny())
+                if (response != null && response.JobProfileRelatedCareers.IsAny())
                 {
                     var mappedResponse = mapper.Map<RelatedCareerSegmentDataModel>(response);
 
@@ -187,9 +193,15 @@ namespace DFC.App.JobProfile.ProfileService
 
                     if (!string.IsNullOrWhiteSpace(html))
                     {
+                        logService.LogInformation($"{nameof(GetRelatedCareersSegmentAsync)} has successfully retrieved data");
+
                         relatedCareers.Markup = new HtmlString(html);
                         relatedCareers.JsonV1 = relatedCareersObject;
                         relatedCareers.RefreshStatus = RefreshStatus.Success;
+                    }
+                    else
+                    {
+                        logService.LogError($"{nameof(GetRelatedCareersSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
                 }
 
@@ -210,7 +222,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>HowToBecome segment model.</returns>
         public async Task<SegmentModel> GetHowToBecomeSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel howToBecome = new ()
+            SegmentModel howToBecome = new()
             {
                 Segment = JobProfileSegment.HowToBecome,
                 Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.HowToBecome)),
@@ -218,6 +230,8 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
+                logService.LogInformation($"{nameof(GetHowToBecomeSegmentAsync)} is attempting to retrieve data");
+
                 // Get the response from GraphQl
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, filter);
 
@@ -263,9 +277,15 @@ namespace DFC.App.JobProfile.ProfileService
 
                     if (!string.IsNullOrWhiteSpace(html))
                     {
+                        logService.LogInformation($"{nameof(GetHowToBecomeSegmentAsync)} has successfully retrieved data");
+
                         howToBecome.Markup = new HtmlString(html);
                         howToBecome.JsonV1 = howToBecomeObject;
                         howToBecome.RefreshStatus = RefreshStatus.Success;
+                    }
+                    else
+                    {
+                        logService.LogError($"{nameof(GetHowToBecomeSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
                 }
 
@@ -285,7 +305,9 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>Current Opportunities Segment model.</returns>
         public async Task<SegmentModel> GetCurrentOpportunities(string canonicalName)
         {
-            SegmentModel currentOpportunities = new ()
+            logService.LogInformation($"{nameof(GetCurrentOpportunities)} is attempting to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
+
+            SegmentModel currentOpportunities = new()
             {
                 Segment = JobProfileSegment.CurrentOpportunities,
                 Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.CurrentOpportunities)),
@@ -299,7 +321,7 @@ namespace DFC.App.JobProfile.ProfileService
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), "PUBLISHED");
 
             //get courses by course key words
-            if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
+            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
             {
                 string jobTitle = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].DisplayText;
                 currentOpportunitiesSegmentModel.Data.TitlePrefix = jobTitle.AddPrefix();
@@ -351,13 +373,18 @@ namespace DFC.App.JobProfile.ProfileService
 
                 var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/CurrentOpportunities/BodyData.cshtml", currentOpportunitiesSegmentModel.Data).ConfigureAwait(false);
 
-                currentOpportunities = new SegmentModel
+                if (!string.IsNullOrWhiteSpace(html))
                 {
-                    Segment = JobProfileSegment.CurrentOpportunities,
-                    JsonV1 = currentOpportunitiesObject,
-                    RefreshStatus = RefreshStatus.Success,
-                    Markup = new HtmlString(html),
-                };
+                    logService.LogInformation($"{nameof(GetCurrentOpportunities)} has successfully retrieved data");
+
+                    currentOpportunities.Markup = new HtmlString(html);
+                    currentOpportunities.JsonV1 = currentOpportunitiesObject;
+                    currentOpportunities.RefreshStatus = RefreshStatus.Success;
+                }
+                else
+                {
+                    logService.LogError($"{nameof(GetCurrentOpportunities)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
+                }
             }
 
             return currentOpportunities;
@@ -371,7 +398,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>Overview Segment model.</returns>
         public async Task<SegmentModel> GetOverviewSegment(string canonicalName, string filter)
         {
-            SegmentModel overview = new ()
+            SegmentModel overview = new()
             {
                 Segment = JobProfileSegment.Overview,
                 Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.Overview)),
@@ -379,9 +406,11 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
+                logService.LogInformation($"{nameof(GetOverviewSegment)} is attempting to retrieve data");
+
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfileOverview, "/", canonicalName), filter);
 
-                if (response.JobProfileOverview.IsAny())
+                if (response != null && response.JobProfileOverview.IsAny())
                 {
                     var mappedOverview = mapper.Map<OverviewApiModel>(response);
                     mappedOverview.Breadcrumb = BuildBreadcrumb(canonicalName, string.Empty, mappedOverview.Title);
@@ -400,13 +429,15 @@ namespace DFC.App.JobProfile.ProfileService
 
                     if (!string.IsNullOrWhiteSpace(html))
                     {
-                        overview = new SegmentModel
-                        {
-                            Segment = JobProfileSegment.Overview,
-                            JsonV1 = overviewObject,
-                            RefreshStatus = RefreshStatus.Success,
-                            Markup = new HtmlString(html),
-                        };
+                        logService.LogInformation($"{nameof(GetOverviewSegment)} has successfully retrieved data");
+
+                        overview.Markup = new HtmlString(html);
+                        overview.JsonV1 = overviewObject;
+                        overview.RefreshStatus = RefreshStatus.Success;
+                    }
+                    else
+                    {
+                        logService.LogError($"{nameof(GetOverviewSegment)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
                 }
             }
@@ -426,7 +457,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>WhatYoullDo segment model.</returns>
         public async Task<SegmentModel> GetTasksSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel tasks = new ()
+            SegmentModel tasks = new()
             {
                 Segment = JobProfileSegment.WhatYouWillDo,
                 Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.WhatYouWillDo)),
@@ -434,27 +465,36 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
+                logService.LogInformation($"{nameof(GetTasksSegmentAsync)} is attempting to retrieve data");
+
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(ApplicationKeys.JobProfileWhatYoullDo + "/" + canonicalName, filter);
-
-                var mappedResponse = mapper.Map<TasksSegmentDataModel>(response);
-
-                var tasksObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
+                if (response != null)
                 {
-                    ContractResolver = new DefaultContractResolver
+                    var mappedResponse = mapper.Map<TasksSegmentDataModel>(response);
+
+                    var tasksObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
                     {
-                        NamingStrategy = new CamelCaseNamingStrategy(),
-                    },
-                });
+                        ContractResolver = new DefaultContractResolver
+                        {
+                            NamingStrategy = new CamelCaseNamingStrategy(),
+                        },
+                    });
 
-                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Tasks/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Tasks/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
-                tasks = new SegmentModel
-                {
-                    Segment = JobProfileSegment.WhatYouWillDo,
-                    Markup = new HtmlString(html),
-                    JsonV1 = tasksObject,
-                    RefreshStatus = RefreshStatus.Success,
-                };
+                    if (!string.IsNullOrWhiteSpace(html))
+                    {
+                        logService.LogInformation($"{nameof(GetTasksSegmentAsync)} has successfully retrieved data");
+
+                        tasks.Markup = new HtmlString(html);
+                        tasks.JsonV1 = tasksObject;
+                        tasks.RefreshStatus = RefreshStatus.Success;
+                    }
+                    else
+                    {
+                        logService.LogError($"{nameof(GetTasksSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -472,7 +512,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>CareerPath segment model.</returns>
         public async Task<SegmentModel> GetCareerPathSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel careerPath = new ()
+            SegmentModel careerPath = new()
             {
                 Segment = JobProfileSegment.CareerPathsAndProgression,
                 Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.CareerPathsAndProgression)),
@@ -480,9 +520,11 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
+                logService.LogInformation($"{nameof(GetCareerPathSegmentAsync)} is attempting to retrieve data");
+
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfileCareerPath + "/" + canonicalName, filter);
 
-                if (response.JobProileCareerPath != null)
+                if (response != null && response.JobProileCareerPath != null)
                 {
                     var mappedResponse = mapper.Map<CareerPathSegmentDataModel>(response);
 
@@ -497,13 +539,18 @@ namespace DFC.App.JobProfile.ProfileService
 
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/CareerPath/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
-                    careerPath = new SegmentModel
+                    if (!string.IsNullOrWhiteSpace(html))
                     {
-                        Segment = JobProfileSegment.CareerPathsAndProgression,
-                        JsonV1 = careerPathObject,
-                        RefreshStatus = RefreshStatus.Success,
-                        Markup = new HtmlString(html),
-                    };
+                        logService.LogInformation($"{nameof(GetCareerPathSegmentAsync)} has successfully retrieved data");
+
+                        careerPath.Markup = new HtmlString(html);
+                        careerPath.JsonV1 = careerPathObject;
+                        careerPath.RefreshStatus = RefreshStatus.Success;
+                    }
+                    else
+                    {
+                        logService.LogError($"{nameof(GetCareerPathSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
+                    }
                 }
 
                 return careerPath;
@@ -523,7 +570,7 @@ namespace DFC.App.JobProfile.ProfileService
         /// <returns>Returns segment information containing HTML markup data to render the "What it Takes" segment.</returns>
         public async Task<SegmentModel> GetSkillSegmentAsync(string canonicalName, string filter)
         {
-            SegmentModel skills = new ()
+            SegmentModel skills = new()
             {
                 Segment = JobProfileSegment.WhatItTakes,
                 Markup = new HtmlString(GetOfflineMarkup(JobProfileSegment.WhatItTakes)),
@@ -531,10 +578,12 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
+                logService.LogInformation($"{nameof(GetSkillSegmentAsync)} is attempting to retrieve data");
+
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, filter);
                 var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, "PUBLISHED");
 
-                if (response.JobProfileSkills != null && skillsResponse.Skill != null)
+                if (response != null && response.JobProfileSkills != null && skillsResponse.Skill != null)
                 {
                     SkillsResponse jobProfileSkillsResponse = new SkillsResponse();
                     List<Skills> jobProfileSkillsList = new List<Skills>();
@@ -573,13 +622,15 @@ namespace DFC.App.JobProfile.ProfileService
 
                     if (!string.IsNullOrWhiteSpace(html))
                     {
-                        skills = new SegmentModel
-                        {
-                            Segment = JobProfileSegment.WhatItTakes,
-                            JsonV1 = skillsObject,
-                            RefreshStatus = RefreshStatus.Success,
-                            Markup = new HtmlString(html),
-                        };
+                        logService.LogInformation($"{nameof(GetSkillSegmentAsync)} has successfully retrieved data");
+
+                        skills.Markup = new HtmlString(html);
+                        skills.JsonV1 = skillsObject;
+                        skills.RefreshStatus = RefreshStatus.Success;
+                    }
+                    else
+                    {
+                        logService.LogError($"{nameof(GetSkillSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
                 }
             }
@@ -590,6 +641,36 @@ namespace DFC.App.JobProfile.ProfileService
             }
 
             return skills;
+        }
+
+        /// <summary>
+        /// Get SocialProofVideo from STAX via GraphQl for a job profile.
+        /// </summary>
+        /// <param name="canonicalName">Job profile URL.</param>
+        /// <param name="filter">PUBLISHED or DRAFT.</param>
+        /// <returns>SocialProofVideo segment model.</returns>
+        public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
+        {
+            try
+            {
+                logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} is attempting to retrieve data");
+
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
+
+                if (response != null && response.JobProfileVideo.IsAny() && response.JobProfileVideo[0].VideoType != null && response.JobProfileVideo[0].VideoType != "None")
+                {
+                    logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} has successfully retrieved data");
+                    return mapper.Map<SocialProofVideo>(response);
+                }
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+                throw;
+            }
+            logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} has not returned any data - returning null");
+
+            return null;
         }
 
         /// <summary>
@@ -695,7 +776,6 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<bool> RefreshApprenticeshipsAsync(string filter, int first, int skip)
         {
-
             bool returndata = true;
             int total = skip + first;
 
@@ -709,39 +789,13 @@ namespace DFC.App.JobProfile.ProfileService
 
                     if (larsCodes != null && larsCodes.Count > 0)
                     {
-                        string cachekey = string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix, "/", each.PageLocation.UrlName, "/", string.Join(",", larsCodes));
+                        string cachekey = string.Concat(ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix, "/", each.PageLocation.UrlName, "/", string.Join(",", larsCodes.OrderBy(x => x)));
                         await GetApprenticeshipsAndCachedRedisAsync(larsCodes, cachekey);
                     }
                 }
             }
 
             return returndata;
-        }
-
-        /// <summary>
-        /// Get SocialProofVideo from STAX via GraphQl for a job profile.
-        /// </summary>
-        /// <param name="canonicalName">Job profile URL.</param>
-        /// <param name="filter">PUBLISHED or DRAFT.</param>
-        /// <returns>SocialProofVideo segment model.</returns>
-        public async Task<SocialProofVideo> GetSocialProofVideoSegment(string canonicalName, string filter)
-        {
-            try
-            {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
-
-                if (response != null && response.JobProfileVideo.IsAny() && response.JobProfileVideo[0].VideoType != null && response.JobProfileVideo[0].VideoType != "None")
-                {
-                    return mapper.Map<SocialProofVideo>(response);
-                }
-            }
-            catch (Exception exception)
-            {
-                logService.LogError(exception.ToString());
-                throw;
-            }
-
-            return null;
         }
 
         private static BreadcrumbViewModel BuildBreadcrumb(string canonicalName, string routePrefix, string title)
@@ -832,7 +886,7 @@ namespace DFC.App.JobProfile.ProfileService
         private async Task<IEnumerable<Vacancy>> GetApprenticeshipVacanciesAsync(List<string> larsCodes, string canonicalName)
         {
             // Add LARS code to cache key
-            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix + '/' + canonicalName + '/' + string.Join(",", larsCodes);
+            string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix + '/' + canonicalName + '/' + string.Join(",", larsCodes.OrderBy(x => x));
             var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
             var avMapping = new AVMapping { Standards = larsCodes };
 

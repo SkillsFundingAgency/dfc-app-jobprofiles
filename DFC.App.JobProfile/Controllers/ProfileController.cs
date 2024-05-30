@@ -1,6 +1,7 @@
 ﻿using DFC.App.JobProfile.Data.Contracts;
-using DFC.App.JobProfile.Data.Models;
 using DFC.App.JobProfile.Data.Enums;
+using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
@@ -14,7 +15,6 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 
 namespace DFC.App.JobProfile.Controllers
 {
@@ -156,7 +156,10 @@ namespace DFC.App.JobProfile.Controllers
                 return BadRequest($"Invalid host {host}.");
             }
 
+            logService.LogInformation($"{nameof(Body)} jobProfileService.GetByNameAsync({article}) has been called");
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
+            logService.LogInformation($"{nameof(Body)} data returned from jobProfileService.GetByNameAsync({article}) has been called.");
+
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);

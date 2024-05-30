@@ -76,6 +76,7 @@ namespace DFC.App.JobProfile.ProfileService
         {
             try
             {
+                logService.LogInformation($"{nameof(GetAllAsync)} is attempting to retrieve data from Redis: GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>({ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles}, {filter}");
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
 
                 return mapper.Map<IEnumerable<JobProfileModel>>(response.JobProfileCurrentOpportunities);
@@ -89,6 +90,8 @@ namespace DFC.App.JobProfile.ProfileService
 
         public async Task<JobProfileModel> GetByNameAsync(string canonicalName)
         {
+            logService.LogInformation($"{nameof(GetByNameAsync)} process starting.");
+
             if (string.IsNullOrWhiteSpace(canonicalName))
             {
                 throw new ArgumentNullException(nameof(canonicalName));
@@ -136,7 +139,7 @@ namespace DFC.App.JobProfile.ProfileService
                         requiredSegments.Contains(segment.Segment) &&
                         segment.RefreshStatus == RefreshStatus.Failed))
                 {
-                    logService.LogError($"{nameof(GetByNameAsync)} has failed to retrieve data for required segments");
+                    logService.LogError($"{nameof(GetByNameAsync)} has failed to retrieve data for required segments: {RefreshStatus.Failed}.  Null being returned to calling method.");
                     return null;
                 }
 
@@ -167,11 +170,13 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Video = await videoTask;
                 }
 
+                logService.LogInformation($"{nameof(GetByNameAsync)} process completed.");
                 return data;
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
+                logService.LogInformation($"{nameof(GetByNameAsync)} process failed.");
                 throw;
             }
         }
@@ -191,12 +196,14 @@ namespace DFC.App.JobProfile.ProfileService
             };
             try
             {
-                logService.LogInformation($"{nameof(GetRelatedCareersSegmentAsync)} is attempting to retrieve data");
+                logService.LogInformation($"{nameof(GetRelatedCareersSegmentAsync)} is attempting to retrieve data from Redis: GetDataAsyncWithExpiry<RelatedCareersResponse>({ApplicationKeys.JobProfileRelatedCareersPrefix} + \"/\" + {canonicalName}, {filter})");
 
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, filter);
 
                 if (response != null && response.JobProfileRelatedCareers.IsAny())
                 {
+                    logService.LogInformation($"{nameof(GetRelatedCareersSegmentAsync)} data retrieved from Redis.");
+
                     var mappedResponse = mapper.Map<RelatedCareerSegmentDataModel>(response);
 
                     var relatedCareersObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
@@ -215,6 +222,10 @@ namespace DFC.App.JobProfile.ProfileService
                     {
                         logService.LogError($"{nameof(GetRelatedCareersSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
+                }
+                else
+                {
+                    logService.LogInformation($"{nameof(GetRelatedCareersSegmentAsync)} No data has been retrieved from Redis.");
                 }
 
                 return relatedCareers;
@@ -242,13 +253,15 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                logService.LogInformation($"{nameof(GetHowToBecomeSegmentAsync)} is attempting to retrieve data");
+                logService.LogInformation($"{nameof(GetHowToBecomeSegmentAsync)} is attempting to retrieve data from Redis: GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>({ApplicationKeys.JobProfileHowToBecome} + \"/\" + {canonicalName}, {filter})");
 
                 // Get the response from GraphQl
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, filter);
 
                 if (response != null && response.JobProfileHowToBecome.IsAny())
                 {
+                    logService.LogInformation($"{nameof(GetHowToBecomeSegmentAsync)} data retrieved from Redis.");
+
                     // Map the response to a HowToBecomeSegmentDataModel
                     var mappedResponse = mapper.Map<HowToBecomeSegmentDataModel>(response);
 
@@ -284,6 +297,8 @@ namespace DFC.App.JobProfile.ProfileService
                         },
                     });
 
+                    logService.LogInformation($"{nameof(GetHowToBecomeSegmentAsync)} Redis data has been mapped: {mappedResponse}.");
+
                     // Render the CSHTML to string
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/HowToBecome/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
@@ -300,12 +315,16 @@ namespace DFC.App.JobProfile.ProfileService
                         logService.LogError($"{nameof(GetHowToBecomeSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
                 }
+                else
+                {
+                    logService.LogInformation($"{nameof(GetHowToBecomeSegmentAsync)} No data has been retrieved from Redis.");
+                }
 
                 return howToBecome;
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                logService.LogError(e.ToString());
+                logService.LogError(exception.ToString());
                 throw;
             }
         }
@@ -324,72 +343,90 @@ namespace DFC.App.JobProfile.ProfileService
                 Segment = JobProfileSegment.CurrentOpportunities,
                 Markup = new HtmlString(currentOpportunitiesOfflineMarkup),
             };
-            var currentOpportunitiesSegmentModel = new CurrentOpportunitiesSegmentModel();
-            currentOpportunitiesSegmentModel.Data = new CurrentOpportunitiesSegmentDataModel();
-            currentOpportunitiesSegmentModel.Data.Courses = new Courses();
-            currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
 
-            //Get job profile course keyword and lars code
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), "PUBLISHED");
-
-            //get courses by course key words
-            if (jobProfile != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
+            try
             {
-                string jobTitle = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].DisplayText;
-                currentOpportunitiesSegmentModel.Data.TitlePrefix = jobTitle.AddPrefix();
-                currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = string.Empty;
-                var opportunities = new List<Opportunity>();
-                if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords))
-                {
-                    string coursekeywords = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords;
-                    var results = await GetCourses(coursekeywords, canonicalName);
-                    var courseSearchResults = results.Courses?.ToList();
+                var currentOpportunitiesSegmentModel = new CurrentOpportunitiesSegmentModel();
+                currentOpportunitiesSegmentModel.Data = new CurrentOpportunitiesSegmentDataModel();
+                currentOpportunitiesSegmentModel.Data.Courses = new Courses();
+                currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
 
-                    if (courseSearchResults != null)
+                logService.LogInformation($"{nameof(GetCurrentOpportunities)} is attempting to retrieve data from Redis: GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat({ApplicationKeys.JobProfileCurrentOpportunities}, \"/\", {canonicalName}), \"PUBLISHED\"");
+
+                //Get job profile course keyword and lars code
+                var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), "PUBLISHED");
+
+                //get courses by course key words
+                if (jobProfile != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
+                {
+                    logService.LogInformation($"{nameof(GetCurrentOpportunities)} data retrieved from Redis.");
+
+                    string jobTitle = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].DisplayText;
+                    currentOpportunitiesSegmentModel.Data.TitlePrefix = jobTitle.AddPrefix();
+                    currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = string.Empty;
+
+                    var opportunities = new List<Opportunity>();
+                    if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords))
                     {
-                        opportunities = MapCourses(courseSearchResults, opportunities);
+                        string coursekeywords = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].Coursekeywords;
+                        var results = await GetCourses(coursekeywords, canonicalName);
+                        var courseSearchResults = results.Courses?.ToList();
+
+                        if (courseSearchResults != null)
+                        {
+                            opportunities = MapCourses(courseSearchResults, opportunities);
+                        }
+
+                        currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = coursekeywords;
                     }
 
-                    currentOpportunitiesSegmentModel.Data.Courses.CourseKeywords = coursekeywords;
-                }
+                    currentOpportunitiesSegmentModel.Data.Courses.Opportunities = opportunities;
 
-                currentOpportunitiesSegmentModel.Data.Courses.Opportunities = opportunities;
+                    currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
+                    currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = new List<Vacancy>();
 
-                currentOpportunitiesSegmentModel.Data.Apprenticeships = new Apprenticeships();
-                currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = new List<Vacancy>();
-
-                //get apprenticeship by lars code.
-                if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems.Length > 0 &&
-                    jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
-                {
-                    if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
+                    //get apprenticeship by lars code.
+                    if (jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems.Length > 0 &&
+                        jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems.Length > 0)
                     {
-                        var larsCodes = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode.ContentItems
-                            .SelectMany(socCode => socCode.ApprenticeshipStandards.ContentItems
-                            .Select(standard => standard.LARScode)).ToList();
-                        var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(larsCodes, canonicalName);
-                        currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = apprenticeshipVacancies;
+                        if (!string.IsNullOrEmpty(jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode?.ContentItems?[0].ApprenticeshipStandards.ContentItems?[0].LARScode))
+                        {
+                            var larsCodes = jobProfile.JobProfileCurrentOpportunitiesGetByUrl[0].SOCCode.ContentItems
+                                .SelectMany(socCode => socCode.ApprenticeshipStandards.ContentItems
+                                .Select(standard => standard.LARScode)).ToList();
+                            var apprenticeshipVacancies = await GetApprenticeshipVacanciesAsync(larsCodes, canonicalName);
+                            currentOpportunitiesSegmentModel.Data.Apprenticeships.Vacancies = apprenticeshipVacancies;
+                        }
                     }
-                }
 
-                currentOpportunitiesSegmentModel.Data.JobTitle = jobTitle;
+                    currentOpportunitiesSegmentModel.Data.JobTitle = jobTitle;
 
-                var currentOpportunitiesObject = JsonConvert.SerializeObject(currentOpportunitiesSegmentModel.Data, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
+                    var currentOpportunitiesObject = JsonConvert.SerializeObject(currentOpportunitiesSegmentModel.Data, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
 
-                var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/CurrentOpportunities/BodyData.cshtml", currentOpportunitiesSegmentModel.Data).ConfigureAwait(false);
+                    var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/CurrentOpportunities/BodyData.cshtml", currentOpportunitiesSegmentModel.Data).ConfigureAwait(false);
 
-                if (!string.IsNullOrWhiteSpace(html))
-                {
-                    logService.LogInformation($"{nameof(GetCurrentOpportunities)} has successfully retrieved data");
+                    if (!string.IsNullOrWhiteSpace(html))
+                    {
+                        logService.LogInformation($"{nameof(GetCurrentOpportunities)} HTML has been rendered.");
 
-                    currentOpportunities.Markup = new HtmlString(html);
-                    currentOpportunities.JsonV1 = currentOpportunitiesObject;
-                    currentOpportunities.RefreshStatus = RefreshStatus.Success;
+                        currentOpportunities.Markup = new HtmlString(html);
+                        currentOpportunities.JsonV1 = currentOpportunitiesObject;
+                        currentOpportunities.RefreshStatus = RefreshStatus.Success;
+                    }
+                    else
+                    {
+                        logService.LogError($"{nameof(GetCurrentOpportunities)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
+                    }
                 }
                 else
                 {
-                    logService.LogError($"{nameof(GetCurrentOpportunities)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
+                    logService.LogInformation($"{nameof(GetCurrentOpportunities)} No data has been retrieved from Redis.");
                 }
+            }
+            catch (Exception exception)
+            {
+                logService.LogError(exception.ToString());
+                throw;
             }
 
             return currentOpportunities;
@@ -411,12 +448,14 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                logService.LogInformation($"{nameof(GetOverviewSegment)} is attempting to retrieve data");
+                logService.LogInformation($"{nameof(GetOverviewSegment)} is attempting to retrieve data from Redis: GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat({ApplicationKeys.JobProfileOverview}, \"/\", {canonicalName}), {filter})");
 
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfileOverview, "/", canonicalName), filter);
 
                 if (response != null && response.JobProfileOverview.IsAny())
                 {
+                    logService.LogInformation($"{nameof(GetOverviewSegment)} data retrieved from Redis.");
+
                     var mappedOverview = mapper.Map<OverviewApiModel>(response);
                     mappedOverview.Breadcrumb = BuildBreadcrumb(canonicalName, string.Empty, mappedOverview.Title);
 
@@ -430,7 +469,11 @@ namespace DFC.App.JobProfile.ProfileService
                             },
                         });
 
+                    logService.LogInformation($"{nameof(GetOverviewSegment)} Redis response mapped.");
+
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Overview/BodyData.cshtml", mappedOverview).ConfigureAwait(false);
+
+                    logService.LogInformation($"{nameof(GetOverviewSegment)} HTML mapped.");
 
                     if (!string.IsNullOrWhiteSpace(html))
                     {
@@ -445,10 +488,15 @@ namespace DFC.App.JobProfile.ProfileService
                         logService.LogError($"{nameof(GetOverviewSegment)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
                 }
+                else
+                {
+                    logService.LogInformation($"{nameof(GetOverviewSegment)} No data has been retrieved from Redis.");
+                }
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
+                throw;
             }
 
             return overview;
@@ -470,11 +518,14 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                logService.LogInformation($"{nameof(GetTasksSegmentAsync)} is attempting to retrieve data");
+                logService.LogInformation($"{nameof(GetTasksSegmentAsync)} is attempting to retrieve data from Redis: .GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>({ApplicationKeys.JobProfileWhatYoullDo} + \"/\" + {canonicalName}, {filter})");
 
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(ApplicationKeys.JobProfileWhatYoullDo + "/" + canonicalName, filter);
+
                 if (response != null)
                 {
+                    logService.LogInformation($"{nameof(GetTasksSegmentAsync)} data retrieved from Redis.");
+
                     var mappedResponse = mapper.Map<TasksSegmentDataModel>(response);
 
                     var tasksObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings
@@ -485,7 +536,11 @@ namespace DFC.App.JobProfile.ProfileService
                         },
                     });
 
+                    logService.LogInformation($"{nameof(GetTasksSegmentAsync)} Redis data mapped: {mappedResponse}.");
+
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Tasks/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+
+                    logService.LogInformation($"{nameof(GetTasksSegmentAsync)} HTML mapped.");
 
                     if (!string.IsNullOrWhiteSpace(html))
                     {
@@ -500,10 +555,15 @@ namespace DFC.App.JobProfile.ProfileService
                         logService.LogError($"{nameof(GetTasksSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
                 }
+                else
+                {
+                    logService.LogInformation($"{nameof(GetTasksSegmentAsync)} No data has been retrieved from Redis.");
+                }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                logService.LogError(e.ToString());
+                logService.LogError(exception.ToString());
+                throw;
             }
 
             return tasks;
@@ -525,17 +585,23 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                logService.LogInformation($"{nameof(GetCareerPathSegmentAsync)} is attempting to retrieve data");
+                logService.LogInformation($"{nameof(GetCareerPathSegmentAsync)} is attempting to retrieve data from Redis: GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>({ApplicationKeys.JobProfileCareerPath} + \"/\" + {canonicalName}, {filter})");
 
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfileCareerPath + "/" + canonicalName, filter);
 
                 if (response != null && response.JobProileCareerPath != null)
                 {
+                    logService.LogInformation($"{nameof(GetCareerPathSegmentAsync)} data retrieved from Redis.");
+
                     var mappedResponse = mapper.Map<CareerPathSegmentDataModel>(response);
+
+                    logService.LogInformation($"{nameof(GetCareerPathSegmentAsync)} Redis data has been mapped: {mappedResponse}");
 
                     var careerPathObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
 
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/CareerPath/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
+
+                    logService.LogInformation($"{nameof(GetCareerPathSegmentAsync)} HTML has been mapped: {html}");
 
                     if (!string.IsNullOrWhiteSpace(html))
                     {
@@ -549,6 +615,10 @@ namespace DFC.App.JobProfile.ProfileService
                     {
                         logService.LogError($"{nameof(GetCareerPathSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
+                }
+                else
+                {
+                    logService.LogInformation($"{nameof(GetCareerPathSegmentAsync)} No data has been retrieved from Redis.");
                 }
 
                 return careerPath;
@@ -576,13 +646,16 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                logService.LogInformation($"{nameof(GetSkillSegmentAsync)} is attempting to retrieve data");
-
+                logService.LogInformation($"{nameof(GetSkillSegmentAsync)} is attempting to retrieve data: GetDataAsyncWithExpiry<JobProfileSkillsResponse>({ApplicationKeys.JobProfileSkillsSuffix} + \"/\" + {canonicalName}, {filter})");
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, filter);
+
+                logService.LogInformation($"{nameof(GetSkillSegmentAsync)} is attempting to retrieve data: GetDataAsyncWithExpiry<SkillsResponse>({ApplicationKeys.SkillsAll}, \"PUBLISHED\")");
                 var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, "PUBLISHED");
 
                 if (response != null && response.JobProfileSkills != null && skillsResponse.Skill != null)
                 {
+                    logService.LogInformation($"{nameof(GetSkillSegmentAsync)} data retrieved from Redis.");
+
                     SkillsResponse jobProfileSkillsResponse = new SkillsResponse();
                     List<Skills> jobProfileSkillsList = new List<Skills>();
 
@@ -615,7 +688,6 @@ namespace DFC.App.JobProfile.ProfileService
                     mappedResponse.Skills = sortedSkills;
 
                     var skillsObject = JsonConvert.SerializeObject(mappedResponse, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });
-
                     var html = await razorTemplateEngine.RenderAsync("~/Views/Profile/Segment/Skills/BodyData.cshtml", mappedResponse).ConfigureAwait(false);
 
                     if (!string.IsNullOrWhiteSpace(html))
@@ -631,10 +703,14 @@ namespace DFC.App.JobProfile.ProfileService
                         logService.LogError($"{nameof(GetSkillSegmentAsync)} has failed to retrieve data - {nameof(razorTemplateEngine.RenderAsync)} has returned a null or empty string");
                     }
                 }
+                else
+                {
+                    logService.LogInformation($"{nameof(GetSkillSegmentAsync)} No data has been retrieved from Redis.");
+                }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                logService.LogError(ex.ToString());
+                logService.LogError(exception.ToString());
                 throw;
             }
 
@@ -651,7 +727,7 @@ namespace DFC.App.JobProfile.ProfileService
         {
             try
             {
-                logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} is attempting to retrieve data");
+                logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} is attempting to retrieve data: GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat({ApplicationKeys.JobProfileVideoPrefix}, \"/\", {canonicalName}), {filter})");
 
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
 
@@ -660,12 +736,17 @@ namespace DFC.App.JobProfile.ProfileService
                     logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} has successfully retrieved data");
                     return mapper.Map<SocialProofVideo>(response);
                 }
+                else
+                {
+                    logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} No data has been retrieved from Redis.");
+                }
             }
             catch (Exception exception)
             {
                 logService.LogError(exception.ToString());
                 throw;
             }
+
             logService.LogInformation($"{nameof(GetSocialProofVideoSegment)} has not returned any data - returning null");
 
             return null;
@@ -682,9 +763,13 @@ namespace DFC.App.JobProfile.ProfileService
             int total = skip + first;
 
             //Get job profile with Url name
+            logService.LogInformation($"{nameof(RefreshCourses)} is attempting to retrieve data: GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>({ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles} + \"/\" + {skip} + \"-\" + {total}, {filter}, {first}, {skip})");
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
+
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
+                logService.LogInformation($"{nameof(RefreshCourses)} data retrieved from Redis.");
+
                 if (jobProfile.JobProfileCurrentOpportunities.Any())
                 {
                     foreach (var each in jobProfile.JobProfileCurrentOpportunities)
@@ -721,9 +806,13 @@ namespace DFC.App.JobProfile.ProfileService
             int total = skip + first;
 
             //Get job profile with Url name
+            logService.LogInformation($"{nameof(RefreshAllSegments)} is attempting to retrieve data: GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>({ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles} + \"/\" + {skip} + \"-\" + {total}, {filter}, {first}, {skip})");
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
+
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
+                logService.LogInformation($"{nameof(RefreshAllSegments)} data retrieved from Redis.");
+
                 if (jobProfile.JobProfileCurrentOpportunities.Count() > 0)
                 {
                     foreach (var each in jobProfile.JobProfileCurrentOpportunities)
@@ -778,9 +867,13 @@ namespace DFC.App.JobProfile.ProfileService
             int total = skip + first;
 
             //Get job profile with Url name
+            logService.LogInformation($"{nameof(RefreshApprenticeshipsAsync)} is attempting to retrieve data: GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>({ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles} + \"/\" + {skip} + \"-\" + {total}, {filter}, {first}, {skip})");
             var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
+
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities.Count() > 0)
             {
+                logService.LogInformation($"{nameof(RefreshApprenticeshipsAsync)} data retrieved from Redis.");
+
                 foreach (var each in jobProfile.JobProfileCurrentOpportunities)
                 {
                     var larsCodes = each.SOCCode.ContentItems?.SelectMany(x => x.ApprenticeshipStandards.ContentItems).Select(x => x.LARScode).ToList();
@@ -831,9 +924,14 @@ namespace DFC.App.JobProfile.ProfileService
         private async Task<CoursesResponse> GetCourses(string courseKeywords, string canonicalName)
         {
             string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesCoursesPrefix + '/' + canonicalName + '/' + courseKeywords.ConvertCourseKeywordsString();
+            logService.LogInformation($"{nameof(GetCourses)} is attempting to retrieve data: GetCurrentOpportunitiesData<CoursesResponse>({cacheKey})");
+
             var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<CoursesResponse>(cacheKey);
+
             if (redisData == null)
             {
+                logService.LogInformation($"{nameof(GetCourses)} data retrieved from Redis.");
+
                 redisData = new CoursesResponse();
                 try
                 {
@@ -843,6 +941,10 @@ namespace DFC.App.JobProfile.ProfileService
                 {
                     logService.LogError(ex.ToString());
                 }
+            }
+            else
+            {
+                logService.LogInformation($"{nameof(GetCourses)} No data has been retrieved from Redis.");
             }
 
             return redisData;
@@ -885,12 +987,16 @@ namespace DFC.App.JobProfile.ProfileService
         {
             // Add LARS code to cache key
             string cacheKey = ApplicationKeys.JobProfileCurrentOpportunitiesAVPrefix + '/' + canonicalName + '/' + string.Join(",", larsCodes.OrderBy(x => x));
+
+            logService.LogInformation($"{nameof(GetApprenticeshipVacanciesAsync)} is attempting to retrieve data: GetCurrentOpportunitiesData<List<Vacancy>>({cacheKey})");
             var redisData = await sharedContentRedisInterface.GetCurrentOpportunitiesData<List<Vacancy>>(cacheKey);
             var avMapping = new AVMapping { Standards = larsCodes };
 
             // If there are no apprenticeship vacancies data in Redis then get data from the Apprenticeship Vacancy API
             if (redisData == null)
             {
+                logService.LogInformation($"{nameof(GetApprenticeshipVacanciesAsync)} data retrieved from Redis.");
+
                 try
                 {
                     // Get apprenticeship vacancies from Apprenticeship API
@@ -934,6 +1040,7 @@ namespace DFC.App.JobProfile.ProfileService
 
                 redisData.Courses = result?.ToList();
 
+                logService.LogInformation($"{nameof(GetCoursesAndCachedRedis)} is attempting to retrieve data: SetCurrentOpportunitiesData<CoursesResponse>(redisData, {cacheKey}, {48})");
                 var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesResponse>(redisData, cacheKey, 48);
                 if (!save)
                 {
@@ -963,6 +1070,9 @@ namespace DFC.App.JobProfile.ProfileService
 
                 if (vacancies.Any())
                 {
+                    logService.LogInformation($"{nameof(GetApprenticeshipsAndCachedRedisAsync)} data returned from API.");
+
+                    logService.LogInformation($"{nameof(GetApprenticeshipsAndCachedRedisAsync)} is attempting to retrieve data: SetCurrentOpportunitiesData(redisData, {cacheKey}, {48})");
                     var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);
                     if (!save)
                     {

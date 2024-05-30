@@ -156,10 +156,7 @@ namespace DFC.App.JobProfile.Controllers
                 return BadRequest($"Invalid host {host}.");
             }
 
-            logService.LogInformation($"{nameof(Body)} jobProfileService.GetByNameAsync({article}) has been called");
             var jobProfileModel = await jobProfileService.GetByNameAsync(article).ConfigureAwait(false);
-            logService.LogInformation($"{nameof(Body)} data returned from jobProfileService.GetByNameAsync({article}) has been called.");
-
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);

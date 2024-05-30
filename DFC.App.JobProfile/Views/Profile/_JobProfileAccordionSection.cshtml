@@ -2,18 +2,34 @@
 
 @if (Model != null && Model.Content != null)
 {
-    <div class="govuk-accordion__section ">
+    <div class="govuk-accordion__section">
         <div class="govuk-accordion__section-header">
             <h2 class="govuk-accordion__section-heading">
-                <span class="govuk-accordion__section-button" id="jp-accordion-@Model.HtmlId">
-                    @Html.Raw(Model.Title)
-                </span>
+                <button type="button" aria-controls="job-profile-accordion-with-summary-sections-content-@Model..HtmlId"
+                        class="govuk-accordion__section-button" aria-expanded="false"
+                        aria-label="@Model.Title , @Model.Summary , Show this section">
+                    <span class="govuk-accordion__section-heading-text" id="jp-accordion-@Model.HtmlId">
+                        <span class="govuk-accordion__section-heading-text-focus">
+                            @Html.Raw(Model.Title)
+                        </span>
+                    </span>
+                    <span class="govuk-visually-hidden govuk-accordion__section-heading-divider">, </span>
+                    <span class="govuk-accordion__section-summary govuk-body" id="jp-accordion__section-summary-@Model.HtmlId">
+                        <span class="govuk-accordion__section-summary-focus">
+                            @Html.Raw(Model.Summary)
+                        </span>
+                    </span>
+                    <span class="govuk-visually-hidden govuk-accordion__section-heading-divider">, </span>
+                    <span class="govuk-accordion__section-toggle" data-nosnippet="">
+                        <span class="govuk-accordion__section-toggle-focus">
+                            <span class="govuk-accordion-nav__chevron govuk-accordion-nav__chevron--down"></span>
+                            <span class="govuk-accordion__section-toggle-text">Show</span>
+                        </span>
+                    </span>
+                </button>
             </h2>
-            <div class="govuk-accordion__section-summary govuk-body" id="jp-accordion__section-summary-@Model.HtmlId">
-                @Html.Raw(Model.Summary)
-            </div>
         </div>
-        <div id="job-profile-accordion-with-summary-sections-content-@Model.HtmlId" class="govuk-accordion__section-content" aria-labelledby="jp-accordion-with-summary-sections-heading-@Model.HtmlId">
+        <div id="job-profile-accordion-with-summary-sections-content-@Model.HtmlId" class="govuk-accordion__section-content" hidden="until-found">
             @Html.Raw(Model.Content)
         </div>
     </div>

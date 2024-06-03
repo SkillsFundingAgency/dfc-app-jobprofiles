@@ -17,27 +17,6 @@
     "brandingAssetsAppCssFilePath": {
       "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
     },
-    "cmsTimeout": {
-      "value": "00:00:30"
-    },
-    "cmsApiKey": {
-      "value": "testkey"
-    },
-    "cmsBaseAddress": {
-      "value": "https://url"
-    },
-    "cmsStaticContentEndpoint": {
-      "value": "/shared-content/"
-    },
-    "cmsContentIds": {
-      "value": "12345"
-    },
-    "cosmosDBName": {
-      "value": "dfc-dev-app-sharedresources-cdb"
-    },
-    "cosmosDbKey": {
-      "value": "not-a-real-key"
-    },
     "Environment": {
       "value": "FOO"
     },
@@ -46,12 +25,6 @@
     },
     "sharedAppServicePlanResourceGroup": {
       "value": "dfc-dev-app-sharedresources-rg"
-    },
-    "cosmosDbCollectionName": {
-      "value": "a-collection"
-    },
-    "cosmosDbSharedCollectionName": {
-      "value": "b-collection"
     },
     "surveyUrl": {
       "value": "https://some.survey.site/link/to/survey"
@@ -67,18 +40,6 @@
     },
     "CPUPercentageThreshold": {
       "value": "0"
-    },
-    "EventGridSubscriptionModelEndpoint": {
-      "value": "foo"
-    },
-    "EventGridSubscriptionClientOptionsEndpoint": {
-      "value": "foo"
-    },
-    "subscriptionUrl": {
-      "value": "foo"
-    },
-    "SubscriptionSettingsEndpoint": {
-      "value": "foo"
     },
     "apimCompositeKey": {
       "value": "FakeKey"

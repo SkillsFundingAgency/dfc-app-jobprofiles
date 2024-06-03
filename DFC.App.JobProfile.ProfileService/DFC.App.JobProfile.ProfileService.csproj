@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DFC.Common.SharedContent.Pkg.Netcore" Version="0.1.106" />
+		<PackageReference Include="DFC.Common.SharedContent.Pkg.Netcore" Version="0.1.107" />
 		<PackageReference Include="DFC.FindACourseClient" Version="3.0.8" />
 		<PackageReference Include="DFC.Logger.AppInsights" Version="1.0.8" />
 		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0">

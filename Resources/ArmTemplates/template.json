@@ -391,10 +391,6 @@
                 "value": "DFC-App-Job-Profiles"
               },
               {
-                "name": "CmsApiClientOptions__Timeout",
-                "value": "[parameters('cmsTimeout')]"
-              },
-              {
                 "name": "CmsApiClientOptions__ApiKey",
                 "value": "[parameters('cmsApiKey')]"
               },
@@ -652,10 +648,6 @@
                 "value": "[listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.ServiceBus/namespaces/authorizationRules', parameters('appSharedServiceBusName'), 'ReadWrite'), '2017-04-01').primaryConnectionString]"
               },
               {
-                "name": "cms-messages-topic",
-                "value": "[parameters('cmsTopicName')]"
-              },
-              {
                 "name": "cms-messages-subscription",
                 "value": "[variables('cmsSubscriptionName')]"
               },
@@ -721,9 +713,6 @@
         "parameters": {
           "serviceBusNamespaceName": {
             "value": "[parameters('appSharedServiceBusName')]"
-          },
-          "serviceBusTopicName": {
-            "value": "[parameters('cmsTopicName')]"
           },
           "serviceBusTopicSubscriptionName": {
             "value": "[variables('cmsSubscriptionName')]"

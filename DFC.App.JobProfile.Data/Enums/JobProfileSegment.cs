@@ -1,4 +1,4 @@
-﻿namespace DFC.App.JobProfile.Data
+﻿namespace DFC.App.JobProfile.Data.Enums
 {
     public enum JobProfileSegment
     {

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Data.Enums;
 using Xunit;
 
 namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
@@ -123,11 +124,10 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             const string headDescription = "HeadDescription";
             const string headTitle = "HeadTitle";
             const string headKeywords = "some keywords";
-            var jobProfileId = Guid.NewGuid();
 
             var controller = BuildControllerWithMapper();
-            var jobProfileModel = CreateJobProfileModel(headTitle, headDescription, headKeywords, jobProfileId);
-            var expectedViewModel = CreateDocumentViewModel(headTitle, headDescription, headKeywords, jobProfileId);
+            var jobProfileModel = CreateJobProfileModel(headTitle, headDescription, headKeywords);
+            var expectedViewModel = CreateDocumentViewModel(headTitle, headDescription, headKeywords);
 
             A.CallTo(() => FakeJobProfileService.GetByNameAsync(A<string>.Ignored)).Returns(jobProfileModel);
 
@@ -144,7 +144,7 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
             controller.Dispose();
         }
 
-        private static JobProfileModel CreateJobProfileModel(string headTitle, string headDescription, string headKeywords, Guid jobProfileId)
+        private static JobProfileModel CreateJobProfileModel(string headTitle, string headDescription, string headKeywords)
         {
             return new JobProfileModel
             {
@@ -154,7 +154,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                     Description = headDescription,
                     Keywords = headKeywords,
                 },
-                DocumentId = jobProfileId,
                 Segments = new List<SegmentModel>
                 {
                     new SegmentModel
@@ -168,16 +167,14 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                         Segment = JobProfileSegment.Overview,
                     },
                 },
-                SequenceNumber = 123,
                 AlternativeNames = new List<string>(),
             };
         }
 
-        private static DocumentViewModel CreateDocumentViewModel(string headTitle, string headDescription, string headKeywords, Guid jobProfileId)
+        private static DocumentViewModel CreateDocumentViewModel(string headTitle, string headDescription, string headKeywords)
         {
             return new DocumentViewModel
             {
-                DocumentId = jobProfileId,
                 Head = new HeadViewModel
                 {
                     Title = $"{headTitle} | Explore careers | National Careers Service",
@@ -187,7 +184,6 @@ namespace DFC.App.JobProfile.UnitTests.ControllerTests.ProfileControllerTests
                 Description = headDescription,
                 Keywords = headKeywords,
                 Title = headTitle,
-                SequenceNumber = 123,
                 AlternativeNames = Array.Empty<string>(),
                 Body = new BodyViewModel
                 {

@@ -1,21 +1,19 @@
-﻿using DFC.App.JobProfile.Data;
-using DFC.App.JobProfile.Data.Contracts;
+﻿using DFC.App.JobProfile.Data.Contracts;
+using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;
+using DFC.App.JobProfile.Data.Models.CurrentOpportunities;
 using DFC.App.JobProfile.Exceptions;
 using DFC.App.JobProfile.Extensions;
 using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ViewModels;
-using DFC.Compui.Cosmos.Contracts;
-using DFC.Compui.Sessionstate;
-using DFC.Content.Pkg.Netcore.Data.Models.ClientOptions;
+using DFC.Common.SharedContent.Pkg.Netcore.Constant;
+using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
+using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
 using DFC.Logger.AppInsights.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
-using System;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DFC.App.JobProfile.Controllers
@@ -29,22 +27,20 @@ namespace DFC.App.JobProfile.Controllers
         private readonly AutoMapper.IMapper mapper;
         private readonly ConfigValues configValues;
         private readonly FeedbackLinks feedbackLinks;
-        private readonly ISegmentService segmentService;
         private readonly IRedirectionSecurityService redirectionSecurityService;
-        private readonly IDocumentService<StaticContentItemModel> staticContentDocumentService;
-        private readonly Guid sharedContentItemGuid;
+        private readonly ISharedContentRedisInterface sharedContentRedisInterface;
+        private readonly string status;
 
-        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, ISegmentService segmentService, IRedirectionSecurityService redirectionSecurityService, IDocumentService<StaticContentItemModel> staticContentDocumentService, CmsApiClientOptions cmsApiClientOptions)
+        public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, IRedirectionSecurityService redirectionSecurityService, ISharedContentRedisInterface sharedContentRedisInterface, IConfiguration configuration)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
             this.configValues = configValues;
             this.feedbackLinks = feedbackLinks;
-            this.segmentService = segmentService;
             this.redirectionSecurityService = redirectionSecurityService;
-            this.staticContentDocumentService = staticContentDocumentService;
-            sharedContentItemGuid = new Guid(cmsApiClientOptions?.ContentIds ?? throw new ArgumentNullException(nameof(cmsApiClientOptions), "ContentIds cannot be null"));
+            this.sharedContentRedisInterface = sharedContentRedisInterface;
+            status = configuration.GetSection("contentMode:contentMode").Get<string>();
         }
 
         [HttpGet]
@@ -90,116 +86,6 @@ namespace DFC.App.JobProfile.Controllers
             viewModel.Breadcrumb = BuildBreadcrumb(jobProfileModel);
             logService.LogInformation($"{nameof(Document)} has succeeded for: {article}");
             return this.NegotiateContentResult(viewModel);
-        }
-
-        [HttpPost]
-        [Route("profile")]
-        public async Task<IActionResult> Create([FromBody] JobProfileModel jobProfileModel)
-        {
-            //AOP: These should be coded as an Aspect
-            logService.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
-
-            if (jobProfileModel is null)
-            {
-                return BadRequest();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var response = await jobProfileService.Create(jobProfileModel).ConfigureAwait(false);
-            logService.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
-            return new StatusCodeResult((int)response);
-        }
-
-        [HttpPut]
-        [Route("profile")]
-        public async Task<IActionResult> Update([FromBody] JobProfileModel jobProfileModel)
-        {
-            //AOP: These should be coded as an Aspect
-            logService.LogInformation($"{nameof(Create)} has been called with {jobProfileModel?.JobProfileId} for {jobProfileModel?.CanonicalName} with seq number {jobProfileModel?.SequenceNumber}");
-
-            if (jobProfileModel is null)
-            {
-                return BadRequest();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var response = await jobProfileService.Update(jobProfileModel).ConfigureAwait(false);
-            logService.LogInformation($"{nameof(Create)} has upserted content for: {jobProfileModel.CanonicalName} - Response - {response}");
-            return new StatusCodeResult((int)response);
-        }
-
-        [HttpPatch]
-        [Route("profile/{documentId}/metadata")]
-        public async Task<IActionResult> Patch([FromBody] JobProfileMetadata jobProfileMetaDataPatchModel, Guid documentId)
-        {
-            logService.LogInformation($"{nameof(Patch)} has been called with {documentId} for {jobProfileMetaDataPatchModel?.CanonicalName} with seq number {jobProfileMetaDataPatchModel?.SequenceNumber}");
-
-            if (jobProfileMetaDataPatchModel == null)
-            {
-                return BadRequest();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var response = await jobProfileService.Update(jobProfileMetaDataPatchModel).ConfigureAwait(false);
-            logService.LogInformation($"{nameof(Patch)} has patched content for: {jobProfileMetaDataPatchModel.CanonicalName}. Response status - {response}");
-
-            return new StatusCodeResult((int)response);
-        }
-
-        [HttpPut]
-        [HttpPost]
-        [Route("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshJobProfileSegment refreshJobProfileSegmentModel)
-        {
-            logService.LogInformation($"{nameof(Refresh)} has been called with {refreshJobProfileSegmentModel?.JobProfileId} for {refreshJobProfileSegmentModel?.CanonicalName} with seq number {refreshJobProfileSegmentModel?.SequenceNumber}");
-
-            if (refreshJobProfileSegmentModel == null)
-            {
-                return BadRequest();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var response = await jobProfileService.RefreshSegmentsAsync(refreshJobProfileSegmentModel).ConfigureAwait(false);
-            logService.LogInformation($"{nameof(Refresh)} has upserted content for: {refreshJobProfileSegmentModel.CanonicalName} - Response - {response}");
-            return new StatusCodeResult((int)response);
-        }
-
-        [HttpDelete]
-        [Route("profile/{documentId}")]
-        public async Task<IActionResult> Delete(Guid documentId)
-        {
-            logService.LogInformation($"{nameof(Delete)} has been called");
-
-            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
-
-            if (jobProfileModel == null)
-            {
-                logService.LogWarning($"{nameof(Document)} has returned no content for: {documentId}");
-
-                return NotFound();
-            }
-
-            await jobProfileService.DeleteAsync(documentId).ConfigureAwait(false);
-
-            logService.LogInformation($"{nameof(Delete)} has deleted content for: {jobProfileModel.CanonicalName}");
-
-            return Ok();
         }
 
         [HttpGet]
@@ -274,69 +160,105 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                viewModel.SpeakToAnAdviser = await staticContentDocumentService.GetByIdAsync(sharedContentItemGuid, StaticContentItemModel.DefaultPartitionKey).ConfigureAwait(false);
+                var speakToAnAdviser = await sharedContentRedisInterface.GetDataAsync<SharedHtml>(ApplicationKeys.SpeakToAnAdviserSharedContent, status);
+                viewModel.SpeakToAnAdviser = new StaticContentItemModel()
+                {
+                    Content = speakToAnAdviser.Html,
+                };
+
                 logService.LogInformation($"{nameof(Body)} has returned content for: {article}");
                 viewModel.SmartSurveyJP = feedbackLinks.SmartSurveyJP;
 
                 return ValidateJobProfile(viewModel, jobProfileModel);
             }
 
-            var alternateJobProfileModel = await jobProfileService.GetByAlternativeNameAsync(article).ConfigureAwait(false);
-            if (alternateJobProfileModel != null)
-            {
-                var alternateUrl = $"{host}{ProfilePathRoot}/{alternateJobProfileModel.CanonicalName}";
-                logService.LogWarning($"{nameof(Body)} has been redirected for: {article} to {alternateUrl}");
-
-                return RedirectPermanentPreserveMethod(alternateUrl);
-            }
-
             logService.LogWarning($"{nameof(Body)} has not returned any content for: {article}");
             return NotFound();
         }
 
-        [HttpGet]
-        [Route("profile/{documentId}/profile")]
-        public async Task<IActionResult> Profile(Guid documentId)
+        [HttpPost]
+        [Route("refreshCourses")]
+        public async Task<IActionResult> RefreshCourses([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
         {
-            logService.LogInformation($"{nameof(Profile)} has been called");
-
-            var viewModel = new BodyViewModel();
-            var jobProfileModel = await jobProfileService.GetByIdAsync(documentId).ConfigureAwait(false);
+            logService.LogInformation($"{nameof(RefreshCourses)} has been called");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             if (jobProfileModel != null)
             {
-                mapper.Map(jobProfileModel, viewModel);
-
-                logService.LogInformation($"{nameof(Profile)} has returned a profile for: {documentId}");
-
-                return this.NegotiateContentResult(viewModel, jobProfileModel);
+                var response = await jobProfileService.RefreshCourses("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
+                logService.LogInformation($"{nameof(RefreshCourses)} has upserted content for: " + response.ToString());
+            }
+            else
+            {
+                return NoContent();
             }
 
-            logService.LogWarning($"{nameof(Profile)} has not returned a profile for: {documentId}");
+            return Ok();
+        }
 
-            return NoContent();
+        [HttpPost]
+        [Route("refreshApprenticeships")]
+        public async Task<IActionResult> RefreshApprenticeships([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
+        {
+            logService.LogInformation($"{nameof(RefreshApprenticeships)} has been called");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshApprenticeshipsAsync("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
+                logService.LogInformation($"{nameof(RefreshApprenticeships)} has upserted content for: " + response.ToString());
+            }
+            else
+            {
+                return NoContent();
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("refreshAllSegments")]
+        public async Task<IActionResult> RefreshAllSegments([FromBody] JobProfileCurrentOpportunitiesSearchModel jobProfileModel)
+        {
+            logService.LogInformation($"{nameof(RefreshAllSegments)} has been called");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (jobProfileModel != null)
+            {
+                var response = await jobProfileService.RefreshAllSegments("PUBLISHED", jobProfileModel.First, jobProfileModel.Skip).ConfigureAwait(false);
+
+                logService.LogInformation($"{nameof(RefreshAllSegments)} has upserted content for: " + response.ToString());
+            }
+            else
+            {
+                return NoContent();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("countJobProfiles")]
+        public async Task<IActionResult> CountJobProfiles()
+        {
+            logService.LogInformation($"{nameof(CountJobProfiles)} has been called");
+
+            var response = await jobProfileService.GetAllAsync().ConfigureAwait(false);
+            var count = response.Count();
+            logService.LogInformation($"{nameof(CountJobProfiles)} has found " + count + " job profiles.");
+            return Ok(count);
         }
 
         #region Static helper methods
-
-        private static string ComputeSha256Hash(string rawData)
-        {
-            // Create a SHA256
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                // ComputeHash - returns byte array
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
-                // Convert byte array to a string
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-
-                return builder.ToString();
-            }
-        }
 
         private static BreadcrumbViewModel BuildBreadcrumb(JobProfileModel jobProfileModel)
         {
@@ -381,7 +303,7 @@ namespace DFC.App.JobProfile.Controllers
 
             if (!overviewExists || !howToBecomeExists || !whatItTakesExists)
             {
-                throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing critical segment information");
+                throw new InvalidProfileException($"JobProfile {jobProfileModel.CanonicalName} is missing critical segment information");
             }
 
             return ValidateMarkup(bodyViewModel, jobProfileModel);
@@ -405,16 +327,7 @@ namespace DFC.App.JobProfile.Controllers
                         case JobProfileSegment.Overview:
                         case JobProfileSegment.HowToBecome:
                         case JobProfileSegment.WhatItTakes:
-                            throw new InvalidProfileException($"JobProfile with Id {jobProfileModel.DocumentId} is missing markup for segment {segmentModel.Segment.ToString()}");
-
-                        case JobProfileSegment.RelatedCareers:
-                        case JobProfileSegment.CurrentOpportunities:
-                        case JobProfileSegment.WhatYouWillDo:
-                        case JobProfileSegment.CareerPathsAndProgression:
-                            {
-                                segmentModel.Markup = segmentService.GetOfflineSegment(segmentModel.Segment).OfflineMarkup;
-                                break;
-                            }
+                            throw new InvalidProfileException($"JobProfile {jobProfileModel.CanonicalName} is missing markup for segment {segmentModel.Segment}");
                     }
                 }
             }
@@ -436,6 +349,5 @@ namespace DFC.App.JobProfile.Controllers
         }
 
         #endregion Static helper methods
-
     }
 }

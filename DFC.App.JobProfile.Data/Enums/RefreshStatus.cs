@@ -2,7 +2,7 @@
 {
     public enum RefreshStatus
     {
-        Success,
         Failed,
+        Success,
     }
 }

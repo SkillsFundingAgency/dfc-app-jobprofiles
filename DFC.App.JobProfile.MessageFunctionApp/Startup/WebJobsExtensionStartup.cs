@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using DFC.App.JobProfile.Data.Models;
-using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
+﻿using DFC.App.JobProfile.MessageFunctionApp.HttpClientPolicies;
 using DFC.App.JobProfile.MessageFunctionApp.Services;
 using DFC.Functions.DI.Standard;
 using DFC.Logger.AppInsights.Contracts;
@@ -32,11 +30,9 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Startup
             builder?.AddDependencyInjection();
             builder?.Services.AddSingleton(configuration.GetSection("jobProfileClientOptions").Get<JobProfileClientOptions>());
             builder?.Services.AddScoped(sp => new HttpClient());
-            builder?.Services.AddAutoMapper(typeof(WebJobsExtensionStartup).Assembly);
-            builder?.Services.AddScoped<IMessageProcessor, MessageProcessor>();
-            builder?.Services.AddScoped<IHttpClientService<JobProfileModel>, HttpClientService<JobProfileModel>>();
             builder?.Services.AddDFCLogging(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             builder?.Services.AddScoped<ICorrelationIdProvider, InMemoryCorrelationIdProvider>();
+            builder?.Services.AddScoped<IRefreshService, RefreshService>();
         }
     }
 }

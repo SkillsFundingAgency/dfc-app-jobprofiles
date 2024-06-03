@@ -55,6 +55,7 @@ namespace DFC.App.JobProfile
         private const string StaxGraphApiUrlAppSettings = "Cms:GraphApiUrl";
         private const string WorkerThreadsConfigAppSettings = "ThreadSettings:WorkerThreads";
         private const string IocpThreadsConfigAppSettings = "ThreadSettings:IocpThreads";
+        private const string FeedbackLinkConfigAppSettings = "FeedbackLinks:SmartSurveyJP";
 
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment env;
@@ -113,8 +114,6 @@ namespace DFC.App.JobProfile
                     name: "default",
                     pattern: "{controller=Health}/{action=Ping}");
             });
-
-            //mapper?.ConfigurationProvider.AssertConfigurationIsValid();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -159,7 +158,12 @@ namespace DFC.App.JobProfile
             var configValues = configuration.GetSection(ConfigAppSettings).Get<ConfigValues>();
             services.AddSingleton(configValues);
 
-            services.AddScoped<FeedbackLinks>();
+            var feedbackLinks = new FeedbackLinks()
+            {
+                SmartSurveyJP = configuration.GetSection(FeedbackLinkConfigAppSettings).Get<string>(),
+            };
+
+            services.AddSingleton(feedbackLinks);
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
 

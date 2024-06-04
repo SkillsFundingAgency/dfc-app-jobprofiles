@@ -26,12 +26,6 @@
     "brandingAssetsAppCssFilePath": {
       "value": "__brandingAssetsAppCssFilePath__"
     },
-    "cosmosDBName": {
-      "value": "__appSharedCosmosDBName__"
-    },
-    "cosmosDbKey": {
-      "value": "__appSharedCosmosPrimaryKey__"
-    },
     "environment": {
       "value": "__ReleaseEnvironmentName__",
       "metadata": {
@@ -62,12 +56,6 @@
     "AllowedRedirects": {
       "value": "__AllowedRedirects__"
     },
-    "cosmosDbCollectionName": {
-      "value": "__cosmosDbCollectionName__"
-    },
-    "cosmosDbSharedCollectionName": {
-      "value": "__cosmosDbSharedCollectionName__"
-    },
     "cmsTopicName": {
       "value": "__cmsTopicName__"
     },
@@ -76,12 +64,6 @@
     },
     "refreshTopicName": {
       "value": "__refreshTopicName__"
-    },
-    "subscriptionUrl": {
-      "value": "__subscriptionUrl__"
-    },
-    "SubscriptionSettingsEndpoint": {
-      "value": "__SubscriptionSettingsEndpoint__"
     },
     "surveyUrl": {
       "value": "__surveyFeedbackUrl__"
@@ -97,12 +79,6 @@
     },
     "MemoryPercentageThreshold": {
       "value": "__MemoryPercentageThreshold__"
-    },
-    "EventGridSubscriptionModelEndpoint": {
-      "value": "__EventGridSubscriptionModelEndpoint__"
-    },
-    "EventGridSubscriptionClientOptionsEndpoint": {
-      "value": "__EventGridSubscriptionClientOptionsEndpoint__"
     },
     "apimCompositeKey": {
       "value": "__apimCompositeKey__"

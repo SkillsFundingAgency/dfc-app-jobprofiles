@@ -65,12 +65,6 @@
     "refreshTopicName": {
       "value": "__refreshTopicName__"
     },
-    "subscriptionUrl": {
-      "value": "__subscriptionUrl__"
-    },
-    "SubscriptionSettingsEndpoint": {
-      "value": "__SubscriptionSettingsEndpoint__"
-    },
     "surveyUrl": {
       "value": "__surveyFeedbackUrl__"
     },

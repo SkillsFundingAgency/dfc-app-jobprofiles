@@ -32,6 +32,21 @@
         "comment": "Bug in tokenisation task prevents referencing Release.EnvironmentName directly.  https://github.com/TotalALM/VSTS-Tasks/issues/29"
       }
     },
+    "cmsTimeout": {
+      "value": "__cmsTimeout__"
+    },
+    "cmsApiKey": {
+      "value": "__cmsApiKey__"
+    },
+    "cmsBaseAddress": {
+      "value": "__cmsBaseAddress__"
+    },
+    "cmsStaticContentEndpoint": {
+      "value": "__cmsStaticContentEndpoint__"
+    },
+    "cmsContentIds": {
+      "value": "__cmsContentIds__"
+    },
     "sharedAppServicePlanName": {
       "value": "__sharedAppServicePlanName__"
     },
@@ -41,8 +56,20 @@
     "AllowedRedirects": {
       "value": "__AllowedRedirects__"
     },
+    "cmsTopicName": {
+      "value": "__cmsTopicName__"
+    },
+    "cmsSubscriptionSqlFilter": {
+      "value": "__cmsSubscriptionSqlFilter__"
+    },
     "refreshTopicName": {
       "value": "__refreshTopicName__"
+    },
+    "subscriptionUrl": {
+      "value": "__subscriptionUrl__"
+    },
+    "SubscriptionSettingsEndpoint": {
+      "value": "__SubscriptionSettingsEndpoint__"
     },
     "surveyUrl": {
       "value": "__surveyFeedbackUrl__"

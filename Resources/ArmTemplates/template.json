@@ -55,6 +55,21 @@
     "brandingAssetsAppCssFilePath": {
       "type": "string"
     },
+    "cmsTimeout": {
+      "type": "string"
+    },
+    "cmsApiKey": {
+      "type": "string"
+    },
+    "cmsBaseAddress": {
+      "type": "string"
+    },
+    "cmsStaticContentEndpoint": {
+      "type": "string"
+    },
+    "cmsContentIds": {
+      "type": "string"
+    },
     "environment": {
       "type": "string"
     },
@@ -65,6 +80,20 @@
     "sharedAppServicePlanResourceGroup": {
       "type": "string",
       "defaultValue": ""
+    },
+    "cmsTopicName": {
+      "type": "string",
+      "defaultValue": "cms-messages",
+      "metadata": {
+        "description": "Name of CMS messages topic"
+      }
+    },
+    "cmsSubscriptionSqlFilter": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Filter to apply to subscription (no filter applied if left blank)"
+      }
     },
     "refreshTopicName": {
       "type": "string",
@@ -207,6 +236,7 @@
     "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
     "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
     "functionAppInsightsName": "[concat(variables('functionAppName'), '-ai')]",
+    "cmsSubscriptionName": "job-profile-metadata",
     "refreshSubscriptionName": "job-profile-segment-refresh",
     "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-app-sharedresources-actgrp')]"
   },
@@ -388,6 +418,30 @@
               {
                 "name": "Configuration__ApplicationName",
                 "value": "DFC-App-Job-Profiles"
+              },
+              {
+                "name": "CmsApiClientOptions__Timeout",
+                "value": "[parameters('cmsTimeout')]"
+              },
+              {
+                "name": "CmsApiClientOptions__ApiKey",
+                "value": "[parameters('cmsApiKey')]"
+              },
+              {
+                "name": "CmsApiClientOptions__BaseAddress",
+                "value": "[parameters('cmsBaseAddress')]"
+              },
+              {
+                "name": "CmsApiClientOptions__StaticContentEndpoint",
+                "value": "[parameters('cmsStaticContentEndpoint')]"
+              },
+              {
+                "name": "CmsApiClientOptions__ContentIds",
+                "value": "[parameters('cmsContentIds')]"
+              },
+              {
+                "name": "CmsApiClientOptions__SummaryEndpoint",
+                "value": "content/getcontent/api/execute/jobprofile"
               },
               {
                 "name": "LmiBaseEndPoint",
@@ -627,6 +681,10 @@
                 "value": "[listKeys(resourceId(parameters('appSharedResourceGroup'), 'Microsoft.ServiceBus/namespaces/authorizationRules', parameters('appSharedServiceBusName'), 'ReadWrite'), '2017-04-01').primaryConnectionString]"
               },
               {
+                "name": "cms-messages-topic",
+                "value": "[parameters('cmsTopicName')]"
+              },
+              {
                 "name": "cms-messages-subscription",
                 "value": "[variables('cmsSubscriptionName')]"
               },
@@ -677,6 +735,33 @@
       "dependsOn": [
         "[variables('functionAppInsightsName')]"
       ]
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "[variables('cmsSubscriptionName')]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('appSharedResourceGroup')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-subscription.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "serviceBusNamespaceName": {
+            "value": "[parameters('appSharedServiceBusName')]"
+          },
+          "serviceBusTopicName": {
+            "value": "[parameters('cmsTopicName')]"
+          },
+          "serviceBusTopicSubscriptionName": {
+            "value": "[variables('cmsSubscriptionName')]"
+          },
+          "subscriptionSqlFilter": {
+            "value": "[parameters('cmsSubscriptionSqlFilter')]"
+          }
+        }
+      }
     },
     {
       "apiVersion": "2017-05-10",

@@ -17,6 +17,21 @@
     "brandingAssetsAppCssFilePath": {
       "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
     },
+    "cmsTimeout": {
+      "value": "00:00:30"
+    },
+    "cmsApiKey": {
+      "value": "testkey"
+    },
+    "cmsBaseAddress": {
+      "value": "https://url"
+    },
+    "cmsStaticContentEndpoint": {
+      "value": "/shared-content/"
+    },
+    "cmsContentIds": {
+      "value": "12345"
+    },
     "Environment": {
       "value": "FOO"
     },

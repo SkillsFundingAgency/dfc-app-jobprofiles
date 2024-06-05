@@ -29,25 +29,11 @@
     "appSharedStorageAccountName": {
       "type": "string"
     },
-    "aseHostingEnvironmentName": {
-      "type": "string",
-      "defaultValue": ""
+    "appServiceName": {
+      "type": "string"
     },
-    "aseResourceGroup": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "aspInstances": {
-      "type": "int",
-      "defaultValue": 2
-    },
-    "aspSize": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "aspTier": {
-      "type": "string",
-      "defaultValue": ""
+    "functionAppName": {
+      "type": "string"
     },
     "AllowedRedirects": {
       "type": "string"
@@ -139,12 +125,6 @@
       }
     },
     "ExceptionCountThreshold": {
-      "type": "string"
-    },
-    "CPUPercentageThreshold": {
-      "type": "string"
-    },
-    "MemoryPercentageThreshold": {
       "type": "string"
     },
     "EventGridSubscriptionModelEndpoint": {
@@ -257,7 +237,7 @@
     "cosmosDbDatabaseName": "dfc-app-jobprofiles",
     "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
     "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
-    "urlJobprofiles": "[toLower(concat('https://', variables('webAppName'), '.', parameters('appServiceDomain')))]",
+    "urlJobprofiles": "[toLower(concat('https://', parameters('appServiceName'), '.', parameters('appServiceDomain')))]",
     "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofover-as.', parameters('appServiceDomain')))]",
     "urlJobprofileCurrentopportunitiesApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofcops-as.', parameters('appServiceDomain')))]",
     "urlCareerpathApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-carpath-as.', parameters('appServiceDomain')))]",
@@ -265,10 +245,8 @@
     "urlRelatedcareersApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-relcar-as.', parameters('appServiceDomain')))]",
     "urlJobprofileSkillsApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofskills-as.', parameters('appServiceDomain')))]",
     "urlJobprofileTasksApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobproftasks-as.', parameters('appServiceDomain')))]",
-    "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
-    "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
-    "functionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
-    "functionAppInsightsName": "[concat(variables('functionAppName'), '-ai')]",
+    "webAppInsightsName": "[concat(parameters('appServiceName'), '-ai')]",
+    "functionAppInsightsName": "[concat(parameters('functionAppName'), '-ai')]",
     "cmsSubscriptionName": "job-profile-metadata",
     "refreshSubscriptionName": "job-profile-segment-refresh",
     "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-app-sharedresources-actgrp')]"
@@ -331,7 +309,7 @@
     },
     {
       "apiVersion": "2017-05-10",
-      "name": "[variables('WebAppName')]",
+      "name": "[parameters('appServiceName')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
@@ -341,7 +319,7 @@
         },
         "parameters": {
           "appServiceName": {
-            "value": "[variables('webAppName')]"
+            "value": "[parameters('appServiceName')]"
           },
           "appServicePlanName": {
             "value": "[variables('appServicePlanName')]"
@@ -830,7 +808,7 @@
               },
               {
                  "name": "ThreadSettings__IocpThreads",
-                 "value": "[parameters('IocpThreads')]"   
+                 "value": "[parameters('IocpThreads')]"
 			  }
             ]
           }
@@ -868,7 +846,7 @@
     },
     {
       "apiVersion": "2017-05-10",
-      "name": "[variables('functionAppName')]",
+      "name": "[parameters('functionAppName')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
@@ -878,7 +856,7 @@
         },
         "parameters": {
           "appServiceName": {
-            "value": "[variables('functionAppName')]"
+            "value": "[parameters('functionAppName')]"
           },
           "appServicePlanName": {
             "value": "[variables('appServicePlanName')]"

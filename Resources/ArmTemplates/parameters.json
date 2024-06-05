@@ -14,14 +14,11 @@
     "appSharedStorageAccountName": {
       "value": "__appSharedStorageAccountName__"
     },
-    "aseHostingEnvironmentName": {
-      "value": "__aseHostingEnvironmentName__"
+    "appServiceName": {
+      "value": "__AppServiceName__"
     },
-    "aseResourceGroup": {
-      "value": "__aseResourceGroup__"
-    },
-    "aspTier": {
-      "value": "__aspTier__"
+    "functionAppName": {
+      "value": "__FunctionAppName__"
     },
     "brandingAssetsAppCssFilePath": {
       "value": "__brandingAssetsAppCssFilePath__"
@@ -91,12 +88,6 @@
     },
     "ExceptionCountThreshold": {
       "value": "__ExceptionCountThreshold__"
-    },
-    "CPUPercentageThreshold": {
-      "value": "__CPUPercentageThreshold__"
-    },
-    "MemoryPercentageThreshold": {
-      "value": "__MemoryPercentageThreshold__"
     },
     "EventGridSubscriptionModelEndpoint": {
       "value": "__EventGridSubscriptionModelEndpoint__"

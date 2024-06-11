@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers;
 using DFC.App.JobProfile.AutoMapperProfiles.ValueConverters;
-using DFC.App.JobProfile.Data;
 using DFC.App.JobProfile.Data.Contracts;
 using DFC.App.JobProfile.Data.Enums;
 using DFC.App.JobProfile.Data.Models;

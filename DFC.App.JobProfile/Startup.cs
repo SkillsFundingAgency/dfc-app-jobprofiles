@@ -208,7 +208,6 @@ namespace DFC.App.JobProfile
                         new List<Profile>
                         {
                             new JobProfileModelProfile(),
-                            new StaticContentItemModelProfile(),
                             new FindACourseProfile(),
                         });
                 }).CreateMapper();

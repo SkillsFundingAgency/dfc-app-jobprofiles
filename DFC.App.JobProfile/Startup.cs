@@ -12,6 +12,7 @@ using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.Common.SharedContent.Pkg.Netcore;
 using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure;
+using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure.CacheRepository;
 using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure.Strategy;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
@@ -167,6 +168,8 @@ namespace DFC.App.JobProfile
             services.AddSingleton(feedbackLinks);
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
+            services.AddMemoryCache();
+            services.AddSingleton<ICacheRepository, CacheRepository>();
 
             services.AddSingleton<IGraphQLClient>(s =>
             {

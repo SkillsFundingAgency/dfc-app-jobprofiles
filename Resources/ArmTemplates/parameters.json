@@ -117,7 +117,7 @@
       "value": "__StaxGraphqlTokenEndpointUrl__"
     },
     "CmsGraphApiUrl": {
-      "value": "__StaxGraphqlApiUrl__"174666
+      "value": "__StaxGraphqlApiUrl__"
     },
     "CmsClientId": {
       "value": "__StaxGraphqlClientId__"

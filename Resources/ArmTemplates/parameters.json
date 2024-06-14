@@ -23,12 +23,6 @@
     "brandingAssetsAppCssFilePath": {
       "value": "__brandingAssetsAppCssFilePath__"
     },
-    "cosmosDBName": {
-      "value": "__appSharedCosmosDBName__"
-    },
-    "cosmosDbKey": {
-      "value": "__appSharedCosmosPrimaryKey__"
-    },
     "environment": {
       "value": "__ReleaseEnvironmentName__",
       "metadata": {
@@ -59,12 +53,6 @@
     "AllowedRedirects": {
       "value": "__AllowedRedirects__"
     },
-    "cosmosDbCollectionName": {
-      "value": "__cosmosDbCollectionName__"
-    },
-    "cosmosDbSharedCollectionName": {
-      "value": "__cosmosDbSharedCollectionName__"
-    },
     "cmsTopicName": {
       "value": "__cmsTopicName__"
     },
@@ -73,12 +61,6 @@
     },
     "refreshTopicName": {
       "value": "__refreshTopicName__"
-    },
-    "subscriptionUrl": {
-      "value": "__subscriptionUrl__"
-    },
-    "SubscriptionSettingsEndpoint": {
-      "value": "__SubscriptionSettingsEndpoint__"
     },
     "surveyUrl": {
       "value": "__surveyFeedbackUrl__"
@@ -89,11 +71,11 @@
     "ExceptionCountThreshold": {
       "value": "__ExceptionCountThreshold__"
     },
-    "EventGridSubscriptionModelEndpoint": {
-      "value": "__EventGridSubscriptionModelEndpoint__"
+    "CPUPercentageThreshold": {
+      "value": "__CPUPercentageThreshold__"
     },
-    "EventGridSubscriptionClientOptionsEndpoint": {
-      "value": "__EventGridSubscriptionClientOptionsEndpoint__"
+    "MemoryPercentageThreshold": {
+      "value": "__MemoryPercentageThreshold__"
     },
     "apimCompositeKey": {
       "value": "__apimCompositeKey__"
@@ -135,7 +117,7 @@
       "value": "__StaxGraphqlTokenEndpointUrl__"
     },
     "CmsGraphApiUrl": {
-      "value": "__StaxGraphqlApiUrl__"
+      "value": "__StaxGraphqlApiUrl__"174666
     },
     "CmsClientId": {
       "value": "__StaxGraphqlClientId__"

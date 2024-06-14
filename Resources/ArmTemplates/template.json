@@ -56,12 +56,6 @@
     "cmsContentIds": {
       "type": "string"
     },
-    "cosmosDbName": {
-      "type": "string"
-    },
-    "cosmosDbKey": {
-      "type": "securestring"
-    },
     "environment": {
       "type": "string"
     },
@@ -72,18 +66,6 @@
     "sharedAppServicePlanResourceGroup": {
       "type": "string",
       "defaultValue": ""
-    },
-    "cosmosDbCollectionName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the collection to create"
-      }
-    },
-    "cosmosDbSharedCollectionName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the shared cms collection to create"
-      }
     },
     "cmsTopicName": {
       "type": "string",
@@ -106,12 +88,6 @@
         "description": "Name of job profile refresh topic"
       }
     },
-    "subscriptionUrl": {
-      "type": "string"
-    },
-    "SubscriptionSettingsEndpoint": {
-      "type": "string"
-    },
     "surveyUrl": {
       "type": "string",
       "metadata": {
@@ -127,10 +103,10 @@
     "ExceptionCountThreshold": {
       "type": "string"
     },
-    "EventGridSubscriptionModelEndpoint": {
+    "CPUPercentageThreshold": {
       "type": "string"
     },
-    "EventGridSubscriptionClientOptionsEndpoint": {
+    "MemoryPercentageThreshold": {
       "type": "string"
     },
     "apimCompositeKey": {
@@ -233,9 +209,6 @@
     "appServicePlanName": "[if(greater(length(parameters('sharedAppServicePlanName')), 0), parameters('sharedAppServicePlanName'), concat(variables('resourcePrefix'), '-asp'))]",
     "appServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
     "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
-    "cosmosDbCollectionPartitionKey": "/PartitionKey",
-    "cosmosDbDatabaseName": "dfc-app-jobprofiles",
-    "cosmosDbEndpoint": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
     "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-jobprof'))]",
     "urlJobprofiles": "[toLower(concat('https://', parameters('appServiceName'), '.', parameters('appServiceDomain')))]",
     "urlJobprofileOverviewApp": "[toLower(concat('https://dfc-', parameters('environment'), '-app-jobprofover-as.', parameters('appServiceDomain')))]",
@@ -367,26 +340,6 @@
                 "value": "[parameters('brandingAssetsAppCssFilePath')]"
               },
               {
-                "name": "Configuration__CosmosDbConnections__JobProfile__AccessKey",
-                "value": "[parameters('cosmosDbKey')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__JobProfile__EndpointUrl",
-                "value": "[variables('cosmosDbEndpoint')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__JobProfile__DatabaseId",
-                "value": "[variables('cosmosDbDatabaseName')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__JobProfile__CollectionId",
-                "value": "[parameters('cosmosDbCollectionName')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__JobProfile__PartitionKey",
-                "value": "[variables('cosmosDbCollectionPartitionKey')]"
-              },
-              {
                 "name": "Policies__HttpCircuitBreaker__DurationOfBreak",
                 "value": "00:01:00"
               },
@@ -407,144 +360,32 @@
                 "value": "[parameters('AllowedRedirects')]"
               },
               {
-                "name": "OverviewBannerSegmentClientOptions__Timeout",
-                "value": "00:00:10"
-              },
-              {
-                "name": "OverviewBannerSegmentClientOptions__BaseAddress",
-                "value": "[variables('urlJobprofileOverviewApp')]"
-              },
-              {
-                "name": "OverviewBannerSegmentClientOptions__Endpoint",
-                "value": "segment/{0}/contents"
-              },
-              {
                 "name": "OverviewBannerSegmentClientOptions__OfflineHtml",
                 "value": ""
-              },
-              {
-                "name": "OverviewBannerSegmentClientOptions__Name",
-                "value": "DFC.App.JobProfileOverview"
-              },
-              {
-                "name": "CurrentOpportunitiesSegmentClientOptions__Timeout",
-                "value": "00:00:10"
-              },
-              {
-                "name": "CurrentOpportunitiesSegmentClientOptions__BaseAddress",
-                "value": "[variables('urlJobprofileCurrentopportunitiesApp')]"
-              },
-              {
-                "name": "CurrentOpportunitiesSegmentClientOptions__Endpoint",
-                "value": "segment/{0}/contents"
               },
               {
                 "name": "CurrentOpportunitiesSegmentClientOptions__OfflineHtml",
                 "value": "<section id=\"CurrentOpportunities\"> <h2 class=\"job-profile-heading\">Current opportunities</h2> <div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
               },
               {
-                "name": "CurrentOpportunitiesSegmentClientOptions__Name",
-                "value": "DFC.App.JobProfile.CurrentOpportunities"
-              },
-              {
-                "name": "CareerPathSegmentClientOptions__Timeout",
-                "value": "00:00:10"
-              },
-              {
-                "name": "CareerPathSegmentClientOptions__BaseAddress",
-                "value": "[variables('urlCareerpathApp')]"
-              },
-              {
-                "name": "CareerPathSegmentClientOptions__Endpoint",
-                "value": "segment/{0}/contents"
-              },
-              {
                 "name": "CareerPathSegmentClientOptions__OfflineHtml",
                 "value": "<section id=\"CareerPathAndProgression\"> <h2 class=\"job-profile-heading\">Career path and progression</h2> <div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
-              },
-              {
-                "name": "CareerPathSegmentClientOptions__Name",
-                "value": "DFC.App.CareerPath"
-              },
-              {
-                "name": "HowToBecomeSegmentClientOptions__Timeout",
-                "value": "00:00:10"
-              },
-              {
-                "name": "HowToBecomeSegmentClientOptions__BaseAddress",
-                "value": "[variables('urlJobprofileHowtobecomeApp')]"
-              },
-              {
-                "name": "HowToBecomeSegmentClientOptions__Endpoint",
-                "value": "segment/{0}/contents"
               },
               {
                 "name": "HowToBecomeSegmentClientOptions__OfflineHtml",
                 "value": ""
               },
               {
-                "name": "HowToBecomeSegmentClientOptions__Name",
-                "value": "DFC.App.JobProfiles.HowToBecome"
-              },
-              {
-                "name": "RelatedCareersSegmentClientOptions__Timeout",
-                "value": "00:00:10"
-              },
-              {
-                "name": "RelatedCareersSegmentClientOptions__BaseAddress",
-                "value": "[variables('urlRelatedcareersApp')]"
-              },
-              {
-                "name": "RelatedCareersSegmentClientOptions__Endpoint",
-                "value": "segment/{0}/contents"
-              },
-              {
                 "name": "RelatedCareersSegmentClientOptions__OfflineHtml",
                 "value": "<div class=\"job-profile-related\"> <h3 class=\"govuk-heading-m\">Related careers</h3><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></div>"
-              },
-              {
-                "name": "RelatedCareersSegmentClientOptions__Name",
-                "value": "DFC.App.RelatedCareers"
-              },
-              {
-                "name": "WhatItTakesSegmentClientOptions__Timeout",
-                "value": "00:00:10"
-              },
-              {
-                "name": "WhatItTakesSegmentClientOptions__BaseAddress",
-                "value": "[variables('urlJobprofileSkillsApp')]"
-              },
-              {
-                "name": "WhatItTakesSegmentClientOptions__Endpoint",
-                "value": "segment/{0}/contents"
               },
               {
                 "name": "WhatItTakesSegmentClientOptions__OfflineHtml",
                 "value": ""
               },
               {
-                "name": "WhatItTakesSegmentClientOptions__Name",
-                "value": "DFC.App.JobProfileSkills"
-              },
-              {
-                "name": "WhatYouWillDoSegmentClientOptions__Timeout",
-                "value": "00:00:10"
-              },
-              {
-                "name": "WhatYouWillDoSegmentClientOptions__BaseAddress",
-                "value": "[variables('urlJobprofileTasksApp')]"
-              },
-              {
-                "name": "WhatYouWillDoSegmentClientOptions__Endpoint",
-                "value": "segment/{0}/contents"
-              },
-              {
                 "name": "WhatYouWillDoSegmentClientOptions__OfflineHtml",
                 "value": "<section id=\"WhatYouWillDo\"><h2 class=\"job-profile-heading\">What you'll do</h2><div class=\"govuk-inset-text\">The information in this section is currently unavailable. Try again later.</div></section>"
-              },
-              {
-                "name": "WhatYouWillDoSegmentClientOptions__Name",
-                "value": "DFC.App.JobProfileTasks"
               },
               {
                 "name": "FeedbackLinks__SmartSurveyJP",
@@ -561,90 +402,6 @@
               {
                 "name": "Configuration__ApplicationName",
                 "value": "DFC-App-Job-Profiles"
-              },
-              {
-                "name": "EventGridSubscriptionModel__Endpoint",
-                "value": "[parameters('EventGridSubscriptionModelEndpoint')]"
-              },
-              {
-                "name": "EventGridSubscriptionModel__Endpoint__Filter__BeginsWith",
-                "value": "/job-profile/"
-              },
-              {
-                "name": "EventGridSubscriptionModel__Endpoint__Filter__IncludeEventTypes",
-                "value": "published"
-              },
-              {
-                "name": "EventGridSubscriptionClientOptions__Timeout",
-                "value": "00:00:30"
-              },
-              {
-                "name": "EventGridSubscriptionClientOptions__ApiKey",
-                "value": "[parameters('apimCompositeKey')]"
-              },
-              {
-                "name": "EventGridSubscriptionClientOptions__BaseAddress",
-                "value": "[concat(parameters('apimProxyAddress'),'/content/Subscription/')]"
-              },
-              {
-                "name": "EventGridSubscriptionClientOptions__Endpoint",
-                "value": "[parameters('EventGridSubscriptionClientOptionsEndpoint')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__SharedContent__AccessKey",
-                "value": "[parameters('cosmosDbKey')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__SharedContent__EndpointUrl",
-                "value": "[variables('cosmosDbEndpoint')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__SharedContent__DatabaseId",
-                "value": "[variables('cosmosDbDatabaseName')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__SharedContent__CollectionId",
-                "value": "[parameters('cosmosDbSharedCollectionName')]"
-              },
-              {
-                "name": "Configuration__CosmosDbConnections__SharedContent__PartitionKey",
-                "value": "[variables('cosmosDbCollectionPartitionKey')]"
-              },
-              {
-                "name": "SubscriptionSettings__Filter__IncludeEventTypes__0",
-                "value": "published"
-              },
-              {
-                "name": "SubscriptionSettings__Filter__IncludeEventTypes__1",
-                "value": "unpublished"
-              },
-              {
-                "name": "SubscriptionSettings__Filter__IncludeEventTypes__2",
-                "value": "deleted"
-              },
-              {
-                "name": "SubscriptionSettings__Endpoint",
-                "value": "[concat(parameters('SubscriptionSettingsEndpoint'),'/api/webhook/ReceiveEvents?subscription-key=',parameters('apimCompositeKey'))]"
-              },
-              {
-                "name": "SubscriptionSettings__SubscriptionRegistrationDelay",
-                "value": "00:02:00"
-              },
-              {
-                "name": "SubscriptionSettings__SubscriptionServiceEndpoint",
-                "value": "[concat(parameters('subscriptionUrl'),'/api/Execute')]"
-              },
-              {
-                "name": "SubscriptionSettings__Filter__AdvancedFilters__0__Property",
-                "value": "subject"
-              },
-              {
-                "name": "SubscriptionSettings__Filter__AdvancedFilters__0__Values__0",
-                "value": "/content/sharedcontent/"
-              },
-              {
-                "name": "SubscriptionSettings__Filter__AdvancedFilters__0__Type",
-                "value": "StringContains"
               },
               {
                 "name": "CmsApiClientOptions__Timeout",
@@ -962,66 +719,6 @@
       "dependsOn": [
         "[variables('functionAppInsightsName')]"
       ]
-    },
-    {
-      "apiVersion": "2017-05-10",
-      "name": "[parameters('cosmosDbCollectionName')]",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[parameters('appSharedResourceGroup')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'CosmosDb/cosmos-collection.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "accountName": {
-            "value": "[parameters('cosmosDbName')]"
-          },
-          "databaseName": {
-            "value": "[variables('cosmosDbDatabaseName')]"
-          },
-          "collectionName": {
-            "value": "[parameters('cosmosDbCollectionName')]"
-          },
-          "provisionRequestUnits": {
-            "value": false
-          },
-          "partitionKey": {
-            "value": "[variables('cosmosDbCollectionPartitionKey')]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2017-05-10",
-      "name": "[parameters('cosmosDbSharedCollectionName')]",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[parameters('appSharedResourceGroup')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'CosmosDb/cosmos-collection.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "accountName": {
-            "value": "[parameters('cosmosDbName')]"
-          },
-          "databaseName": {
-            "value": "[variables('cosmosDbDatabaseName')]"
-          },
-          "collectionName": {
-            "value": "[parameters('cosmosDbSharedCollectionName')]"
-          },
-          "provisionRequestUnits": {
-            "value": false
-          },
-          "partitionKey": {
-            "value": "[variables('cosmosDbCollectionPartitionKey')]"
-          }
-        }
-      }
     },
     {
       "apiVersion": "2017-05-10",

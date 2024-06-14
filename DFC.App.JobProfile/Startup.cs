@@ -12,6 +12,7 @@ using DFC.App.JobProfile.Models;
 using DFC.App.JobProfile.ProfileService;
 using DFC.Common.SharedContent.Pkg.Netcore;
 using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure;
+using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure.CacheRepository;
 using DFC.Common.SharedContent.Pkg.Netcore.Infrastructure.Strategy;
 using DFC.Common.SharedContent.Pkg.Netcore.Interfaces;
 using DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.SharedHtml;
@@ -29,6 +30,7 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -166,6 +168,8 @@ namespace DFC.App.JobProfile
             services.AddSingleton(feedbackLinks);
             services.AddScoped<IJobProfileService, JobProfileService>();
             services.AddDFCLogging(configuration["ApplicationInsights:InstrumentationKey"]);
+            services.AddMemoryCache();
+            services.AddSingleton<ICacheRepository, CacheRepository>();
 
             services.AddSingleton<IGraphQLClient>(s =>
             {
@@ -173,7 +177,11 @@ namespace DFC.App.JobProfile
                 {
                     EndPoint = new Uri(configuration.GetSection(StaxGraphApiUrlAppSettings).Get<string>() ?? throw new ArgumentNullException()),
 
-                    HttpMessageHandler = new CmsRequestHandler(s.GetService<IHttpClientFactory>(), s.GetService<IConfiguration>(), s.GetService<IHttpContextAccessor>() ?? throw new ArgumentNullException()),
+                    HttpMessageHandler = new CmsRequestHandler(
+                        s.GetService<IHttpClientFactory>(),
+                        s.GetService<IConfiguration>(),
+                        s.GetService<IHttpContextAccessor>() ?? throw new ArgumentNullException(),
+                        s.GetService<IMemoryCache>()),
                 };
                 var client = new GraphQLHttpClient(option, new NewtonsoftJsonSerializer());
                 return client;
@@ -203,7 +211,6 @@ namespace DFC.App.JobProfile
                         new List<Profile>
                         {
                             new JobProfileModelProfile(),
-                            new StaticContentItemModelProfile(),
                             new FindACourseProfile(),
                         });
                 }).CreateMapper();

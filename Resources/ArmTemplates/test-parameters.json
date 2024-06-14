@@ -14,6 +14,12 @@
     "appSharedStorageAccountName": {
       "value": "dfcdevappsharedstr"
     },
+    "appServiceName": {
+      "value": "dfc-foo-app-jobprofiles-as-ver"
+    },
+    "functionAppName": {
+      "value": "dfc-foo-app-jobprofiles-fa-ver"
+    },
     "brandingAssetsAppCssFilePath": {
       "value": "https://foo-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/job-profiles.min.css"
     },

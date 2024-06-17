@@ -118,7 +118,6 @@
     },
     "CmsGraphApiUrl": {
       "value": "__StaxGraphqlApiUrl__",
-      174666
     },
     "CmsClientId": {
       "value": "__StaxGraphqlClientId__"

@@ -66,7 +66,7 @@
       "value": "__surveyFeedbackUrl__"
     },
     "enableAlerts": {
-      "value": __EnableAzureMonitorAlerting__
+      "value": "__EnableAzureMonitorAlerting__"
     },
     "ExceptionCountThreshold": {
       "value": "__ExceptionCountThreshold__"
@@ -90,7 +90,7 @@
       "value": "__LmiBaseEndPoint__"
     },
     "EnableLMI": {
-      "value": __EnableLMI__
+      "value": "__EnableLMI__"
     },
     "ApimResourceGroup": {
       "value": "__SharedResourceGroupName__"
@@ -117,7 +117,8 @@
       "value": "__StaxGraphqlTokenEndpointUrl__"
     },
     "CmsGraphApiUrl": {
-      "value": "__StaxGraphqlApiUrl__"174666
+      "value": "__StaxGraphqlApiUrl__",
+      174666
     },
     "CmsClientId": {
       "value": "__StaxGraphqlClientId__"
@@ -156,10 +157,19 @@
       "value": "__courseProviderServiceApiKey__"
     },
     "WorkerThreads": {
-	  "value": "__WorkerThreads__"
+      "value": "__WorkerThreads__"
     },
     "IocpThreads": {
-	  "value": "__IocpThreads__"
+      "value": "__IocpThreads__"
+    },
+    "Expiry": {
+      "value": "__Expiry__"
+    },
+    "SegementExpiry": {
+      "value": "__SegementExpiry__"
+    },
+    "CoursesApprenticeshipExpiry": {
+      "value": "__CoursesApprenticeshipExpiry__"
     }
   }
 }

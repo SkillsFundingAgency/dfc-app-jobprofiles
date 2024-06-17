@@ -22,6 +22,8 @@ namespace DFC.App.JobProfile.Controllers
     {
         public const string ProfilePathRoot = "job-profiles";
 
+        private const string ExpiryAppSettings = "Cms:Expiry";
+        private readonly IConfiguration configuration;
         private readonly ILogService logService;
         private readonly IJobProfileService jobProfileService;
         private readonly AutoMapper.IMapper mapper;
@@ -30,17 +32,24 @@ namespace DFC.App.JobProfile.Controllers
         private readonly IRedirectionSecurityService redirectionSecurityService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly string status;
+        private double expiry = 4;
 
         public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, IRedirectionSecurityService redirectionSecurityService, ISharedContentRedisInterface sharedContentRedisInterface, IConfiguration configuration)
         {
             this.logService = logService;
             this.jobProfileService = jobProfileService;
             this.mapper = mapper;
+            this.configuration = configuration;
             this.configValues = configValues;
             this.feedbackLinks = feedbackLinks;
             this.redirectionSecurityService = redirectionSecurityService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
             status = configuration.GetSection("contentMode:contentMode").Get<string>();
+            if (this.configuration != null)
+            {
+                string expiryAppString = this.configuration.GetSection(ExpiryAppSettings).Get<string>();
+                this.expiry = double.Parse(string.IsNullOrEmpty(expiryAppString) ? "4" : expiryAppString);
+            }
         }
 
         [HttpGet]
@@ -160,7 +169,7 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                var speakToAnAdviser = await sharedContentRedisInterface.GetDataAsync<SharedHtml>(ApplicationKeys.SpeakToAnAdviserSharedContent, status);
+                var speakToAnAdviser = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SharedHtml>(ApplicationKeys.SpeakToAnAdviserSharedContent, status, expiry);
                 viewModel.SpeakToAnAdviser = new StaticContentItemModel()
                 {
                     Content = speakToAnAdviser.Html,

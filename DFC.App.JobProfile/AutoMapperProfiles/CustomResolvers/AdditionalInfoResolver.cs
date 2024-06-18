@@ -26,8 +26,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
                 switch (routeName)
                 {
                     case RouteName.Apprenticeship:
-                        if (responseData.RelatedApprenticeshipLinks.ContentItems.IsAny() &&
-                            responseData.RelatedApprenticeshipRequirements.ContentItems.IsAny())
+                        if (responseData.RelatedApprenticeshipLinks.ContentItems.IsAny())
                         {
                             foreach (var item in responseData.RelatedApprenticeshipLinks.ContentItems)
                             {
@@ -41,8 +40,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 
                         break;
                     case RouteName.College:
-                        if (responseData.RelatedCollegeLinks.ContentItems.IsAny() &&
-                            responseData.RelatedCollegeRequirements.ContentItems.IsAny())
+                        if (responseData.RelatedCollegeLinks.ContentItems.IsAny())
                         {
                             foreach (var item in responseData.RelatedCollegeLinks.ContentItems)
                             {
@@ -56,8 +54,7 @@ namespace DFC.App.JobProfile.AutoMapperProfiles.CustomResolvers
 
                         break;
                     case RouteName.University:
-                        if (responseData.RelatedUniversityLinks.ContentItems.IsAny() &&
-                            responseData.RelatedApprenticeshipRequirements.ContentItems.IsAny())
+                        if (responseData.RelatedUniversityLinks.ContentItems.IsAny())
                         {
                             foreach (var item in responseData.RelatedUniversityLinks.ContentItems)
                             {

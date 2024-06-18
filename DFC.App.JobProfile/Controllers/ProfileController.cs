@@ -32,7 +32,7 @@ namespace DFC.App.JobProfile.Controllers
         private readonly IRedirectionSecurityService redirectionSecurityService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
         private readonly string status;
-        private double expiry = 4;
+        private double expiryInHours = 4;
 
         public ProfileController(ILogService logService, IJobProfileService jobProfileService, AutoMapper.IMapper mapper, ConfigValues configValues, FeedbackLinks feedbackLinks, IRedirectionSecurityService redirectionSecurityService, ISharedContentRedisInterface sharedContentRedisInterface, IConfiguration configuration)
         {
@@ -48,7 +48,10 @@ namespace DFC.App.JobProfile.Controllers
             if (this.configuration != null)
             {
                 string expiryAppString = this.configuration.GetSection(ExpiryAppSettings).Get<string>();
-                this.expiry = double.Parse(string.IsNullOrEmpty(expiryAppString) ? "4" : expiryAppString);
+                if (double.TryParse(expiryAppString, out var expiryAppStringParseResult))
+                {
+                    expiryInHours = expiryAppStringParseResult;
+                }
             }
         }
 
@@ -169,7 +172,7 @@ namespace DFC.App.JobProfile.Controllers
             if (jobProfileModel != null)
             {
                 var viewModel = mapper.Map<BodyViewModel>(jobProfileModel);
-                var speakToAnAdviser = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SharedHtml>(ApplicationKeys.SpeakToAnAdviserSharedContent, status, expiry);
+                var speakToAnAdviser = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SharedHtml>(ApplicationKeys.SpeakToAnAdviserSharedContent, status, expiryInHours);
                 viewModel.SpeakToAnAdviser = new StaticContentItemModel()
                 {
                     Content = speakToAnAdviser.Html,

@@ -2,7 +2,7 @@
 @{
     var restrictions = Model.Restrictions as List<Restriction>;
 }
-@if (!string.IsNullOrWhiteSpace(Model.OtherRequirements))
+@if (restrictions.Count > 0 || !string.IsNullOrWhiteSpace(Model.OtherRequirements))
 {
     <section class="job-profile-subsection" id="restrictions">
         <h3>Restrictions and Requirements</h3>

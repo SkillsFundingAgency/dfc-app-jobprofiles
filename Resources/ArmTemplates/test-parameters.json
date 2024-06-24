@@ -38,12 +38,6 @@
     "cmsContentIds": {
       "value": "12345"
     },
-    "cosmosDBName": {
-      "value": "dfc-dev-app-sharedresources-cdb"
-    },
-    "cosmosDbKey": {
-      "value": "not-a-real-key"
-    },
     "Environment": {
       "value": "FOO"
     },
@@ -52,12 +46,6 @@
     },
     "sharedAppServicePlanResourceGroup": {
       "value": "dfc-dev-app-sharedresources-rg"
-    },
-    "cosmosDbCollectionName": {
-      "value": "a-collection"
-    },
-    "cosmosDbSharedCollectionName": {
-      "value": "b-collection"
     },
     "surveyUrl": {
       "value": "https://some.survey.site/link/to/survey"
@@ -68,17 +56,11 @@
     "ExceptionCountThreshold": {
       "value": "0"
     },
-    "EventGridSubscriptionModelEndpoint": {
-      "value": "foo"
+    "MemoryPercentageThreshold": {
+      "value": "0"
     },
-    "EventGridSubscriptionClientOptionsEndpoint": {
-      "value": "foo"
-    },
-    "subscriptionUrl": {
-      "value": "foo"
-    },
-    "SubscriptionSettingsEndpoint": {
-      "value": "foo"
+    "CPUPercentageThreshold": {
+      "value": "0"
     },
     "apimCompositeKey": {
       "value": "FakeKey"

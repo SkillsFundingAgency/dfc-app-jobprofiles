@@ -203,13 +203,13 @@
       "type": "string"
     },
     "RefreshAllSegmentsTriggerTimer":{
-      "value": "__RefreshAllSegmentsTriggerTimer__"
+      "type": "string"
     },
     "RefreshApprenticeshipsTriggerTimer":{
-      "value": "__RefreshApprenticeshipsTriggerTimer__"
+      "type": "string"
     },
     "RefreshCoursesTriggerTimer":{
-      "value": "__RefreshCoursesTriggerTimer__"
+      "type": "string"
     }
   },
   "variables": {

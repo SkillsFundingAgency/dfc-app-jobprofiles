@@ -18,8 +18,9 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
             this.refreshService = refreshService;
         }
 
+        
         [FunctionName("RefreshAllSegments")]
-        public async Task RunAsync([TimerTrigger("0 3 * * *", RunOnStartup = true)] TimerInfo myTimer, ILogger log)
+        public async Task RunAsync([TimerTrigger("%RefreshAllSegmentsTriggerTimer%", RunOnStartup = false)] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"{nameof(RefreshAllSegments)}: Timer trigger function executed at: {DateTime.Now}");
             int first = 100;

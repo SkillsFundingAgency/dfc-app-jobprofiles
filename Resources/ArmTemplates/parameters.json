@@ -160,6 +160,15 @@
     },
     "IocpThreads": {
 	  "value": "__IocpThreads__"
+    },
+    "RefreshAllSegmentsTriggerTimer":{
+      "value": "__RefreshAllSegmentsTriggerTimer__"
+    },
+    "RefreshApprenticeshipsTriggerTimer":{
+      "value": "__RefreshApprenticeshipsTriggerTimer__"
+    },
+    "RefreshCoursesTriggerTimer":{
+      "value": "__RefreshCoursesTriggerTimer__"
     }
   }
 }

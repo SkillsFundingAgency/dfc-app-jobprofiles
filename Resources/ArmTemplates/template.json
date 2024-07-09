@@ -723,7 +723,7 @@
               },
               {
                 "name": "RefreshAllSegmentsTriggerTimer",
-                "value":  "35 14 * * *"
+                "value":  "40 13 * * *"
               },
               {
                 "name": "RefreshApprenticeshipsTriggerTimer",

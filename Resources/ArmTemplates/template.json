@@ -575,7 +575,7 @@
               {
                  "name": "ThreadSettings__IocpThreads",
                  "value": "[parameters('IocpThreads')]"
-			  }
+			        }
             ]
           }
         }
@@ -723,7 +723,7 @@
               },
               {
                 "name": "RefreshAllSegmentsTriggerTimer",
-                "value": "20 13 * * *"
+                "value":  "35 14 * * *"
               },
               {
                 "name": "RefreshApprenticeshipsTriggerTimer",

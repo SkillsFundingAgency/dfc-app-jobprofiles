@@ -99,6 +99,10 @@ namespace DFC.App.JobProfile.ProfileService
                 CanonicalName = canonicalName,
                 BreadcrumbTitle = new CultureInfo("en-GB").TextInfo.ToTitleCase(canonicalName),
                 Segments = new List<SegmentModel>(),
+                MetaTags = new MetaTags()
+                {
+                    Title = new CultureInfo("en-GB").TextInfo.ToTitleCase(canonicalName),
+                },
             };
 
             var requiredSegments = new[]

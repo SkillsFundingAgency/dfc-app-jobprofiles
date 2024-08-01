@@ -156,10 +156,19 @@
       "value": "__courseProviderServiceApiKey__"
     },
     "WorkerThreads": {
-	  "value": "__WorkerThreads__"
+      "value": "__WorkerThreads__"
     },
     "IocpThreads": {
-	  "value": "__IocpThreads__"
+      "value": "__IocpThreads__"
+    },
+    "Expiry": {
+      "value": "__Expiry__"
+    },
+    "SegementExpiry": {
+      "value": "__SegementExpiry__"
+    },
+    "CoursesApprenticeshipExpiry": {
+      "value": "__CoursesApprenticeshipExpiry__"
     }
   }
 }

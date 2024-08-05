@@ -202,6 +202,15 @@
     "IocpThreads": {
       "type": "string"
     },
+    "Expiry": {
+      "type": "string"
+    },
+    "SegementExpiry": {
+      "type": "string"
+    },
+    "CoursesApprenticeshipExpiry": {
+      "type": "string"
+    },
     "RefreshAllSegmentsTriggerTimer":{
       "type": "string"
     },
@@ -573,9 +582,21 @@
                 "value": "[parameters('WorkerThreads')]"
               },
               {
-                 "name": "ThreadSettings__IocpThreads",
-                 "value": "[parameters('IocpThreads')]"
-			        }
+                "name": "ThreadSettings__IocpThreads",
+                "value": "[parameters('IocpThreads')]"
+              },
+              {
+                "name": "Cms__Expiry",
+                "value": "[parameters('Expiry')]"
+              },
+              {
+                "name": "Cms__SegementExpiry",
+                "value": "[parameters('SegementExpiry')]"
+              },
+              {
+                "name": "Cms__CoursesApprenticeshipExpiry",
+                "value": "[parameters('CoursesApprenticeshipExpiry')]"
+              }
             ]
           }
         }

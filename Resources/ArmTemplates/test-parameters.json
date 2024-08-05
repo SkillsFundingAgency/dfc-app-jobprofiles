@@ -149,6 +149,15 @@
     "IocpThreads": {
       "value": "200"
     },
+    "Expiry": {
+      "value": "4"
+    },
+    "SegementExpiry": {
+      "value": "24"
+    },
+    "CoursesApprenticeshipExpiry": {
+      "value": "48"
+    },
     "RefreshAllSegmentsTriggerTimer":{
       "value": "0 3 * * *"
     },

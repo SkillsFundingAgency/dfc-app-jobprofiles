@@ -169,6 +169,15 @@
     },
     "CoursesApprenticeshipExpiry": {
       "value": "__CoursesApprenticeshipExpiry__"
+    },
+    "RefreshAllSegmentsTriggerTimer":{
+      "value": "__RefreshAllSegmentsTriggerTimer__"
+    },
+    "RefreshApprenticeshipsTriggerTimer":{
+      "value": "__RefreshApprenticeshipsTriggerTimer__"
+    },
+    "RefreshCoursesTriggerTimer":{
+      "value": "__RefreshCoursesTriggerTimer__"
     }
   }
 }

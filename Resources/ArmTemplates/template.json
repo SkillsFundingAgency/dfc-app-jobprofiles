@@ -201,6 +201,15 @@
     },
     "IocpThreads": {
       "type": "string"
+    },
+    "RefreshAllSegmentsTriggerTimer":{
+      "type": "string"
+    },
+    "RefreshApprenticeshipsTriggerTimer":{
+      "type": "string"
+    },
+    "RefreshCoursesTriggerTimer":{
+      "type": "string"
     }
   },
   "variables": {
@@ -566,7 +575,7 @@
               {
                  "name": "ThreadSettings__IocpThreads",
                  "value": "[parameters('IocpThreads')]"
-			  }
+			        }
             ]
           }
         }
@@ -711,6 +720,18 @@
               {
                 "name": "Logging__ApplicationInsights__LogLevel__Default",
                 "value": "Information"
+              },
+              {
+                "name": "RefreshAllSegmentsTriggerTimer",
+                "value":  "[parameters('RefreshAllSegmentsTriggerTimer')]"
+              },
+              {
+                "name": "RefreshApprenticeshipsTriggerTimer",
+                "value": "[parameters('RefreshApprenticeshipsTriggerTimer')]"
+              },
+              {
+                "name": "RefreshCoursesTriggerTimer",
+                "value": "[parameters('RefreshCoursesTriggerTimer')]"
               }
             ]
           }

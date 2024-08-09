@@ -19,7 +19,7 @@ namespace DFC.App.JobProfile.MessageFunctionApp.Functions
         }
 
         [FunctionName("RefreshApprenticeships")]
-        public async Task RunAsync([TimerTrigger("0 4 * * *", RunOnStartup = true)] TimerInfo myTimer, ILogger log)
+        public async Task RunAsync([TimerTrigger("%RefreshApprenticeshipsTriggerTimer%", RunOnStartup = true)] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"{nameof(RefreshApprenticeships)}: Timer trigger function executed at: {DateTime.Now}");
             int first = 100;

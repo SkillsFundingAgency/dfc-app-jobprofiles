@@ -156,10 +156,28 @@
       "value": "__courseProviderServiceApiKey__"
     },
     "WorkerThreads": {
-	  "value": "__WorkerThreads__"
+      "value": "__WorkerThreads__"
     },
     "IocpThreads": {
-	  "value": "__IocpThreads__"
+      "value": "__IocpThreads__"
+    },
+    "Expiry": {
+      "value": "__Expiry__"
+    },
+    "SegementExpiry": {
+      "value": "__SegementExpiry__"
+    },
+    "CoursesApprenticeshipExpiry": {
+      "value": "__CoursesApprenticeshipExpiry__"
+    },
+    "RefreshAllSegmentsTriggerTimer":{
+      "value": "__RefreshAllSegmentsTriggerTimer__"
+    },
+    "RefreshApprenticeshipsTriggerTimer":{
+      "value": "__RefreshApprenticeshipsTriggerTimer__"
+    },
+    "RefreshCoursesTriggerTimer":{
+      "value": "__RefreshCoursesTriggerTimer__"
     }
   }
 }

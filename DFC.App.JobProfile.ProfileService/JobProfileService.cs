@@ -32,6 +32,9 @@ namespace DFC.App.JobProfile.ProfileService
 {
     public class JobProfileService : IJobProfileService
     {
+        private const string SegementExpiryAppSettings = "Cms:SegementExpiry";
+        private const string CoursesApprenticeshipExpiryAppSettings = "Cms:CoursesApprenticeshipExpiry";
+        private readonly IConfiguration configuration;
         private readonly IMapper mapper;
         private readonly ILogService logService;
         private readonly ISharedContentRedisInterface sharedContentRedisInterface;
@@ -46,6 +49,8 @@ namespace DFC.App.JobProfile.ProfileService
         private readonly string whatYouWillDoOfflineMarkup;
         private readonly string careerPathOfflineMarkup;
         private readonly string filter;
+        private double segementExpiryInHours = 24;
+        private double coursesApprenticeshipExpiryInHours = 48;
 
         public JobProfileService(
             IMapper mapper,
@@ -56,6 +61,7 @@ namespace DFC.App.JobProfile.ProfileService
             ICourseSearchApiService client,
             IAVAPIService avAPIService)
         {
+            this.configuration = configuration;
             this.mapper = mapper;
             this.logService = logService;
             this.sharedContentRedisInterface = sharedContentRedisInterface;
@@ -70,13 +76,28 @@ namespace DFC.App.JobProfile.ProfileService
             whatItTakesOfflineMarkup = configuration.GetSection("WhatItTakesSegmentClientOptions:OfflineHtml").Get<string>();
             whatYouWillDoOfflineMarkup = configuration.GetSection("WhatYouWillDoSegmentClientOptions:OfflineHtml").Get<string>();
             careerPathOfflineMarkup = configuration.GetSection("CareerPathSegmentClientOptions:OfflineHtml").Get<string>();
+
+            if (this.configuration != null)
+            {
+                string segementExpiryAppString = this.configuration.GetSection(SegementExpiryAppSettings).Get<string>();
+                if (double.TryParse(segementExpiryAppString, out var segementExpiryAppStringParseResult))
+                {
+                    segementExpiryInHours = segementExpiryAppStringParseResult;
+                }
+
+                string coursesApprenticeshipExpiryAppString = this.configuration.GetSection(CoursesApprenticeshipExpiryAppSettings).Get<string>();
+                if (double.TryParse(coursesApprenticeshipExpiryAppString, out var coursesApprenticeshipExpiryAppStringParseResult))
+                {
+                    coursesApprenticeshipExpiryInHours = coursesApprenticeshipExpiryAppStringParseResult;
+                }
+            }
         }
 
         public async Task<IEnumerable<JobProfileModel>> GetAllAsync()
         {
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles, filter, segementExpiryInHours);
 
                 return mapper.Map<IEnumerable<JobProfileModel>>(response.JobProfileCurrentOpportunities);
             }
@@ -190,7 +211,7 @@ namespace DFC.App.JobProfile.ProfileService
             };
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, filter);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(ApplicationKeys.JobProfileRelatedCareersPrefix + "/" + canonicalName, filter, segementExpiryInHours);
 
                 if (response != null && response.JobProfileRelatedCareers.IsAny())
                 {
@@ -235,7 +256,7 @@ namespace DFC.App.JobProfile.ProfileService
             try
             {
                 // Get the response from GraphQl
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, filter);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(ApplicationKeys.JobProfileHowToBecome + "/" + canonicalName, filter, segementExpiryInHours);
 
                 if (response != null && response.JobProfileHowToBecome.IsAny())
                 {
@@ -315,7 +336,7 @@ namespace DFC.App.JobProfile.ProfileService
                 currentOpportunitiesSegmentModel.CanonicalName = canonicalName;
 
                 //Get job profile course keyword and lars code
-                var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), "PUBLISHED");
+                var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCurrentOpportunitiesGetbyUrlReponse>(string.Concat(ApplicationKeys.JobProfileCurrentOpportunities, "/", canonicalName), filter, segementExpiryInHours);
 
                 //get courses by course key words
                 if (jobProfile != null && jobProfile.JobProfileCurrentOpportunitiesGetByUrl.IsAny())
@@ -399,7 +420,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfileOverview, "/", canonicalName), filter);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(string.Concat(ApplicationKeys.JobProfileOverview, "/", canonicalName), filter, segementExpiryInHours);
 
                 if (response != null && response.JobProfileOverview.IsAny())
                 {
@@ -451,7 +472,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(ApplicationKeys.JobProfileWhatYoullDo + "/" + canonicalName, filter);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(ApplicationKeys.JobProfileWhatYoullDo + "/" + canonicalName, filter, segementExpiryInHours);
 
                 if (response != null)
                 {
@@ -500,7 +521,7 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfileCareerPath + "/" + canonicalName, filter);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(ApplicationKeys.JobProfileCareerPath + "/" + canonicalName, filter, segementExpiryInHours);
 
                 if (response != null && response.JobProileCareerPath != null)
                 {
@@ -543,8 +564,8 @@ namespace DFC.App.JobProfile.ProfileService
 
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, filter);
-                var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, "PUBLISHED");
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, filter, segementExpiryInHours);
+                var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, filter, segementExpiryInHours);
 
                 if (response != null && response.JobProfileSkills != null && skillsResponse.Skill != null)
                 {
@@ -609,7 +630,7 @@ namespace DFC.App.JobProfile.ProfileService
         {
             try
             {
-                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter);
+                var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileVideoResponse>(string.Concat(ApplicationKeys.JobProfileVideoPrefix, "/", canonicalName), filter, segementExpiryInHours);
 
                 if (response != null && response.JobProfileVideo.IsAny() && response.JobProfileVideo[0].VideoType != null && response.JobProfileVideo[0].VideoType != "None")
                 {
@@ -636,7 +657,7 @@ namespace DFC.App.JobProfile.ProfileService
             int total = skip + first;
 
             //Get job profile with Url name
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip, segementExpiryInHours);
 
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
@@ -676,7 +697,7 @@ namespace DFC.App.JobProfile.ProfileService
             int total = skip + first;
 
             //Get job profile with Url name
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip, segementExpiryInHours);
 
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities != null)
             {
@@ -691,32 +712,32 @@ namespace DFC.App.JobProfile.ProfileService
                         //Refresh Overview
                         string overviewCacheKey = string.Concat(ApplicationKeys.JobProfileOverview, "/", canonicalName);
                         await sharedContentRedisInterface.InvalidateEntityAsync(overviewCacheKey, filter);
-                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(overviewCacheKey, filter);
+                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfilesOverviewResponse>(overviewCacheKey, filter, segementExpiryInHours);
 
                         //Refresh RelatedCareers
                         string relatedCareersCacheKey = string.Concat(ApplicationKeys.JobProfileRelatedCareersPrefix, "/", canonicalName);
                         await sharedContentRedisInterface.InvalidateEntityAsync(relatedCareersCacheKey, filter);
-                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(relatedCareersCacheKey, filter);
+                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<RelatedCareersResponse>(relatedCareersCacheKey, filter, segementExpiryInHours);
 
                         //Refresh WhatYoullDo
                         string whatYoullDoCacheKey = string.Concat(ApplicationKeys.JobProfileWhatYoullDo, "/", canonicalName);
                         await sharedContentRedisInterface.InvalidateEntityAsync(whatYoullDoCacheKey, filter);
-                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(whatYoullDoCacheKey, filter);
+                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileWhatYoullDoResponse>(whatYoullDoCacheKey, filter, segementExpiryInHours);
 
                         //Refresh CareerPath
                         string careerPathCacheKey = string.Concat(ApplicationKeys.JobProfileCareerPath, "/", canonicalName);
                         await sharedContentRedisInterface.InvalidateEntityAsync(careerPathCacheKey, filter);
-                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(careerPathCacheKey, filter);
+                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileCareerPathAndProgressionResponse>(careerPathCacheKey, filter, segementExpiryInHours);
 
                         //Refresh Skill
                         string skillCacheKey = string.Concat(ApplicationKeys.JobProfileSkillsSuffix, "/", canonicalName);
                         await sharedContentRedisInterface.InvalidateEntityAsync(skillCacheKey, filter);
-                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(skillCacheKey, filter);
+                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(skillCacheKey, filter, segementExpiryInHours);
 
                         //Refresh HowToBecome
                         string howToBecomeCacheKey = string.Concat(ApplicationKeys.JobProfileHowToBecome, "/", canonicalName);
                         await sharedContentRedisInterface.InvalidateEntityAsync(howToBecomeCacheKey, filter);
-                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(howToBecomeCacheKey, filter);
+                        await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileHowToBecomeResponse>(howToBecomeCacheKey, filter, segementExpiryInHours);
                     }
                 }
             }
@@ -736,7 +757,7 @@ namespace DFC.App.JobProfile.ProfileService
             int total = skip + first;
 
             //Get job profile with Url name
-            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip);
+            var jobProfile = await sharedContentRedisInterface.GetDataAsyncWithExpiryAndFirstSkip<JobProfileCurrentOpportunitiesResponse>(ApplicationKeys.JobProfileCurrentOpportunitiesAllJobProfiles + "/" + skip + "-" + total, filter, first, skip, segementExpiryInHours);
 
             if (jobProfile != null && jobProfile.JobProfileCurrentOpportunities.Count() > 0)
             {
@@ -892,7 +913,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 var result = await client.GetCoursesAsync(courseKeywords, true).ConfigureAwait(false);
                 redisData.Courses = result?.ToList();
-                var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesResponse>(redisData, cacheKey, 48);
+                var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData<CoursesResponse>(redisData, cacheKey, coursesApprenticeshipExpiryInHours);
 
                 if (!save)
                 {
@@ -922,7 +943,7 @@ namespace DFC.App.JobProfile.ProfileService
 
                 if (vacancies.Any())
                 {
-                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, 48);
+                    var save = await sharedContentRedisInterface.SetCurrentOpportunitiesData(vacancies, cacheKey, coursesApprenticeshipExpiryInHours);
                     if (!save)
                     {
                         throw new InvalidOperationException("Redis save process failed.");

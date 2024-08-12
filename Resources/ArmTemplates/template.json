@@ -201,6 +201,24 @@
     },
     "IocpThreads": {
       "type": "string"
+    },
+    "Expiry": {
+      "type": "string"
+    },
+    "SegementExpiry": {
+      "type": "string"
+    },
+    "CoursesApprenticeshipExpiry": {
+      "type": "string"
+    },
+    "RefreshAllSegmentsTriggerTimer":{
+      "type": "string"
+    },
+    "RefreshApprenticeshipsTriggerTimer":{
+      "type": "string"
+    },
+    "RefreshCoursesTriggerTimer":{
+      "type": "string"
     }
   },
   "variables": {
@@ -564,9 +582,21 @@
                 "value": "[parameters('WorkerThreads')]"
               },
               {
-                 "name": "ThreadSettings__IocpThreads",
-                 "value": "[parameters('IocpThreads')]"
-			  }
+                "name": "ThreadSettings__IocpThreads",
+                "value": "[parameters('IocpThreads')]"
+              },
+              {
+                "name": "Cms__Expiry",
+                "value": "[parameters('Expiry')]"
+              },
+              {
+                "name": "Cms__SegementExpiry",
+                "value": "[parameters('SegementExpiry')]"
+              },
+              {
+                "name": "Cms__CoursesApprenticeshipExpiry",
+                "value": "[parameters('CoursesApprenticeshipExpiry')]"
+              }
             ]
           }
         }
@@ -711,6 +741,18 @@
               {
                 "name": "Logging__ApplicationInsights__LogLevel__Default",
                 "value": "Information"
+              },
+              {
+                "name": "RefreshAllSegmentsTriggerTimer",
+                "value":  "[parameters('RefreshAllSegmentsTriggerTimer')]"
+              },
+              {
+                "name": "RefreshApprenticeshipsTriggerTimer",
+                "value": "[parameters('RefreshApprenticeshipsTriggerTimer')]"
+              },
+              {
+                "name": "RefreshCoursesTriggerTimer",
+                "value": "[parameters('RefreshCoursesTriggerTimer')]"
               }
             ]
           }

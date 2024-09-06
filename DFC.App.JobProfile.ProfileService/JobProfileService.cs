@@ -565,7 +565,7 @@ namespace DFC.App.JobProfile.ProfileService
             try
             {
                 var response = await sharedContentRedisInterface.GetDataAsyncWithExpiry<JobProfileSkillsResponse>(ApplicationKeys.JobProfileSkillsSuffix + "/" + canonicalName, filter, segementExpiryInHours);
-                var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, filter, segementExpiryInHours);
+                var skillsResponse = await sharedContentRedisInterface.GetDataAsyncWithExpiry<SkillsResponse>(ApplicationKeys.SkillsAll, "PUBLISHED", segementExpiryInHours);
 
                 if (response != null && response.JobProfileSkills != null && skillsResponse.Skill != null)
                 {

@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using JobProfSkills = DFC.App.JobProfile.Data.Models.Segment.SkillsModels.Skills;
 using Skills = DFC.Common.SharedContent.Pkg.Netcore.Model.ContentItems.JobProfiles.Skills;
@@ -119,11 +120,7 @@ namespace DFC.App.JobProfile.ProfileService
             {
                 CanonicalName = canonicalName,
                 BreadcrumbTitle = new CultureInfo("en-GB").TextInfo.ToTitleCase(canonicalName),
-                Segments = new List<SegmentModel>(),
-                MetaTags = new MetaTags()
-                {
-                    Title = new CultureInfo("en-GB").TextInfo.ToTitleCase(canonicalName),
-                },
+                Segments = new List<SegmentModel>()
             };
 
             var requiredSegments = new[]
@@ -186,6 +183,18 @@ namespace DFC.App.JobProfile.ProfileService
                     data.Segments.Add(await relatedCareersTask);
                     data.Video = await videoTask;
                 }
+
+                // Retrieves the title from the Overview segment and assign to MetaTags.Title
+                var overviewData = System.Text.Json.JsonSerializer.Deserialize<OverviewApiModel>(overviewTask.Result.JsonV1, 
+                    new JsonSerializerOptions()
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                data.MetaTags = new MetaTags()
+                {
+                    Title = overviewData.Title
+                };
 
                 return data;
             }
